@@ -1,32 +1,34 @@
 package com.mygdx.project;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class Main extends ApplicationAdapter {
 	SpriteBatch batch;
-	Texture img;
+	Texture panel;
 	int arm;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		panel = new Texture("C:\\Users\\ak2000\\Documents\\Mine\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\Panel2.png");
 	}
 
 	@Override
 	public void render () {
-		ScreenUtils.clear(1, 0, 0, 1);
+		ScreenUtils.clear(new Color(0xe0e0e0ff));
 		batch.begin();
-		batch.draw(img, 050, 0100);
+		//screen is 1920x1000 so adjust accordingly
+		batch.draw(panel, 0, 900, 100, 700);
 		batch.end();
 	}
 	
 	@Override
 	public void dispose () {
 		batch.dispose();
-		img.dispose();
+		panel.dispose();
 	}
 }
