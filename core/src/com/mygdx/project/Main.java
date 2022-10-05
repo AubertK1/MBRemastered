@@ -7,48 +7,52 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import java.awt.*;
+
 public class Main extends ApplicationAdapter {
 	SpriteBatch batch;
-	Texture panel;
-	Texture sidePanel;
-	Texture topPanel;
-	Texture genStatsPanel;
-	Texture descriptionPanel;
-	Texture toolbarPanel;
-	Texture masterboardPanel;
+	Panel panel;
+	Panel sidePanel;
+	Panel topPanel;
+	Panel genStatsPanel;
+	Panel descriptionPanel;
+	Panel toolbarPanel;
+	Panel masterboardPanel;
 	int arm;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		panel = new Texture("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\Panel2.png");
-		sidePanel = new Texture("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\SidecardPanel.png");
-		topPanel = new Texture("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\TopbarPanel.png");
-		genStatsPanel = new Texture("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\GenstatsPanel.png");
-		descriptionPanel = new Texture("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\DescriptionPanel.png");
-		toolbarPanel = new Texture("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\ToolbarPanel.png");
-		masterboardPanel = new Texture("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\MasterboardPanel.png");
+		sidePanel = new Panel("C:\\Users\\ak2000\\Documents\\Mine" +
+				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\SidecardPanel.png",
+				new Rectangle(2, 150, 98, 850));
+		topPanel = new Panel("C:\\Users\\ak2000\\Documents\\Mine" +
+				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\TopbarPanel.png",
+				new Rectangle(110, 950, 780, 50));
+		genStatsPanel = new Panel("C:\\Users\\ak2000\\Documents\\Mine" +
+				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\GenstatsPanel.png",
+				new Rectangle(110, 550, 780, 390));
+		descriptionPanel = new Panel("C:\\Users\\ak2000\\Documents\\Mine" +
+				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\DescriptionPanel.png",
+				new Rectangle(110, 150, 780, 390));
+		toolbarPanel = new Panel("C:\\Users\\ak2000\\Documents\\Mine" +
+				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\ToolbarPanel.png",
+				new Rectangle(2, 2, 1916, 138));
+		masterboardPanel = new Panel("C:\\Users\\ak2000\\Documents\\Mine" +
+				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\MasterboardPanel.png",
+				new Rectangle(900, 150, 1018, 850));
 	}
 
 	@Override
 	public void render () {
 		ScreenUtils.clear(new Color(0xe0e0e0ff));
 		batch.begin();
-		//screen is 1920x1000 so adjust accordingly
-		batch.draw(sidePanel, 2, 150, 98, 850);
-		batch.draw(topPanel, 110, 950, 780, 50);
-		batch.draw(genStatsPanel, 110, 550, 780, 390);
-		batch.draw(descriptionPanel, 110, 150, 780, 390);
-		batch.draw(toolbarPanel, 2, 2, 1916, 138);
-		batch.draw(masterboardPanel, 900, 150, 1018, 850);
-
+		sidePanel.render(batch);
+		topPanel.render(batch);
+		genStatsPanel.render(batch);
+		descriptionPanel.render(batch);
+		toolbarPanel.render(batch);
+		masterboardPanel.render(batch);
 		batch.end();
 	}
 	
