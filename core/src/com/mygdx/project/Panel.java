@@ -23,6 +23,7 @@ public class Panel {
     public void render (SpriteBatch batch) {
         //screen is 1920x1000 so adjust accordingly
         batch.draw(texture, position.x, position.y, position.width, position.height);
+        batch.draw(components.get(0).texture, (position.x+50), (position.y+50), 100, 100);
     }
     public void dispose(){
         texture.dispose();

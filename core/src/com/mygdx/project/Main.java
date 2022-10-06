@@ -41,6 +41,9 @@ public class Main extends ApplicationAdapter {
 		masterboardPanel = new Panel("C:\\Users\\ak2000\\Documents\\Mine" +
 				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\MasterboardPanel.png",
 				new Rectangle(900, 150, 1018, 850));
+
+		MBTextField descriptionTextField = new MBTextField();
+		descriptionTextField.textField.setSize(100,100);
 	}
 
 	@Override
