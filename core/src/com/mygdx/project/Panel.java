@@ -22,7 +22,9 @@ public class Panel {
 
     public void add(MBComponent component){
         components.add(component);
-        Main.stage.addActor(component);
+        if(component.getComponent() != null) {
+            Main.stage.addActor(component.getComponent());
+        }
     }
 
     public void render (SpriteBatch batch) {
