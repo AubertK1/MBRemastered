@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -21,7 +22,7 @@ public class Panel {
     //stores the panel's components in this list
     ArrayList<MBComponent> components = new ArrayList<>();
 
-
+    ArrayList<Minipanel> minipanels = new ArrayList<>();
 
     public Panel(String fileLocation, Rectangle position){
         //sets the image of the panel
@@ -39,10 +40,28 @@ public class Panel {
             Main.stage.addActor(component.getComponent());
         }
     }
+    public void add(Minipanel minipanel){
+        //adds the component given to the panel
+        minipanels.add(minipanel);
+    }
+    public void add(Minipanel minipanel, MBComponent component){
+        //adds the component given to the panel
+        components.add(component);
+        //makes sure the component is an actor
+        if(component.getComponent() != null) {
+            //adds component to the stage so it can be drawn
+            Main.stage.addActor(component.getComponent());
+        }
+        minipanel.add(component);
+    }
 
     public void render (SpriteBatch batch) {
         //screen size is 1920x1000 so adjust accordingly
         batch.draw(texture, position.x, position.y, position.width, position.height);
+        for (int i = 0; i < minipanels.size(); i++) {
+            batch.draw(minipanels.get(i).texture, minipanels.get(i).position.x, minipanels.get(i).position.y,
+                    minipanels.get(i).position.width, minipanels.get(i).position.height);
+        }
     }
     public void dispose(){
         texture.dispose();
