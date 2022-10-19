@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
@@ -16,7 +17,6 @@ public class Main extends ApplicationAdapter {
 	SpriteBatch batch;
 	//used to draw the MBComponents
 	static Stage stage;
-	Minipanel strPanel, dexPanel, conPanel, intPanel, wisPanel, chaPanel;
 	//individual panels
 	Panel sidePanel, topPanel, genStatsPanel, reminderPanel, toolbarPanel, masterboardPanel;
 	MBTextArea reminderTextArea;
@@ -65,11 +65,9 @@ public class Main extends ApplicationAdapter {
 		//endregion
 
 		//region General Stats
-		MBLabel label2 = new MBLabel("idk", uiSkin);
-//		ScrollPane pane = new ScrollPane(label2, uiSkin);
-		label2.label.setSize(760, 200);
-		label2.label.setPosition(120, 560);
-
+		//region stats
+		//creating all the minipanels to hold the player stats
+		Minipanel strPanel, dexPanel, conPanel, intPanel, wisPanel, chaPanel;
 		strPanel = new Minipanel("C:\\Users\\ak2000\\Documents\\Mine" +
 				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\minipanel2.png",
 				new Rectangle(120, 870, 50, 60));
@@ -88,50 +86,68 @@ public class Main extends ApplicationAdapter {
 		chaPanel = new Minipanel("C:\\Users\\ak2000\\Documents\\Mine" +
 				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\minipanel2.png",
 				new Rectangle(420, 870, 50, 60));
-
+		//creating the labels to put in the stats' minipanels
 		MBLabel strL = new MBLabel("STR", uiSkin);
-		strL.label.setPosition(123, 560);
+		//setting position equal to its minipanel's left border + half the minipanel's width - half the label's width
+		strL.label.setPosition(strPanel.position.x + (strPanel.position.width/2) - (strL.label.getWidth()/2), 903);
 		MBLabel dexL = new MBLabel("DEX", uiSkin);
+		dexL.label.setPosition(dexPanel.position.x + (dexPanel.position.width/2) - (dexL.label.getWidth()/2), 903);
 		MBLabel conL = new MBLabel("CON", uiSkin);
+		conL.label.setPosition(conPanel.position.x + (conPanel.position.width/2) - (conL.label.getWidth()/2), 903);
 		MBLabel intL = new MBLabel("INT", uiSkin);
+		intL.label.setPosition(intPanel.position.x + (intPanel.position.width/2) - (intL.label.getWidth()/2), 903);
 		MBLabel wisL = new MBLabel("WIS", uiSkin);
+		wisL.label.setPosition(wisPanel.position.x + (wisPanel.position.width/2) - (wisL.label.getWidth()/2), 903);
 		MBLabel chaL = new MBLabel("CHA", uiSkin);
-
+		chaL.label.setPosition(chaPanel.position.x + (chaPanel.position.width/2) - (chaL.label.getWidth()/2), 903);
+		//creating the textfields to put in the stats' minipanels
 		MBTextField strTF = new MBTextField("", uiSkin);
+		//size and positions set by eyeballing until it looked nice
 		strTF.textField.setSize(44, 35);
 		strTF.textField.setPosition(123, 873);
+		strTF.textField.setAlignment(Align.center);
 		MBTextField dexTF = new MBTextField("", uiSkin);
 		dexTF.textField.setSize(44, 35);
 		dexTF.textField.setPosition(183, 873);
+		dexTF.textField.setAlignment(Align.center);
 		MBTextField conTF = new MBTextField("", uiSkin);
 		conTF.textField.setSize(44, 35);
 		conTF.textField.setPosition(243, 873);
+		conTF.textField.setAlignment(Align.center);
 		MBTextField intTF = new MBTextField("", uiSkin);
 		intTF.textField.setSize(44, 35);
 		intTF.textField.setPosition(303, 873);
+		intTF.textField.setAlignment(Align.center);
 		MBTextField wisTF = new MBTextField("", uiSkin);
 		wisTF.textField.setSize(44, 35);
 		wisTF.textField.setPosition(363, 873);
+		wisTF.textField.setAlignment(Align.center);
 		MBTextField chaTF = new MBTextField("", uiSkin);
 		chaTF.textField.setSize(44, 35);
 		chaTF.textField.setPosition(423, 873);
+		chaTF.textField.setAlignment(Align.center);
 
-		genStatsPanel.add(label2);
+		//adding minipanels to the panel
 		genStatsPanel.add(strPanel);
 		genStatsPanel.add(dexPanel);
 		genStatsPanel.add(conPanel);
 		genStatsPanel.add(intPanel);
 		genStatsPanel.add(wisPanel);
 		genStatsPanel.add(chaPanel);
-
-		genStatsPanel.add(strPanel, strTF);
-		genStatsPanel.add(dexPanel, dexTF);
-		genStatsPanel.add(conPanel, conTF);
-		genStatsPanel.add(intPanel, intTF);
-		genStatsPanel.add(wisPanel, wisTF);
-		genStatsPanel.add(chaPanel, chaTF);
-
-//		stage.addActor(pane);
+		//adding components to their minipanels
+		strPanel.add(strTF);
+		strPanel.add(strL);
+		dexPanel.add(dexTF);
+		dexPanel.add(dexL);
+		conPanel.add(conTF);
+		conPanel.add(conL);
+		intPanel.add(intTF);
+		intPanel.add(intL);
+		wisPanel.add(wisTF);
+		wisPanel.add(wisL);
+		chaPanel.add(chaTF);
+		chaPanel.add(chaL);
+		//endregion
 
 
 		//endregion
@@ -163,6 +179,5 @@ public class Main extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		strPanel.dispose();
 	}
 }
