@@ -14,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import com.badlogic.gdx.math.Rectangle;
 
+import java.awt.*;
+
 
 public class Main extends ApplicationAdapter {
 	//Used to draw the panels
@@ -53,8 +55,8 @@ public class Main extends ApplicationAdapter {
 		reminderTextArea.textArea.setPosition(120,160);
 		//creating a label
 		MBLabel reminderLabel = new MBLabel("REMINDERS", uiSkin);
-		reminderLabel.label.setSize(760, 40);
-		reminderLabel.label.setPosition(120, 490);
+		reminderLabel.setSize(760, 40);
+		reminderLabel.setPosition(120, 490);
 		//adding to the Reminders panel as its components
 		reminderPanel.add(reminderTextArea);
 		reminderPanel.add(reminderLabel);
@@ -80,42 +82,42 @@ public class Main extends ApplicationAdapter {
 		//creating the labels to put in the stats' minipanels
 		MBLabel strL = new MBLabel("STR", uiSkin);
 		//setting position equal to its minipanel's left border + half the minipanel's width - half the label's width
-		strL.label.setPosition(strPanel.position.x + (strPanel.position.width/2) - (strL.label.getWidth()/2), 903);
+		strL.setPosition(strPanel.getX() + (strPanel.getWidth()/2) - (strL.getWidth()/2), 903);
 		MBLabel dexL = new MBLabel("DEX", uiSkin);
-		dexL.label.setPosition(dexPanel.position.x + (dexPanel.position.width/2) - (dexL.label.getWidth()/2), 903);
+		dexL.setPosition(dexPanel.getX() + (dexPanel.getWidth()/2) - (dexL.getWidth()/2), 903);
 		MBLabel conL = new MBLabel("CON", uiSkin);
-		conL.label.setPosition(conPanel.position.x + (conPanel.position.width/2) - (conL.label.getWidth()/2), 903);
+		conL.setPosition(conPanel.getX() + (conPanel.getWidth()/2) - (conL.getWidth()/2), 903);
 		MBLabel intL = new MBLabel("INT", uiSkin);
-		intL.label.setPosition(intPanel.position.x + (intPanel.position.width/2) - (intL.label.getWidth()/2), 903);
+		intL.setPosition(intPanel.getX() + (intPanel.getWidth()/2) - (intL.getWidth()/2), 903);
 		MBLabel wisL = new MBLabel("WIS", uiSkin);
-		wisL.label.setPosition(wisPanel.position.x + (wisPanel.position.width/2) - (wisL.label.getWidth()/2), 903);
+		wisL.setPosition(wisPanel.getX() + (wisPanel.getWidth()/2) - (wisL.getWidth()/2), 903);
 		MBLabel chaL = new MBLabel("CHA", uiSkin);
-		chaL.label.setPosition(chaPanel.position.x + (chaPanel.position.width/2) - (chaL.label.getWidth()/2), 903);
+		chaL.setPosition(chaPanel.getX() + (chaPanel.getWidth()/2) - (chaL.getWidth()/2), 903);
 		//creating the textfields to put in the stats' minipanels
 		MBTextField strTF = new MBTextField("", uiSkin);
 		//size and positions set by eyeballing until it looked nice
-		strTF.textField.setSize(44, 35);
-		strTF.textField.setPosition(123, 873);
+		strTF.setSize(44, 35);
+		strTF.setPosition(123, 873);
 		strTF.textField.setAlignment(Align.center);
 		MBTextField dexTF = new MBTextField("", uiSkin);
-		dexTF.textField.setSize(44, 35);
-		dexTF.textField.setPosition(183, 873);
+		dexTF.setSize(44, 35);
+		dexTF.setPosition(183, 873);
 		dexTF.textField.setAlignment(Align.center);
 		MBTextField conTF = new MBTextField("", uiSkin);
-		conTF.textField.setSize(44, 35);
-		conTF.textField.setPosition(243, 873);
+		conTF.setSize(44, 35);
+		conTF.setPosition(243, 873);
 		conTF.textField.setAlignment(Align.center);
 		MBTextField intTF = new MBTextField("", uiSkin);
-		intTF.textField.setSize(44, 35);
-		intTF.textField.setPosition(303, 873);
+		intTF.setSize(44, 35);
+		intTF.setPosition(303, 873);
 		intTF.textField.setAlignment(Align.center);
 		MBTextField wisTF = new MBTextField("", uiSkin);
-		wisTF.textField.setSize(44, 35);
-		wisTF.textField.setPosition(363, 873);
+		wisTF.setSize(44, 35);
+		wisTF.setPosition(363, 873);
 		wisTF.textField.setAlignment(Align.center);
 		MBTextField chaTF = new MBTextField("", uiSkin);
-		chaTF.textField.setSize(44, 35);
-		chaTF.textField.setPosition(423, 873);
+		chaTF.setSize(44, 35);
+		chaTF.setPosition(423, 873);
 		chaTF.textField.setAlignment(Align.center);
 
 		//adding minipanels to the panel
@@ -145,24 +147,28 @@ public class Main extends ApplicationAdapter {
 		genStatsPanel.add(listPanel);
 
 		//fixme temporary items...sizes set arbitrarily
-		Minipanel item1 = new Minipanel("core\\pics\\TopbarPanel.png",
-				new Rectangle(listPanel.position.x+5, (listPanel.position.height + listPanel.position.y - 50), listPanel.position.width-10, 40));
+		final Item item1 = new Item("core\\pics\\TopbarPanel.png", 0);
 		listPanel.add(item1);
 
 		MBLabel item1L = new MBLabel("Item 1", uiSkin);
-//		item1L.label.setSize(1000,50);
-		item1L.label.setPosition(item1.position.x+5, item1.position.y+5);
-//		item1L.setPosition(new Rectangle(item1.position.x+5, item1.position.y+5, 100,0));
+//		item1L.setSize(1000,50);
+		item1L.setPosition(item1.getX()+5, item1.getY()+5);
+//		item1L.setPosition(new Rectangle(item1.getX()+5, item1.getY()+5, 100,0));
 		MBTextField item1TF = new MBTextField("", uiSkin);
-		item1TF.textField.setPosition(200, item1.position.getY()+4);
-		item1TF.textField.setSize(340, item1TF.textField.getHeight());
-		MBButton button1 = new MBButton(uiSkin);
-		button1.button.setPosition((item1TF.textField.getX()+item1TF.textField.getWidth()+2), item1TF.textField.getY());
-		button1.button.setSize(40, 32);
-		button1.addListener(new ChangeListener() {
+		item1TF.setPosition(200, item1.getY()+4);
+		item1TF.setSize(340, item1TF.getHeight());
+
+		final MBButton button1 = new MBButton(uiSkin);
+		button1.setPosition((item1TF.getX()+item1TF.getWidth()+2), item1TF.getY());
+		button1.setSize(40, 32);
+		button1.button.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				System.out.println("Button Pressed");
+				//fixme moves it then moves it back
+				((Item)button1.getItem().getPanel().getMPBySpot(button1.getItem().spot+1)).spot--;
+				button1.getItem().spot = button1.getItem().spot+1;
+
 			}
 		});
 
@@ -171,19 +177,23 @@ public class Main extends ApplicationAdapter {
 		item1.add(button1);
 
 		//fixme temporary items...sizes set arbitrarily
-		Minipanel item2 = new Minipanel("core\\pics\\TopbarPanel.png",
-				new Rectangle(listPanel.position.x+5, (listPanel.position.height + listPanel.position.y - 95), listPanel.position.width-10, 40));
+		Item item2 = new Item("core\\pics\\TopbarPanel.png", 1);
 		listPanel.add(item2);
 
 		MBLabel item2L = new MBLabel("Item 2", uiSkin);
-//		item1L.label.setSize(1000,50);
-		item2L.label.setPosition(item2.position.x+5, item2.position.y+5);
-//		item1L.setPosition(new Rectangle(item1.position.x+5, item1.position.y+5, 100,0));
+//		item1L.setSize(1000,50);
+		item2L.setPosition(item2.getX()+5, item2.getY()+5);
+//		item1L.setPosition(new Rectangle(item1.getX()+5, item1.getY()+5, 100,0));
 		MBTextField item2TF = new MBTextField("", uiSkin);
-		item2TF.textField.setPosition(200, item2.position.getY()+4);
-		item2TF.textField.setSize(340, item2TF.textField.getHeight());
+		item2TF.setPosition(200, item2.getY()+4);
+		item2TF.setSize(340, item2TF.getHeight());
+
+		Item item3 = new Item("core\\pics\\TopbarPanel.png", 2);
+		listPanel.add(item3);
+
 		item2.add(item2L);
 		item2.add(item2TF);
+
 		//endregion
 
 

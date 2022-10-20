@@ -28,7 +28,6 @@ public class Panel {
 //    int panelID;
 
     Panel parent = null;
-    ArrayList<Panel> children = new ArrayList<>();
 
     public Panel(String fileLocation, Rectangle position){
         //sets the image of the panel
@@ -42,6 +41,7 @@ public class Panel {
     public void add(MBComponent component){
         //adds the component given to the panel
         components.add(component);
+        component.parent = this;
         //makes sure the component is an actor
         if(component.getComponent() != null) {
             //adds component to the stage so it can be drawn
@@ -60,12 +60,39 @@ public class Panel {
         minipanel.add(component);
     }
 
+    public Panel getPanel() {
+        return parent;
+    }
+
+    public float getX(){
+        return position.x;
+    }
+    public float getY(){
+        return position.y;
+    }
+    public float getWidth(){
+        return position.width;
+    }
+    public float getHeight(){
+        return position.height;
+    }
+    public float getSpot() {
+        return -1;
+    }
     public void render (SpriteBatch batch) {
         //screen size is 1920x1000 so adjust accordingly
         batch.draw(texture, position.x, position.y, position.width, position.height);
         for (int i = 0; i < minipanels.size(); i++) {
             minipanels.get(i).render(batch);
         }
+    }
+    public Panel getMPBySpot(int spot){
+        for (Panel minipanel: minipanels) {
+            if(minipanel.getSpot() == spot){
+                return minipanel;
+            }
+        }
+        return null;
     }
     public void dispose(){
         for (int i = 0; i < minipanels.size(); i++) {

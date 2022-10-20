@@ -14,4 +14,7 @@ public class MBButton extends MBComponent{
     public Actor getComponent(){
         return button;
     }
+    public Button getButton(){
+        return button;
+    }
 }

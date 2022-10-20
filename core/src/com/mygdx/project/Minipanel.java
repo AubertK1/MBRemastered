@@ -1,10 +1,6 @@
 package com.mygdx.project;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import com.badlogic.gdx.math.Rectangle;
-import java.util.ArrayList;
 
 /**
  * I only want there to be a certain amount of panels, so minipanels were created to act as
@@ -15,4 +11,7 @@ public class Minipanel extends Panel{
     public Minipanel(String fileLocation, Rectangle position) {
         super(fileLocation, position);
     }
+
+
+
 }
