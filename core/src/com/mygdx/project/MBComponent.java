@@ -16,11 +16,16 @@ public class MBComponent extends Actor {
 
     }
 
+    public void setPosition(Rectangle position){
+        this.position = position;
+        setSize(position.width, position.height);
+        setPosition(position.x, position.y);
+    }
     /**
      * gets the component regardless of what type of component it is (textfield, label, etc.)
      * @return returns the component
      */
-    public Widget getComponent(){
+    public Actor getComponent(){
         return null;
     }
 }

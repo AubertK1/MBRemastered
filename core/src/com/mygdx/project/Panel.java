@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
-import java.awt.*;
+import com.badlogic.gdx.math.Rectangle;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -18,6 +18,7 @@ public class Panel {
     //the image that the panel is based off of
     Texture texture;
     //all values associated with how to draw it are stored here
+    //fixme change rectangle into seperate variables so I can just input numbers when calling the fuctions
     Rectangle position;
     //stores the panel's components in this list
     ArrayList<MBComponent> components = new ArrayList<>();

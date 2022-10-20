@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
@@ -17,12 +18,12 @@ public class MBTextArea extends MBComponent{
 
     public MBTextArea(String text, Skin skin) {
         Skin uiSkin = new Skin (Gdx.files.internal(
-                "C:\\Users\\ak2000\\Documents\\Mine\\MBRemastered\\MBRemastered\\MBRemastered\\assets\\skins\\uiskin.json"));
+                "assets\\skins\\uiskin.json"));
         //setting the text area
         textArea = new TextArea(text, skin);
     }
 
-    public Widget getComponent(){
+    public Actor getComponent(){
         return textArea;
     }
     //fixme

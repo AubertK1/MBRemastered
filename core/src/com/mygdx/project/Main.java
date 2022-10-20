@@ -4,12 +4,15 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
-import java.awt.*;
+import com.badlogic.gdx.math.Rectangle;
 
 
 public class Main extends ApplicationAdapter {
@@ -27,27 +30,21 @@ public class Main extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		stage = new Stage();
 		//setting up panels
-		sidePanel = new Panel("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\SidecardPanel.png",
+		sidePanel = new Panel("core\\pics\\SidecardPanel.png",
 				new Rectangle(2, 150, 98, 850));
-		topPanel = new Panel("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\TopbarPanel.png",
+		topPanel = new Panel("core\\pics\\TopbarPanel.png",
 				new Rectangle(110, 950, 780, 50));
-		genStatsPanel = new Panel("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\GenstatsPanel.png",
+		genStatsPanel = new Panel("core\\pics\\GenstatsPanel.png",
 				new Rectangle(110, 550, 780, 390));
-		reminderPanel = new Panel("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\ReminderPanel.png",
+		reminderPanel = new Panel("core\\pics\\ReminderPanel.png",
 				new Rectangle(110, 150, 780, 390));
-		toolbarPanel = new Panel("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\ToolbarPanel.png",
+		toolbarPanel = new Panel("core\\pics\\ToolbarPanel.png",
 				new Rectangle(2, 2, 1916, 138));
-		masterboardPanel = new Panel("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\MasterboardPanel.png",
+		masterboardPanel = new Panel("core\\pics\\MasterboardPanel.png",
 				new Rectangle(900, 150, 1018, 850));
 		//setting up skin for the UI of the app
 		Skin uiSkin = new Skin (Gdx.files.internal(
-				"C:\\Users\\ak2000\\Documents\\Mine\\MBRemastered\\MBRemastered\\MBRemastered\\assets\\skins\\uiskin.json"));
+				"assets\\skins\\uiskin.json"));
 
 		//region Reminders
 		//creating a textarea
@@ -68,23 +65,17 @@ public class Main extends ApplicationAdapter {
 		//region stats
 		//creating all the minipanels to hold the player stats
 		Minipanel strPanel, dexPanel, conPanel, intPanel, wisPanel, chaPanel;
-		strPanel = new Minipanel("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\minipanel2.png",
+		strPanel = new Minipanel("core\\pics\\minipanel2.png",
 				new Rectangle(120, 870, 50, 60));
-		dexPanel = new Minipanel("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\minipanel2.png",
+		dexPanel = new Minipanel("core\\pics\\minipanel2.png",
 				new Rectangle(180, 870, 50, 60));
-		conPanel = new Minipanel("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\minipanel2.png",
+		conPanel = new Minipanel("core\\pics\\minipanel2.png",
 				new Rectangle(240, 870, 50, 60));
-		intPanel = new Minipanel("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\minipanel2.png",
+		intPanel = new Minipanel("core\\pics\\minipanel2.png",
 				new Rectangle(300, 870, 50, 60));
-		wisPanel = new Minipanel("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\minipanel2.png",
+		wisPanel = new Minipanel("core\\pics\\minipanel2.png",
 				new Rectangle(360, 870, 50, 60));
-		chaPanel = new Minipanel("C:\\Users\\ak2000\\Documents\\Mine" +
-				"\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\minipanel2.png",
+		chaPanel = new Minipanel("core\\pics\\minipanel2.png",
 				new Rectangle(420, 870, 50, 60));
 		//creating the labels to put in the stats' minipanels
 		MBLabel strL = new MBLabel("STR", uiSkin);
@@ -149,7 +140,50 @@ public class Main extends ApplicationAdapter {
 		chaPanel.add(chaL);
 		//endregion
 
+		Minipanel listPanel = new Minipanel("core\\pics\\GenstatsPanel.png",
+				new Rectangle(120, 560, 470, 300));
+		genStatsPanel.add(listPanel);
 
+		//fixme temporary items...sizes set arbitrarily
+		Minipanel item1 = new Minipanel("core\\pics\\TopbarPanel.png",
+				new Rectangle(listPanel.position.x+5, (listPanel.position.height + listPanel.position.y - 50), listPanel.position.width-10, 40));
+		listPanel.add(item1);
+
+		MBLabel item1L = new MBLabel("Item 1", uiSkin);
+//		item1L.label.setSize(1000,50);
+		item1L.label.setPosition(item1.position.x+5, item1.position.y+5);
+//		item1L.setPosition(new Rectangle(item1.position.x+5, item1.position.y+5, 100,0));
+		MBTextField item1TF = new MBTextField("", uiSkin);
+		item1TF.textField.setPosition(200, item1.position.getY()+4);
+		item1TF.textField.setSize(340, item1TF.textField.getHeight());
+		MBButton button1 = new MBButton(uiSkin);
+		button1.button.setPosition((item1TF.textField.getX()+item1TF.textField.getWidth()+2), item1TF.textField.getY());
+		button1.button.setSize(40, 32);
+		button1.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				System.out.println("Button Pressed");
+			}
+		});
+
+		item1.add(item1L);
+		item1.add(item1TF);
+		item1.add(button1);
+
+		//fixme temporary items...sizes set arbitrarily
+		Minipanel item2 = new Minipanel("core\\pics\\TopbarPanel.png",
+				new Rectangle(listPanel.position.x+5, (listPanel.position.height + listPanel.position.y - 95), listPanel.position.width-10, 40));
+		listPanel.add(item2);
+
+		MBLabel item2L = new MBLabel("Item 2", uiSkin);
+//		item1L.label.setSize(1000,50);
+		item2L.label.setPosition(item2.position.x+5, item2.position.y+5);
+//		item1L.setPosition(new Rectangle(item1.position.x+5, item1.position.y+5, 100,0));
+		MBTextField item2TF = new MBTextField("", uiSkin);
+		item2TF.textField.setPosition(200, item2.position.getY()+4);
+		item2TF.textField.setSize(340, item2TF.textField.getHeight());
+		item2.add(item2L);
+		item2.add(item2TF);
 		//endregion
 
 

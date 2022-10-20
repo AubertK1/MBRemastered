@@ -3,7 +3,7 @@ package com.mygdx.project;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import java.awt.*;
+import com.badlogic.gdx.math.Rectangle;
 import java.util.ArrayList;
 
 /**
