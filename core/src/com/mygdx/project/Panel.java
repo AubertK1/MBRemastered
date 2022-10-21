@@ -28,6 +28,7 @@ public class Panel {
 //    int panelID;
 
     Panel parent = null;
+    int spot;
 
     public Panel(String fileLocation, Rectangle position){
         //sets the image of the panel
@@ -79,13 +80,6 @@ public class Panel {
     public float getSpot() {
         return -1;
     }
-    public void render (SpriteBatch batch) {
-        //screen size is 1920x1000 so adjust accordingly
-        batch.draw(texture, position.x, position.y, position.width, position.height);
-        for (int i = 0; i < minipanels.size(); i++) {
-            minipanels.get(i).render(batch);
-        }
-    }
     public Panel getMPBySpot(int spot){
         for (Panel minipanel: minipanels) {
             if(minipanel.getSpot() == spot){
@@ -93,6 +87,13 @@ public class Panel {
             }
         }
         return null;
+    }
+    public void render (SpriteBatch batch) {
+        //screen size is 1920x1000 so adjust accordingly
+        batch.draw(texture, position.x, position.y, position.width, position.height);
+        for (int i = 0; i < minipanels.size(); i++) {
+            minipanels.get(i).render(batch);
+        }
     }
     public void dispose(){
         for (int i = 0; i < minipanels.size(); i++) {

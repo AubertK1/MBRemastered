@@ -26,6 +26,7 @@ public class Main extends ApplicationAdapter {
 	Panel sidePanel, topPanel, genStatsPanel, reminderPanel, toolbarPanel, masterboardPanel;
 	MBTextArea reminderTextArea;
 
+
 	@Override
 	public void create () {
 		//setting up batch and stage
@@ -146,53 +147,20 @@ public class Main extends ApplicationAdapter {
 				new Rectangle(120, 560, 470, 300));
 		genStatsPanel.add(listPanel);
 
-		//fixme temporary items...sizes set arbitrarily
-		final Item item1 = new Item("core\\pics\\TopbarPanel.png", 0);
+		Item item1 = new Item("Item 1", 0);
 		listPanel.add(item1);
 
-		MBLabel item1L = new MBLabel("Item 1", uiSkin);
-//		item1L.setSize(1000,50);
-		item1L.setPosition(item1.getX()+5, item1.getY()+5);
-//		item1L.setPosition(new Rectangle(item1.getX()+5, item1.getY()+5, 100,0));
-		MBTextField item1TF = new MBTextField("", uiSkin);
-		item1TF.setPosition(200, item1.getY()+4);
-		item1TF.setSize(340, item1TF.getHeight());
-
-		final MBButton button1 = new MBButton(uiSkin);
-		button1.setPosition((item1TF.getX()+item1TF.getWidth()+2), item1TF.getY());
-		button1.setSize(40, 32);
-		button1.button.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				System.out.println("Button Pressed");
-				//fixme moves it then moves it back
-				((Item)button1.getItem().getPanel().getMPBySpot(button1.getItem().spot+1)).spot--;
-				button1.getItem().spot = button1.getItem().spot+1;
-
-			}
-		});
-
-		item1.add(item1L);
-		item1.add(item1TF);
-		item1.add(button1);
-
-		//fixme temporary items...sizes set arbitrarily
-		Item item2 = new Item("core\\pics\\TopbarPanel.png", 1);
+		Item item2 = new Item("Item 2", 1);
 		listPanel.add(item2);
 
-		MBLabel item2L = new MBLabel("Item 2", uiSkin);
-//		item1L.setSize(1000,50);
-		item2L.setPosition(item2.getX()+5, item2.getY()+5);
-//		item1L.setPosition(new Rectangle(item1.getX()+5, item1.getY()+5, 100,0));
-		MBTextField item2TF = new MBTextField("", uiSkin);
-		item2TF.setPosition(200, item2.getY()+4);
-		item2TF.setSize(340, item2TF.getHeight());
-
-		Item item3 = new Item("core\\pics\\TopbarPanel.png", 2);
+		Item item3 = new Item("Item 3", 2);
 		listPanel.add(item3);
-
-		item2.add(item2L);
-		item2.add(item2TF);
+		Item item4 = new Item("Item 4", 3);
+		listPanel.add(item4);
+		Item item5 = new Item("Item 5", 4);
+		listPanel.add(item5);
+		Item item6 = new Item("Item 6", 5);
+		listPanel.add(item6);
 
 		//endregion
 
