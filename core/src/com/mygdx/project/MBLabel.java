@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
+import com.badlogic.gdx.utils.Align;
 
 public class MBLabel extends MBComponent{
     //making the label
@@ -13,10 +14,8 @@ public class MBLabel extends MBComponent{
         //setting the label
         label = new Label(text, skin);
     }
-    public void setPosition(Rectangle position){
-        super.position = position;
-        label.setSize(position.width, position.height);
-        label.setPosition(position.x, position.y);
+    public void center(){
+        label.setAlignment(Align.center);
     }
 
     public Actor getComponent(){

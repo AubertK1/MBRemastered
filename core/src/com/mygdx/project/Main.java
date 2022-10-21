@@ -147,19 +147,19 @@ public class Main extends ApplicationAdapter {
 				new Rectangle(120, 560, 470, 300));
 		genStatsPanel.add(listPanel);
 
-		Item item1 = new Item("Item 1", 0);
+		Item item1 = new Item("Weapon 1", 0);
 		listPanel.add(item1);
 
-		Item item2 = new Item("Item 2", 1);
+		Item item2 = new Item("Weapon 2", 1);
 		listPanel.add(item2);
 
-		Item item3 = new Item("Item 3", 2);
+		Item item3 = new Item("Weapon 3", 2);
 		listPanel.add(item3);
-		Item item4 = new Item("Item 4", 3);
+		Item item4 = new Item("Weapon 4", 3);
 		listPanel.add(item4);
-		Item item5 = new Item("Item 5", 4);
+		Item item5 = new Item("Weapon 5", 4);
 		listPanel.add(item5);
-		Item item6 = new Item("Item 6", 5);
+		Item item6 = new Item("Weapon 6", 5);
 		listPanel.add(item6);
 
 		//endregion

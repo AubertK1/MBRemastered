@@ -60,6 +60,9 @@ public class Panel {
         //adds component to minipanel
         minipanel.add(component);
     }
+    public void remove(MBComponent component){
+        component.remove();
+    }
 
     public Panel getPanel() {
         return parent;
