@@ -31,7 +31,7 @@ public class Panel {
     int spot;
     static int totalID = 0;
     int ID = totalID;
-    boolean editMode = false;
+    boolean editMode;
 
     public Panel(String fileLocation, Rectangle position){
         //sets the image of the panel

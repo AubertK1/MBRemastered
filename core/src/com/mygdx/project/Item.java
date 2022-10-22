@@ -26,11 +26,13 @@ Skin uiSkin = new Skin (Gdx.files.internal(
 
     MBLabel nameLabel,diceLabel,modLabel,typeLabel;
 
-    boolean editMode = false;
+    boolean editMode;
     public Item(String text, int spot) {
         super("core\\pics\\TopbarPanel.png", new Rectangle(125, 790, 460, 40));
         this.spot=spot;
         totalID++;
+        editMode = false;
+
         nameLabel = new MBLabel(text, uiSkin);
 		nameLabel.setSize(119, nameLabel.getHeight());
         nameLabel.setPosition(this.getX()+5, this.getY()+5);
@@ -144,14 +146,14 @@ Skin uiSkin = new Skin (Gdx.files.internal(
                             (itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).components.get(4).getX() + itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).components.get(4).getWidth() + 2),
                             itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).components.get(5).getY());
 
+                    if(itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).getEditMode()){
+                        itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).saveEdit();
+                        itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).edit();
+                    }
 
                     if(editMode){
                         saveEdit();
                         edit();
-                    }
-                    if(itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).getEditMode()){
-                        itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).saveEdit();
-                        itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).edit();
                     }
                 }
             }
@@ -196,9 +198,9 @@ Skin uiSkin = new Skin (Gdx.files.internal(
                             (itemButtonUp.getItem().getPanel().getMPBySpot(currSpot).components.get(4).getX() + itemButtonUp.getItem().getPanel().getMPBySpot(currSpot).components.get(4).getWidth() + 2),
                             itemButtonUp.getItem().getPanel().getMPBySpot(currSpot).components.get(5).getY());
 
-                    if(itemButtonUp.getItem().getPanel().getMPBySpot(currSpot).editMode){
-                        itemButtonUp.getItem().getPanel().getMPBySpot(currSpot).saveEdit();
-                        itemButtonUp.getItem().getPanel().getMPBySpot(currSpot).edit();
+                    if(itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).getEditMode()){
+                        itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).saveEdit();
+                        itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).edit();
                     }
 
                     if(editMode){
@@ -270,6 +272,10 @@ Skin uiSkin = new Skin (Gdx.files.internal(
         remove(modLabelTF);
         remove(typeLabelTF);
     }
+    public boolean getEditMode(){
+        return editMode;
+    }
+
     public float getSpot() {
         return spot;
     }
