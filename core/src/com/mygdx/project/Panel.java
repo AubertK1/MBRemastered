@@ -29,6 +29,9 @@ public class Panel {
 
     Panel parent = null;
     int spot;
+    static int totalID = 0;
+    int ID = totalID;
+    boolean editMode = false;
 
     public Panel(String fileLocation, Rectangle position){
         //sets the image of the panel
@@ -90,6 +93,15 @@ public class Panel {
             }
         }
         return null;
+    }
+    public boolean getEditMode(){
+        return editMode;
+    }
+    public void edit(){
+
+    }
+    public void saveEdit(){
+
     }
     public void render (SpriteBatch batch) {
         //screen size is 1920x1000 so adjust accordingly

@@ -14,10 +14,10 @@ public class Item extends Minipanel{
 //    int spot;
 Skin uiSkin = new Skin (Gdx.files.internal(
         "assets\\skins\\uiskin.json"));
-String name;
-String hitDie;
-String mod;
-String type;
+    String name;
+    String hitDie;
+    String mod;
+    String type;
 
     MBTextField nameLabelTF;
     MBTextField diceLabelTF;
@@ -30,6 +30,7 @@ String type;
     public Item(String text, int spot) {
         super("core\\pics\\TopbarPanel.png", new Rectangle(125, 790, 460, 40));
         this.spot=spot;
+        totalID++;
         nameLabel = new MBLabel(text, uiSkin);
 		nameLabel.setSize(119, nameLabel.getHeight());
         nameLabel.setPosition(this.getX()+5, this.getY()+5);
@@ -92,6 +93,7 @@ String type;
         itemButtonEdit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("Edit Button " + itemButtonEdit.getItem().ID);
                 if(!editMode) {
                     edit();
                     editMode = true;
@@ -105,7 +107,7 @@ String type;
         itemButtonDown.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Button Pressed");
+                System.out.println("Down Button " + itemButtonDown.getItem().ID);
                 //initializing spots into set temporary variables
                 int currSpot = itemButtonDown.getItem().spot;
                 int nextSpot = itemButtonDown.getItem().spot + 1;
@@ -141,13 +143,23 @@ String type;
                     itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).components.get(7).setPosition(
                             (itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).components.get(4).getX() + itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).components.get(4).getWidth() + 2),
                             itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).components.get(5).getY());
+
+
+                    if(editMode){
+                        saveEdit();
+                        edit();
+                    }
+                    if(itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).getEditMode()){
+                        itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).saveEdit();
+                        itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).edit();
+                    }
                 }
             }
         });
         itemButtonUp.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Button Pressed");
+                System.out.println("Up Button "+itemButtonUp.getItem().ID);
                 //initializing spots into set temporary variables
                 int currSpot = itemButtonUp.getItem().spot;
                 int prevSpot = itemButtonUp.getItem().spot-1;
@@ -183,6 +195,16 @@ String type;
                     itemButtonUp.getItem().getPanel().getMPBySpot(currSpot).components.get(7).setPosition(
                             (itemButtonUp.getItem().getPanel().getMPBySpot(currSpot).components.get(4).getX() + itemButtonUp.getItem().getPanel().getMPBySpot(currSpot).components.get(4).getWidth() + 2),
                             itemButtonUp.getItem().getPanel().getMPBySpot(currSpot).components.get(5).getY());
+
+                    if(itemButtonUp.getItem().getPanel().getMPBySpot(currSpot).editMode){
+                        itemButtonUp.getItem().getPanel().getMPBySpot(currSpot).saveEdit();
+                        itemButtonUp.getItem().getPanel().getMPBySpot(currSpot).edit();
+                    }
+
+                    if(editMode){
+                        saveEdit();
+                        edit();
+                    }
                 }
             }
         });
@@ -221,6 +243,11 @@ String type;
         add(diceLabelTF);
         add(modLabelTF);
         add(typeLabelTF);
+
+        nameLabelTF.textField.setVisible(true);
+        diceLabelTF.textField.setVisible(true);
+        modLabelTF.textField.setVisible(true);
+        typeLabelTF.textField.setVisible(true);
     }
     public void saveEdit(){
         name = nameLabelTF.textField.getText();
@@ -232,6 +259,11 @@ String type;
         diceLabel.label.setText(hitDie);
         modLabel.label.setText(mod);
         typeLabel.label.setText(type);
+
+        nameLabelTF.textField.setVisible(false);
+        diceLabelTF.textField.setVisible(false);
+        modLabelTF.textField.setVisible(false);
+        typeLabelTF.textField.setVisible(false);
 
         remove(nameLabelTF);
         remove(diceLabelTF);
