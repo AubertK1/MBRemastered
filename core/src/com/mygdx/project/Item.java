@@ -29,12 +29,16 @@ Skin uiSkin = new Skin (Gdx.files.internal(
     boolean editMode;
     public Item(String text, int spot) {
         super("core\\pics\\TopbarPanel.png", new Rectangle(125, 790, 460, 40));
+        makeWeaponItem(text, spot);
+    }
+    public void makeWeaponItem(String text, int spot){
         this.spot=spot;
         totalID++;
+        nextAvaSpot++;
         editMode = false;
 
         nameLabel = new MBLabel(text, uiSkin);
-		nameLabel.setSize(119, nameLabel.getHeight());
+        nameLabel.setSize(119, nameLabel.getHeight());
         nameLabel.setPosition(this.getX()+5, this.getY()+5);
         name = nameLabel.label.getText().toString();
 //        nameLabel.center();
@@ -106,6 +110,16 @@ Skin uiSkin = new Skin (Gdx.files.internal(
                 }
             }
         });
+        itemButtonDel.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("Delete Button " + itemButtonDel.getItem().ID);
+
+                int currSpot = itemButtonDown.getItem().spot;
+                //fixme
+//                itemButtonDel.getItem().getPanel().getMPBySpot(currSpot).dispose();
+            }
+        });
         itemButtonDown.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -116,7 +130,7 @@ Skin uiSkin = new Skin (Gdx.files.internal(
                 //if it's not at the bottom...
                 if (nextSpot < (itemButtonDown.getItem().getPanel().minipanels.size())) {
                     //reassigns the spots to different variables
-                    itemButtonDown.getItem().spot = -1;
+                    itemButtonDown.getItem().spot = -100;
                     itemButtonDown.getItem().getPanel().getMPBySpot(nextSpot).spot = currSpot;
                     itemButtonDown.getItem().spot = nextSpot;
                     //repositioning the item to its new spot
@@ -145,15 +159,15 @@ Skin uiSkin = new Skin (Gdx.files.internal(
                     itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).components.get(7).setPosition(
                             (itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).components.get(4).getX() + itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).components.get(4).getWidth() + 2),
                             itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).components.get(5).getY());
-
-                    if(itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).getEditMode()){
-                        itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).saveEdit();
-                        itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).edit();
-                    }
-
+                    //moves the textfields with the item while in edit mode
                     if(editMode){
                         saveEdit();
                         edit();
+                    }
+                    //moves the textfields of the item being swapped while it is in edit mode
+                    if(itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).getEditMode()){
+                        itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).saveEdit();
+                        itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).edit();
                     }
                 }
             }
@@ -168,7 +182,7 @@ Skin uiSkin = new Skin (Gdx.files.internal(
                 //if it's not at the top...
                 if(prevSpot>=0) {
                     //reassigns the spots to different variables
-                    itemButtonUp.getItem().spot = 100;
+                    itemButtonUp.getItem().spot = -100;
                     itemButtonUp.getItem().getPanel().getMPBySpot(prevSpot).spot = currSpot;
                     itemButtonUp.getItem().spot = prevSpot;
                     //repositioning the item to its new spot
@@ -197,21 +211,19 @@ Skin uiSkin = new Skin (Gdx.files.internal(
                     itemButtonUp.getItem().getPanel().getMPBySpot(currSpot).components.get(7).setPosition(
                             (itemButtonUp.getItem().getPanel().getMPBySpot(currSpot).components.get(4).getX() + itemButtonUp.getItem().getPanel().getMPBySpot(currSpot).components.get(4).getWidth() + 2),
                             itemButtonUp.getItem().getPanel().getMPBySpot(currSpot).components.get(5).getY());
-
-                    if(itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).getEditMode()){
-                        itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).saveEdit();
-                        itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).edit();
-                    }
-
+                    //moves the textfields with the item while in edit mode
                     if(editMode){
                         saveEdit();
                         edit();
                     }
+                    //moves the textfields of the item being swapped while it is in edit mode
+                    if(itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).getEditMode()){
+                        itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).saveEdit();
+                        itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).edit();
+                    }
                 }
             }
         });
-
-
 
     }
     public void add(MBComponent component){
@@ -271,6 +283,46 @@ Skin uiSkin = new Skin (Gdx.files.internal(
         remove(diceLabelTF);
         remove(modLabelTF);
         remove(typeLabelTF);
+    }
+    public void shuffleItemsUp(){
+        nextAvaSpot--;
+        for( Panel item : getPanel().minipanels){
+            item.spot--;
+
+            item.components.get(0).setPosition(item.getX() + 5, item.getY() + 5);
+            item.components.get(1).setPosition(item.components.get(0).getX()+ item.components.get(0).getWidth()+2, item.getY() + 5);
+            item.components.get(2).setPosition(item.components.get(1).getX()+ item.components.get(1).getWidth()+2, item.getY() + 5);
+            item.components.get(3).setPosition(item.components.get(2).getX()+ item.components.get(2).getWidth()+2, item.getY() + 5);
+            item.components.get(4).setPosition(item.components.get(3).getX() + item.components.get(3).getWidth() + 10, item.components.get(3).getY()-1);
+            item.components.get(5).setPosition(item.components.get(3).getX() + item.components.get(3).getWidth() + 10, (item.components.get(4).getY()+item.components.get(4).getHeight()+2));
+            item.components.get(6).setPosition(item.components.get(5).getX() + item.components.get(5).getWidth() + 2, (item.components.get(4).getY()));
+            item.components.get(7).setPosition(item.components.get(5).getX() + item.components.get(5).getWidth() + 2, (item.components.get(5).getY()));
+
+            if(editMode){
+                saveEdit();
+                edit();
+            }
+        }
+    }
+    public void shuffleItemsDown(){
+        nextAvaSpot++;
+        for(Item item : getPanel().items){
+            item.spot++;
+
+            item.components.get(0).setPosition(item.getX() + 5, item.getY() + 5);
+            item.components.get(1).setPosition(item.components.get(0).getX()+ item.components.get(0).getWidth()+2, item.getY() + 5);
+            item.components.get(2).setPosition(item.components.get(1).getX()+ item.components.get(1).getWidth()+2, item.getY() + 5);
+            item.components.get(3).setPosition(item.components.get(2).getX()+ item.components.get(2).getWidth()+2, item.getY() + 5);
+            item.components.get(4).setPosition(item.components.get(3).getX() + item.components.get(3).getWidth() + 10, item.components.get(3).getY()-1);
+            item.components.get(5).setPosition(item.components.get(3).getX() + item.components.get(3).getWidth() + 10, (item.components.get(4).getY()+item.components.get(4).getHeight()+2));
+            item.components.get(6).setPosition(item.components.get(5).getX() + item.components.get(5).getWidth() + 2, (item.components.get(4).getY()));
+            item.components.get(7).setPosition(item.components.get(5).getX() + item.components.get(5).getWidth() + 2, (item.components.get(5).getY()));
+
+            if(item.editMode){
+                item.saveEdit();
+                item.edit();
+            }
+        }
     }
     public boolean getEditMode(){
         return editMode;

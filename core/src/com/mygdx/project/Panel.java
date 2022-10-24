@@ -24,12 +24,14 @@ public class Panel {
     ArrayList<MBComponent> components = new ArrayList<>();
 
     ArrayList<Panel> minipanels = new ArrayList<>();
+    ArrayList<Item> items = new ArrayList<>();
 //    static int panelNum = 0;
 //    int panelID;
-
+    Stage stage;
     Panel parent = null;
     int spot;
     static int totalID = 0;
+    static int nextAvaSpot = 0;
     int ID = totalID;
     boolean editMode;
 
@@ -55,6 +57,9 @@ public class Panel {
     public void add(Minipanel minipanel){
         //adds the component given to the panel
         minipanels.add(minipanel);
+        if(minipanel instanceof Item){
+            items.add((Item) minipanel);
+        }
         minipanel.parent = this;
 //        minipanel.setPanel(panelID);
 //        System.out.println(panelID);
@@ -98,21 +103,53 @@ public class Panel {
         return editMode;
     }
     public void edit(){
-
     }
     public void saveEdit(){
-
+    }
+    public void setStage(Stage stage){
+        this.stage = stage;
+    }
+    //fixme
+    public void delete(){
+        boolean unfocus = true;
+        MBComponent[] actors = Main.allComps.toArray(new MBComponent[0]);
+        for (int i = 0, n = Main.allComps.size(); i < n; i++) {
+            MBComponent child = actors[i];
+            if (unfocus) {
+                Stage stage = child.getStage();
+                if (stage != null) stage.unfocus(child);
+//                child.clear();
+            }
+            child.setStage(null);
+            child.setPanel(null);
+        }
+        Main.allComps.clear();
     }
     public void render (SpriteBatch batch) {
         //screen size is 1920x1000 so adjust accordingly
         batch.draw(texture, position.x, position.y, position.width, position.height);
         for (int i = 0; i < minipanels.size(); i++) {
-            minipanels.get(i).render(batch);
+            if(minipanels.get(i).spot < 0){
+                for (int c = 0; c < minipanels.get(i).components.size(); c++) {
+                    minipanels.get(i).components.get(c).setVisible(false);
+                }
+            }
+            else {
+                minipanels.get(i).render(batch);
+                for (int c = 0; c < minipanels.get(i).components.size(); c++) {
+                    minipanels.get(i).components.get(c).setVisible(true);
+                }
+            }
         }
     }
     public void dispose(){
-        for (int i = 0; i < minipanels.size(); i++) {
-            minipanels.get(i).dispose();
+        for (Panel minipanel : minipanels) {
+            minipanel.dispose();
+        }
+        //fixme
+        for (int i = 0; i < Main.allComps.size(); i++){
+            components.get(i).remove();
+            components.remove(i);
         }
         texture.dispose();
     }

@@ -15,18 +15,19 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 
 public class Main extends ApplicationAdapter {
 	//Used to draw the panels
-	SpriteBatch batch;
+	static SpriteBatch batch;
 	//used to draw the MBComponents
 	static Stage stage;
 	//individual panels
 	Panel sidePanel, topPanel, genStatsPanel, reminderPanel, toolbarPanel, masterboardPanel;
 	MBTextArea reminderTextArea;
 
-
+	static ArrayList<MBComponent> allComps = new ArrayList<>();
 	@Override
 	public void create () {
 		//setting up batch and stage
@@ -143,28 +144,66 @@ public class Main extends ApplicationAdapter {
 		chaPanel.add(chaL);
 		//endregion
 
-		Minipanel listPanel = new Minipanel("core\\pics\\GenstatsPanel.png",
+		final Minipanel listPanel = new Minipanel("core\\pics\\GenstatsPanel.png",
 				new Rectangle(120, 560, 470, 300));
 		genStatsPanel.add(listPanel);
 
-		Item item1 = new Item("Weapon 1", 0);
+        MBButton addButton = new MBButton(uiSkin);
+        addButton.setPosition(listPanel.getX()+5, listPanel.getY()+ listPanel.getHeight()-20);
+        addButton.setSize(40, 15);
+
+        final MBButton upButton = new MBButton(uiSkin);
+        upButton.setPosition(addButton.getX()+ addButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
+        upButton.setSize(40, 15);
+
+        final MBButton downButton = new MBButton(uiSkin);
+        downButton.setPosition(upButton.getX()+ upButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
+        downButton.setSize(40, 15);
+
+		listPanel.add(addButton);
+		listPanel.add(upButton);
+		listPanel.add(downButton);
+
+		final Item item1 = new Item("Weapon 1", 0);
 		listPanel.add(item1);
 
-		Item item2 = new Item("Weapon 2", 1);
-		listPanel.add(item2);
+		addButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Item item2 = new Item("Weapon "+ (Panel.totalID+1), Panel.nextAvaSpot);
+                listPanel.add(item2);
+            }
+        });
 
-		Item item3 = new Item("Weapon 3", 2);
-		listPanel.add(item3);
-		Item item4 = new Item("Weapon 4", 3);
-		listPanel.add(item4);
-		Item item5 = new Item("Weapon 5", 4);
-		listPanel.add(item5);
-		Item item6 = new Item("Weapon 6", 5);
-		listPanel.add(item6);
+		upButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+				for (int i = 0; i < item1.getPanel().minipanels.size(); i++) {
+					if(item1.getPanel().minipanels.get(i).spot > 0){
+						item1.shuffleItemsUp();
+						break;
+					}
+				}
+            }
+        });
+		downButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+				for (int i = 0; i < item1.getPanel().minipanels.size(); i++) {
+					if(item1.getPanel().minipanels.get(i).spot < 0){
+						item1.shuffleItemsDown();
+						break;
+					}
+				}
+            }
+        });
 
 		//endregion
 
 
+		for (MBComponent component : allComps) {
+			component.setStage(stage);
+		}
 		//honestly don't know what this does, but it's essential
 		Gdx.input.setInputProcessor(stage);
 	}
