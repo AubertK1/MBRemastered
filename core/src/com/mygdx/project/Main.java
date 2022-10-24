@@ -201,9 +201,11 @@ public class Main extends ApplicationAdapter {
 		//endregion
 
 
+/*
 		for (MBComponent component : allComps) {
 			component.setStage(stage);
 		}
+*/
 		//honestly don't know what this does, but it's essential
 		Gdx.input.setInputProcessor(stage);
 	}

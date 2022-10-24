@@ -4,9 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
-
-import java.util.ArrayList;
 
 /**
  * Essentially making my own version of JComponents where I can group the different components
@@ -20,6 +17,7 @@ public class MBComponent extends Actor {
     static int compTotal = 0;
     int compID = compTotal;
     Stage stage = Main.stage;
+    boolean supposedToBeVisible;
     public MBComponent() {
         compID++;
         Main.allComps.add(this);
@@ -45,6 +43,13 @@ public class MBComponent extends Actor {
     }
     public void setVisible(boolean visible){
         getComponent().setVisible(visible);
+        this.supposedToBeVisible = visible;
+    }
+    public void setSoftVisible(boolean visible){
+        getComponent().setVisible(visible);
+    }
+    public boolean getVisible(){
+        return getComponent().isVisible();
     }
 
     public float getX(){
@@ -66,13 +71,13 @@ public class MBComponent extends Actor {
     public Actor getComponent(){
         return null;
     }
-    public void setStage(Stage stage){
-        this.stage = stage;
-    }
-    public Stage getStage(){
-        return stage;
-    }
-    public void setPanel(Panel parent){
-        this.parent = parent;
-    }
+//    public void setStage(Stage stage){
+//        this.stage = stage;
+//    }
+//    public Stage getStage(){
+//        return stage;
+//    }
+//    public void setPanel(Panel parent){
+//        this.parent = parent;
+//    }
 }

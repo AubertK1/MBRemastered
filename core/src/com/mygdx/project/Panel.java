@@ -106,10 +106,13 @@ public class Panel {
     }
     public void saveEdit(){
     }
+/*
     public void setStage(Stage stage){
         this.stage = stage;
     }
+*/
     //fixme
+/*
     public void delete(){
         boolean unfocus = true;
         MBComponent[] actors = Main.allComps.toArray(new MBComponent[0]);
@@ -125,19 +128,27 @@ public class Panel {
         }
         Main.allComps.clear();
     }
+*/
     public void render (SpriteBatch batch) {
         //screen size is 1920x1000 so adjust accordingly
         batch.draw(texture, position.x, position.y, position.width, position.height);
         for (int i = 0; i < minipanels.size(); i++) {
             if(minipanels.get(i).spot < 0){
                 for (int c = 0; c < minipanels.get(i).components.size(); c++) {
-                    minipanels.get(i).components.get(c).setVisible(false);
+                    minipanels.get(i).components.get(c).setSoftVisible(false);
+                }
+            }
+            else if(minipanels.get(i).spot > 5){
+                for (int c = 0; c < minipanels.get(i).components.size(); c++) {
+                    minipanels.get(i).components.get(c).setSoftVisible(false);
                 }
             }
             else {
                 minipanels.get(i).render(batch);
                 for (int c = 0; c < minipanels.get(i).components.size(); c++) {
-                    minipanels.get(i).components.get(c).setVisible(true);
+                    if(minipanels.get(i).components.get(c).supposedToBeVisible) {
+                        minipanels.get(i).components.get(c).setVisible(true);
+                    }
                 }
             }
         }
@@ -147,10 +158,12 @@ public class Panel {
             minipanel.dispose();
         }
         //fixme
+/*
         for (int i = 0; i < Main.allComps.size(); i++){
             components.get(i).remove();
             components.remove(i);
         }
         texture.dispose();
+*/
     }
 }

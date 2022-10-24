@@ -161,7 +161,7 @@ Skin uiSkin = new Skin (Gdx.files.internal(
                             itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).components.get(5).getY());
                     //moves the textfields with the item while in edit mode
                     if(editMode){
-                        saveEdit();
+//                        saveEdit();
                         edit();
                     }
                     //moves the textfields of the item being swapped while it is in edit mode
