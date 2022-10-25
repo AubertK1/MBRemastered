@@ -147,7 +147,7 @@ public class Panel {
                 minipanels.get(i).render(batch);
                 for (int c = 0; c < minipanels.get(i).components.size(); c++) {
                     if(minipanels.get(i).components.get(c).supposedToBeVisible) {
-                        minipanels.get(i).components.get(c).setVisible(true);
+                        minipanels.get(i).components.get(c).setSoftVisible(true);
                     }
                 }
             }

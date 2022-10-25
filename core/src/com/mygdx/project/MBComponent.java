@@ -17,7 +17,7 @@ public class MBComponent extends Actor {
     static int compTotal = 0;
     int compID = compTotal;
     Stage stage = Main.stage;
-    boolean supposedToBeVisible;
+    boolean supposedToBeVisible = true;
     public MBComponent() {
         compID++;
         Main.allComps.add(this);

@@ -35,7 +35,6 @@ Skin uiSkin = new Skin (Gdx.files.internal(
         this.spot=spot;
         totalID++;
         nextAvaSpot++;
-        editMode = false;
 
         nameLabel = new MBLabel(text, uiSkin);
         nameLabel.setSize(119, nameLabel.getHeight());
@@ -60,6 +59,7 @@ Skin uiSkin = new Skin (Gdx.files.internal(
         typeLabel.setPosition(modLabel.getX()+ modLabel.getWidth()+2, nameLabel.getY());
         typeLabel.setSize(115, nameLabel.getHeight());
         type = typeLabel.label.getText().toString();
+
 
 //        typeLabel.center();
 //        MBTextField itemTextField = new MBTextField("", uiSkin);
@@ -95,6 +95,9 @@ Skin uiSkin = new Skin (Gdx.files.internal(
         add(itemButtonDel);
         add(itemButtonDown);
         add(itemButtonUp);
+
+        editMode = true;
+        edit();
 
         itemButtonEdit.addListener(new ChangeListener() {
             @Override
@@ -161,7 +164,7 @@ Skin uiSkin = new Skin (Gdx.files.internal(
                             itemButtonDown.getItem().getPanel().getMPBySpot(currSpot).components.get(5).getY());
                     //moves the textfields with the item while in edit mode
                     if(editMode){
-//                        saveEdit();
+                        saveEdit();
                         edit();
                     }
                     //moves the textfields of the item being swapped while it is in edit mode
@@ -274,10 +277,10 @@ Skin uiSkin = new Skin (Gdx.files.internal(
         modLabel.label.setText(mod);
         typeLabel.label.setText(type);
 
-        nameLabelTF.textField.setVisible(false);
-        diceLabelTF.textField.setVisible(false);
-        modLabelTF.textField.setVisible(false);
-        typeLabelTF.textField.setVisible(false);
+        nameLabelTF.setVisible(false);
+        diceLabelTF.setVisible(false);
+        modLabelTF.setVisible(false);
+        typeLabelTF.setVisible(false);
 
         remove(nameLabelTF);
         remove(diceLabelTF);
@@ -286,7 +289,7 @@ Skin uiSkin = new Skin (Gdx.files.internal(
     }
     public void shuffleItemsUp(){
         nextAvaSpot--;
-        for( Panel item : getPanel().minipanels){
+        for(Item item : getPanel().items){
             item.spot--;
 
             item.components.get(0).setPosition(item.getX() + 5, item.getY() + 5);
@@ -298,9 +301,9 @@ Skin uiSkin = new Skin (Gdx.files.internal(
             item.components.get(6).setPosition(item.components.get(5).getX() + item.components.get(5).getWidth() + 2, (item.components.get(4).getY()));
             item.components.get(7).setPosition(item.components.get(5).getX() + item.components.get(5).getWidth() + 2, (item.components.get(5).getY()));
 
-            if(editMode){
-                saveEdit();
-                edit();
+            if(item.editMode){
+                item.saveEdit();
+                item.edit();
             }
         }
     }
