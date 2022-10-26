@@ -22,17 +22,24 @@ public class Panel {
     Rectangle position;
     //stores the panel's components in this list
     ArrayList<MBComponent> components = new ArrayList<>();
-
+    //stores the panel's minipanels
     ArrayList<Panel> minipanels = new ArrayList<>();
+    //stores the panel's items
     ArrayList<Item> items = new ArrayList<>();
 //    static int panelNum = 0;
 //    int panelID;
     Stage stage;
+    //the parent panel of the minipanel
     Panel parent = null;
+    //spot of the items relative to the top of the panel
     int spot;
+    //the total amount of panels created. the same through all panels
     static int totalID = 0;
+    //next available spot
     static int nextAvaSpot = 0;
+    //ID of the panel
     int ID = totalID;
+    //if the panel is in edit mode
     boolean editMode;
 
     public Panel(String fileLocation, Rectangle position){
@@ -44,9 +51,14 @@ public class Panel {
 //        panelNum++;
     }
 
+    /**
+     * adds the component to its panel
+     * @param component the component you want to add
+     */
     public void add(MBComponent component){
-        //adds the component given to the panel
+        //adds the component given to this panel
         components.add(component);
+        //sets the component's parent to this panel
         component.parent = this;
         //makes sure the component is an actor
         if(component.getComponent() != null) {
@@ -54,43 +66,73 @@ public class Panel {
             Main.stage.addActor(component.getComponent());
         }
     }
+
+    /**
+     * adds the minipanel to its panel
+     * @param minipanel the minipanel you want to add
+     */
     public void add(Minipanel minipanel){
-        //adds the component given to the panel
+        //adds the minipanel given to this panel
         minipanels.add(minipanel);
+        //sets the minipanel's parent to this panel
+        minipanel.parent = this;
+        //if the minipanel is an item...
         if(minipanel instanceof Item){
+            //adds the minipanel/item to this panel's items list too
             items.add((Item) minipanel);
         }
-        minipanel.parent = this;
 //        minipanel.setPanel(panelID);
 //        System.out.println(panelID);
     }
-    public void add(Minipanel minipanel, MBComponent component){
-        //adds component to minipanel
-        minipanel.add(component);
-    }
+
+    /**
+     * removes the component
+     * @param component the component you want to remove
+     */
     public void remove(MBComponent component){
+        //removes component from the stage
         component.remove();
+        //removes component from the components list
+        components.remove(component);
     }
 
+    /**
+     * @return returns the panel this panel belongs to
+     */
     public Panel getPanel() {
         return parent;
     }
 
+    /**
+     * @return returns the x value of this panel
+     */
     public float getX(){
         return position.x;
     }
+    /**
+     * @return returns the y value of this panel
+     */
     public float getY(){
         return position.y;
     }
+    /**
+     * @return returns the width of this panel
+     */
     public float getWidth(){
         return position.width;
     }
+    /**
+     * @return returns the height of this panel
+     */
     public float getHeight(){
         return position.height;
     }
-    public float getSpot() {
-        return -1;
-    }
+
+    /**
+     * loops through the minipanels list to find a minipanel whose spot value matches the given spot
+     * @param spot the panel's spot
+     * @return returns the minipanel
+     */
     public Panel getMPBySpot(int spot){
         for (Panel minipanel: minipanels) {
             if(minipanel.getSpot() == spot){
@@ -99,54 +141,59 @@ public class Panel {
         }
         return null;
     }
+
+    /**
+     * @return returns if the panel is in edit mode
+     */
     public boolean getEditMode(){
         return editMode;
+    }
+
+    /**
+     * future potentially needed functions
+     */
+    public float getSpot() {
+        return -1;
     }
     public void edit(){
     }
     public void saveEdit(){
     }
-/*
-    public void setStage(Stage stage){
-        this.stage = stage;
-    }
-*/
-    //fixme
-/*
-    public void delete(){
-        boolean unfocus = true;
-        MBComponent[] actors = Main.allComps.toArray(new MBComponent[0]);
-        for (int i = 0, n = Main.allComps.size(); i < n; i++) {
-            MBComponent child = actors[i];
-            if (unfocus) {
-                Stage stage = child.getStage();
-                if (stage != null) stage.unfocus(child);
-//                child.clear();
-            }
-            child.setStage(null);
-            child.setPanel(null);
-        }
-        Main.allComps.clear();
-    }
-*/
+
+    /**
+     * renders all the panels
+     * @param batch the batch...
+     */
     public void render (SpriteBatch batch) {
         //screen size is 1920x1000 so adjust accordingly
+        //draws this panel
         batch.draw(texture, position.x, position.y, position.width, position.height);
+        //loops through this panel's list of minipanels
         for (int i = 0; i < minipanels.size(); i++) {
+            //if the minipanel's spot value is less than 0 then it doesn't render it (because it doesn't call render)
             if(minipanels.get(i).spot < 0){
+                //loops through the minipanel's list of components
                 for (int c = 0; c < minipanels.get(i).components.size(); c++) {
+                    //sets the soft visibility of the component to false
                     minipanels.get(i).components.get(c).setSoftVisible(false);
                 }
             }
+            //if the minipanel's spot value is more than 5 then it doesn't render it (may change depending on the group of items)
             else if(minipanels.get(i).spot > 5){
+                //loops through the minipanel's list of components
                 for (int c = 0; c < minipanels.get(i).components.size(); c++) {
+                    //sets the soft visibility of the component to false
                     minipanels.get(i).components.get(c).setSoftVisible(false);
                 }
             }
+            //renders everything else and sets the soft visibility to true
             else {
                 minipanels.get(i).render(batch);
+                //loops through the minipanel's list of components
                 for (int c = 0; c < minipanels.get(i).components.size(); c++) {
+                    //if the component is supposed to be visible...
                     if(minipanels.get(i).components.get(c).supposedToBeVisible) {
+                        //sets the soft visibility of the component to true
                         minipanels.get(i).components.get(c).setSoftVisible(true);
                     }
                 }

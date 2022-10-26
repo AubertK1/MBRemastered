@@ -23,10 +23,9 @@ public class Main extends ApplicationAdapter {
 	static SpriteBatch batch;
 	//used to draw the MBComponents
 	static Stage stage;
-	//individual panels
+	//creating main panels
 	Panel sidePanel, topPanel, genStatsPanel, reminderPanel, toolbarPanel, masterboardPanel;
-	MBTextArea reminderTextArea;
-
+	//list with all the MBComponents
 	static ArrayList<MBComponent> allComps = new ArrayList<>();
 	@Override
 	public void create () {
@@ -52,6 +51,7 @@ public class Main extends ApplicationAdapter {
 
 		//region Reminders
 		//creating a textarea
+		MBTextArea reminderTextArea;
 		reminderTextArea = new MBTextArea("", uiSkin);
 		reminderTextArea.textArea.setSize(760,330);
 		reminderTextArea.textArea.setPosition(120,160);
@@ -67,7 +67,7 @@ public class Main extends ApplicationAdapter {
 
 		//region General Stats
 		//region stats
-		//creating all the minipanels to hold the player stats
+		//creating all the stats panels to hold the player stats
 		Minipanel strPanel, dexPanel, conPanel, intPanel, wisPanel, chaPanel;
 		strPanel = new Minipanel("core\\pics\\minipanel2.png",
 				new Rectangle(120, 870, 50, 60));
@@ -121,8 +121,7 @@ public class Main extends ApplicationAdapter {
 		chaTF.setSize(44, 35);
 		chaTF.setPosition(423, 873);
 		chaTF.textField.setAlignment(Align.center);
-
-		//adding minipanels to the panel
+		//adding stats panels to the panel
 		genStatsPanel.add(strPanel);
 		genStatsPanel.add(dexPanel);
 		genStatsPanel.add(conPanel);
@@ -143,11 +142,11 @@ public class Main extends ApplicationAdapter {
 		chaPanel.add(chaTF);
 		chaPanel.add(chaL);
 		//endregion
-
+		//creating a list panel to hold all the items and adding it to the genstats panel
 		final Minipanel listPanel = new Minipanel("core\\pics\\GenstatsPanel.png",
 				new Rectangle(120, 560, 470, 300));
 		genStatsPanel.add(listPanel);
-
+		//creating buttons and setting their sizes
         MBButton addButton = new MBButton(uiSkin);
         addButton.setPosition(listPanel.getX()+5, listPanel.getY()+ listPanel.getHeight()-20);
         addButton.setSize(40, 15);
@@ -159,22 +158,23 @@ public class Main extends ApplicationAdapter {
         final MBButton downButton = new MBButton(uiSkin);
         downButton.setPosition(upButton.getX()+ upButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
         downButton.setSize(40, 15);
-
+		//adding item buttons to the list panel
 		listPanel.add(addButton);
 		listPanel.add(upButton);
 		listPanel.add(downButton);
-
+		//making the first item and assigning it to the first spot
 		final Item item1 = new Item("Weapon 1", 0);
 		listPanel.add(item1);
-
+		//adds a new item
 		addButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+				//
                 Item item2 = new Item("Weapon "+ (Panel.totalID+1), Panel.nextAvaSpot);
                 listPanel.add(item2);
             }
         });
-
+		//shifts all the items up
 		upButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -186,6 +186,7 @@ public class Main extends ApplicationAdapter {
 				}
             }
         });
+		//shifts all the buttons down
 		downButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -197,7 +198,6 @@ public class Main extends ApplicationAdapter {
 				}
             }
         });
-
 		//endregion
 
 
