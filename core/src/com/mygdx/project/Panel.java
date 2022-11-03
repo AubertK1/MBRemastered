@@ -2,13 +2,10 @@ package com.mygdx.project;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -85,12 +82,22 @@ public class Panel {
 //        minipanel.setPanel(panelID);
 //        System.out.println(panelID);
     }
-
     /**
-     * removes the component
+     * removes the component from the lists but it can be added back whenever
      * @param component the component you want to remove
      */
-    public void remove(MBComponent component){
+    public void remove(MBComponent component) {
+        //removes component from the stage (don't think this does anything tbh)
+        component.remove();
+        //removes component from the components list
+        components.remove(component);
+    }
+
+    /**
+     * permanently removes component from everything
+     * @param component
+     */
+    public void delete(MBComponent component){
         //removes component from the stage
         Main.stage.getActors().get(component.getCompID()).addAction(Actions.removeActor());
         //removes component from the all components list
@@ -100,10 +107,20 @@ public class Panel {
         //reassigns the remaining components' IDs
         resetCompIDs();
     }
+
+    /**
+     * removes panel from lists making it unable to be rendered
+     * @param panel the panel you want to remove
+     */
     public void remove(Panel panel){
         //removes component from the components list
         minipanels.remove(panel);
+        if(panel instanceof Item) items.remove(panel);
     }
+
+    /**
+     * reassigns the compID variable for all the components
+     */
     public void resetCompIDs(){
         for (int i = 0; i < Main.allComps.size(); i++) {
             Main.allComps.get(i).compID = i;

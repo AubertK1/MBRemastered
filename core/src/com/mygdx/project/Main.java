@@ -178,9 +178,9 @@ public class Main extends ApplicationAdapter {
 		upButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-				for (int i = 0; i < item1.getPanel().minipanels.size(); i++) {
-					if(item1.getPanel().minipanels.get(i).spot > 0){
-						item1.shuffleItemsUp();
+				for (int i = 0; i < listPanel.items.get(0).getPanel().minipanels.size(); i++) {
+					if(listPanel.items.get(0).getPanel().minipanels.get(i).spot > 0){
+						listPanel.items.get(0).shuffleItemsUp();
 						break;
 					}
 				}

@@ -156,11 +156,13 @@ public class Item extends Minipanel{
                 System.out.println("Delete Button " + (itemButtonDel.getItem().ID+1));
 
                 int currSpot = itemButtonDown.getItem().spot;
+                shuffleItemsUp(currSpot);
 
                 for (int i = itemButtonDel.getItem().components.size()-1; i >= 0; i--) {
-                    itemButtonDel.getItem().remove(itemButtonDel.getItem().components.get(i));
+                    itemButtonDel.getItem().delete(itemButtonDel.getItem().components.get(i));
                 }
                 itemButtonDel.getItem().getPanel().remove(itemButtonDel.getItem());
+
             }
         });
         //swaps this item with the item under it
@@ -395,6 +397,35 @@ public class Item extends Minipanel{
             if(item.editMode){
                 item.saveEdit();
                 item.edit();
+            }
+        }
+    }
+
+    /**
+     * shuffles all the items up starting from a spot
+     * @param startSpot the lowest spot you don't want to raise
+     */
+    public void shuffleItemsUp(int startSpot){
+        //reduces the next available spot value by one so that new items get added under the lowest item always
+        nextAvaSpot--;
+        //loops through all the items
+        for(Item item : getPanel().items) {
+            if (item.spot > startSpot) {
+                item.spot--;
+                //replaces the item's components
+                item.components.get(0).setPosition(item.getX() + 5, item.getY() + 5);
+                item.components.get(1).setPosition(item.components.get(0).getX() + item.components.get(0).getWidth() + 2, item.getY() + 5);
+                item.components.get(2).setPosition(item.components.get(1).getX() + item.components.get(1).getWidth() + 2, item.getY() + 5);
+                item.components.get(3).setPosition(item.components.get(2).getX() + item.components.get(2).getWidth() + 2, item.getY() + 5);
+                item.components.get(4).setPosition(item.components.get(3).getX() + item.components.get(3).getWidth() + 10, item.components.get(3).getY() - 1);
+                item.components.get(5).setPosition(item.components.get(3).getX() + item.components.get(3).getWidth() + 10, (item.components.get(4).getY() + item.components.get(4).getHeight() + 2));
+                item.components.get(6).setPosition(item.components.get(5).getX() + item.components.get(5).getWidth() + 2, (item.components.get(4).getY()));
+                item.components.get(7).setPosition(item.components.get(5).getX() + item.components.get(5).getWidth() + 2, (item.components.get(5).getY()));
+                //moves the textfields with the item if in edit mode
+                if (item.editMode) {
+                    item.saveEdit();
+                    item.edit();
+                }
             }
         }
     }
