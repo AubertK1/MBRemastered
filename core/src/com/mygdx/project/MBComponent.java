@@ -14,18 +14,19 @@ public class MBComponent extends Actor {
     Panel parent;
     Item item;
     Texture texture;
-    static int compTotal = 0;
-    int compID = compTotal;
+    //setting the component's ID in the list
+    int compID = Main.allComps.size();
     Stage stage = Main.stage;
     //whether this component is supposed to be visible if it were allowed to be (ie the Item textfields when not in edit mode are allowed to be visible but not supposed to be visible)
     boolean supposedToBeVisible = true;
     public MBComponent() {
-        //increasing the total number of items by one (this item's ID was already set when it was created (code in panel cla
-        compTotal++;
         //adds this component to the list of all components
         Main.allComps.add(this);
     }
 
+    public int getCompID(){
+        return compID;
+    }
     public Panel getPanel() {
         return parent;
     }

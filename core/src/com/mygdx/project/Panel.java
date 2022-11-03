@@ -6,6 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -28,7 +30,6 @@ public class Panel {
     ArrayList<Item> items = new ArrayList<>();
 //    static int panelNum = 0;
 //    int panelID;
-    Stage stage;
     //the parent panel of the minipanel
     Panel parent = null;
     //spot of the items relative to the top of the panel
@@ -91,9 +92,22 @@ public class Panel {
      */
     public void remove(MBComponent component){
         //removes component from the stage
-        component.remove();
-        //removes component from the components list
+        Main.stage.getActors().get(component.getCompID()).addAction(Actions.removeActor());
+        //removes component from the all components list
+        Main.allComps.remove(component);
+        //removes component from the item's components list
         components.remove(component);
+        //reassigns the remaining components' IDs
+        resetCompIDs();
+    }
+    public void remove(Panel panel){
+        //removes component from the components list
+        minipanels.remove(panel);
+    }
+    public void resetCompIDs(){
+        for (int i = 0; i < Main.allComps.size(); i++) {
+            Main.allComps.get(i).compID = i;
+        }
     }
 
     /**

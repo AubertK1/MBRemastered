@@ -156,8 +156,11 @@ public class Item extends Minipanel{
                 System.out.println("Delete Button " + (itemButtonDel.getItem().ID+1));
 
                 int currSpot = itemButtonDown.getItem().spot;
-                //fixme
-//                itemButtonDel.getItem().getPanel().getMPBySpot(currSpot).dispose();
+
+                for (int i = itemButtonDel.getItem().components.size()-1; i >= 0; i--) {
+                    itemButtonDel.getItem().remove(itemButtonDel.getItem().components.get(i));
+                }
+                itemButtonDel.getItem().getPanel().remove(itemButtonDel.getItem());
             }
         });
         //swaps this item with the item under it
