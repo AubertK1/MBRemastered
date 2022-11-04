@@ -34,7 +34,7 @@ public class Panel {
     //the total amount of panels created. the same through all panels
     static int totalID = 0;
     //next available spot
-    static int nextAvaSpot = 0;
+    static int nextAvaWSpot = 0;
     //ID of the panel
     int ID = totalID;
     //if the panel is in edit mode

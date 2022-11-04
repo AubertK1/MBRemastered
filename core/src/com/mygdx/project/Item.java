@@ -21,10 +21,10 @@ public class Item extends Minipanel{
     //labels for the item (if weapon)
     MBLabel nameLabel,diceLabel,modLabel,typeLabel;
 
-    public Item(String text, int spot) {
+    public Item(int itemType, int spot) {
         super("core\\pics\\TopbarPanel.png", new Rectangle(125, 790, 460, 40));
         //if this item is a weapon it sets it up as a weapon item
-        makeWeaponItem(text, spot);
+        makeWeaponItem(itemType, spot);
     }
 
     /**
@@ -32,15 +32,15 @@ public class Item extends Minipanel{
      * @param text name label text
      * @param spot its initial spot
      */
-    public void makeWeaponItem(String text, int spot){
+    public void makeWeaponItem(int itemType, int spot){
         //assigning this item's spot to the given spot
         this.spot=spot;
         //increasing the total number of items by one (this item's ID was already set when it was created (code in panel class))
         totalID++;
         //increasing the next available spot by one
-        nextAvaSpot++;
+        nextAvaWSpot++;
         //setting the labels' texts and positions and sizes
-        nameLabel = new MBLabel(text, uiSkin);
+        nameLabel = new MBLabel("Weapon "+ (Panel.totalID+1), uiSkin);
         nameLabel.setPosition(this.getX()+5, this.getY()+5);
         nameLabel.setSize(119, nameLabel.getHeight());
         name = nameLabel.label.getText().toString();
@@ -380,7 +380,7 @@ public class Item extends Minipanel{
      */
     public void shuffleItemsUp(){
         //reduces the next available spot value by one so that new items get added under the lowest item always
-        nextAvaSpot--;
+        nextAvaWSpot--;
         //loops through all the items
         for(Item item : getPanel().items){
             item.spot--;
@@ -407,7 +407,7 @@ public class Item extends Minipanel{
      */
     public void shuffleItemsUp(int startSpot){
         //reduces the next available spot value by one so that new items get added under the lowest item always
-        nextAvaSpot--;
+        nextAvaWSpot--;
         //loops through all the items
         for(Item item : getPanel().items) {
             if (item.spot > startSpot) {
@@ -435,7 +435,7 @@ public class Item extends Minipanel{
      */
     public void shuffleItemsDown(){
         //increases the next available spot value by one so that new items get added under the lowest item always
-        nextAvaSpot++;
+        nextAvaWSpot++;
         //loops through all the items
         for(Item item : getPanel().items){
             item.spot++;
