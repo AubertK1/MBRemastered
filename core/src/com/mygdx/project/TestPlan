@@ -1,0 +1,14 @@
+Start up test case steps:
+
+//Testing textfield saving
+Type sword into one item and press enter
+
+//Testing item organization
+Add 3 items
+Swap two items
+Swap bottom item down
+Shift items up
+Swap bottom item down
+Delete one item
+Swap two items
+Shift items up then down

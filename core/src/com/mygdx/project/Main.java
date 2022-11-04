@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
@@ -14,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import com.badlogic.gdx.math.Rectangle;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 
@@ -27,6 +25,8 @@ public class Main extends ApplicationAdapter {
 	Panel sidePanel, topPanel, genStatsPanel, reminderPanel, toolbarPanel, masterboardPanel;
 	//list with all the MBComponents
 	static ArrayList<MBComponent> allComps = new ArrayList<>();
+
+	static int itemTab = 1;
 	@Override
 	public void create () {
 		//setting up batch and stage
@@ -146,31 +146,70 @@ public class Main extends ApplicationAdapter {
 		final Minipanel listPanel = new Minipanel("core\\pics\\GenstatsPanel.png",
 				new Rectangle(120, 560, 470, 300));
 		genStatsPanel.add(listPanel);
-		//creating buttons and setting their sizes
-        MBButton addButton = new MBButton(uiSkin);
-        addButton.setPosition(listPanel.getX()+5, listPanel.getY()+ listPanel.getHeight()-20);
-        addButton.setSize(40, 15);
 
-        final MBButton upButton = new MBButton(uiSkin);
-        upButton.setPosition(addButton.getX()+ addButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
-        upButton.setSize(40, 15);
+		//creating item tab buttons
+		final MBButton weaponsButton = new MBButton(uiSkin);
+		weaponsButton.setPosition(listPanel.getX()+5, listPanel.getY()+ listPanel.getHeight()-20);
+		weaponsButton.setSize(80, 15);
 
-        final MBButton downButton = new MBButton(uiSkin);
-        downButton.setPosition(upButton.getX()+ upButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
-        downButton.setSize(40, 15);
+		final MBButton spellsButton = new MBButton(uiSkin);
+		spellsButton.setPosition(weaponsButton.getX()+ weaponsButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
+		spellsButton.setSize(80, 15);
+
+		listPanel.add(weaponsButton);
+		listPanel.add(spellsButton);
+
+		weaponsButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if(itemTab == 1){
+
+					itemTab = 2;
+				}
+			}
+		});
+
+		spellsButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if(itemTab == 2){
+
+					itemTab = 1;
+				}
+			}
+		});
+
+		//creating item shift buttons and setting their sizes
+		MBButton addButton = new MBButton(uiSkin);
+		//XPosition = (ListPanelXPos + ListPanelWidth - GapBetweenBorderAndButton - DownButtonWidth - GapBetweenButtons - UpButtonWidth - GapBetweenButtons - AddButtonWidth)
+		//which ends up being XPosition = (120 + 470 - 5 - 40 - 2 - 40 - 2 - 40) = 461
+		addButton.setPosition(461, listPanel.getY()+ listPanel.getHeight()-20);
+		addButton.setSize(40, 15);
+
+		final MBButton upButton = new MBButton(uiSkin);
+		upButton.setPosition(addButton.getX()+ addButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
+		upButton.setSize(40, 15);
+
+		final MBButton downButton = new MBButton(uiSkin);
+		downButton.setPosition(upButton.getX()+ upButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
+		downButton.setSize(40, 15);
 		//adding item buttons to the list panel
 		listPanel.add(addButton);
 		listPanel.add(upButton);
 		listPanel.add(downButton);
-		//making the first item and assigning it to the first spot
-		final Item item1 = new Item("Weapon 1", 0);
+		//making the first WEAPON item and assigning it to the first spot
+		final Item item1 = new Item(1, 0);
+		//making the first SPELL item and assigning it to the first spot
+		final Item itemS1 = new Item(2, 0);
 		listPanel.add(item1);
+		listPanel.add(itemS1);
+
 		//adds a new item
 		addButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 				//
-                Item item2 = new Item("Weapon "+ (Panel.totalID+1), Panel.nextAvaSpot);
+                Item item2 = new Item(1, Panel.nextAvaWSpot);
                 listPanel.add(item2);
             }
         });
@@ -178,9 +217,9 @@ public class Main extends ApplicationAdapter {
 		upButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-				for (int i = 0; i < listPanel.items.get(0).getPanel().minipanels.size(); i++) {
-					if(listPanel.items.get(0).getPanel().minipanels.get(i).spot > 0){
-						listPanel.items.get(0).shuffleItemsUp();
+				for (int i = 0; i < listPanel.wItems.get(0).getPanel().minipanels.size(); i++) {
+					if(listPanel.wItems.get(0).getPanel().minipanels.get(i).wSpot > 0){
+						listPanel.wItems.get(0).shuffleItemsUp();
 						break;
 					}
 				}
@@ -191,7 +230,7 @@ public class Main extends ApplicationAdapter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 				for (int i = 0; i < item1.getPanel().minipanels.size(); i++) {
-					if(item1.getPanel().minipanels.get(i).spot < 0){
+					if(item1.getPanel().minipanels.get(i).wSpot < 0){
 						item1.shuffleItemsDown();
 						break;
 					}

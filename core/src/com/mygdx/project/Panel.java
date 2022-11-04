@@ -24,19 +24,24 @@ public class Panel {
     //stores the panel's minipanels
     ArrayList<Panel> minipanels = new ArrayList<>();
     //stores the panel's items
-    ArrayList<Item> items = new ArrayList<>();
+    ArrayList<Item> wItems = new ArrayList<>();
+    ArrayList<Item> sItems = new ArrayList<>();
 //    static int panelNum = 0;
 //    int panelID;
     //the parent panel of the minipanel
     Panel parent = null;
     //spot of the items relative to the top of the panel
-    int spot;
+    int wSpot;
+    int sSpot;
     //the total amount of panels created. the same through all panels
-    static int totalID = 0;
+    static int totalWID = 0;
+    static int totalSID = 0;
     //next available spot
-    static int nextAvaSpot = 0;
+    static int nextAvaWSpot = 0;
+    static int nextAvaSSpot = 0;
     //ID of the panel
-    int ID = totalID;
+    int wID = totalWID;
+    int sID = totalSID;
     //if the panel is in edit mode
     boolean editMode;
 
@@ -76,11 +81,14 @@ public class Panel {
         minipanel.parent = this;
         //if the minipanel is an item...
         if(minipanel instanceof Item){
-            //adds the minipanel/item to this panel's items list too
-            items.add((Item) minipanel);
+            //adds the item to this panel's associated items list too
+            if(((Item) minipanel).getItemType() == 1) {
+                wItems.add((Item) minipanel);
+            }
+            else if (((Item) minipanel).getItemType() == 2){
+                sItems.add((Item) minipanel);
+            }
         }
-//        minipanel.setPanel(panelID);
-//        System.out.println(panelID);
     }
     /**
      * removes the component from the lists but it can be added back whenever
@@ -115,7 +123,7 @@ public class Panel {
     public void remove(Panel panel){
         //removes component from the components list
         minipanels.remove(panel);
-        if(panel instanceof Item) items.remove(panel);
+        if(panel instanceof Item) wItems.remove(panel);
     }
 
     /**
@@ -172,6 +180,23 @@ public class Panel {
         }
         return null;
     }
+    public Item getItemBySpot(int spot){
+        if(Main.itemTab == 1) {
+            for (Item minipanel : wItems) {
+                if (minipanel.getSpot() == spot) {
+                    return minipanel;
+                }
+            }
+        }
+        else if(Main.itemTab == 2) {
+            for (Item minipanel : sItems) {
+                if (minipanel.getSpot() == spot) {
+                    return minipanel;
+                }
+            }
+        }
+        return null;
+    }
 
     /**
      * @return returns if the panel is in edit mode
@@ -202,7 +227,7 @@ public class Panel {
         //loops through this panel's list of minipanels
         for (int i = 0; i < minipanels.size(); i++) {
             //if the minipanel's spot value is less than 0 then it doesn't render it (because it doesn't call render)
-            if(minipanels.get(i).spot < 0){
+            if(minipanels.get(i).wSpot < 0){
                 //loops through the minipanel's list of components
                 for (int c = 0; c < minipanels.get(i).components.size(); c++) {
                     //sets the soft visibility of the component to false
@@ -210,7 +235,7 @@ public class Panel {
                 }
             }
             //if the minipanel's spot value is more than 5 then it doesn't render it (may change depending on the group of items)
-            else if(minipanels.get(i).spot > 5){
+            else if(minipanels.get(i).wSpot > 5){
                 //loops through the minipanel's list of components
                 for (int c = 0; c < minipanels.get(i).components.size(); c++) {
                     //sets the soft visibility of the component to false
