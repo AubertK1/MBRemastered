@@ -316,7 +316,7 @@ public class Item extends Minipanel{
         //increasing the next available spot by one
         nextAvaSSpot++;
         //setting the labels' texts and positions and sizes
-        nameLabel = new MBLabel("Weapon "+ (Panel.totalWID), uiSkin);
+        nameLabel = new MBLabel("Spell  "+ (Panel.totalSID), uiSkin);
         nameLabel.setPosition(this.getX()+5, this.getY()+5);
         nameLabel.setSize(119, nameLabel.getHeight());
         name = nameLabel.label.getText().toString();
@@ -429,7 +429,7 @@ public class Item extends Minipanel{
         itemButtonDel.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Delete Button " + (itemButtonDel.getItem().wID +1));
+                System.out.println("Delete Button " + (itemButtonDel.getItem().sID +1));
 
                 int currSpot = itemButtonDown.getItem().sSpot;
                 shuffleItemsUp(currSpot);
@@ -446,7 +446,7 @@ public class Item extends Minipanel{
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //filler just for my entertainment
-                System.out.println("Down Button " + (itemButtonDown.getItem().wID +1));
+                System.out.println("Down Button " + (itemButtonDown.getItem().sID +1));
                 //initializing spots into set temporary variables
                 int currSpot = itemButtonDown.getItem().sSpot;
                 int nextSpot = itemButtonDown.getItem().sSpot + 1;
@@ -523,7 +523,7 @@ public class Item extends Minipanel{
                     //assigns this item's spot to an arbitrary number so that the two items are never at the same spot
                     itemButtonUp.getItem().sSpot = -100;
                     itemButtonUp.getItem().getPanel().getItemBySpot(prevSpot).sSpot = currSpot;
-                    itemButtonUp.getItem().wSpot = prevSpot;
+                    itemButtonUp.getItem().sSpot = prevSpot;
                     //making it easier to read
                     ArrayList<MBComponent> thisItemComponents = itemButtonUp.getItem().components;
                     //repositioning this item to its new spot
@@ -656,10 +656,12 @@ public class Item extends Minipanel{
      */
     public void shuffleItemsUp(){
         //reduces the next available spot value by one so that new items get added under the lowest item always
-        nextAvaWSpot--;
+        if(getItemType() == 1) nextAvaWSpot--;
+        else if(getItemType() == 2) nextAvaSSpot--;
         //loops through all the items
-        for(Item item : getPanel().wItems){
-            item.wSpot--;
+        for(Item item : getList()){
+            if(item.getItemType() == 1) item.wSpot--;
+            else if(item.getItemType() == 2) item.sSpot--;
             //replaces the item's components
             item.components.get(0).setPosition(item.getX() + 5, item.getY() + 5);
             item.components.get(1).setPosition(item.components.get(0).getX()+ item.components.get(0).getWidth()+2, item.getY() + 5);
@@ -674,9 +676,19 @@ public class Item extends Minipanel{
                 item.saveEdit();
                 item.edit();
             }
+            if(item.getSpot() < 0 || item.getSpot() > 5){
+                item.setSoftVisible(false);
+            }
+            else if(item.getSpot() >= 0 && item.getSpot() <= 5){
+                item.setSoftVisible(true);
+            }
         }
     }
-
+    public ArrayList<Item> getList(){
+        if(Main.itemTab == 1) return getPanel().wItems;
+        else if(Main.itemTab == 2) return getPanel().sItems;
+        return null;
+    }
     /**
      * shuffles all the items up starting from a spot
      * @param startSpot the lowest spot you don't want to raise
@@ -686,8 +698,8 @@ public class Item extends Minipanel{
         if(getItemType() == 1) nextAvaWSpot--;
         else if(getItemType() == 2) nextAvaSSpot--;
         //loops through all the items
-        for(Item item : getPanel().wItems) {
-            if (item.wSpot > startSpot) {
+        for(Item item : getList()) {
+            if (item.getSpot() > startSpot) {
                 if(item.getItemType() == 1) item.wSpot--;
                 else if(item.getItemType() == 2) item.sSpot--;
                 //replaces the item's components
@@ -704,6 +716,12 @@ public class Item extends Minipanel{
                     item.saveEdit();
                     item.edit();
                 }
+                if(item.getSpot() < 0 || item.getSpot() > 5){
+                    item.setSoftVisible(false);
+                }
+                else if(item.getSpot() >= 0 && item.getSpot() <= 5){
+                    item.setSoftVisible(true);
+                }
             }
         }
     }
@@ -716,7 +734,7 @@ public class Item extends Minipanel{
         if(getItemType() == 1) nextAvaWSpot++;
         else if(getItemType() == 2) nextAvaSSpot++;
         //loops through all the items
-        for(Item item : getPanel().wItems){
+        for(Item item : getList()){
             if(item.getItemType() == 1) item.wSpot++;
             else if(item.getItemType() == 2) item.sSpot++;
             //replaces the item's components
@@ -733,6 +751,12 @@ public class Item extends Minipanel{
                 item.saveEdit();
                 item.edit();
             }
+            if(item.getSpot() < 0 || item.getSpot() > 5){
+                item.setSoftVisible(false);
+            }
+            else if(item.getSpot() >= 0 && item.getSpot() <= 5){
+                item.setSoftVisible(true);
+            }
         }
     }
 
@@ -746,13 +770,17 @@ public class Item extends Minipanel{
      * @return returns this item's spot value
      */
     public float getSpot() {
-        return wSpot;
+        if(itemType == 1) return wSpot;
+        else if(itemType == 2) return sSpot;
+        else return -100;
     }
     /**
      * @return returns this item's y value
      */
     public float getY(){
-        return (position.y-((position.height+5)* wSpot));
+        if(itemType == 1) return (position.y-((position.height+5)* wSpot));
+        else if(itemType == 2) return (position.y-((position.height+5)* sSpot));
+        return -1;
     }
     public int getItemType(){
         return itemType;
@@ -763,7 +791,8 @@ public class Item extends Minipanel{
      */
     @Override
     public void render(SpriteBatch batch) {
-        batch.draw(texture, position.x, (position.y-((position.height+5)* wSpot)), position.width, position.height);
+        if(itemType == 1) batch.draw(texture, position.x, (position.y-((position.height+5)* wSpot)), position.width, position.height);
+        if(itemType == 2) batch.draw(texture, position.x, (position.y-((position.height+5)* sSpot)), position.width, position.height);
         for (int i = 0; i < minipanels.size(); i++) {
             minipanels.get(i).render(batch);
         }

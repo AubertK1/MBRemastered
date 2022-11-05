@@ -162,9 +162,20 @@ public class Main extends ApplicationAdapter {
 		weaponsButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				if(itemTab == 1){
-
-					itemTab = 2;
+				if(itemTab == 2){
+					for (Item item: listPanel.sItems) {
+						item.setSoftVisible(false);
+					}
+					for (Item item: listPanel.wItems) {
+						if(item.getSpot() >= 0 && item.getSpot() <= 5) {
+							item.setSoftVisible(true);
+							if (item.editMode && item.supposedToBeVisible) {
+								item.saveEdit();
+								item.edit();
+							}
+						}
+					}
+					itemTab = 1;
 				}
 			}
 		});
@@ -172,9 +183,20 @@ public class Main extends ApplicationAdapter {
 		spellsButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				if(itemTab == 2){
-
-					itemTab = 1;
+				if(itemTab == 1){
+					for (Item item: listPanel.sItems) {
+						if(item.getSpot() >= 0 && item.getSpot() <= 5) {
+							item.setSoftVisible(true);
+							if (item.editMode && item.supposedToBeVisible) {
+								item.saveEdit();
+								item.edit();
+							}
+						}
+					}
+					for (Item item: listPanel.wItems) {
+						item.setSoftVisible(false);
+					}
+					itemTab = 2;
 				}
 			}
 		});
@@ -203,24 +225,49 @@ public class Main extends ApplicationAdapter {
 		final Item itemS1 = new Item(2, 0);
 		listPanel.add(item1);
 		listPanel.add(itemS1);
+		if(itemTab == 1){
+			for (Item item: listPanel.sItems) {
+				item.setSoftVisible(false);
+			}
+		}
+		if(itemTab == 2){
+			for (Item item: listPanel.wItems) {
+				item.setSoftVisible(false);
+			}
+		}
 
 		//adds a new item
 		addButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-				//
-                Item item2 = new Item(1, Panel.nextAvaWSpot);
-                listPanel.add(item2);
+				if(itemTab == 1) {
+					Item item2 = new Item(1, Panel.nextAvaWSpot);
+					listPanel.add(item2);
+				}
+				else if(itemTab == 2) {
+					Item item2 = new Item(2, Panel.nextAvaSSpot);
+					listPanel.add(item2);
+				}
             }
         });
 		//shifts all the items up
 		upButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-				for (int i = 0; i < listPanel.wItems.get(0).getPanel().minipanels.size(); i++) {
-					if(listPanel.wItems.get(0).getPanel().minipanels.get(i).wSpot > 0){
-						listPanel.wItems.get(0).shuffleItemsUp();
-						break;
+				if(itemTab == 1) {
+					for (int i = 0; i < listPanel.wItems.get(0).getPanel().minipanels.size(); i++) {
+						if (listPanel.wItems.get(0).getPanel().minipanels.get(i).wSpot > 0) {
+							listPanel.wItems.get(0).shuffleItemsUp();
+							break;
+						}
+					}
+				}
+				else if(itemTab == 2) {
+					for (int i = 0; i < listPanel.sItems.get(0).getPanel().minipanels.size(); i++) {
+						if (listPanel.sItems.get(0).getPanel().minipanels.get(i).sSpot > 0) {
+							listPanel.sItems.get(0).shuffleItemsUp();
+							break;
+						}
 					}
 				}
             }
@@ -229,10 +276,20 @@ public class Main extends ApplicationAdapter {
 		downButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-				for (int i = 0; i < item1.getPanel().minipanels.size(); i++) {
-					if(item1.getPanel().minipanels.get(i).wSpot < 0){
-						item1.shuffleItemsDown();
-						break;
+				if(itemTab == 1) {
+					for (int i = 0; i < listPanel.wItems.get(0).getPanel().minipanels.size(); i++) {
+						if (listPanel.wItems.get(0).getPanel().minipanels.get(i).wSpot < 0) {
+							listPanel.wItems.get(0).shuffleItemsDown();
+							break;
+						}
+					}
+				}
+				if(itemTab == 2) {
+					for (int i = 0; i < listPanel.sItems.get(0).getPanel().minipanels.size(); i++) {
+						if (listPanel.sItems.get(0).getPanel().minipanels.get(i).sSpot < 0) {
+							listPanel.sItems.get(0).shuffleItemsDown();
+							break;
+						}
 					}
 				}
             }

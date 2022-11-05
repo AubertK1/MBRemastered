@@ -1,9 +1,9 @@
 Start up test case steps:
 
-//Testing textfield saving
+//testing textfield saving
 Type sword into one item and press enter
 
-//Testing item organization
+//testing item organization
 Add 3 items
 Swap two items
 Swap bottom item down
@@ -12,3 +12,10 @@ Swap bottom item down
 Delete one item
 Swap two items
 Shift items up then down
+
+//testing item tabs
+Swap to spell items
+Test item organization on spell items
+Swap to weapon items
+Shift items down
+

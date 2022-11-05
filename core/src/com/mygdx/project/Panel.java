@@ -44,6 +44,7 @@ public class Panel {
     int sID = totalSID;
     //if the panel is in edit mode
     boolean editMode;
+    boolean supposedToBeVisible = true;
 
     public Panel(String fileLocation, Rectangle position){
         //sets the image of the panel
@@ -123,7 +124,10 @@ public class Panel {
     public void remove(Panel panel){
         //removes component from the components list
         minipanels.remove(panel);
-        if(panel instanceof Item) wItems.remove(panel);
+        if(panel instanceof Item){
+            if(Main.itemTab == 1) wItems.remove(panel);
+            else if(Main.itemTab == 2) sItems.remove(panel);
+        }
     }
 
     /**
@@ -135,6 +139,9 @@ public class Panel {
         }
     }
 
+    public void setSoftVisible(boolean visible){
+        supposedToBeVisible = visible;
+    }
     /**
      * @return returns the panel this panel belongs to
      */
@@ -227,13 +234,14 @@ public class Panel {
         //loops through this panel's list of minipanels
         for (int i = 0; i < minipanels.size(); i++) {
             //if the minipanel's spot value is less than 0 then it doesn't render it (because it doesn't call render)
-            if(minipanels.get(i).wSpot < 0){
+            if(!minipanels.get(i).supposedToBeVisible){
                 //loops through the minipanel's list of components
                 for (int c = 0; c < minipanels.get(i).components.size(); c++) {
                     //sets the soft visibility of the component to false
                     minipanels.get(i).components.get(c).setSoftVisible(false);
                 }
             }
+/*
             //if the minipanel's spot value is more than 5 then it doesn't render it (may change depending on the group of items)
             else if(minipanels.get(i).wSpot > 5){
                 //loops through the minipanel's list of components
@@ -242,6 +250,7 @@ public class Panel {
                     minipanels.get(i).components.get(c).setSoftVisible(false);
                 }
             }
+*/
             //renders everything else and sets the soft visibility to true
             else {
                 minipanels.get(i).render(batch);
