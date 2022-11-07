@@ -16,11 +16,14 @@ public class Item extends Minipanel{
         "assets\\skins\\uiskin.json"));
     //strings for the labels (if weapon)
     String name, hitDie, mod, type;
+    ArrayList<String> names = new ArrayList<>();
     //textfields for when you edit the item (if weapon)
     MBTextField nameLabelTF, hitDieLabelTF, modLabelTF, typeLabelTF;
+    ArrayList<MBTextField> textFields = new ArrayList<>();
     //labels for the item (if weapon)
-    MBLabel nameLabel,diceLabel,modLabel,typeLabel;
+    ArrayList<MBLabel> labels = new ArrayList<>();
 
+    ArrayList<Tipbox> tipboxes = new ArrayList<>();
     int itemType;
     public Item(int itemType, int spot) {
         super("core\\pics\\TopbarPanel.png", new Rectangle(125, 790, 460, 40));
@@ -45,26 +48,33 @@ public class Item extends Minipanel{
         totalWID++;
         //increasing the next available spot by one
         nextAvaWSpot++;
+        //creating the labels
+        MBLabel nameLabel,diceLabel,modLabel,typeLabel;
         //setting the labels' texts and positions and sizes
         nameLabel = new MBLabel("Weapon "+ (Panel.totalWID), uiSkin);
         nameLabel.setPosition(this.getX()+5, this.getY()+5);
         nameLabel.setSize(119, nameLabel.getHeight());
-        name = nameLabel.label.getText().toString();
+        names.add(nameLabel.label.getText().toString());
 
         diceLabel = new MBLabel("HitDie", uiSkin);
         diceLabel.setPosition(nameLabel.getX()+ nameLabel.getWidth()+2, nameLabel.getY());
         diceLabel.setSize(75, nameLabel.getHeight());
-        hitDie = diceLabel.label.getText().toString();
+        names.add(diceLabel.label.getText().toString());
 
         modLabel = new MBLabel("ATKMod", uiSkin);
         modLabel.setPosition(diceLabel.getX()+ diceLabel.getWidth()+2, nameLabel.getY());
         modLabel.setSize(85, nameLabel.getHeight());
-        mod = modLabel.label.getText().toString();
+        names.add( modLabel.label.getText().toString());
 
         typeLabel = new MBLabel("Damage/Type", uiSkin);
         typeLabel.setPosition(modLabel.getX()+ modLabel.getWidth()+2, nameLabel.getY());
         typeLabel.setSize(115, nameLabel.getHeight());
-        type = typeLabel.label.getText().toString();
+        names.add( typeLabel.label.getText().toString());
+
+        labels.add(nameLabel);
+        labels.add(diceLabel);
+        labels.add(modLabel);
+        labels.add(typeLabel);
         //creating buttons and setting their positions and sizes
         final MBButton itemButtonEdit = new MBButton(uiSkin);
         itemButtonEdit.setPosition((typeLabel.getX()+typeLabel.getWidth()+10), nameLabel.getY()-1);
@@ -82,10 +92,25 @@ public class Item extends Minipanel{
         itemButtonUp.setPosition((itemButtonDel.getX()+itemButtonDel.getWidth()+2), itemButtonDown.getY()+itemButtonDown.getHeight()+2);
         itemButtonUp.setSize(20, 15);
         //setting the textfields' values
+        for (int i = 0; i < names.size(); i++) {
+            textFields.add(new MBTextField(names.get(i), uiSkin));
+            textFields.get(i).setKeyListener(new TextField.TextFieldListener() {
+                @Override
+                public void keyTyped(TextField textField, char c) {
+                    if(c == '\n'){
+                        System.out.println("hey");
+                        saveEdit();
+                        editMode = false;
+                    }
+                }
+            });
+        }
+/*
         nameLabelTF = new MBTextField(name, uiSkin);
         hitDieLabelTF = new MBTextField(hitDie, uiSkin);
         modLabelTF = new MBTextField(mod, uiSkin);
         typeLabelTF = new MBTextField(type, uiSkin);
+*/
         //adding all the components to this item's components
         add(nameLabel);
         add(diceLabel);
@@ -99,6 +124,7 @@ public class Item extends Minipanel{
         editMode = true;
         edit();
         //detecting when enter is pressed on each MBTextField so that enter can exit out of edit mode
+/*
         nameLabelTF.setKeyListener(new TextField.TextFieldListener() {
             @Override
             public void keyTyped(TextField textField, char c) {
@@ -139,6 +165,7 @@ public class Item extends Minipanel{
                 }
             }
         });
+*/
         //setting the buttons' functions
         //changes this item in and out of edit mode
         itemButtonEdit.addListener(new ChangeListener() {
@@ -191,18 +218,20 @@ public class Item extends Minipanel{
                     ArrayList<MBComponent> thisItemComponents = itemButtonDown.getItem().components;
                     //making it easier to read
                     ArrayList<MBComponent> nextItemComponents = itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).components;
+
+                    int smallerListSize = Math.min(thisItemComponents.size(), nextItemComponents.size());
                     //saving this item's components' positions before I change them, so I can use there later
                     ArrayList<Float> oldYs = new ArrayList<>();
-                    for(int i = 0; i < thisItemComponents.size(); i++) {
+                    for(int i = 0; i < smallerListSize; i++) {
                         oldYs.add(thisItemComponents.get(i).getY());
                     }
                     //repositioning this item to its new spot
                     //looping through the list of this item's components and assigning their positions to the next item's components' positions
-                    for (int i = 0; i < thisItemComponents.size(); i++) {
+                    for (int i = 0; i < smallerListSize; i++) {
                         thisItemComponents.get(i).setPosition(nextItemComponents.get(i).getX(), nextItemComponents.get(i).getY());
                     }
                     //looping through the list of the next item's components and assigning their positions to this item's components' old positions
-                    for (int i = 0; i < nextItemComponents.size(); i++) {
+                    for (int i = 0; i < smallerListSize; i++) {
                         nextItemComponents.get(i).setPosition(thisItemComponents.get(i).getX(), oldYs.get(i));
                     }
                     //moves the textfields with this item if in edit mode
@@ -237,18 +266,20 @@ public class Item extends Minipanel{
                     ArrayList<MBComponent> thisItemComponents = itemButtonUp.getItem().components;
                     //making it easier to read
                     ArrayList<MBComponent> prevItemComponents = itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).components;
+
+                    int smallerListSize = Math.min(thisItemComponents.size(), prevItemComponents.size());
                     //saving this item's components' positions before I change them, so I can use there later
                     ArrayList<Float> oldYs = new ArrayList<>();
-                    for(int i = 0; i < thisItemComponents.size(); i++) {
+                    for(int i = 0; i < smallerListSize; i++) {
                         oldYs.add(thisItemComponents.get(i).getY());
                     }
                     //repositioning this item to its new spot
                     //looping through the list of this item's components and assigning their positions to the next item's components' positions
-                    for (int i = 0; i < thisItemComponents.size(); i++) {
+                    for (int i = 0; i < smallerListSize; i++) {
                         thisItemComponents.get(i).setPosition(prevItemComponents.get(i).getX(), prevItemComponents.get(i).getY());
                     }
                     //looping through the list of the previous item's components and assigning their positions to this item's components' old positions
-                    for (int i = 0; i < prevItemComponents.size(); i++) {
+                    for (int i = 0; i < smallerListSize; i++) {
                         prevItemComponents.get(i).setPosition(thisItemComponents.get(i).getX(), oldYs.get(i));
                     }
                     //moves the textfields with this item if in edit mode
@@ -273,17 +304,26 @@ public class Item extends Minipanel{
         totalSID++;
         //increasing the next available spot by one
         nextAvaSSpot++;
+        //creating the labels
+        MBLabel nameLabel,descLabel;
         //setting the labels' texts and positions and sizes
         nameLabel = new MBLabel("Spell  "+ (Panel.totalSID), uiSkin);
         nameLabel.setPosition(this.getX()+5, this.getY()+5);
         nameLabel.setSize(119, nameLabel.getHeight());
-        name = nameLabel.label.getText().toString();
+        names.add(nameLabel.label.getText().toString());
 
-        diceLabel = new MBLabel("HitDie", uiSkin);
-        diceLabel.setPosition(nameLabel.getX()+ nameLabel.getWidth()+2, nameLabel.getY());
-        diceLabel.setSize(75, nameLabel.getHeight());
-        hitDie = diceLabel.label.getText().toString();
+        descLabel = new MBLabel("Item Description...", uiSkin);
+        descLabel.setPosition(nameLabel.getX()+ nameLabel.getWidth()+2, nameLabel.getY());
+        descLabel.setSize(279, nameLabel.getHeight());
+        names.add(descLabel.label.getText().toString());
 
+        labels.add(nameLabel);
+        labels.add(descLabel);
+
+        Tipbox spellDesc = new Tipbox(new Rectangle(descLabel.getX(), descLabel.getY()+ descLabel.getHeight(), 200, 100));
+        add(spellDesc);
+
+/*
         modLabel = new MBLabel("ATKMod", uiSkin);
         modLabel.setPosition(diceLabel.getX()+ diceLabel.getWidth()+2, nameLabel.getY());
         modLabel.setSize(85, nameLabel.getHeight());
@@ -293,13 +333,14 @@ public class Item extends Minipanel{
         typeLabel.setPosition(modLabel.getX()+ modLabel.getWidth()+2, nameLabel.getY());
         typeLabel.setSize(115, nameLabel.getHeight());
         type = typeLabel.label.getText().toString();
+*/
         //creating buttons and setting their positions and sizes
         final MBButton itemButtonEdit = new MBButton(uiSkin);
-        itemButtonEdit.setPosition((typeLabel.getX()+typeLabel.getWidth()+10), nameLabel.getY()-1);
+        itemButtonEdit.setPosition((descLabel.getX()+descLabel.getWidth()+10), nameLabel.getY()-1);
         itemButtonEdit.setSize(20, 15);
 
         final MBButton itemButtonDel = new MBButton(uiSkin);
-        itemButtonDel.setPosition((typeLabel.getX()+typeLabel.getWidth()+10), itemButtonEdit.getY()+itemButtonEdit.getHeight()+2);
+        itemButtonDel.setPosition((descLabel.getX()+descLabel.getWidth()+10), itemButtonEdit.getY()+itemButtonEdit.getHeight()+2);
         itemButtonDel.setSize(20, 15);
 
         final MBButton itemButtonDown = new MBButton(uiSkin);
@@ -310,15 +351,32 @@ public class Item extends Minipanel{
         itemButtonUp.setPosition((itemButtonDel.getX()+itemButtonDel.getWidth()+2), itemButtonDown.getY()+itemButtonDown.getHeight()+2);
         itemButtonUp.setSize(20, 15);
         //setting the textfields' values
+        for (int i = 0; i < names.size(); i++) {
+            textFields.add(new MBTextField(names.get(i), uiSkin));
+            textFields.get(i).setKeyListener(new TextField.TextFieldListener() {
+                @Override
+                public void keyTyped(TextField textField, char c) {
+                    if(c == '\n'){
+                        System.out.println("hey");
+                        saveEdit();
+                        editMode = false;
+                    }
+                }
+            });
+        }
+/*
         nameLabelTF = new MBTextField(name, uiSkin);
         hitDieLabelTF = new MBTextField(hitDie, uiSkin);
         modLabelTF = new MBTextField(mod, uiSkin);
         typeLabelTF = new MBTextField(type, uiSkin);
+*/
         //adding all the components to this item's components
         add(nameLabel);
-        add(diceLabel);
+        add(descLabel);
+/*
         add(modLabel);
         add(typeLabel);
+*/
         add(itemButtonEdit);
         add(itemButtonDel);
         add(itemButtonDown);
@@ -327,6 +385,7 @@ public class Item extends Minipanel{
         editMode = true;
         edit();
         //detecting when enter is pressed on each MBTextField so that enter can exit out of edit mode
+/*
         nameLabelTF.setKeyListener(new TextField.TextFieldListener() {
             @Override
             public void keyTyped(TextField textField, char c) {
@@ -367,6 +426,7 @@ public class Item extends Minipanel{
                 }
             }
         });
+*/
         //setting the buttons' functions
         //changes this item in and out of edit mode
         itemButtonEdit.addListener(new ChangeListener() {
@@ -419,18 +479,20 @@ public class Item extends Minipanel{
                     ArrayList<MBComponent> thisItemComponents = itemButtonDown.getItem().components;
                     //making it easier to read
                     ArrayList<MBComponent> nextItemComponents = itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).components;
+
+                    int smallerListSize = Math.min(thisItemComponents.size(), nextItemComponents.size());
                     //saving this item's components' positions before I change them, so I can use there later
                     ArrayList<Float> oldYs = new ArrayList<>();
-                    for(int i = 0; i < thisItemComponents.size(); i++) {
+                    for(int i = 0; i < smallerListSize; i++) {
                         oldYs.add(thisItemComponents.get(i).getY());
                     }
                     //repositioning this item to its new spot
                     //looping through the list of this item's components and assigning their positions to the next item's components' positions
-                    for (int i = 0; i < thisItemComponents.size(); i++) {
+                    for (int i = 0; i < smallerListSize; i++) {
                         thisItemComponents.get(i).setPosition(nextItemComponents.get(i).getX(), nextItemComponents.get(i).getY());
                     }
                     //looping through the list of the next item's components and assigning their positions to this item's components' old positions
-                    for (int i = 0; i < nextItemComponents.size(); i++) {
+                    for (int i = 0; i < smallerListSize; i++) {
                         nextItemComponents.get(i).setPosition(thisItemComponents.get(i).getX(), oldYs.get(i));
                     }
                     //moves the textfields with this item if in edit mode
@@ -465,18 +527,20 @@ public class Item extends Minipanel{
                     ArrayList<MBComponent> thisItemComponents = itemButtonUp.getItem().components;
                     //making it easier to read
                     ArrayList<MBComponent> prevItemComponents = itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).components;
+
+                    int smallerListSize = Math.min(thisItemComponents.size(), prevItemComponents.size());
                     //saving this item's components' positions before I change them, so I can use there later
                     ArrayList<Float> oldYs = new ArrayList<>();
-                    for(int i = 0; i < thisItemComponents.size(); i++) {
+                    for(int i = 0; i < smallerListSize; i++) {
                         oldYs.add(thisItemComponents.get(i).getY());
                     }
                     //repositioning this item to its new spot
                     //looping through the list of this item's components and assigning their positions to the next item's components' positions
-                    for (int i = 0; i < thisItemComponents.size(); i++) {
+                    for (int i = 0; i < smallerListSize; i++) {
                         thisItemComponents.get(i).setPosition(prevItemComponents.get(i).getX(), prevItemComponents.get(i).getY());
                     }
                     //looping through the list of the previous item's components and assigning their positions to this item's components' old positions
-                    for (int i = 0; i < prevItemComponents.size(); i++) {
+                    for (int i = 0; i < smallerListSize; i++) {
                         prevItemComponents.get(i).setPosition(thisItemComponents.get(i).getX(), oldYs.get(i));
                     }
 
@@ -519,34 +583,36 @@ public class Item extends Minipanel{
      */
     public void edit(){
         Item item = this;
-
-        nameLabelTF.setPosition(item.getX()+5, item.getY()+4);
-        nameLabelTF.setSize(119, 32);
-
-        hitDieLabelTF.setPosition(nameLabelTF.getX()+ nameLabelTF.getWidth()+2, nameLabelTF.getY());
-        hitDieLabelTF.setSize(75, nameLabelTF.getHeight());
-
-        modLabelTF.setPosition(hitDieLabelTF.getX()+ hitDieLabelTF.getWidth()+2, nameLabelTF.getY());
-        modLabelTF.setSize(85, nameLabelTF.getHeight());
-
-        typeLabelTF.setPosition(modLabelTF.getX()+ modLabelTF.getWidth()+2, nameLabelTF.getY());
-        typeLabelTF.setSize(115, nameLabelTF.getHeight());
-
-        add(nameLabelTF);
-        add(hitDieLabelTF);
-        add(modLabelTF);
-        add(typeLabelTF);
-
-        nameLabelTF.textField.setVisible(true);
-        hitDieLabelTF.textField.setVisible(true);
-        modLabelTF.textField.setVisible(true);
-        typeLabelTF.textField.setVisible(true);
+        //loops through this item's textfields list and reassigns the positions, re-adds them to the list, and sets their hard visibility to true
+        for (int i = 0; i < textFields.size(); i++) {
+            textFields.get(i).setPosition(labels.get(i).getX(), item.getY()+5);
+            textFields.get(i).setSize(labels.get(i).getWidth(), 30);
+            add(textFields.get(i));
+            textFields.get(i).setVisible(true);
+        }
+        //loops through this item's tipboxes
+        for (int i = 0; i < minipanels.size(); i++) {
+            minipanels.get(i).setSoftVisible(true);
+        }
     }
 
     /**
      * sets the labels to the text of the textfields and makes them disappear
      */
     public void saveEdit(){
+
+        for (int i = 0; i < textFields.size(); i++) {
+            names.set(i, textFields.get(i).textField.getText());
+            labels.get(i).label.setText(names.get(i));
+            textFields.get(i).setVisible(false);
+            remove(textFields.get(i));
+        }
+        //loops through this item's tipboxes
+        for (int i = 0; i < minipanels.size(); i++) {
+            minipanels.get(i).setSoftVisible(false);
+        }
+/*
+
         name = nameLabelTF.textField.getText();
         hitDie = hitDieLabelTF.textField.getText();
         mod = modLabelTF.textField.getText();
@@ -566,6 +632,7 @@ public class Item extends Minipanel{
         remove(hitDieLabelTF);
         remove(modLabelTF);
         remove(typeLabelTF);
+*/
     }
 
     /**
