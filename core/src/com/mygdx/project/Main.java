@@ -26,9 +26,12 @@ public class Main extends ApplicationAdapter {
 	//list with all the MBComponents
 	static ArrayList<MBComponent> allComps = new ArrayList<>();
 
+	String player;
+
 	static int itemTab = 1;
 	@Override
 	public void create () {
+        player = "PLAYER 1";
 		//setting up batch and stage
 		batch = new SpriteBatch();
 		stage = new Stage();
@@ -243,11 +246,13 @@ public class Main extends ApplicationAdapter {
 				if(itemTab == 1) {
 					Item item2 = new Item(1, Panel.nextAvaWSpot);
 					listPanel.add(item2);
+                    if(item2.getSpot() > 5) item2.setSoftVisible(false);
 				}
 				else if(itemTab == 2) {
 					Item item2 = new Item(2, Panel.nextAvaSSpot);
 					listPanel.add(item2);
-				}
+                    if(item2.getSpot() > 5) item2.setSoftVisible(false);
+                }
             }
         });
 		//shifts all the items up
@@ -296,12 +301,16 @@ public class Main extends ApplicationAdapter {
         });
 		//endregion
 
+		//region Top Bar
 
-/*
-		for (MBComponent component : allComps) {
-			component.setStage(stage);
-		}
-*/
+		MBLabel playerNameLabel = new MBLabel(player, uiSkin);
+		playerNameLabel.setPosition(topPanel.getX() + 10, topPanel.getY() + (topPanel.getHeight()/2) - (playerNameLabel.getHeight()/2));
+
+		topPanel.add(playerNameLabel);
+
+		//endregion
+
+
 		//honestly don't know what this does, but it's essential
 		Gdx.input.setInputProcessor(stage);
 	}

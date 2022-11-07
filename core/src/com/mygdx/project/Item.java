@@ -189,43 +189,22 @@ public class Item extends Minipanel{
                     itemButtonDown.getItem().wSpot = nextSpot;
                     //making it easier to read
                     ArrayList<MBComponent> thisItemComponents = itemButtonDown.getItem().components;
-                    //repositioning this item to its new spot
-                    //name label
-                    thisItemComponents.get(0).setPosition(itemButtonDown.getItem().getX() + 5, itemButtonDown.getItem().getY() + 5);
-                    //hit die label
-                    thisItemComponents.get(1).setPosition(thisItemComponents.get(0).getX()+ thisItemComponents.get(0).getWidth()+2, itemButtonDown.getItem().getY() + 5);
-                    //attack mod label
-                    thisItemComponents.get(2).setPosition(thisItemComponents.get(1).getX()+ thisItemComponents.get(1).getWidth()+2, itemButtonDown.getItem().getY() + 5);
-                    //damage type label
-                    thisItemComponents.get(3).setPosition(thisItemComponents.get(2).getX()+ thisItemComponents.get(2).getWidth()+2, itemButtonDown.getItem().getY() + 5);
-                    //edit button
-                    thisItemComponents.get(4).setPosition(thisItemComponents.get(3).getX() + thisItemComponents.get(3).getWidth() + 10, thisItemComponents.get(3).getY()-1);
-                    //delete button
-                    thisItemComponents.get(5).setPosition(thisItemComponents.get(3).getX() + thisItemComponents.get(3).getWidth() + 10, (thisItemComponents.get(4).getY()+ thisItemComponents.get(4).getHeight()+2));
-                    //swap down button
-                    thisItemComponents.get(6).setPosition(thisItemComponents.get(5).getX() + thisItemComponents.get(5).getWidth() + 2, (thisItemComponents.get(4).getY()));
-                    //swap up button
-                    thisItemComponents.get(7).setPosition(thisItemComponents.get(5).getX() + thisItemComponents.get(5).getWidth() + 2, (thisItemComponents.get(5).getY()));
-
-                    //repositioning the item that you swapped it with to this item's spot
                     //making it easier to read
                     ArrayList<MBComponent> nextItemComponents = itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).components;
-                    //name label
-                    nextItemComponents.get(0).setPosition(itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).getX() + 5, itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).getY() + 5);
-                    //hit die label
-                    nextItemComponents.get(1).setPosition(thisItemComponents.get(0).getX()+ thisItemComponents.get(0).getWidth()+2, itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).getY() + 5);
-                    //attack mod label
-                    nextItemComponents.get(2).setPosition(thisItemComponents.get(1).getX()+ thisItemComponents.get(1).getWidth()+2, itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).getY() + 5);
-                    //damage type label
-                    nextItemComponents.get(3).setPosition(thisItemComponents.get(2).getX()+ thisItemComponents.get(2).getWidth()+2, itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).getY() + 5);
-                    //edit button
-                    nextItemComponents.get(4).setPosition((nextItemComponents.get(3).getX() + nextItemComponents.get(3).getWidth() + 10), nextItemComponents.get(3).getY()-1);
-                    //delete button
-                    nextItemComponents.get(5).setPosition((nextItemComponents.get(3).getX() + nextItemComponents.get(3).getWidth() + 10), nextItemComponents.get(4).getHeight()+ nextItemComponents.get(4).getY()+2);
-                    //swap down button
-                    nextItemComponents.get(6).setPosition((nextItemComponents.get(4).getX() + nextItemComponents.get(4).getWidth() + 2), nextItemComponents.get(4).getY());
-                    //swap up button
-                    nextItemComponents.get(7).setPosition((nextItemComponents.get(4).getX() + nextItemComponents.get(4).getWidth() + 2), nextItemComponents.get(5).getY());
+                    //saving this item's components' positions before I change them, so I can use there later
+                    ArrayList<Float> oldYs = new ArrayList<>();
+                    for(int i = 0; i < thisItemComponents.size(); i++) {
+                        oldYs.add(thisItemComponents.get(i).getY());
+                    }
+                    //repositioning this item to its new spot
+                    //looping through the list of this item's components and assigning their positions to the next item's components' positions
+                    for (int i = 0; i < thisItemComponents.size(); i++) {
+                        thisItemComponents.get(i).setPosition(nextItemComponents.get(i).getX(), nextItemComponents.get(i).getY());
+                    }
+                    //looping through the list of the next item's components and assigning their positions to this item's components' old positions
+                    for (int i = 0; i < nextItemComponents.size(); i++) {
+                        nextItemComponents.get(i).setPosition(thisItemComponents.get(i).getX(), oldYs.get(i));
+                    }
                     //moves the textfields with this item if in edit mode
                     if(editMode){
                         saveEdit();
@@ -256,43 +235,22 @@ public class Item extends Minipanel{
                     itemButtonUp.getItem().wSpot = prevSpot;
                     //making it easier to read
                     ArrayList<MBComponent> thisItemComponents = itemButtonUp.getItem().components;
-                    //repositioning this item to its new spot
-                    //name label
-                    thisItemComponents.get(0).setPosition(itemButtonUp.getItem().getX() + 5, itemButtonUp.getItem().getY() + 5);
-                    //hit die label
-                    thisItemComponents.get(1).setPosition(thisItemComponents.get(0).getX()+ thisItemComponents.get(0).getWidth()+2, itemButtonUp.getItem().getY() + 5);
-                    //attack mod label
-                    thisItemComponents.get(2).setPosition(thisItemComponents.get(1).getX()+ thisItemComponents.get(1).getWidth()+2, itemButtonUp.getItem().getY() + 5);
-                    //damage type label
-                    thisItemComponents.get(3).setPosition(thisItemComponents.get(2).getX()+ thisItemComponents.get(2).getWidth()+2, itemButtonUp.getItem().getY() + 5);
-                    //edit button
-                    thisItemComponents.get(4).setPosition(thisItemComponents.get(3).getX() + thisItemComponents.get(3).getWidth() + 10, thisItemComponents.get(3).getY()-1);
-                    //delete button
-                    thisItemComponents.get(5).setPosition(thisItemComponents.get(3).getX() + thisItemComponents.get(3).getWidth() + 10, (thisItemComponents.get(4).getY()+ thisItemComponents.get(4).getHeight()+2));
-                    //swap down button
-                    thisItemComponents.get(6).setPosition(thisItemComponents.get(5).getX() + thisItemComponents.get(5).getWidth() + 2, (thisItemComponents.get(4).getY()));
-                    //swap up button
-                    thisItemComponents.get(7).setPosition(thisItemComponents.get(5).getX() + thisItemComponents.get(5).getWidth() + 2, (thisItemComponents.get(5).getY()));
-
-                    //repositioning the item that you swapped it with to this item's spot
                     //making it easier to read
                     ArrayList<MBComponent> prevItemComponents = itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).components;
-                    //name label
-                    prevItemComponents.get(0).setPosition(itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).getX() + 5, itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).getY() + 5);
-                    //hit die label
-                    prevItemComponents.get(1).setPosition(thisItemComponents.get(0).getX()+ thisItemComponents.get(0).getWidth()+2, itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).getY() + 5);
-                    //attack mod label
-                    prevItemComponents.get(2).setPosition(thisItemComponents.get(1).getX()+ thisItemComponents.get(1).getWidth()+2, itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).getY() + 5);
-                    //damage type label
-                    prevItemComponents.get(3).setPosition(thisItemComponents.get(2).getX()+ thisItemComponents.get(2).getWidth()+2, itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).getY() + 5);
-                    //edit button
-                    prevItemComponents.get(4).setPosition((prevItemComponents.get(3).getX() + prevItemComponents.get(3).getWidth() + 10), prevItemComponents.get(3).getY()-1);
-                    //delete button
-                    prevItemComponents.get(5).setPosition((prevItemComponents.get(3).getX() + prevItemComponents.get(3).getWidth() + 10), prevItemComponents.get(4).getHeight()+ prevItemComponents.get(4).getY()+2);
-                    //swap down button
-                    prevItemComponents.get(6).setPosition((prevItemComponents.get(4).getX() + prevItemComponents.get(4).getWidth() + 2), prevItemComponents.get(4).getY());
-                    //swap up button
-                    prevItemComponents.get(7).setPosition((prevItemComponents.get(4).getX() + prevItemComponents.get(4).getWidth() + 2), prevItemComponents.get(5).getY());
+                    //saving this item's components' positions before I change them, so I can use there later
+                    ArrayList<Float> oldYs = new ArrayList<>();
+                    for(int i = 0; i < thisItemComponents.size(); i++) {
+                        oldYs.add(thisItemComponents.get(i).getY());
+                    }
+                    //repositioning this item to its new spot
+                    //looping through the list of this item's components and assigning their positions to the next item's components' positions
+                    for (int i = 0; i < thisItemComponents.size(); i++) {
+                        thisItemComponents.get(i).setPosition(prevItemComponents.get(i).getX(), prevItemComponents.get(i).getY());
+                    }
+                    //looping through the list of the previous item's components and assigning their positions to this item's components' old positions
+                    for (int i = 0; i < prevItemComponents.size(); i++) {
+                        prevItemComponents.get(i).setPosition(thisItemComponents.get(i).getX(), oldYs.get(i));
+                    }
                     //moves the textfields with this item if in edit mode
                     if(editMode){
                         saveEdit();
@@ -459,43 +417,22 @@ public class Item extends Minipanel{
                     itemButtonDown.getItem().sSpot = nextSpot;
                     //making it easier to read
                     ArrayList<MBComponent> thisItemComponents = itemButtonDown.getItem().components;
-                    //repositioning this item to its new spot
-                    //name label
-                    thisItemComponents.get(0).setPosition(itemButtonDown.getItem().getX() + 5, itemButtonDown.getItem().getY() + 5);
-                    //hit die label
-                    thisItemComponents.get(1).setPosition(thisItemComponents.get(0).getX()+ thisItemComponents.get(0).getWidth()+2, itemButtonDown.getItem().getY() + 5);
-                    //attack mod label
-                    thisItemComponents.get(2).setPosition(thisItemComponents.get(1).getX()+ thisItemComponents.get(1).getWidth()+2, itemButtonDown.getItem().getY() + 5);
-                    //damage type label
-                    thisItemComponents.get(3).setPosition(thisItemComponents.get(2).getX()+ thisItemComponents.get(2).getWidth()+2, itemButtonDown.getItem().getY() + 5);
-                    //edit button
-                    thisItemComponents.get(4).setPosition(thisItemComponents.get(3).getX() + thisItemComponents.get(3).getWidth() + 10, thisItemComponents.get(3).getY()-1);
-                    //delete button
-                    thisItemComponents.get(5).setPosition(thisItemComponents.get(3).getX() + thisItemComponents.get(3).getWidth() + 10, (thisItemComponents.get(4).getY()+ thisItemComponents.get(4).getHeight()+2));
-                    //swap down button
-                    thisItemComponents.get(6).setPosition(thisItemComponents.get(5).getX() + thisItemComponents.get(5).getWidth() + 2, (thisItemComponents.get(4).getY()));
-                    //swap up button
-                    thisItemComponents.get(7).setPosition(thisItemComponents.get(5).getX() + thisItemComponents.get(5).getWidth() + 2, (thisItemComponents.get(5).getY()));
-
-                    //repositioning the item that you swapped it with to this item's spot
                     //making it easier to read
                     ArrayList<MBComponent> nextItemComponents = itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).components;
-                    //name label
-                    nextItemComponents.get(0).setPosition(itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).getX() + 5, itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).getY() + 5);
-                    //hit die label
-                    nextItemComponents.get(1).setPosition(thisItemComponents.get(0).getX()+ thisItemComponents.get(0).getWidth()+2, itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).getY() + 5);
-                    //attack mod label
-                    nextItemComponents.get(2).setPosition(thisItemComponents.get(1).getX()+ thisItemComponents.get(1).getWidth()+2, itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).getY() + 5);
-                    //damage type label
-                    nextItemComponents.get(3).setPosition(thisItemComponents.get(2).getX()+ thisItemComponents.get(2).getWidth()+2, itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).getY() + 5);
-                    //edit button
-                    nextItemComponents.get(4).setPosition((nextItemComponents.get(3).getX() + nextItemComponents.get(3).getWidth() + 10), nextItemComponents.get(3).getY()-1);
-                    //delete button
-                    nextItemComponents.get(5).setPosition((nextItemComponents.get(3).getX() + nextItemComponents.get(3).getWidth() + 10), nextItemComponents.get(4).getHeight()+ nextItemComponents.get(4).getY()+2);
-                    //swap down button
-                    nextItemComponents.get(6).setPosition((nextItemComponents.get(4).getX() + nextItemComponents.get(4).getWidth() + 2), nextItemComponents.get(4).getY());
-                    //swap up button
-                    nextItemComponents.get(7).setPosition((nextItemComponents.get(4).getX() + nextItemComponents.get(4).getWidth() + 2), nextItemComponents.get(5).getY());
+                    //saving this item's components' positions before I change them, so I can use there later
+                    ArrayList<Float> oldYs = new ArrayList<>();
+                    for(int i = 0; i < thisItemComponents.size(); i++) {
+                        oldYs.add(thisItemComponents.get(i).getY());
+                    }
+                    //repositioning this item to its new spot
+                    //looping through the list of this item's components and assigning their positions to the next item's components' positions
+                    for (int i = 0; i < thisItemComponents.size(); i++) {
+                        thisItemComponents.get(i).setPosition(nextItemComponents.get(i).getX(), nextItemComponents.get(i).getY());
+                    }
+                    //looping through the list of the next item's components and assigning their positions to this item's components' old positions
+                    for (int i = 0; i < nextItemComponents.size(); i++) {
+                        nextItemComponents.get(i).setPosition(thisItemComponents.get(i).getX(), oldYs.get(i));
+                    }
                     //moves the textfields with this item if in edit mode
                     if(editMode){
                         saveEdit();
@@ -526,43 +463,23 @@ public class Item extends Minipanel{
                     itemButtonUp.getItem().sSpot = prevSpot;
                     //making it easier to read
                     ArrayList<MBComponent> thisItemComponents = itemButtonUp.getItem().components;
-                    //repositioning this item to its new spot
-                    //name label
-                    thisItemComponents.get(0).setPosition(itemButtonUp.getItem().getX() + 5, itemButtonUp.getItem().getY() + 5);
-                    //hit die label
-                    thisItemComponents.get(1).setPosition(thisItemComponents.get(0).getX()+ thisItemComponents.get(0).getWidth()+2, itemButtonUp.getItem().getY() + 5);
-                    //attack mod label
-                    thisItemComponents.get(2).setPosition(thisItemComponents.get(1).getX()+ thisItemComponents.get(1).getWidth()+2, itemButtonUp.getItem().getY() + 5);
-                    //damage type label
-                    thisItemComponents.get(3).setPosition(thisItemComponents.get(2).getX()+ thisItemComponents.get(2).getWidth()+2, itemButtonUp.getItem().getY() + 5);
-                    //edit button
-                    thisItemComponents.get(4).setPosition(thisItemComponents.get(3).getX() + thisItemComponents.get(3).getWidth() + 10, thisItemComponents.get(3).getY()-1);
-                    //delete button
-                    thisItemComponents.get(5).setPosition(thisItemComponents.get(3).getX() + thisItemComponents.get(3).getWidth() + 10, (thisItemComponents.get(4).getY()+ thisItemComponents.get(4).getHeight()+2));
-                    //swap down button
-                    thisItemComponents.get(6).setPosition(thisItemComponents.get(5).getX() + thisItemComponents.get(5).getWidth() + 2, (thisItemComponents.get(4).getY()));
-                    //swap up button
-                    thisItemComponents.get(7).setPosition(thisItemComponents.get(5).getX() + thisItemComponents.get(5).getWidth() + 2, (thisItemComponents.get(5).getY()));
-
-                    //repositioning the item that you swapped it with to this item's spot
                     //making it easier to read
                     ArrayList<MBComponent> prevItemComponents = itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).components;
-                    //name label
-                    prevItemComponents.get(0).setPosition(itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).getX() + 5, itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).getY() + 5);
-                    //hit die label
-                    prevItemComponents.get(1).setPosition(thisItemComponents.get(0).getX()+ thisItemComponents.get(0).getWidth()+2, itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).getY() + 5);
-                    //attack mod label
-                    prevItemComponents.get(2).setPosition(thisItemComponents.get(1).getX()+ thisItemComponents.get(1).getWidth()+2, itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).getY() + 5);
-                    //damage type label
-                    prevItemComponents.get(3).setPosition(thisItemComponents.get(2).getX()+ thisItemComponents.get(2).getWidth()+2, itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).getY() + 5);
-                    //edit button
-                    prevItemComponents.get(4).setPosition((prevItemComponents.get(3).getX() + prevItemComponents.get(3).getWidth() + 10), prevItemComponents.get(3).getY()-1);
-                    //delete button
-                    prevItemComponents.get(5).setPosition((prevItemComponents.get(3).getX() + prevItemComponents.get(3).getWidth() + 10), prevItemComponents.get(4).getHeight()+ prevItemComponents.get(4).getY()+2);
-                    //swap down button
-                    prevItemComponents.get(6).setPosition((prevItemComponents.get(4).getX() + prevItemComponents.get(4).getWidth() + 2), prevItemComponents.get(4).getY());
-                    //swap up button
-                    prevItemComponents.get(7).setPosition((prevItemComponents.get(4).getX() + prevItemComponents.get(4).getWidth() + 2), prevItemComponents.get(5).getY());
+                    //saving this item's components' positions before I change them, so I can use there later
+                    ArrayList<Float> oldYs = new ArrayList<>();
+                    for(int i = 0; i < thisItemComponents.size(); i++) {
+                        oldYs.add(thisItemComponents.get(i).getY());
+                    }
+                    //repositioning this item to its new spot
+                    //looping through the list of this item's components and assigning their positions to the next item's components' positions
+                    for (int i = 0; i < thisItemComponents.size(); i++) {
+                        thisItemComponents.get(i).setPosition(prevItemComponents.get(i).getX(), prevItemComponents.get(i).getY());
+                    }
+                    //looping through the list of the previous item's components and assigning their positions to this item's components' old positions
+                    for (int i = 0; i < prevItemComponents.size(); i++) {
+                        prevItemComponents.get(i).setPosition(thisItemComponents.get(i).getX(), oldYs.get(i));
+                    }
+
                     //moves the textfields with this item if in edit mode
                     if(editMode){
                         saveEdit();
@@ -662,15 +579,11 @@ public class Item extends Minipanel{
         for(Item item : getList()){
             if(item.getItemType() == 1) item.wSpot--;
             else if(item.getItemType() == 2) item.sSpot--;
-            //replaces the item's components
-            item.components.get(0).setPosition(item.getX() + 5, item.getY() + 5);
-            item.components.get(1).setPosition(item.components.get(0).getX()+ item.components.get(0).getWidth()+2, item.getY() + 5);
-            item.components.get(2).setPosition(item.components.get(1).getX()+ item.components.get(1).getWidth()+2, item.getY() + 5);
-            item.components.get(3).setPosition(item.components.get(2).getX()+ item.components.get(2).getWidth()+2, item.getY() + 5);
-            item.components.get(4).setPosition(item.components.get(3).getX() + item.components.get(3).getWidth() + 10, item.components.get(3).getY()-1);
-            item.components.get(5).setPosition(item.components.get(3).getX() + item.components.get(3).getWidth() + 10, (item.components.get(4).getY()+item.components.get(4).getHeight()+2));
-            item.components.get(6).setPosition(item.components.get(5).getX() + item.components.get(5).getWidth() + 2, (item.components.get(4).getY()));
-            item.components.get(7).setPosition(item.components.get(5).getX() + item.components.get(5).getWidth() + 2, (item.components.get(5).getY()));
+            //loops through the item's components' position and increases the Y value by the item's height plus the gap between items (moving it up)
+            for (int i = 0; i < item.components.size(); i++) {
+                item.components.get(i).setPosition(item.components.get(i).getX(), item.components.get(i).getY() + (item.getHeight()+5));
+            }
+
             //moves the textfields with the item if in edit mode
             if(item.editMode){
                 item.saveEdit();
@@ -702,15 +615,10 @@ public class Item extends Minipanel{
             if (item.getSpot() > startSpot) {
                 if(item.getItemType() == 1) item.wSpot--;
                 else if(item.getItemType() == 2) item.sSpot--;
-                //replaces the item's components
-                item.components.get(0).setPosition(item.getX() + 5, item.getY() + 5);
-                item.components.get(1).setPosition(item.components.get(0).getX() + item.components.get(0).getWidth() + 2, item.getY() + 5);
-                item.components.get(2).setPosition(item.components.get(1).getX() + item.components.get(1).getWidth() + 2, item.getY() + 5);
-                item.components.get(3).setPosition(item.components.get(2).getX() + item.components.get(2).getWidth() + 2, item.getY() + 5);
-                item.components.get(4).setPosition(item.components.get(3).getX() + item.components.get(3).getWidth() + 10, item.components.get(3).getY() - 1);
-                item.components.get(5).setPosition(item.components.get(3).getX() + item.components.get(3).getWidth() + 10, (item.components.get(4).getY() + item.components.get(4).getHeight() + 2));
-                item.components.get(6).setPosition(item.components.get(5).getX() + item.components.get(5).getWidth() + 2, (item.components.get(4).getY()));
-                item.components.get(7).setPosition(item.components.get(5).getX() + item.components.get(5).getWidth() + 2, (item.components.get(5).getY()));
+                //loops through the item's components' position and increases the Y value by the item's height plus the gap between items (moving it up)
+                for (int i = 0; i < item.components.size(); i++) {
+                    item.components.get(i).setPosition(item.components.get(i).getX(), item.components.get(i).getY() + (item.getHeight()+5));
+                }
                 //moves the textfields with the item if in edit mode
                 if (item.editMode) {
                     item.saveEdit();
@@ -737,15 +645,10 @@ public class Item extends Minipanel{
         for(Item item : getList()){
             if(item.getItemType() == 1) item.wSpot++;
             else if(item.getItemType() == 2) item.sSpot++;
-            //replaces the item's components
-            item.components.get(0).setPosition(item.getX() + 5, item.getY() + 5);
-            item.components.get(1).setPosition(item.components.get(0).getX()+ item.components.get(0).getWidth()+2, item.getY() + 5);
-            item.components.get(2).setPosition(item.components.get(1).getX()+ item.components.get(1).getWidth()+2, item.getY() + 5);
-            item.components.get(3).setPosition(item.components.get(2).getX()+ item.components.get(2).getWidth()+2, item.getY() + 5);
-            item.components.get(4).setPosition(item.components.get(3).getX() + item.components.get(3).getWidth() + 10, item.components.get(3).getY()-1);
-            item.components.get(5).setPosition(item.components.get(3).getX() + item.components.get(3).getWidth() + 10, (item.components.get(4).getY()+item.components.get(4).getHeight()+2));
-            item.components.get(6).setPosition(item.components.get(5).getX() + item.components.get(5).getWidth() + 2, (item.components.get(4).getY()));
-            item.components.get(7).setPosition(item.components.get(5).getX() + item.components.get(5).getWidth() + 2, (item.components.get(5).getY()));
+            //loops through the item's components' position and reduces the Y value by the item's height plus the gap between items (moving it down)
+            for (int i = 0; i < item.components.size(); i++) {
+                item.components.get(i).setPosition(item.components.get(i).getX(), item.components.get(i).getY() - (item.getHeight()+5));
+            }
             //moves the textfields with the item if in edit mode
             if(item.editMode){
                 item.saveEdit();
