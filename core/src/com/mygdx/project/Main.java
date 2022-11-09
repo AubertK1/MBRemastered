@@ -27,6 +27,7 @@ public class Main extends ApplicationAdapter {
 	static ArrayList<MBComponent> allComps = new ArrayList<>();
 
 	String player;
+    static ArrayList<Tipbox> tipboxes = new ArrayList<>();
 
 	static int itemTab = 1;
 	@Override
@@ -178,6 +179,9 @@ public class Main extends ApplicationAdapter {
 							}
 						}
 					}
+					for (Tipbox tipbox: tipboxes) {
+						tipbox.setSoftVisible(false);
+					}
 					itemTab = 1;
 				}
 			}
@@ -198,6 +202,11 @@ public class Main extends ApplicationAdapter {
 					}
 					for (Item item: listPanel.wItems) {
 						item.setSoftVisible(false);
+					}
+					for (Tipbox tipbox: tipboxes) {
+						if (tipbox.getPanel().editMode && tipbox.getPanel().supposedToBeVisible) {
+							tipbox.setSoftVisible(true);
+						}
 					}
 					itemTab = 2;
 				}
@@ -232,10 +241,16 @@ public class Main extends ApplicationAdapter {
 			for (Item item: listPanel.sItems) {
 				item.setSoftVisible(false);
 			}
+			for (Tipbox tipbox: tipboxes) {
+				tipbox.setSoftVisible(false);
+			}
 		}
 		if(itemTab == 2){
 			for (Item item: listPanel.wItems) {
 				item.setSoftVisible(false);
+			}
+			for (Tipbox tipbox: tipboxes) {
+				tipbox.setSoftVisible(true);
 			}
 		}
 
@@ -331,6 +346,10 @@ public class Main extends ApplicationAdapter {
 		//drawing the components after so that they are on the top
 		stage.draw();
 		stage.act();
+
+		for (Tipbox tipbox: tipboxes) {
+			tipbox.render(batch);
+		}
 		batch.end();
 	}
 	

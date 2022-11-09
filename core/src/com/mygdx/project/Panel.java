@@ -90,6 +90,9 @@ public class Panel {
                 sItems.add((Item) minipanel);
             }
         }
+        else if(minipanel instanceof Tipbox){
+            Main.tipboxes.add((Tipbox) minipanel);
+        }
     }
     /**
      * removes the component from the lists but it can be added back whenever
@@ -141,6 +144,9 @@ public class Panel {
 
     public void setSoftVisible(boolean visible){
         supposedToBeVisible = visible;
+    }
+    public void setPosition(float x, float y){
+        position.setPosition(x, y);
     }
     /**
      * @return returns the panel this panel belongs to

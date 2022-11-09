@@ -23,10 +23,9 @@ public class Item extends Minipanel{
     //labels for the item (if weapon)
     ArrayList<MBLabel> labels = new ArrayList<>();
 
-    ArrayList<Tipbox> tipboxes = new ArrayList<>();
     int itemType;
     public Item(int itemType, int spot) {
-        super("core\\pics\\TopbarPanel.png", new Rectangle(125, 790, 460, 40));
+        super("core\\pics\\ItemPanel.png", new Rectangle(125, 790, 460, 40));
         this.itemType = itemType;
         //if this item is a weapon it sets it up as a weapon item
         if(itemType == 1){
@@ -320,7 +319,7 @@ public class Item extends Minipanel{
         labels.add(nameLabel);
         labels.add(descLabel);
 
-        Tipbox spellDesc = new Tipbox(new Rectangle(descLabel.getX(), descLabel.getY()+ descLabel.getHeight(), 200, 100));
+        Tipbox spellDesc = new Tipbox(new Rectangle(descLabel.getX(), descLabel.getY()+ descLabel.getHeight(), 279, 100));
         add(spellDesc);
 
 /*
@@ -480,12 +479,20 @@ public class Item extends Minipanel{
                     //making it easier to read
                     ArrayList<MBComponent> nextItemComponents = itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).components;
 
+                    ArrayList<Panel> thisItemTipbox = itemButtonUp.getItem().minipanels;
+                    ArrayList<Panel> nextItemTipbox = itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).minipanels;
+
                     int smallerListSize = Math.min(thisItemComponents.size(), nextItemComponents.size());
                     //saving this item's components' positions before I change them, so I can use there later
                     ArrayList<Float> oldYs = new ArrayList<>();
                     for(int i = 0; i < smallerListSize; i++) {
                         oldYs.add(thisItemComponents.get(i).getY());
                     }
+                    ArrayList<Float> oldYs2 = new ArrayList<>();
+                    for(int i = 0; i < thisItemTipbox.size(); i++) {
+                        oldYs2.add(thisItemTipbox.get(i).getY());
+                    }
+
                     //repositioning this item to its new spot
                     //looping through the list of this item's components and assigning their positions to the next item's components' positions
                     for (int i = 0; i < smallerListSize; i++) {
@@ -495,6 +502,13 @@ public class Item extends Minipanel{
                     for (int i = 0; i < smallerListSize; i++) {
                         nextItemComponents.get(i).setPosition(thisItemComponents.get(i).getX(), oldYs.get(i));
                     }
+                    for (int i = 0; i < thisItemTipbox.size(); i++) {
+                        thisItemTipbox.get(i).setPosition(thisItemTipbox.get(i).getX(), thisItemTipbox.get(i).getY() - (getHeight()+5));
+                    }
+                    for (int i = 0; i < nextItemTipbox.size(); i++) {
+                        nextItemTipbox.get(i).setPosition(nextItemTipbox.get(i).getX(), oldYs2.get(i));
+                    }
+
                     //moves the textfields with this item if in edit mode
                     if(editMode){
                         saveEdit();
@@ -528,11 +542,18 @@ public class Item extends Minipanel{
                     //making it easier to read
                     ArrayList<MBComponent> prevItemComponents = itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).components;
 
+                    ArrayList<Panel> thisItemTipbox = itemButtonUp.getItem().minipanels;
+                    ArrayList<Panel> prevItemTipbox = itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).minipanels;
+
                     int smallerListSize = Math.min(thisItemComponents.size(), prevItemComponents.size());
                     //saving this item's components' positions before I change them, so I can use there later
                     ArrayList<Float> oldYs = new ArrayList<>();
                     for(int i = 0; i < smallerListSize; i++) {
                         oldYs.add(thisItemComponents.get(i).getY());
+                    }
+                    ArrayList<Float> oldYs2 = new ArrayList<>();
+                    for(int i = 0; i < thisItemTipbox.size(); i++) {
+                        oldYs2.add(thisItemTipbox.get(i).getY());
                     }
                     //repositioning this item to its new spot
                     //looping through the list of this item's components and assigning their positions to the next item's components' positions
@@ -542,6 +563,12 @@ public class Item extends Minipanel{
                     //looping through the list of the previous item's components and assigning their positions to this item's components' old positions
                     for (int i = 0; i < smallerListSize; i++) {
                         prevItemComponents.get(i).setPosition(thisItemComponents.get(i).getX(), oldYs.get(i));
+                    }
+                    for (int i = 0; i < thisItemTipbox.size(); i++) {
+                        thisItemTipbox.get(i).setPosition(thisItemTipbox.get(i).getX(), thisItemTipbox.get(i).getY() + (getHeight()+5));
+                    }
+                    for (int i = 0; i < prevItemTipbox.size(); i++) {
+                        prevItemTipbox.get(i).setPosition(prevItemTipbox.get(i).getX(), oldYs2.get(i));
                     }
 
                     //moves the textfields with this item if in edit mode
@@ -650,7 +677,9 @@ public class Item extends Minipanel{
             for (int i = 0; i < item.components.size(); i++) {
                 item.components.get(i).setPosition(item.components.get(i).getX(), item.components.get(i).getY() + (item.getHeight()+5));
             }
-
+            for (int i = 0; i < item.minipanels.size(); i++) {
+                item.minipanels.get(i).setPosition(item.minipanels.get(i).getX(), item.minipanels.get(i).getY() + (item.getHeight()+5));
+            }
             //moves the textfields with the item if in edit mode
             if(item.editMode){
                 item.saveEdit();
@@ -686,6 +715,9 @@ public class Item extends Minipanel{
                 for (int i = 0; i < item.components.size(); i++) {
                     item.components.get(i).setPosition(item.components.get(i).getX(), item.components.get(i).getY() + (item.getHeight()+5));
                 }
+                for (int i = 0; i < item.minipanels.size(); i++) {
+                    item.minipanels.get(i).setPosition(item.minipanels.get(i).getX(), item.minipanels.get(i).getY() + (item.getHeight()+5));
+                }
                 //moves the textfields with the item if in edit mode
                 if (item.editMode) {
                     item.saveEdit();
@@ -715,6 +747,9 @@ public class Item extends Minipanel{
             //loops through the item's components' position and reduces the Y value by the item's height plus the gap between items (moving it down)
             for (int i = 0; i < item.components.size(); i++) {
                 item.components.get(i).setPosition(item.components.get(i).getX(), item.components.get(i).getY() - (item.getHeight()+5));
+            }
+            for (int i = 0; i < item.minipanels.size(); i++) {
+                item.minipanels.get(i).setPosition(item.minipanels.get(i).getX(), item.minipanels.get(i).getY() - (item.getHeight()+5));
             }
             //moves the textfields with the item if in edit mode
             if(item.editMode){
@@ -763,9 +798,26 @@ public class Item extends Minipanel{
     public void render(SpriteBatch batch) {
         if(itemType == 1) batch.draw(texture, position.x, (position.y-((position.height+5)* wSpot)), position.width, position.height);
         if(itemType == 2) batch.draw(texture, position.x, (position.y-((position.height+5)* sSpot)), position.width, position.height);
-        for (int i = 0; i < minipanels.size(); i++) {
-            minipanels.get(i).render(batch);
+/*
+        for (Panel minipanel : minipanels) {
+            if (!minipanel.supposedToBeVisible) {
+                //loops through the minipanel's list of components
+                for (int c = 0; c < minipanel.components.size(); c++) {
+                    //sets the soft visibility of the component to false
+                    minipanel.components.get(c).setSoftVisible(false);
+                }
+            } else {
+                minipanel.render(batch);
+                //loops through the minipanel's list of components
+                for (int c = 0; c < minipanel.components.size(); c++) {
+                    //if the component is supposed to be visible...
+                    if (minipanel.components.get(c).supposedToBeVisible) {
+                        //sets the soft visibility of the component to true
+                        minipanel.components.get(c).setSoftVisible(true);
+                    }
+                }
+            }
         }
+*/
     }
-
 }
