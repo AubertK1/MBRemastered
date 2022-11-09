@@ -319,7 +319,7 @@ public class Item extends Minipanel{
         labels.add(nameLabel);
         labels.add(descLabel);
 
-        Tipbox spellDesc = new Tipbox(new Rectangle(descLabel.getX(), descLabel.getY()+ descLabel.getHeight(), 279, 100));
+        Tipbox spellDesc = new Tipbox(new Rectangle(110, descLabel.getY()+ descLabel.getHeight() - 300, 780, 300));
         add(spellDesc);
 
 /*
