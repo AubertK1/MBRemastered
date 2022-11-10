@@ -346,7 +346,6 @@ public class Main extends ApplicationAdapter {
 		//drawing the components after so that they are on the top
 		stage.draw();
 		stage.act();
-
 		for (Tipbox tipbox: tipboxes) {
 			tipbox.render(batch);
 		}

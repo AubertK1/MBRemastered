@@ -319,7 +319,12 @@ public class Item extends Minipanel{
         labels.add(nameLabel);
         labels.add(descLabel);
 
-        Tipbox spellDesc = new Tipbox(new Rectangle(110, descLabel.getY()+ descLabel.getHeight() - 300, 780, 300));
+        final Tipbox spellDesc = new Tipbox(new Rectangle(115, descLabel.getY()+ (descLabel.getHeight()/2)-300, 770, 300));
+        MBTextArea spellDescTF = new MBTextArea("", uiSkin);
+        spellDescTF.setPosition(spellDesc.getX()+5, spellDesc.getY()+5);
+        spellDescTF.setSize(760, 480);
+        spellDescTF.setName("!TARGET!");
+        spellDesc.add(spellDescTF);
         add(spellDesc);
 
 /*
@@ -454,6 +459,7 @@ public class Item extends Minipanel{
                 for (int i = itemButtonDel.getItem().components.size()-1; i >= 0; i--) {
                     itemButtonDel.getItem().delete(itemButtonDel.getItem().components.get(i));
                 }
+                itemButtonDel.getItem().remove(spellDesc);
                 itemButtonDel.getItem().getPanel().remove(itemButtonDel.getItem());
 
             }

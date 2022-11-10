@@ -131,6 +131,9 @@ public class Panel {
             if(Main.itemTab == 1) wItems.remove(panel);
             else if(Main.itemTab == 2) sItems.remove(panel);
         }
+        if(panel instanceof Tipbox){
+            Main.tipboxes.remove(panel);
+        }
     }
 
     /**
