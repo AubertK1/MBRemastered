@@ -22,7 +22,7 @@ public class Item extends Minipanel{
     ArrayList<MBTextField> textFields = new ArrayList<>();
     //labels for the item (if weapon)
     ArrayList<MBLabel> labels = new ArrayList<>();
-
+    ArrayList<Tipbox> tipboxes = new ArrayList<>();
     int itemType;
     public Item(int itemType, int spot) {
         super("core\\pics\\ItemPanel.png", new Rectangle(125, 790, 460, 40));
@@ -321,11 +321,12 @@ public class Item extends Minipanel{
 
         final Tipbox spellDesc = new Tipbox(new Rectangle(115, descLabel.getY()+ (descLabel.getHeight()/2)-300, 770, 300));
         MBTextArea spellDescTF = new MBTextArea("", uiSkin);
-        spellDescTF.setPosition(spellDesc.getX()+5, spellDesc.getY()+5);
-        spellDescTF.setSize(760, 480);
+        spellDescTF.setPosition(spellDesc.getX()+10, spellDesc.getY()+10);
+        spellDescTF.setSize(750, 260);
         spellDescTF.setName("!TARGET!");
         spellDesc.add(spellDescTF);
         add(spellDesc);
+        tipboxes.add(spellDesc);
 
 /*
         modLabel = new MBLabel("ATKMod", uiSkin);
@@ -436,7 +437,7 @@ public class Item extends Minipanel{
         itemButtonEdit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Edit Button " + (itemButtonEdit.getItem().wID +1));
+                System.out.println("Edit Button " + (itemButtonEdit.getItem().sID +1));
                 if(!editMode) {
                     edit();
                     editMode = true;
@@ -601,7 +602,7 @@ public class Item extends Minipanel{
         //adds the component given to this item
         components.add(component);
         //sets the component's parent to this item
-        component.parent = this;
+        component.parent2 = this;
         //sets the component's item to this item
         component.item = this;
         //makes sure the component is an actor
@@ -804,6 +805,19 @@ public class Item extends Minipanel{
     public void render(SpriteBatch batch) {
         if(itemType == 1) batch.draw(texture, position.x, (position.y-((position.height+5)* wSpot)), position.width, position.height);
         if(itemType == 2) batch.draw(texture, position.x, (position.y-((position.height+5)* sSpot)), position.width, position.height);
+
+        for (int c = 0; c < components.size(); c++) {
+
+            if(components.get(c).supposedToBeVisible) {
+                //sets the soft visibility of the component to true
+                components.get(c).setSoftVisible(true);
+                components.get(c).getComponent().draw(batch, 1);
+            }
+        }
+        for (int i = 0; i < tipboxes.size(); i++) {
+            tipboxes.get(i).render(batch);
+        }
+
 /*
         for (Panel minipanel : minipanels) {
             if (!minipanel.supposedToBeVisible) {

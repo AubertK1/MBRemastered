@@ -12,13 +12,14 @@ public class Tipbox extends Minipanel{
     @Override
     public void render(SpriteBatch batch) {
         if (getPanel().editMode && getPanel().supposedToBeVisible) {
+
         batch.draw(texture, position.x, position.y, position.width, position.height);
-        //loops through the minipanel's list of components
+            //loops through the minipanel's list of components
             for (int c = 0; c < components.size(); c++) {
                 //sets the soft visibility of the component to true
+                components.get(c).getComponent().toFront();
                 components.get(c).setSoftVisible(true);
-                components.get(c).toFront();
-//                Main.stage.getRoot().swapActor(components.get(c), Main.stage.getRoot().getChild(Main.stage.getRoot().getChildren().size-1));
+                components.get(c).getComponent().draw(batch, 1);
             }
         } else {
             //loops through the minipanel's list of components
@@ -31,5 +32,4 @@ public class Tipbox extends Minipanel{
             }
         }
     }
-
 }

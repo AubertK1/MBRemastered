@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
  */
 public class MBComponent extends Actor {
     Rectangle position;
-    Panel parent;
+    Panel parent2;
     Item item;
     Texture texture;
     //setting the component's ID in the list
@@ -28,7 +28,7 @@ public class MBComponent extends Actor {
         return compID;
     }
     public Panel getPanel() {
-        return parent;
+        return parent2;
     }
     /**
      * @return returns the item this component belongs to

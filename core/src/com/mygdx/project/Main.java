@@ -53,6 +53,13 @@ public class Main extends ApplicationAdapter {
 		Skin uiSkin = new Skin (Gdx.files.internal(
 				"assets\\skins\\uiskin.json"));
 
+		sidePanel.setSoftVisible(true);
+		topPanel.setSoftVisible(true);
+		genStatsPanel.setSoftVisible(true);
+		reminderPanel.setSoftVisible(true);
+		toolbarPanel.setSoftVisible(true);
+		masterboardPanel.setSoftVisible(true);
+
 		//region Reminders
 		//creating a textarea
 		MBTextArea reminderTextArea;
@@ -336,20 +343,25 @@ public class Main extends ApplicationAdapter {
 		ScreenUtils.clear(new Color(0xe0e0e0ff));
 		//drawing the panels
 		batch.begin();
+
 		sidePanel.render(batch);
 		topPanel.render(batch);
 		genStatsPanel.render(batch);
 		reminderPanel.render(batch);
 		toolbarPanel.render(batch);
 		masterboardPanel.render(batch);
+
 //		reminderTextArea.setBorder(batch);
 		//drawing the components after so that they are on the top
-		stage.draw();
-		stage.act();
+/*
 		for (Tipbox tipbox: tipboxes) {
 			tipbox.render(batch);
 		}
+*/
 		batch.end();
+
+//		stage.draw();
+//		stage.act();
 	}
 	
 	@Override

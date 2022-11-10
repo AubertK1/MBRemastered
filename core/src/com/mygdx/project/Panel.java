@@ -63,11 +63,12 @@ public class Panel {
         //adds the component given to this panel
         components.add(component);
         //sets the component's parent to this panel
-        component.parent = this;
+        component.parent2 = this;
         //makes sure the component is an actor
         if(component.getComponent() != null) {
             //adds component to the stage so it can be drawn
             Main.stage.addActor(component.getComponent());
+//            Main.stage.getRoot().addActor(component.getComponent());
         }
     }
 
@@ -151,6 +152,7 @@ public class Panel {
     public void setPosition(float x, float y){
         position.setPosition(x, y);
     }
+    public void setSize(float width, float height){position.setSize(width, height);}
     /**
      * @return returns the panel this panel belongs to
      */
@@ -242,36 +244,19 @@ public class Panel {
         batch.draw(texture, position.x, position.y, position.width, position.height);
         //loops through this panel's list of minipanels
         for (int i = 0; i < minipanels.size(); i++) {
-            //if the minipanel's spot value is less than 0 then it doesn't render it (because it doesn't call render)
-            if(!minipanels.get(i).supposedToBeVisible){
-                //loops through the minipanel's list of components
-                for (int c = 0; c < minipanels.get(i).components.size(); c++) {
-                    //sets the soft visibility of the component to false
-                    minipanels.get(i).components.get(c).setSoftVisible(false);
+
+            minipanels.get(i).render(batch);
+            //loops through the minipanel's list of components
+
+
+        }
+        for (int c = 0; c < components.size(); c++) {
+
+                if(components.get(c).supposedToBeVisible) {
+                    //sets the soft visibility of the component to true
+                    components.get(c).setSoftVisible(true);
+                    components.get(c).getComponent().draw(batch, 1);
                 }
-            }
-/*
-            //if the minipanel's spot value is more than 5 then it doesn't render it (may change depending on the group of items)
-            else if(minipanels.get(i).wSpot > 5){
-                //loops through the minipanel's list of components
-                for (int c = 0; c < minipanels.get(i).components.size(); c++) {
-                    //sets the soft visibility of the component to false
-                    minipanels.get(i).components.get(c).setSoftVisible(false);
-                }
-            }
-*/
-            //renders everything else and sets the soft visibility to true
-            else {
-                minipanels.get(i).render(batch);
-                //loops through the minipanel's list of components
-                for (int c = 0; c < minipanels.get(i).components.size(); c++) {
-                    //if the component is supposed to be visible...
-                    if(minipanels.get(i).components.get(c).supposedToBeVisible) {
-                        //sets the soft visibility of the component to true
-                        minipanels.get(i).components.get(c).setSoftVisible(true);
-                    }
-                }
-            }
         }
     }
     public void dispose(){
