@@ -353,11 +353,9 @@ public class Main extends ApplicationAdapter {
 
 //		reminderTextArea.setBorder(batch);
 		//drawing the components after so that they are on the top
-/*
 		for (Tipbox tipbox: tipboxes) {
 			tipbox.render(batch);
 		}
-*/
 		batch.end();
 
 //		stage.draw();

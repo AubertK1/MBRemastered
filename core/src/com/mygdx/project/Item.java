@@ -323,8 +323,8 @@ public class Item extends Minipanel{
         MBTextArea spellDescTF = new MBTextArea("", uiSkin);
         spellDescTF.setPosition(spellDesc.getX()+10, spellDesc.getY()+10);
         spellDescTF.setSize(750, 260);
-        spellDescTF.setName("!TARGET!");
         spellDesc.add(spellDescTF);
+
         add(spellDesc);
         tipboxes.add(spellDesc);
 
@@ -511,11 +511,12 @@ public class Item extends Minipanel{
                     }
                     for (int i = 0; i < thisItemTipbox.size(); i++) {
                         thisItemTipbox.get(i).setPosition(thisItemTipbox.get(i).getX(), thisItemTipbox.get(i).getY() - (getHeight()+5));
+                        thisItemTipbox.get(i).components.get(i).setPosition(thisItemTipbox.get(i).components.get(i).getX(), thisItemTipbox.get(i).components.get(i).getY() - (getHeight()+5));
                     }
                     for (int i = 0; i < nextItemTipbox.size(); i++) {
                         nextItemTipbox.get(i).setPosition(nextItemTipbox.get(i).getX(), oldYs2.get(i));
+                        nextItemTipbox.get(i).components.get(i).setPosition(nextItemTipbox.get(i).components.get(i).getX(), oldYs2.get(i)+10);
                     }
-
                     //moves the textfields with this item if in edit mode
                     if(editMode){
                         saveEdit();
@@ -573,11 +574,12 @@ public class Item extends Minipanel{
                     }
                     for (int i = 0; i < thisItemTipbox.size(); i++) {
                         thisItemTipbox.get(i).setPosition(thisItemTipbox.get(i).getX(), thisItemTipbox.get(i).getY() + (getHeight()+5));
+                        thisItemTipbox.get(i).components.get(i).setPosition(thisItemTipbox.get(i).components.get(i).getX(), thisItemTipbox.get(i).components.get(i).getY() + (getHeight()+5));
                     }
                     for (int i = 0; i < prevItemTipbox.size(); i++) {
                         prevItemTipbox.get(i).setPosition(prevItemTipbox.get(i).getX(), oldYs2.get(i));
+                        prevItemTipbox.get(i).components.get(i).setPosition(prevItemTipbox.get(i).components.get(i).getX(), oldYs2.get(i)+10);
                     }
-
                     //moves the textfields with this item if in edit mode
                     if(editMode){
                         saveEdit();
@@ -686,6 +688,7 @@ public class Item extends Minipanel{
             }
             for (int i = 0; i < item.minipanels.size(); i++) {
                 item.minipanels.get(i).setPosition(item.minipanels.get(i).getX(), item.minipanels.get(i).getY() + (item.getHeight()+5));
+                item.minipanels.get(i).components.get(i).setPosition(item.minipanels.get(i).components.get(i).getX(), item.minipanels.get(i).components.get(i).getY() + (getHeight()+5));
             }
             //moves the textfields with the item if in edit mode
             if(item.editMode){
@@ -724,6 +727,7 @@ public class Item extends Minipanel{
                 }
                 for (int i = 0; i < item.minipanels.size(); i++) {
                     item.minipanels.get(i).setPosition(item.minipanels.get(i).getX(), item.minipanels.get(i).getY() + (item.getHeight()+5));
+                    item.minipanels.get(i).components.get(i).setPosition(item.minipanels.get(i).components.get(i).getX(), item.minipanels.get(i).components.get(i).getY() + (getHeight()+5));
                 }
                 //moves the textfields with the item if in edit mode
                 if (item.editMode) {
@@ -757,6 +761,7 @@ public class Item extends Minipanel{
             }
             for (int i = 0; i < item.minipanels.size(); i++) {
                 item.minipanels.get(i).setPosition(item.minipanels.get(i).getX(), item.minipanels.get(i).getY() - (item.getHeight()+5));
+                item.minipanels.get(i).components.get(i).setPosition(item.minipanels.get(i).components.get(i).getX(), item.minipanels.get(i).components.get(i).getY() - (getHeight()+5));
             }
             //moves the textfields with the item if in edit mode
             if(item.editMode){
