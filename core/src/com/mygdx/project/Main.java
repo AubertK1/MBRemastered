@@ -37,17 +37,17 @@ public class Main extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		stage = new Stage();
 		//setting up panels
-		sidePanel = new Panel("core\\pics\\SidecardPanel.png",
+		sidePanel = new Panel("core\\pics\\MBSkin2\\SidecardPanel.png",
 				new Rectangle(2, 150, 98, 850));
-		topPanel = new Panel("core\\pics\\TopbarPanel.png",
+		topPanel = new Panel("core\\pics\\MBSkin2\\TopbarPanel.png",
 				new Rectangle(110, 950, 780, 50));
-		genStatsPanel = new Panel("core\\pics\\GenstatsPanel.png",
+		genStatsPanel = new Panel("core\\pics\\MBSkin2\\GenstatsPanel.png",
 				new Rectangle(110, 550, 780, 390));
-		reminderPanel = new Panel("core\\pics\\ReminderPanel.png",
+		reminderPanel = new Panel("core\\pics\\MBSkin2\\ReminderPanel.png",
 				new Rectangle(110, 150, 780, 390));
-		toolbarPanel = new Panel("core\\pics\\ToolbarPanel.png",
+		toolbarPanel = new Panel("core\\pics\\MBSkin2\\ToolbarPanel.png",
 				new Rectangle(2, 2, 1916, 138));
-		masterboardPanel = new Panel("core\\pics\\MasterboardPanel.png",
+		masterboardPanel = new Panel("core\\pics\\MBSkin2\\MasterboardPanel.png",
 				new Rectangle(900, 150, 1018, 850));
 		//setting up skin for the UI of the app
 		Skin uiSkin = new Skin (Gdx.files.internal(
@@ -80,17 +80,17 @@ public class Main extends ApplicationAdapter {
 		//region stats
 		//creating all the stats panels to hold the player stats
 		Minipanel strPanel, dexPanel, conPanel, intPanel, wisPanel, chaPanel;
-		strPanel = new Minipanel("core\\pics\\minipanel2.png",
+		strPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
 				new Rectangle(120, 870, 50, 60));
-		dexPanel = new Minipanel("core\\pics\\minipanel2.png",
+		dexPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
 				new Rectangle(180, 870, 50, 60));
-		conPanel = new Minipanel("core\\pics\\minipanel2.png",
+		conPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
 				new Rectangle(240, 870, 50, 60));
-		intPanel = new Minipanel("core\\pics\\minipanel2.png",
+		intPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
 				new Rectangle(300, 870, 50, 60));
-		wisPanel = new Minipanel("core\\pics\\minipanel2.png",
+		wisPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
 				new Rectangle(360, 870, 50, 60));
-		chaPanel = new Minipanel("core\\pics\\minipanel2.png",
+		chaPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
 				new Rectangle(420, 870, 50, 60));
 		//creating the labels to put in the stats' minipanels
 		MBLabel strL = new MBLabel("STR", uiSkin);
@@ -154,7 +154,7 @@ public class Main extends ApplicationAdapter {
 		chaPanel.add(chaL);
 		//endregion
 		//creating a list panel to hold all the items and adding it to the genstats panel
-		final Minipanel listPanel = new Minipanel("core\\pics\\GenstatsPanel.png",
+		final Minipanel listPanel = new Minipanel("core\\pics\\MBSkin2\\GenstatsPanel.png",
 				new Rectangle(120, 560, 470, 300));
 		genStatsPanel.add(listPanel);
 
@@ -268,12 +268,14 @@ public class Main extends ApplicationAdapter {
 				if(itemTab == 1) {
 					Item item2 = new Item(1, Panel.nextAvaWSpot);
 					listPanel.add(item2);
+					item2.edit();
                     if(item2.getSpot() > 5) item2.setSoftVisible(false);
 				}
 				else if(itemTab == 2) {
 					Item item2 = new Item(2, Panel.nextAvaSSpot);
 					listPanel.add(item2);
-                    if(item2.getSpot() > 5) item2.setSoftVisible(false);
+					item2.edit();
+					if(item2.getSpot() > 5) item2.setSoftVisible(false);
                 }
             }
         });
@@ -281,7 +283,7 @@ public class Main extends ApplicationAdapter {
 		upButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-				if(itemTab == 1) {
+				if(itemTab == 1 && (listPanel.wItems.size() > 0)) {
 					for (int i = 0; i < listPanel.wItems.get(0).getPanel().minipanels.size(); i++) {
 						if (listPanel.wItems.get(0).getPanel().minipanels.get(i).wSpot > 0) {
 							listPanel.wItems.get(0).shuffleItemsUp();
@@ -289,7 +291,7 @@ public class Main extends ApplicationAdapter {
 						}
 					}
 				}
-				else if(itemTab == 2) {
+				else if(itemTab == 2 && (listPanel.sItems.size() > 0)) {
 					for (int i = 0; i < listPanel.sItems.get(0).getPanel().minipanels.size(); i++) {
 						if (listPanel.sItems.get(0).getPanel().minipanels.get(i).sSpot > 0) {
 							listPanel.sItems.get(0).shuffleItemsUp();
@@ -303,7 +305,7 @@ public class Main extends ApplicationAdapter {
 		downButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-				if(itemTab == 1) {
+				if(itemTab == 1 && (listPanel.wItems.size() > 0)) {
 					for (int i = 0; i < listPanel.wItems.get(0).getPanel().minipanels.size(); i++) {
 						if (listPanel.wItems.get(0).getPanel().minipanels.get(i).wSpot < 0) {
 							listPanel.wItems.get(0).shuffleItemsDown();
@@ -311,7 +313,7 @@ public class Main extends ApplicationAdapter {
 						}
 					}
 				}
-				if(itemTab == 2) {
+				if(itemTab == 2 && (listPanel.sItems.size() > 0)) {
 					for (int i = 0; i < listPanel.sItems.get(0).getPanel().minipanels.size(); i++) {
 						if (listPanel.sItems.get(0).getPanel().minipanels.get(i).sSpot < 0) {
 							listPanel.sItems.get(0).shuffleItemsDown();
@@ -340,7 +342,7 @@ public class Main extends ApplicationAdapter {
 	@Override
 	public void render () {
 		//clearing the board before drawing ??
-		ScreenUtils.clear(new Color(0xe0e0e0ff));
+		ScreenUtils.clear(new Color(0x747474ff));
 		//drawing the panels
 		batch.begin();
 

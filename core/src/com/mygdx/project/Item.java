@@ -25,7 +25,7 @@ public class Item extends Minipanel{
     ArrayList<Tipbox> tipboxes = new ArrayList<>();
     int itemType;
     public Item(int itemType, int spot) {
-        super("core\\pics\\ItemPanel.png", new Rectangle(125, 790, 460, 40));
+        super("core\\pics\\MBSkin2\\ItemPanel.png", new Rectangle(125, 790, 460, 40));
         this.itemType = itemType;
         //if this item is a weapon it sets it up as a weapon item
         if(itemType == 1){
@@ -93,6 +93,7 @@ public class Item extends Minipanel{
         //setting the textfields' values
         for (int i = 0; i < names.size(); i++) {
             textFields.add(new MBTextField(names.get(i), uiSkin));
+            //detecting when enter is pressed on each MBTextField so that enter can exit out of edit mode
             textFields.get(i).setKeyListener(new TextField.TextFieldListener() {
                 @Override
                 public void keyTyped(TextField textField, char c) {
@@ -104,12 +105,6 @@ public class Item extends Minipanel{
                 }
             });
         }
-/*
-        nameLabelTF = new MBTextField(name, uiSkin);
-        hitDieLabelTF = new MBTextField(hitDie, uiSkin);
-        modLabelTF = new MBTextField(mod, uiSkin);
-        typeLabelTF = new MBTextField(type, uiSkin);
-*/
         //adding all the components to this item's components
         add(nameLabel);
         add(diceLabel);
@@ -122,49 +117,7 @@ public class Item extends Minipanel{
         //starting the item in edit mode so the user can immediately edit the item text
         editMode = true;
         edit();
-        //detecting when enter is pressed on each MBTextField so that enter can exit out of edit mode
-/*
-        nameLabelTF.setKeyListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField textField, char c) {
-                if(c == '\n'){
-                    System.out.println("hey");
-                    saveEdit();
-                    editMode = false;
-                }
-            }
-        });
-        hitDieLabelTF.setKeyListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField textField, char c) {
-                if(c == '\n'){
-                    System.out.println("hey");
-                    saveEdit();
-                    editMode = false;
-                }
-            }
-        });
-        modLabelTF.setKeyListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField textField, char c) {
-                if(c == '\n'){
-                    System.out.println("hey");
-                    saveEdit();
-                    editMode = false;
-                }
-            }
-        });
-        typeLabelTF.setKeyListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField textField, char c) {
-                if(c == '\n'){
-                    System.out.println("hey");
-                    saveEdit();
-                    editMode = false;
-                }
-            }
-        });
-*/
+
         //setting the buttons' functions
         //changes this item in and out of edit mode
         itemButtonEdit.addListener(new ChangeListener() {
@@ -369,19 +322,9 @@ public class Item extends Minipanel{
                 }
             });
         }
-/*
-        nameLabelTF = new MBTextField(name, uiSkin);
-        hitDieLabelTF = new MBTextField(hitDie, uiSkin);
-        modLabelTF = new MBTextField(mod, uiSkin);
-        typeLabelTF = new MBTextField(type, uiSkin);
-*/
         //adding all the components to this item's components
         add(nameLabel);
         add(descLabel);
-/*
-        add(modLabel);
-        add(typeLabel);
-*/
         add(itemButtonEdit);
         add(itemButtonDel);
         add(itemButtonDown);
@@ -390,48 +333,6 @@ public class Item extends Minipanel{
         editMode = true;
         edit();
         //detecting when enter is pressed on each MBTextField so that enter can exit out of edit mode
-/*
-        nameLabelTF.setKeyListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField textField, char c) {
-                if(c == '\n'){
-                    System.out.println("hey");
-                    saveEdit();
-                    editMode = false;
-                }
-            }
-        });
-        hitDieLabelTF.setKeyListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField textField, char c) {
-                if(c == '\n'){
-                    System.out.println("hey");
-                    saveEdit();
-                    editMode = false;
-                }
-            }
-        });
-        modLabelTF.setKeyListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField textField, char c) {
-                if(c == '\n'){
-                    System.out.println("hey");
-                    saveEdit();
-                    editMode = false;
-                }
-            }
-        });
-        typeLabelTF.setKeyListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField textField, char c) {
-                if(c == '\n'){
-                    System.out.println("hey");
-                    saveEdit();
-                    editMode = false;
-                }
-            }
-        });
-*/
         //setting the buttons' functions
         //changes this item in and out of edit mode
         itemButtonEdit.addListener(new ChangeListener() {
@@ -619,6 +520,16 @@ public class Item extends Minipanel{
      */
     public void edit(){
         Item item = this;
+
+        if(item.getList() != null) {
+            for (Item item2: item.getList()) {
+                if(item2 != item) {
+                    item2.saveEdit();
+                    item2.editMode = false;
+                }
+            }
+        }
+
         //loops through this item's textfields list and reassigns the positions, re-adds them to the list, and sets their hard visibility to true
         for (int i = 0; i < textFields.size(); i++) {
             textFields.get(i).setPosition(labels.get(i).getX(), item.getY()+5);
@@ -628,6 +539,7 @@ public class Item extends Minipanel{
         }
         //loops through this item's tipboxes
         for (int i = 0; i < minipanels.size(); i++) {
+            minipanels.get(i).editMode = true;
             minipanels.get(i).setSoftVisible(true);
         }
     }
@@ -645,30 +557,9 @@ public class Item extends Minipanel{
         }
         //loops through this item's tipboxes
         for (int i = 0; i < minipanels.size(); i++) {
+            minipanels.get(i).editMode = false;
             minipanels.get(i).setSoftVisible(false);
         }
-/*
-
-        name = nameLabelTF.textField.getText();
-        hitDie = hitDieLabelTF.textField.getText();
-        mod = modLabelTF.textField.getText();
-        type = typeLabelTF.textField.getText();
-
-        nameLabel.label.setText(name);
-        diceLabel.label.setText(hitDie);
-        modLabel.label.setText(mod);
-        typeLabel.label.setText(type);
-
-        nameLabelTF.setVisible(false);
-        hitDieLabelTF.setVisible(false);
-        modLabelTF.setVisible(false);
-        typeLabelTF.setVisible(false);
-
-        remove(nameLabelTF);
-        remove(hitDieLabelTF);
-        remove(modLabelTF);
-        remove(typeLabelTF);
-*/
     }
 
     /**
@@ -704,8 +595,10 @@ public class Item extends Minipanel{
         }
     }
     public ArrayList<Item> getList(){
-        if(Main.itemTab == 1) return getPanel().wItems;
-        else if(Main.itemTab == 2) return getPanel().sItems;
+        if(getPanel() != null) {
+            if (Main.itemTab == 1) return getPanel().wItems;
+            else if (Main.itemTab == 2) return getPanel().sItems;
+        }
         return null;
     }
     /**
