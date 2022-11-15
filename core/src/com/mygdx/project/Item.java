@@ -1,6 +1,8 @@
 package com.mygdx.project;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -312,6 +314,7 @@ public class Item extends Minipanel{
         //setting the textfields' values
         for (int i = 0; i < labels.size(); i++) {
             textFields.add(new MBTextField(String.valueOf(labels.get(i).label.getText()), uiSkin));
+//            add(textFields.get(i));
             textFields.get(i).setKeyListener(new TextField.TextFieldListener() {
                 @Override
                 public void keyTyped(TextField textField, char c) {
@@ -359,6 +362,7 @@ public class Item extends Minipanel{
                 int currSpot = itemButtonDown.getItem().sSpot;
                 shuffleItemsUp(currSpot);
 
+//                itemButtonDel.getItem().delete(itemButtonDel.getItem().components.get(itemButtonDel.getItem().components.size()));
                 for (int i = itemButtonDel.getItem().components.size()-1; i >= 0; i--) {
                     itemButtonDel.getItem().delete(itemButtonDel.getItem().components.get(i));
                 }
@@ -560,6 +564,7 @@ public class Item extends Minipanel{
      * sets the labels to the text of the textfields and makes them disappear
      */
     public void saveEdit(){
+        GlyphLayout layout = new GlyphLayout();
 
         for (int i = 0; i < textFields.size(); i++) {
             if(labels.get(i).getName() != null && labels.get(i).getName().equals("tf")) {
@@ -567,15 +572,25 @@ public class Item extends Minipanel{
                     MBTextArea tipboxTF = ((Tipbox) minipanels.get(0)).getTextArea();
                     names.set(i, tipboxTF.textArea.getText());
 
-                    if(tipboxTF.textArea.getText().length() > 19 || tipboxTF.textArea.getLines() > 1){
-                        labels.get(i).label.setText("text is really long...");
+                    layout.setText(uiSkin.getFont("default-font"), names.get(i));
+
+                    if(layout.width > labels.get(i).getWidth()){
+                        labels.get(i).label.setText(shortenString(names.get(i), labels.get(i).getWidth()));
+                    }
+                    else if(tipboxTF.textArea.getLines() > 1){
+                        labels.get(i).label.setText(shortenString(names.get(i), labels.get(i).getWidth()));
                     }
                     else labels.get(i).label.setText(names.get(i));
                 }
             }
             else {
                 names.set(i, textFields.get(i).textField.getText());
-                labels.get(i).label.setText(names.get(i));
+                layout.setText(uiSkin.getFont("default-font"), names.get(i));
+
+                if(layout.width > labels.get(i).getWidth()){
+                    labels.get(i).label.setText(shortenString(names.get(i), labels.get(i).getWidth()));
+                }
+                else labels.get(i).label.setText(names.get(i));
                 textFields.get(i).setVisible(false);
                 remove(textFields.get(i));
             }
@@ -586,7 +601,28 @@ public class Item extends Minipanel{
             minipanels.get(i).setSoftVisible(false);
         }
     }
+    public String shortenString(String str, float length){
+        GlyphLayout layout = new GlyphLayout();
+        String shortenedString;
 
+        layout.setText(uiSkin.getFont("default-font"), "...");
+        float elipse = layout.width;
+
+        for (int i = 0; i < str.length(); i++) {
+            layout.setText(uiSkin.getFont("default-font"), str.substring(0,i));
+            if((layout.width+elipse) >= length || str.charAt(i) == '\n' || str.charAt(i) == '\r'){
+                if(str.charAt(i) == '\n' || str.charAt(i) == '\r'){
+                    shortenedString = str.substring(0,i);
+                    return shortenedString.trim()+"...";
+                }
+                else {
+                    shortenedString = str.substring(0, i - 1);
+                    return shortenedString.trim() + "...";
+                }
+            }
+        }
+        return "...";
+    }
     /**
      * shuffles all the items up
      */
