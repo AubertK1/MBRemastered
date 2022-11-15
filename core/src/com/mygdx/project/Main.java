@@ -109,28 +109,28 @@ public class Main extends ApplicationAdapter {
 		//creating the textfields to put in the stats' minipanels
 		MBTextField strTF = new MBTextField("", uiSkin);
 		//size and positions set by eyeballing until it looked nice
-		strTF.setSize(44, 35);
-		strTF.setPosition(123, 873);
+		strTF.setSize(42, 35);
+		strTF.setPosition(124, 873);
 		strTF.textField.setAlignment(Align.center);
 		MBTextField dexTF = new MBTextField("", uiSkin);
-		dexTF.setSize(44, 35);
-		dexTF.setPosition(183, 873);
+		dexTF.setSize(42, 35);
+		dexTF.setPosition(184, 873);
 		dexTF.textField.setAlignment(Align.center);
 		MBTextField conTF = new MBTextField("", uiSkin);
-		conTF.setSize(44, 35);
-		conTF.setPosition(243, 873);
+		conTF.setSize(42, 35);
+		conTF.setPosition(244, 873);
 		conTF.textField.setAlignment(Align.center);
 		MBTextField intTF = new MBTextField("", uiSkin);
-		intTF.setSize(44, 35);
-		intTF.setPosition(303, 873);
+		intTF.setSize(42, 35);
+		intTF.setPosition(304, 873);
 		intTF.textField.setAlignment(Align.center);
 		MBTextField wisTF = new MBTextField("", uiSkin);
-		wisTF.setSize(44, 35);
-		wisTF.setPosition(363, 873);
+		wisTF.setSize(42, 35);
+		wisTF.setPosition(364, 873);
 		wisTF.textField.setAlignment(Align.center);
 		MBTextField chaTF = new MBTextField("", uiSkin);
-		chaTF.setSize(44, 35);
-		chaTF.setPosition(423, 873);
+		chaTF.setSize(42, 35);
+		chaTF.setPosition(424, 873);
 		chaTF.textField.setAlignment(Align.center);
 		//adding stats panels to the panel
 		genStatsPanel.add(strPanel);
@@ -154,7 +154,7 @@ public class Main extends ApplicationAdapter {
 		chaPanel.add(chaL);
 		//endregion
 		//creating a list panel to hold all the items and adding it to the genstats panel
-		final Minipanel listPanel = new Minipanel("core\\pics\\MBSkin2\\GenstatsPanel.png",
+		final Minipanel listPanel = new Minipanel("core\\pics\\MBSkin2\\ListPanel.png",
 				new Rectangle(120, 560, 470, 300));
 		genStatsPanel.add(listPanel);
 

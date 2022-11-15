@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class Tipbox extends Minipanel{
     public Tipbox(Rectangle position) {
-        super("core\\pics\\MBSkin2\\TipBox3.png", position);
+        super("core\\pics\\MBSkin2\\TipBox4.png", position);
     }
 
 
@@ -31,5 +31,11 @@ public class Tipbox extends Minipanel{
                 }
             }
         }
+    }
+    public MBTextArea getTextArea(){
+        for (MBComponent textarea: components) {
+            if(textarea instanceof MBTextArea) return (MBTextArea) textarea;
+        }
+        return null;
     }
 }

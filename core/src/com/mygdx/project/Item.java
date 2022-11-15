@@ -267,6 +267,7 @@ public class Item extends Minipanel{
         descLabel = new MBLabel("Item Description...", uiSkin);
         descLabel.setPosition(nameLabel.getX()+ nameLabel.getWidth()+2, nameLabel.getY());
         descLabel.setSize(279, nameLabel.getHeight());
+        descLabel.setName("tf");
         names.add(descLabel.label.getText().toString());
 
         labels.add(nameLabel);
@@ -309,8 +310,8 @@ public class Item extends Minipanel{
         itemButtonUp.setPosition((itemButtonDel.getX()+itemButtonDel.getWidth()+2), itemButtonDown.getY()+itemButtonDown.getHeight()+2);
         itemButtonUp.setSize(20, 15);
         //setting the textfields' values
-        for (int i = 0; i < names.size(); i++) {
-            textFields.add(new MBTextField(names.get(i), uiSkin));
+        for (int i = 0; i < labels.size(); i++) {
+            textFields.add(new MBTextField(String.valueOf(labels.get(i).label.getText()), uiSkin));
             textFields.get(i).setKeyListener(new TextField.TextFieldListener() {
                 @Override
                 public void keyTyped(TextField textField, char c) {
@@ -532,10 +533,21 @@ public class Item extends Minipanel{
 
         //loops through this item's textfields list and reassigns the positions, re-adds them to the list, and sets their hard visibility to true
         for (int i = 0; i < textFields.size(); i++) {
-            textFields.get(i).setPosition(labels.get(i).getX(), item.getY()+5);
-            textFields.get(i).setSize(labels.get(i).getWidth(), 30);
-            add(textFields.get(i));
-            textFields.get(i).setVisible(true);
+            if(labels.get(i).getName() != null && labels.get(i).getName().equals("tf")){
+                if(minipanels.get(0) instanceof Tipbox){
+                    MBTextArea tipboxTF = ((Tipbox) minipanels.get(0)).getTextArea();
+                    tipboxTF.textArea.setText(names.get(i));
+                    labels.get(i).label.setText("");
+                }
+            }
+            else {
+                textFields.get(i).textField.setText(names.get(i));
+                labels.get(i).label.setText("");
+                textFields.get(i).setPosition(labels.get(i).getX(), item.getY() + 5);
+                textFields.get(i).setSize(labels.get(i).getWidth(), 30);
+                add(textFields.get(i));
+                textFields.get(i).setVisible(true);
+            }
         }
         //loops through this item's tipboxes
         for (int i = 0; i < minipanels.size(); i++) {
@@ -550,10 +562,23 @@ public class Item extends Minipanel{
     public void saveEdit(){
 
         for (int i = 0; i < textFields.size(); i++) {
-            names.set(i, textFields.get(i).textField.getText());
-            labels.get(i).label.setText(names.get(i));
-            textFields.get(i).setVisible(false);
-            remove(textFields.get(i));
+            if(labels.get(i).getName() != null && labels.get(i).getName().equals("tf")) {
+                if (minipanels.get(0) instanceof Tipbox) {
+                    MBTextArea tipboxTF = ((Tipbox) minipanels.get(0)).getTextArea();
+                    names.set(i, tipboxTF.textArea.getText());
+
+                    if(tipboxTF.textArea.getText().length() > 19 || tipboxTF.textArea.getLines() > 1){
+                        labels.get(i).label.setText("text is really long...");
+                    }
+                    else labels.get(i).label.setText(names.get(i));
+                }
+            }
+            else {
+                names.set(i, textFields.get(i).textField.getText());
+                labels.get(i).label.setText(names.get(i));
+                textFields.get(i).setVisible(false);
+                remove(textFields.get(i));
+            }
         }
         //loops through this item's tipboxes
         for (int i = 0; i < minipanels.size(); i++) {
