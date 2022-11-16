@@ -314,7 +314,7 @@ public class Item extends Minipanel{
         //setting the textfields' values
         for (int i = 0; i < labels.size(); i++) {
             textFields.add(new MBTextField(String.valueOf(labels.get(i).label.getText()), uiSkin));
-//            add(textFields.get(i));
+            add(textFields.get(i));
             textFields.get(i).setKeyListener(new TextField.TextFieldListener() {
                 @Override
                 public void keyTyped(TextField textField, char c) {
