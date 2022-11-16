@@ -18,6 +18,18 @@
     default: { down: default-round-down, up: default-round, disabled: default-round },
     toggle: { parent: default, checked: default-round-down }
   },
+  ImageButtonStyle: {
+    default: { down: default-round-down, up: default-round, disabled: default-round, imageUp:default-round-D},
+    toggle: { parent: default, checked: default-round-down }
+  },
+  ButtonStyle: {
+    defaultU: { down: default-round-down, up: default-round-U, disabled: default-round-U },
+    toggleU: { parent: defaultU, checked: default-round-down }
+  },
+  ButtonStyle: {
+    defaultD: { down: default-round-down, up: default-round-D, disabled: default-round-D },
+    toggleD: { parent: defaultD, checked: default-round-down }
+  },
   TextButtonStyle: {
     default: { parent: default, font: default-font, fontColor: white, disabledFontColor: gray },
     toggle: { parent: default, checked: default-round-down, downFontColor: red }
