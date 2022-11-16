@@ -26,14 +26,4 @@ public class MBTextArea extends MBComponent{
     public Actor getComponent(){
         return textArea;
     }
-    //fixme
-/*    public void setBorder(SpriteBatch batch){
-        Rectangle size = new Rectangle(textArea.getX()-10, textArea.getY()-10,
-                textArea.getWidth()+20, textArea.getHeight()+20);
-        Texture texture1 = new Texture("C:\\Users\\ak2000\\Documents\\Mine" +
-                "\\MBRemastered\\MBRemastered\\MBRemastered\\core\\pics\\GenstatsPanel.png");
-        batch.begin();
-        batch.draw(texture1, size.x, size.y, size.width, size.height);
-
-    }*/
 }
