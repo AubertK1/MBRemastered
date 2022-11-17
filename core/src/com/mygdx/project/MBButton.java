@@ -30,6 +30,7 @@ public class MBButton extends MBComponent{
         if(button == null) return button2.addListener(listener);
         else return button.addListener(listener);
     }
+
     public Actor getComponent(){
         if(button == null) return button2;
         else return button;

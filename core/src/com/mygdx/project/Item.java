@@ -78,6 +78,9 @@ public class Item extends Minipanel{
         labels.add(typeLabel);
         //creating buttons and setting their positions and sizes
         final MBButton itemButtonEdit = new MBButton(uiSkin, "edit-toggle");
+        itemButtonEdit.button.setChecked(true);
+        itemButtonEdit.setName("editbutton");
+        itemButtonEdit.button.setName("editbutton");
         itemButtonEdit.setPosition((typeLabel.getX()+typeLabel.getWidth()+10), nameLabel.getY()-1);
         itemButtonEdit.setSize(20, 15);
 
@@ -298,6 +301,8 @@ public class Item extends Minipanel{
         //creating buttons and setting their positions and sizes
         final MBButton itemButtonEdit = new MBButton(uiSkin, "edit-toggle");
         itemButtonEdit.button.setChecked(true);
+        itemButtonEdit.setName("editbutton");
+        itemButtonEdit.button.setName("editbutton");
         itemButtonEdit.setPosition((descLabel.getX()+descLabel.getWidth()+10), nameLabel.getY()-1);
         itemButtonEdit.setSize(20, 15);
 
@@ -537,6 +542,13 @@ public class Item extends Minipanel{
             }
         }
 
+        //finds editbutton and checks it
+        for (int i = 0; i < components.size(); i++) {
+            if(components.get(i).getName() != null && components.get(i).getName().equals("editbutton") && components.get(i) instanceof MBButton){
+                ((MBButton) components.get(i)).button.setChecked(true);
+            }
+
+        }
         //loops through this item's textfields list and reassigns the positions, re-adds them to the list, and sets their hard visibility to true
         for (int i = 0; i < textFields.size(); i++) {
             if(labels.get(i).getName() != null && labels.get(i).getName().equals("tf")){
@@ -567,6 +579,15 @@ public class Item extends Minipanel{
      */
     public void saveEdit(){
         GlyphLayout layout = new GlyphLayout();
+
+        //finds editbutton and unchecks it
+        for (int i = 0; i < components.size(); i++) {
+            if(components.get(i).getName() != null && components.get(i).getName().equals("editbutton") && components.get(i) instanceof MBButton){
+                ((MBButton) components.get(i)).button.setChecked(false);
+            }
+
+        }
+
 
         for (int i = 0; i < textFields.size(); i++) {
             if(labels.get(i).getName() != null && labels.get(i).getName().equals("tf")) {

@@ -153,6 +153,8 @@ public class Main extends ApplicationAdapter {
 		chaPanel.add(chaTF);
 		chaPanel.add(chaL);
 		//endregion
+
+		//region listpanel
 		//creating a list panel to hold all the items and adding it to the genstats panel
 		final Minipanel listPanel = new Minipanel("core\\pics\\MBSkin2\\ListPanel.png",
 				new Rectangle(120, 560, 470, 300));
@@ -174,6 +176,7 @@ public class Main extends ApplicationAdapter {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				if(itemTab == 2){
+					itemTab = 1;
 					for (Item item: listPanel.sItems) {
 						item.setSoftVisible(false);
 					}
@@ -189,7 +192,6 @@ public class Main extends ApplicationAdapter {
 					for (Tipbox tipbox: tipboxes) {
 						tipbox.setSoftVisible(true);
 					}
-					itemTab = 1;
 				}
 			}
 		});
@@ -198,6 +200,7 @@ public class Main extends ApplicationAdapter {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				if(itemTab == 1){
+					itemTab = 2;
 					for (Item item: listPanel.sItems) {
 						if(item.getSpot() >= 0 && item.getSpot() <= 5) {
 							item.setSoftVisible(true);
@@ -215,7 +218,6 @@ public class Main extends ApplicationAdapter {
 							tipbox.setSoftVisible(true);
 						}
 					}
-					itemTab = 2;
 				}
 			}
 		});
@@ -323,6 +325,11 @@ public class Main extends ApplicationAdapter {
 				}
             }
         });
+		//endregion
+
+		//region imagebutton
+		MBButton imageButton = new MBButton(uiSkin);
+		//endregion
 		//endregion
 
 		//region Top Bar
