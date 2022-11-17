@@ -159,11 +159,11 @@ public class Main extends ApplicationAdapter {
 		genStatsPanel.add(listPanel);
 
 		//creating item tab buttons
-		final MBButton weaponsButton = new MBButton(uiSkin);
+		final MBButton weaponsButton = new MBButton("WEAPONS", uiSkin, 30, 1);
 		weaponsButton.setPosition(listPanel.getX()+5, listPanel.getY()+ listPanel.getHeight()-20);
 		weaponsButton.setSize(80, 15);
 
-		final MBButton spellsButton = new MBButton(uiSkin);
+		final MBButton spellsButton = new MBButton("SPELLS", uiSkin, 30, 1);
 		spellsButton.setPosition(weaponsButton.getX()+ weaponsButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
 		spellsButton.setSize(80, 15);
 
@@ -187,7 +187,7 @@ public class Main extends ApplicationAdapter {
 						}
 					}
 					for (Tipbox tipbox: tipboxes) {
-						tipbox.setSoftVisible(false);
+						tipbox.setSoftVisible(true);
 					}
 					itemTab = 1;
 				}

@@ -77,19 +77,19 @@ public class Item extends Minipanel{
         labels.add(modLabel);
         labels.add(typeLabel);
         //creating buttons and setting their positions and sizes
-        final MBButton itemButtonEdit = new MBButton(uiSkin);
+        final MBButton itemButtonEdit = new MBButton(uiSkin, "edit-toggle");
         itemButtonEdit.setPosition((typeLabel.getX()+typeLabel.getWidth()+10), nameLabel.getY()-1);
         itemButtonEdit.setSize(20, 15);
 
-        final MBButton itemButtonDel = new MBButton(uiSkin);
+        final MBButton itemButtonDel = new MBButton(uiSkin, "delete-button");
         itemButtonDel.setPosition((typeLabel.getX()+typeLabel.getWidth()+10), itemButtonEdit.getY()+itemButtonEdit.getHeight()+2);
         itemButtonDel.setSize(20, 15);
 
-        final MBButton itemButtonDown = new MBButton(uiSkin);
+        final MBButton itemButtonDown = new MBButton(uiSkin, "down-button");
         itemButtonDown.setPosition((itemButtonDel.getX()+itemButtonDel.getWidth()+2), itemButtonEdit.getY());
         itemButtonDown.setSize(20, 15);
 
-        final MBButton itemButtonUp = new MBButton(uiSkin);
+        final MBButton itemButtonUp = new MBButton(uiSkin, "up-button");
         itemButtonUp.setPosition((itemButtonDel.getX()+itemButtonDel.getWidth()+2), itemButtonDown.getY()+itemButtonDown.getHeight()+2);
         itemButtonUp.setSize(20, 15);
         //setting the textfields' values
@@ -296,19 +296,20 @@ public class Item extends Minipanel{
         type = typeLabel.label.getText().toString();
 */
         //creating buttons and setting their positions and sizes
-        final MBButton itemButtonEdit = new MBButton(uiSkin);
+        final MBButton itemButtonEdit = new MBButton(uiSkin, "edit-toggle");
+        itemButtonEdit.button.setChecked(true);
         itemButtonEdit.setPosition((descLabel.getX()+descLabel.getWidth()+10), nameLabel.getY()-1);
         itemButtonEdit.setSize(20, 15);
 
-        final MBButton itemButtonDel = new MBButton(uiSkin);
+        final MBButton itemButtonDel = new MBButton(uiSkin, "delete-button");
         itemButtonDel.setPosition((descLabel.getX()+descLabel.getWidth()+10), itemButtonEdit.getY()+itemButtonEdit.getHeight()+2);
         itemButtonDel.setSize(20, 15);
 
-        final MBButton itemButtonDown = new MBButton(uiSkin);
+        final MBButton itemButtonDown = new MBButton(uiSkin, "down-button");
         itemButtonDown.setPosition((itemButtonDel.getX()+itemButtonDel.getWidth()+2), itemButtonEdit.getY());
         itemButtonDown.setSize(20, 15);
 
-        final MBButton itemButtonUp = new MBButton(uiSkin);
+        final MBButton itemButtonUp = new MBButton(uiSkin, "up-button");
         itemButtonUp.setPosition((itemButtonDel.getX()+itemButtonDel.getWidth()+2), itemButtonDown.getY()+itemButtonDown.getHeight()+2);
         itemButtonUp.setSize(20, 15);
         //setting the textfields' values
@@ -526,6 +527,7 @@ public class Item extends Minipanel{
     public void edit(){
         Item item = this;
 
+        //to have only one item edited at a time
         if(item.getList() != null) {
             for (Item item2: item.getList()) {
                 if(item2 != item) {

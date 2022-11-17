@@ -1,5 +1,5 @@
 
-uiskin10.png
+uiskin13.png
 size: 256,128
 format: RGBA8888
 filter: Linear,Linear
@@ -90,19 +90,37 @@ default-round
   orig: 12, 20
   offset: 0, 0
   index: -1
-default-round-D
+down-logo
   rotate: false
-  xy: 110, 15
-  size: 16, 14
+  xy: 111, 21
+  size: 14, 7
   split: 5, 5, 5, 4
   pad: 4, 4, 1, 1
   orig: 12, 20
   offset: 0, 0
   index: -1
-default-round-U
+up-logo
   rotate: false
-  xy: 99, 9
-  size: 12, 20
+  xy: 93, 15
+  size: 14, 7
+  split: 5, 5, 5, 4
+  pad: 4, 4, 1, 1
+  orig: 12, 20
+  offset: 0, 0
+  index: -1
+edit-logo
+  rotate: false
+  xy: 71, 8
+  size: 20, 20
+  split: 5, 5, 5, 4
+  pad: 4, 4, 1, 1
+  orig: 12, 20
+  offset: 0, 0
+  index: -1
+delete-logo
+  rotate: false
+  xy: 51, 6
+  size: 14, 21
   split: 5, 5, 5, 4
   pad: 4, 4, 1, 1
   orig: 12, 20

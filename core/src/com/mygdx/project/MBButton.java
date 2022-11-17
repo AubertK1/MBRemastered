@@ -4,26 +4,26 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class MBButton extends MBComponent{
     Button button;
     ImageButton button2;
-    ImageTextButton button3;
+    TextButton button3;
 
     public MBButton(Skin skin) {
-        button2 = new ImageButton(skin);
+        button = new Button(skin);
     }
     public MBButton(Skin skin, String styleName) {
-//        button = new Button(skin, styleName);
-        Texture texture1 = new Texture("core\\pics\\Logos\\downlogo.png");
-//        button2.setStyle(skin.get(ImageButton.ImageButtonStyle.class));
-        button2 = new ImageButton(skin);
+        button = new ImageButton(skin, styleName);
+    }
+    public MBButton(String text, Skin skin, float width, float height) {
+        button3 = new TextButton(text, skin, "default");
+        button3.getLabelCell().setActorWidth(width);
+        button3.getLabelCell().setActorHeight(height);
+        button = button3;
     }
     @Override
     public boolean addListener(EventListener listener) {
