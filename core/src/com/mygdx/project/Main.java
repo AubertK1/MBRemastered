@@ -3,15 +3,19 @@ package com.mygdx.project;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import com.badlogic.gdx.math.Rectangle;
+import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 
@@ -24,6 +28,8 @@ public class Main extends ApplicationAdapter {
 	//creating main panels
 	Panel sidePanel, topPanel, genStatsPanel, reminderPanel, toolbarPanel, masterboardPanel;
 	//list with all the MBComponents
+	static Panel debugPanel;
+	static boolean debugMode =false;
 	static ArrayList<MBComponent> allComps = new ArrayList<>();
 
 	String player;
@@ -43,6 +49,7 @@ public class Main extends ApplicationAdapter {
 				new Rectangle(110, 950, 780, 50));
 		genStatsPanel = new Panel("core\\pics\\MBSkin2\\GenstatsPanel.png",
 				new Rectangle(110, 550, 780, 390));
+
 		reminderPanel = new Panel("core\\pics\\MBSkin2\\ReminderPanel.png",
 				new Rectangle(110, 150, 780, 390));
 		toolbarPanel = new Panel("core\\pics\\MBSkin2\\ToolbarPanel.png",
@@ -52,12 +59,13 @@ public class Main extends ApplicationAdapter {
 		//setting up skin for the UI of the app
 		Skin uiSkin = new Skin (Gdx.files.internal(
 				"assets\\skins\\uiskin.json"));
-
+		debugPanel = reminderPanel;
 		sidePanel.setSoftVisible(true);
 		topPanel.setSoftVisible(true);
 		genStatsPanel.setSoftVisible(true);
-		reminderPanel.setSoftVisible(true);
+
 		toolbarPanel.setSoftVisible(true);
+		reminderPanel.setSoftVisible(true);
 		masterboardPanel.setSoftVisible(true);
 
 		//region Reminders
@@ -328,7 +336,33 @@ public class Main extends ApplicationAdapter {
 		//endregion
 
 		//region imagebutton
-		MBButton imageButton = new MBButton(uiSkin);
+		final Texture texture1 = new Texture("core\\pics\\Images\\playersheet1.jpg");
+		final MBButton imageButton = new MBButton(uiSkin, texture1);
+		imageButton.setPosition(595, 560);
+		imageButton.setSize(290, 370);
+		final int[] IB = {1};
+		genStatsPanel.add(imageButton);
+
+		imageButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if(IB[0] == 1){
+					imageButton.setImage(texture1);
+					IB[0] = 2;
+				}
+				else{
+
+				}
+			}
+			@Override
+			public boolean handle (Event event) {
+				imageButton.aFloat = .3f;
+				debugMode = true;
+				if (!(event instanceof ChangeEvent)) return false;
+				changed((ChangeEvent)event, event.getTarget());
+				return false;
+			}
+		});
 		//endregion
 		//endregion
 
@@ -368,7 +402,7 @@ public class Main extends ApplicationAdapter {
 		batch.end();
 
 //		stage.draw();
-//		stage.act();
+		stage.act();
 	}
 	
 	@Override

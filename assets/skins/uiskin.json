@@ -19,12 +19,16 @@
     toggle: { parent: default, checked: default-round-down }
   },
   ImageButtonStyle: {
+    default: { down: default-round-down, up: default-round, disabled: default-round, over: default-round-down},
+    toggle: { parent: default, checked: default-round-down }
+  },
+  ImageButtonStyle: {
     down-button: { down: default-round-down, up: default-round, disabled: default-round, imageUp:down-logo},
-    down-toggle: { parent: default, checked: default-round-down }
+    down-toggle: { parent: down-button, checked: default-round-down }
   },
   ImageButtonStyle: {
     up-button: { down: default-round-down, up: default-round, disabled: default-round, imageUp:up-logo},
-    up-toggle: { parent: default, checked: default-round-down }
+    up-toggle: { parent: up-button, checked: default-round-down }
   },
   ImageButtonStyle: {
     edit-button: { down: default-round-down, up: default-round, disabled: default-round, imageUp:edit-logo},
@@ -32,7 +36,7 @@
   },
   ImageButtonStyle: {
     delete-button: { down: default-round-down, up: default-round, disabled: default-round, imageUp:delete-logo},
-    delete-toggle: { parent: default, checked: default-round-down, imageUp:delete-logo, imageChecked:delete-logo }
+    delete-toggle: { parent: delete-button, checked: default-round-down, imageUp:delete-logo, imageChecked:delete-logo }
   },
   TextButtonStyle: {
     default: { parent: default, font: default-font, fontColor: tan, disabledFontColor: gray },

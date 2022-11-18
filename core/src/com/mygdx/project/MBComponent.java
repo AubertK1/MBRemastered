@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 /**
  * Essentially making my own version of JComponents where I can group the different components
@@ -12,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 public class MBComponent extends Actor {
     Rectangle position;
     Panel parent2;
+    Skin skin1;
+    float aFloat = 1;
     Item item;
     Texture texture;
     //setting the component's ID in the list

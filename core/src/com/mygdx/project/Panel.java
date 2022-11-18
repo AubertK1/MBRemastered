@@ -241,6 +241,7 @@ public class Panel {
     public void render (SpriteBatch batch) {
         //screen size is 1920x1000 so adjust accordingly
         //draws this panel
+
         batch.draw(texture, position.x, position.y, position.width, position.height);
         //loops through this panel's list of minipanels
         for (int i = 0; i < minipanels.size(); i++) {
@@ -255,7 +256,12 @@ public class Panel {
                 if(components.get(c).supposedToBeVisible) {
                     //sets the soft visibility of the component to true
                     components.get(c).setSoftVisible(true);
-                    components.get(c).getComponent().draw(batch, 1);
+
+                    if(Main.debugMode && this ==Main.debugPanel){
+                        System.out.println();
+                    }
+
+                    components.get(c).getComponent().draw(batch, components.get(c).aFloat);
                 }
         }
     }
