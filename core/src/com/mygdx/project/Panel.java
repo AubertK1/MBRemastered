@@ -240,8 +240,9 @@ public class Panel {
      */
     public void render (SpriteBatch batch) {
         //screen size is 1920x1000 so adjust accordingly
+        //makes sure the panel's opacity is unchanged by the components' opacity changes
+        batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, 1);
         //draws this panel
-
         batch.draw(texture, position.x, position.y, position.width, position.height);
         //loops through this panel's list of minipanels
         for (int i = 0; i < minipanels.size(); i++) {
@@ -251,18 +252,14 @@ public class Panel {
 
 
         }
+        //loops through any components added directly to the panel
         for (int c = 0; c < components.size(); c++) {
-
-                if(components.get(c).supposedToBeVisible) {
-                    //sets the soft visibility of the component to true
-                    components.get(c).setSoftVisible(true);
-
-                    if(Main.debugMode && this ==Main.debugPanel){
-                        System.out.println();
-                    }
-
-                    components.get(c).getComponent().draw(batch, components.get(c).aFloat);
-                }
+            if(components.get(c).supposedToBeVisible) {
+                //sets the soft visibility of the component to true
+                components.get(c).setSoftVisible(true);
+                //draws the component
+                components.get(c).getComponent().draw(batch, components.get(c).aFloat);
+            }
         }
     }
     public void dispose(){

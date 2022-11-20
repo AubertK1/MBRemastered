@@ -49,7 +49,6 @@ public class Main extends ApplicationAdapter {
 				new Rectangle(110, 950, 780, 50));
 		genStatsPanel = new Panel("core\\pics\\MBSkin2\\GenstatsPanel.png",
 				new Rectangle(110, 550, 780, 390));
-
 		reminderPanel = new Panel("core\\pics\\MBSkin2\\ReminderPanel.png",
 				new Rectangle(110, 150, 780, 390));
 		toolbarPanel = new Panel("core\\pics\\MBSkin2\\ToolbarPanel.png",
@@ -59,6 +58,7 @@ public class Main extends ApplicationAdapter {
 		//setting up skin for the UI of the app
 		Skin uiSkin = new Skin (Gdx.files.internal(
 				"assets\\skins\\uiskin.json"));
+
 		debugPanel = reminderPanel;
 		sidePanel.setSoftVisible(true);
 		topPanel.setSoftVisible(true);
@@ -338,8 +338,10 @@ public class Main extends ApplicationAdapter {
 		//region imagebutton
 		final Texture texture1 = new Texture("core\\pics\\Images\\playersheet1.jpg");
 		final MBButton imageButton = new MBButton(uiSkin, texture1);
+
 		imageButton.setPosition(595, 560);
 		imageButton.setSize(290, 370);
+		imageButton.aFloat = .5f;
 		final int[] IB = {1};
 		genStatsPanel.add(imageButton);
 
@@ -356,8 +358,8 @@ public class Main extends ApplicationAdapter {
 			}
 			@Override
 			public boolean handle (Event event) {
-				imageButton.aFloat = .3f;
-				debugMode = true;
+				if (imageButton.getButton().isOver()) imageButton.aFloat = 1f;
+				else imageButton.aFloat = .5f;
 				if (!(event instanceof ChangeEvent)) return false;
 				changed((ChangeEvent)event, event.getTarget());
 				return false;

@@ -15,6 +15,7 @@ public class MBButton extends MBComponent{
     Button button;
     ImageButton button2;
     TextButton button3;
+    float oldA;
 
     public MBButton(Skin skin) {
         button = new Button(skin);
