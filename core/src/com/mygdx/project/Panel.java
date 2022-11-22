@@ -46,6 +46,8 @@ public class Panel {
     boolean editMode;
     boolean supposedToBeVisible = true;
 
+    float aFloat = 1f;
+
     public Panel(String fileLocation, Rectangle position){
         //sets the image of the panel
         texture = new Texture(fileLocation);
@@ -68,7 +70,8 @@ public class Panel {
         if(component.getComponent() != null) {
             //adds component to the stage so it can be drawn
             Main.stage.addActor(component.getComponent());
-//            Main.stage.getRoot().addActor(component.getComponent());
+            //so that the compID aligns with the component's position on the list
+            component.compID = Main.allComps.size();
         }
     }
 
@@ -241,7 +244,7 @@ public class Panel {
     public void render (SpriteBatch batch) {
         //screen size is 1920x1000 so adjust accordingly
         //makes sure the panel's opacity is unchanged by the components' opacity changes
-        batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, 1);
+        batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
         //draws this panel
         batch.draw(texture, position.x, position.y, position.width, position.height);
         //loops through this panel's list of minipanels

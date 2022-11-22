@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -17,6 +19,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.math.Rectangle;
 import javafx.scene.layout.Pane;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -87,7 +94,7 @@ public class Main extends ApplicationAdapter {
 		//region General Stats
 		//region stats
 		//creating all the stats panels to hold the player stats
-		Minipanel strPanel, dexPanel, conPanel, intPanel, wisPanel, chaPanel;
+		final Minipanel strPanel, dexPanel, conPanel, intPanel, wisPanel, chaPanel;
 		strPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
 				new Rectangle(120, 870, 50, 60));
 		dexPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
@@ -169,11 +176,13 @@ public class Main extends ApplicationAdapter {
 		genStatsPanel.add(listPanel);
 
 		//creating item tab buttons
-		final MBButton weaponsButton = new MBButton("WEAPONS", uiSkin, 30, 1);
+		final MBButton weaponsButton = new MBButton("Weapons", uiSkin);
+		((TextButton)weaponsButton.button).getLabel().setFontScale(.92f, .9f);
 		weaponsButton.setPosition(listPanel.getX()+5, listPanel.getY()+ listPanel.getHeight()-20);
 		weaponsButton.setSize(80, 15);
 
-		final MBButton spellsButton = new MBButton("SPELLS", uiSkin, 30, 1);
+		final MBButton spellsButton = new MBButton("Spells", uiSkin);
+		((TextButton)spellsButton.button).getLabel().setFontScale(1f, .9f);
 		spellsButton.setPosition(weaponsButton.getX()+ weaponsButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
 		spellsButton.setSize(80, 15);
 
@@ -336,30 +345,61 @@ public class Main extends ApplicationAdapter {
 		//endregion
 
 		//region imagebutton
-		final Texture texture1 = new Texture("core\\pics\\Images\\playersheet1.jpg");
-		final MBButton imageButton = new MBButton(uiSkin, texture1);
-
+		String reg = "C:\\Users\\auber\\OneDrive\\Documents\\GitHub\\MBRemastered\\core\\pics\\Images\\playersheet1.jpg";
+		final Texture texture1 = new Texture(reg);
+		//creating the imageButton as a text button
+		final MBButton imageButton = new MBButton("ADD IMAGE", uiSkin);
 		imageButton.setPosition(595, 560);
 		imageButton.setSize(290, 370);
+		//setting the default opacity
 		imageButton.aFloat = .5f;
-		final int[] IB = {1};
 		genStatsPanel.add(imageButton);
 
+		//adds a listener to the imageButton while it's a TextButton
 		imageButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				if(IB[0] == 1){
-					imageButton.setImage(texture1);
-					IB[0] = 2;
-				}
-				else{
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						System.setProperty("sun.java2d.d3d", "false");
+						JFileChooser chooser = new JFileChooser();
+						FileNameExtensionFilter filter = new FileNameExtensionFilter(
+								"JPG, PNG & GIF Images", "jpg", "gif", "png");
+						chooser.setFileFilter(filter);
+						JFrame f = new JFrame();
+						f.setVisible(true);
+						f.toFront();
+						f.setAlwaysOnTop(true);
+						f.setVisible(false);
+						int res = chooser.showSaveDialog(f);
+						f.dispose();
+						if (res == JFileChooser.APPROVE_OPTION) {
+							//Do some stuff
+							File file = chooser.getSelectedFile();
+							String path = file.toString();
+							texture1.getHeight();
+							Texture tex2 = new Texture(path);
 
-				}
+							//deletes the imageButton from the stage so that when it's added back it doesn't cause any complications in terms of the CompID
+							genStatsPanel.delete(imageButton);
+							//turns the imageButton into an ImageButton
+							imageButton.setImage(tex2);
+							//adds the imageButton to the stage so it's listener works
+							genStatsPanel.add(imageButton);
+						}
+					}
+				}).start();
+
 			}
 			@Override
 			public boolean handle (Event event) {
-				if (imageButton.getButton().isOver()) imageButton.aFloat = 1f;
-				else imageButton.aFloat = .5f;
+				//if the mouse is not hovered over the imageButton...
+				if (!imageButton.getButton().isOver()) {
+					imageButton.aFloat = .5f;
+				}
+				else imageButton.aFloat = 1f;
+
 				if (!(event instanceof ChangeEvent)) return false;
 				changed((ChangeEvent)event, event.getTarget());
 				return false;
