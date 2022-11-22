@@ -1,5 +1,6 @@
 package com.mygdx.project;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -32,23 +33,35 @@ public class MBButton extends MBComponent{
         button = new TextButton(text, skin1, styleName);
     }
     public void setImage(final Texture texture){
+        //saves the position of the text button
         Rectangle pos = new Rectangle(button.getX(), button.getY(), button.getWidth(), button.getHeight());
+        //removes the button's listeners
         for (int i = 0; i < button.getListeners().size; i++) {
             button.removeListener(button.getListeners().get(i));
         }
-
+        //changes this textbutton to an imagebutton
         if(!(button instanceof ImageButton)) button = new ImageButton(skin1);
+        //re-initializes the button
         button.setPosition(pos.x, pos.y);
         button.setSize(pos.width, pos.height);
         aFloat = .5f;
 
         final int[] IB = {1};
+        //adds a listener to the button
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if(IB[0] == 1) {
                     System.out.println("yo");
-					IB[0] = 2;
+					IB[0] = 1;
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            //fixme
+                            Main.launch(Main.class);
+                        }
+                    });
+
                 }
                 else{
 
@@ -66,7 +79,7 @@ public class MBButton extends MBComponent{
                 return false;
             }
         });
-
+        //changes the image of the button to the new image
         skin1.get(style, ImageButton.ImageButtonStyle.class).imageUp = new TextureRegionDrawable(new TextureRegion(texture));
     }
     @Override

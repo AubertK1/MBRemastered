@@ -43,6 +43,14 @@ public class Main extends ApplicationAdapter {
     static ArrayList<Tipbox> tipboxes = new ArrayList<>();
 
 	static int itemTab = 1;
+
+	//these are initialized from the start so that when they're used time isn't wasted while loading them
+	static String path;
+	static final JFileChooser chooser = new JFileChooser();
+	static final FileNameExtensionFilter filter = new FileNameExtensionFilter(
+			"JPG, PNG & GIF Images", "jpg", "gif", "png");
+	static final JFrame f = new JFrame();
+
 	@Override
 	public void create () {
         player = "PLAYER 1";
@@ -345,8 +353,6 @@ public class Main extends ApplicationAdapter {
 		//endregion
 
 		//region imagebutton
-		String reg = "C:\\Users\\auber\\OneDrive\\Documents\\GitHub\\MBRemastered\\core\\pics\\Images\\playersheet1.jpg";
-		final Texture texture1 = new Texture(reg);
 		//creating the imageButton as a text button
 		final MBButton imageButton = new MBButton("ADD IMAGE", uiSkin);
 		imageButton.setPosition(595, 560);
@@ -359,38 +365,8 @@ public class Main extends ApplicationAdapter {
 		imageButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						System.setProperty("sun.java2d.d3d", "false");
-						JFileChooser chooser = new JFileChooser();
-						FileNameExtensionFilter filter = new FileNameExtensionFilter(
-								"JPG, PNG & GIF Images", "jpg", "gif", "png");
-						chooser.setFileFilter(filter);
-						JFrame f = new JFrame();
-						f.setVisible(true);
-						f.toFront();
-						f.setAlwaysOnTop(true);
-						f.setVisible(false);
-						int res = chooser.showSaveDialog(f);
-						f.dispose();
-						if (res == JFileChooser.APPROVE_OPTION) {
-							//Do some stuff
-							File file = chooser.getSelectedFile();
-							String path = file.toString();
-							texture1.getHeight();
-							Texture tex2 = new Texture(path);
-
-							//deletes the imageButton from the stage so that when it's added back it doesn't cause any complications in terms of the CompID
-							genStatsPanel.delete(imageButton);
-							//turns the imageButton into an ImageButton
-							imageButton.setImage(tex2);
-							//adds the imageButton to the stage so it's listener works
-							genStatsPanel.add(imageButton);
-						}
-					}
-				}).start();
-
+				//allows the user to choose the file they want to display
+				fileChooseChanged();
 			}
 			@Override
 			public boolean handle (Event event) {
@@ -399,7 +375,8 @@ public class Main extends ApplicationAdapter {
 					imageButton.aFloat = .5f;
 				}
 				else imageButton.aFloat = 1f;
-
+				//renders the file (in handle because it's always called, so it will be called as soon as the file is chosen)
+				fileChooseHandle(genStatsPanel, imageButton);
 				if (!(event instanceof ChangeEvent)) return false;
 				changed((ChangeEvent)event, event.getTarget());
 				return false;
@@ -451,4 +428,58 @@ public class Main extends ApplicationAdapter {
 	public void dispose () {
 		batch.dispose();
 	}
+	static public void fileChooseChanged(){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				//makes only .jpg .png or .gif files able to be selected
+				chooser.setFileFilter(filter);
+				chooser.setDialogTitle("Select Image");
+				//initializing the frame
+				f.setVisible(true);
+				f.toFront();
+				f.setAlwaysOnTop(true);
+				f.setVisible(false);
+				//if the file is selected...
+				int res = chooser.showSaveDialog(f);
+				f.dispose();
+				if (res == JFileChooser.APPROVE_OPTION) {
+					//saves the selected file as a file
+					File file = chooser.getSelectedFile();
+					//saves the file location as a string
+					path = file.toString();
+				}
+			}
+		}).start();
+	}
+	static public void fileChooseHandle(Panel genStatsPanel, MBButton imageButton){
+		//to make sure this is only ran whenever the user selects a file
+		if(path != null) {
+			Texture tex2 = new Texture(path);
+			//deletes the imageButton from the stage so that when it's added back it doesn't cause any complications in terms of the CompID
+			genStatsPanel.delete(imageButton);
+			//turns the imageButton into an ImageButton
+			imageButton.setImage(tex2);
+			//adds the imageButton to the stage so it's listener works
+			genStatsPanel.add(imageButton);
+			//so that it's not called again
+			path = null;
+		}
+	}
+	public static int launch(Class c) {
+		String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+		String classpath = System.getProperty("java.class.path");
+		String className = c.getCanonicalName();
+
+		ProcessBuilder builder = new ProcessBuilder(javaBin, "-cp", classpath, className);
+		try{
+			Process process = builder.start();
+			process.waitFor();
+			return process.exitValue();
+		} catch(Exception e){
+			e.printStackTrace();
+			return 1;
+		}
+	}
+
 }
