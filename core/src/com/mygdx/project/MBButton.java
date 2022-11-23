@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 
@@ -30,13 +31,20 @@ public class MBButton extends MBComponent{
         skin1 = skin;
         button = new TextButton(text, skin1, styleName);
     }
-    public void setImage(final Texture texture){
+    public void toImageButton(final Texture texture){
         //saves the position of the text button
         Rectangle pos = new Rectangle(button.getX(), button.getY(), button.getWidth(), button.getHeight());
         //removes the button's listeners
-        for (int i = 0; i < button.getListeners().size; i++) {
+        for (int i = button.getListeners().size-1; i >= 0; i--) {
             button.removeListener(button.getListeners().get(i));
         }
+        int buttonID = -1;
+
+        for (int i = 0; i < Main.stage.getActors().size; i++) {
+            if (Main.stage.getActors().get(i) == button) buttonID = i;
+        }
+        if (buttonID != -1) Main.stage.getActors().get(buttonID).addAction(Actions.removeActor());
+
         //changes this textbutton to an imagebutton
         button = new ImageButton(skin1);
         //re-initializes the button
@@ -93,7 +101,7 @@ public class MBButton extends MBComponent{
         skin1.get(style, ImageButton.ImageButtonStyle.class).imageUp = new TextureRegionDrawable(new TextureRegion(texture));
 //        skin1.get(style, ImageButton.ImageButtonStyle.class).over = skin1.get(style, ImageButton.ImageButtonStyle.class).up;
     }
-    public void setText(String text){
+    public void toTextButton(String text){
         Rectangle pos = new Rectangle(button.getX(), button.getY(), button.getWidth(), button.getHeight());
         for (int i = 0; i < button.getListeners().size; i++) {
             button.removeListener(button.getListeners().get(i));
@@ -101,6 +109,12 @@ public class MBButton extends MBComponent{
         for (int i = components.size()-1; i >= 0; i--) {
             delete(components.get(i));
         }
+        int buttonID = -1;
+
+        for (int i = 0; i < Main.stage.getActors().size; i++) {
+            if (Main.stage.getActors().get(i) == button) buttonID = i;
+        }
+        if (buttonID != -1) Main.stage.getActors().get(buttonID).addAction(Actions.removeActor());
 
         //changes this imagebutton to a textbutton
         button = new TextButton(text, skin1);

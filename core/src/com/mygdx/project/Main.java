@@ -3,29 +3,23 @@ package com.mygdx.project;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import com.badlogic.gdx.math.Rectangle;
-import javafx.scene.layout.Pane;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -40,6 +34,9 @@ public class Main extends ApplicationAdapter {
 	static Panel debugPanel;
 	static boolean debugMode =false;
 	static ArrayList<MBComponent> allComps = new ArrayList<>();
+
+	static int drawnComps = 0;
+	static ArrayList<MBComponent> newCompss = new ArrayList<>();
 
 	String player;
     static ArrayList<Tipbox> tipboxes = new ArrayList<>();
@@ -358,13 +355,16 @@ public class Main extends ApplicationAdapter {
 
 		//region imagebutton
 		//creating the imageButton as a text button
-		final MBButton imageButton = new MBButton("ADD IMAGE", uiSkin);
+		final MBButton imageButton = new MBButton(uiSkin);
 		imageButton.setPosition(595, 560);
 		imageButton.setSize(290, 370);
 		//setting the default opacity
 		imageButton.aFloat = .5f;
+
+		imageButton.toTextButton("ADD IMAGE");
 		genStatsPanel.add(imageButton);
 
+/*
 		//adds a listener to the imageButton while it's a TextButton
 		imageButton.addListener(new ChangeListener() {
 			@Override
@@ -386,6 +386,7 @@ public class Main extends ApplicationAdapter {
 				return false;
 			}
 		});
+*/
 		//endregion
 		//endregion
 
@@ -469,7 +470,7 @@ public class Main extends ApplicationAdapter {
 			//deletes the imageButton from the stage so that when it's added back it doesn't cause any complications in terms of the CompID
 			genStatsPanel.delete(imageButton);
 			//turns the imageButton into an ImageButton
-			imageButton.setImage(tex2);
+			imageButton.toImageButton(tex2);
 			//adds the imageButton to the stage so it's listener works
 			genStatsPanel.add(imageButton);
 
@@ -512,7 +513,7 @@ public class Main extends ApplicationAdapter {
 				public void changed(ChangeEvent changeEvent, Actor actor) {
 					System.out.println("wassup");
                     genStatsPanel.delete(imageButton);
-					imageButton.setText("ADD IMAGE");
+					imageButton.toTextButton("ADD IMAGE");
                     genStatsPanel.add(imageButton);
 				}
 				@Override

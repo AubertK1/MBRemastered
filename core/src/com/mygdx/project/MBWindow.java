@@ -1,5 +1,6 @@
 package com.mygdx.project;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -53,6 +54,7 @@ public class MBWindow extends MBComponent{
             public void clicked(InputEvent event, float x, float y) {
                 window.setWidth(inWidth);
                 window.setHeight(inHeight);
+                window.setPosition((float) Gdx.graphics.getWidth()/2 - window.getWidth()/2, (float)Gdx.graphics.getHeight()/2 - window.getHeight()/2);
             }
         });
         final Button reaspectButton = new ImageButton(skin, "edit-button");

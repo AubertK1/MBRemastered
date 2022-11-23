@@ -62,6 +62,15 @@ public class Panel {
      * @param component the component you want to add
      */
     public void add(MBComponent component){
+        //adds this component to the list of all components
+        boolean notAdded = true;
+        for (MBComponent comp: Main.allComps) {
+            if (component == comp) {
+                notAdded = false;
+                break;
+            }
+        }
+        if (notAdded) Main.allComps.add(component);
         //adds the component given to this panel
         components.add(component);
         //sets the component's parent to this panel
@@ -76,6 +85,7 @@ public class Panel {
         if(component instanceof MBWindow){
             Main.windows.add((MBWindow) component);
         }
+//        resetCompIDs();
     }
 
     /**
@@ -132,7 +142,7 @@ public class Panel {
         }
 
         //reassigns the remaining components' IDs
-        resetCompIDs();
+//        resetCompIDs();
     }
 
     /**

@@ -512,6 +512,15 @@ public class Item extends Minipanel{
      * @param component the component you want to add
      */
     public void add(MBComponent component){
+        //adds this component to the list of all components
+        boolean notAdded = true;
+        for (MBComponent comp: Main.allComps) {
+            if (component == comp) {
+                notAdded = false;
+                break;
+            }
+        }
+        if (notAdded) Main.allComps.add(component);
         //adds the component given to this item
         components.add(component);
         //sets the component's parent to this item

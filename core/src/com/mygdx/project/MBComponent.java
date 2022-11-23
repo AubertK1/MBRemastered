@@ -6,8 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Essentially making my own version of JComponents where I can group the different components
@@ -30,11 +32,18 @@ public class MBComponent extends Actor {
     //whether this component is supposed to be visible if it were allowed to be (ie the Item textfields when not in edit mode are allowed to be visible but not supposed to be visible)
     boolean supposedToBeVisible = true;
     public MBComponent() {
-        //adds this component to the list of all components
-        Main.allComps.add(this);
     }
 
     public void add(MBComponent component){
+        //adds this component to the list of all components
+        boolean notAdded = true;
+        for (MBComponent comp: Main.allComps) {
+            if (component == comp) {
+                notAdded = false;
+                break;
+            }
+        }
+        if (notAdded) Main.allComps.add(component);
         //adds the component given to this panel
         components.add(component);
         //sets the component's parent to this panel
@@ -49,6 +58,7 @@ public class MBComponent extends Actor {
         if(component instanceof MBWindow){
             Main.windows.add((MBWindow) component);
         }
+//        Panel.resetCompIDs();
     }
     public void remove(MBComponent component) {
         //removes component from the stage (don't think this does anything tbh)
@@ -153,10 +163,28 @@ public class MBComponent extends Actor {
         return null;
     }
     public void draw(float alpha){
+        Main.allComps = reaarrangeList();
+        Panel.resetCompIDs();
+
         getComponent().draw(Main.batch, alpha);
         for (MBComponent innerComp: components) {
             innerComp.draw(innerComp.aFloat);
         }
+    }
+    public ArrayList<MBComponent> reaarrangeList(){
+        ArrayList<MBComponent> newList = new ArrayList<>();
+        Array<Actor> actors = Main.stage.getActors();
+        Actor actor;
+        MBComponent comp;
+
+        for (int i = 0; i < actors.size; i++) {
+            actor = actors.get(i);
+            for (int j = 0; j < Main.allComps.size(); j++) {
+                comp = Main.allComps.get(j);
+                if(comp.getComponent() == actor) newList.add(comp);
+            }
+        }
+        return newList;
     }
 //    public void setStage(Stage stage){
 //        this.stage = stage;
