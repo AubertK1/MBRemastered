@@ -2,6 +2,8 @@ package com.mygdx.project;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -41,8 +43,10 @@ public class Main extends ApplicationAdapter {
 
 	String player;
     static ArrayList<Tipbox> tipboxes = new ArrayList<>();
+    static ArrayList<MBWindow> windows = new ArrayList<>();
 
 	static int itemTab = 1;
+	static Skin uiSkin;
 
 	//these are initialized from the start so that when they're used time isn't wasted while loading them
 	static String path;
@@ -71,7 +75,7 @@ public class Main extends ApplicationAdapter {
 		masterboardPanel = new Panel("core\\pics\\MBSkin2\\MasterboardPanel.png",
 				new Rectangle(900, 150, 1018, 850));
 		//setting up skin for the UI of the app
-		Skin uiSkin = new Skin (Gdx.files.internal(
+		uiSkin = new Skin (Gdx.files.internal(
 				"assets\\skins\\uiskin.json"));
 
 		debugPanel = reminderPanel;
@@ -396,7 +400,10 @@ public class Main extends ApplicationAdapter {
 
 
 		//honestly don't know what this does, but it's essential
-		Gdx.input.setInputProcessor(stage);
+		InputMultiplexer multiplexer = new InputMultiplexer();
+//		multiplexer.addProcessor((InputProcessor) this);
+		multiplexer.addProcessor(stage);
+		Gdx.input.setInputProcessor(multiplexer);
 	}
 
 	@Override
@@ -417,6 +424,9 @@ public class Main extends ApplicationAdapter {
 		//drawing the components after so that they are on the top
 		for (Tipbox tipbox: tipboxes) {
 			tipbox.render(batch);
+		}
+		for (MBWindow window: windows) {
+			window.draw(window.aFloat);
 		}
 		batch.end();
 
@@ -452,7 +462,7 @@ public class Main extends ApplicationAdapter {
 			}
 		}).start();
 	}
-	static public void fileChooseHandle(Panel genStatsPanel, MBButton imageButton){
+	static public void fileChooseHandle(final Panel genStatsPanel, final MBButton imageButton){
 		//to make sure this is only ran whenever the user selects a file
 		if(path != null) {
 			Texture tex2 = new Texture(path);
@@ -462,6 +472,68 @@ public class Main extends ApplicationAdapter {
 			imageButton.setImage(tex2);
 			//adds the imageButton to the stage so it's listener works
 			genStatsPanel.add(imageButton);
+
+			final MBButton reselectButton;
+			reselectButton = new MBButton(uiSkin);
+			reselectButton.setPosition(imageButton.getX()+10, imageButton.getY()+10);
+			reselectButton.setSize(40, 40);
+			reselectButton.aFloat = .75f;
+
+            final MBButton deleteButton;
+            deleteButton = new MBButton(uiSkin);
+            deleteButton.setPosition(imageButton.getX()+60, imageButton.getY()+10);
+            deleteButton.setSize(40, 40);
+            deleteButton.aFloat = .75f;
+
+            reselectButton.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent changeEvent, Actor actor) {
+					System.out.println("wassup");
+					fileChooseChanged();
+				}
+				@Override
+				public boolean handle (Event event) {
+					if (!reselectButton.getButton().isOver()) {
+                        deleteButton.aFloat = .75f;
+                        reselectButton.aFloat = .75f;
+					}
+					else {
+                        imageButton.aFloat = 1f;
+                        deleteButton.aFloat = .5f;
+                        reselectButton.aFloat = 1f;
+					}
+					if (!(event instanceof ChangeEvent)) return false;
+					changed((ChangeEvent)event, event.getTarget());
+					return false;
+				}
+			});
+			deleteButton.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent changeEvent, Actor actor) {
+					System.out.println("wassup");
+                    genStatsPanel.delete(imageButton);
+					imageButton.setText("ADD IMAGE");
+                    genStatsPanel.add(imageButton);
+				}
+				@Override
+				public boolean handle (Event event) {
+					if (!deleteButton.getButton().isOver()) {
+						deleteButton.aFloat = .75f;
+						reselectButton.aFloat = .75f;
+					}
+					else {
+						imageButton.aFloat = 1f;
+						deleteButton.aFloat = 1f;
+						reselectButton.aFloat = .5f;
+					}
+					if (!(event instanceof ChangeEvent)) return false;
+					changed((ChangeEvent)event, event.getTarget());
+					return false;
+				}
+			});
+
+            imageButton.add(deleteButton);
+            imageButton.add(reselectButton);
 			//so that it's not called again
 			path = null;
 		}

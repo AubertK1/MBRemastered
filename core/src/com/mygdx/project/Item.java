@@ -1,7 +1,6 @@
 package com.mygdx.project;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -516,7 +515,7 @@ public class Item extends Minipanel{
         //adds the component given to this item
         components.add(component);
         //sets the component's parent to this item
-        component.parent2 = this;
+        component.parentPanel = this;
         //sets the component's item to this item
         component.item = this;
         //makes sure the component is an actor
@@ -793,33 +792,11 @@ public class Item extends Minipanel{
             if(components.get(c).supposedToBeVisible) {
                 //sets the soft visibility of the component to true
                 components.get(c).setSoftVisible(true);
-                components.get(c).getComponent().draw(batch, 1);
+                components.get(c).draw(1);
             }
         }
         for (int i = 0; i < tipboxes.size(); i++) {
             tipboxes.get(i).render(batch);
         }
-
-/*
-        for (Panel minipanel : minipanels) {
-            if (!minipanel.supposedToBeVisible) {
-                //loops through the minipanel's list of components
-                for (int c = 0; c < minipanel.components.size(); c++) {
-                    //sets the soft visibility of the component to false
-                    minipanel.components.get(c).setSoftVisible(false);
-                }
-            } else {
-                minipanel.render(batch);
-                //loops through the minipanel's list of components
-                for (int c = 0; c < minipanel.components.size(); c++) {
-                    //if the component is supposed to be visible...
-                    if (minipanel.components.get(c).supposedToBeVisible) {
-                        //sets the soft visibility of the component to true
-                        minipanel.components.get(c).setSoftVisible(true);
-                    }
-                }
-            }
-        }
-*/
     }
 }

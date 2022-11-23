@@ -65,13 +65,16 @@ public class Panel {
         //adds the component given to this panel
         components.add(component);
         //sets the component's parent to this panel
-        component.parent2 = this;
+        component.parentPanel = this;
         //makes sure the component is an actor
         if(component.getComponent() != null) {
             //adds component to the stage so it can be drawn
             Main.stage.addActor(component.getComponent());
             //so that the compID aligns with the component's position on the list
             component.compID = Main.allComps.size();
+        }
+        if(component instanceof MBWindow){
+            Main.windows.add((MBWindow) component);
         }
     }
 
@@ -107,6 +110,10 @@ public class Panel {
         component.remove();
         //removes component from the components list
         components.remove(component);
+        if(component instanceof MBWindow){
+            Main.windows.remove((MBWindow) component);
+        }
+
     }
 
     /**
@@ -120,6 +127,10 @@ public class Panel {
         Main.allComps.remove(component);
         //removes component from the item's components list
         components.remove(component);
+        if(component instanceof MBWindow){
+            Main.windows.remove((MBWindow) component);
+        }
+
         //reassigns the remaining components' IDs
         resetCompIDs();
     }
@@ -143,7 +154,7 @@ public class Panel {
     /**
      * reassigns the compID variable for all the components
      */
-    public void resetCompIDs(){
+    static public void resetCompIDs(){
         for (int i = 0; i < Main.allComps.size(); i++) {
             Main.allComps.get(i).compID = i;
         }
@@ -261,7 +272,7 @@ public class Panel {
                 //sets the soft visibility of the component to true
                 components.get(c).setSoftVisible(true);
                 //draws the component
-                components.get(c).getComponent().draw(batch, components.get(c).aFloat);
+                components.get(c).draw(components.get(c).aFloat);
             }
         }
     }

@@ -19,7 +19,7 @@ public class Tipbox extends Minipanel{
                 //sets the soft visibility of the component to true
                 components.get(c).getComponent().toFront();
                 components.get(c).setSoftVisible(true);
-                components.get(c).getComponent().draw(batch, 1);
+                components.get(c).draw( 1);
             }
         } else {
             //loops through the minipanel's list of components

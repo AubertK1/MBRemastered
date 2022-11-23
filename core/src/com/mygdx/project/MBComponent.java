@@ -4,7 +4,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
+import java.util.ArrayList;
 
 /**
  * Essentially making my own version of JComponents where I can group the different components
@@ -12,11 +15,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
  */
 public class MBComponent extends Actor {
     Rectangle position;
-    Panel parent2;
-    Skin skin1;
+    ArrayList<MBComponent> components = new ArrayList<>();
+    Panel parentPanel;
+    MBComponent parentActor;
+
+    Skin skin1 = Main.uiSkin;
     float aFloat = 1;
     Item item;
     Texture texture;
+    boolean hasWindow = false;
     //setting the component's ID in the list
     int compID = Main.allComps.size();
     Stage stage = Main.stage;
@@ -27,11 +34,55 @@ public class MBComponent extends Actor {
         Main.allComps.add(this);
     }
 
+    public void add(MBComponent component){
+        //adds the component given to this panel
+        components.add(component);
+        //sets the component's parent to this panel
+        component.parentActor = this;
+        //makes sure the component is an actor
+        if(component.getComponent() != null) {
+            //adds component to the stage so it can be drawn
+            Main.stage.addActor(component.getComponent());
+            //so that the compID aligns with the component's position on the list
+            component.compID = Main.allComps.size();
+        }
+        if(component instanceof MBWindow){
+            Main.windows.add((MBWindow) component);
+        }
+    }
+    public void remove(MBComponent component) {
+        //removes component from the stage (don't think this does anything tbh)
+        component.remove();
+        //removes component from the components list
+        components.remove(component);
+        if(component instanceof MBWindow){
+            Main.windows.remove((MBWindow) component);
+        }
+
+    }
+
+    public void delete(MBComponent component){
+        //removes component from the stage
+        Main.stage.getActors().get(component.getCompID()).addAction(Actions.removeActor());
+        //removes component from the all components list
+        Main.allComps.remove(component);
+        //removes component from the item's components list
+        components.remove(component);
+        if(component instanceof MBWindow){
+            Main.windows.remove((MBWindow) component);
+        }
+
+        //reassigns the remaining components' IDs
+        Panel.resetCompIDs();
+    }
+
+
     public int getCompID(){
         return compID;
     }
-    public Panel getPanel() {
-        return parent2;
+    public Object getMBParent() {
+        if(parentPanel != null) return parentPanel;
+        else return parentActor;
     }
     /**
      * @return returns the item this component belongs to
@@ -100,6 +151,12 @@ public class MBComponent extends Actor {
      */
     public Actor getComponent(){
         return null;
+    }
+    public void draw(float alpha){
+        getComponent().draw(Main.batch, alpha);
+        for (MBComponent innerComp: components) {
+            innerComp.draw(innerComp.aFloat);
+        }
     }
 //    public void setStage(Stage stage){
 //        this.stage = stage;

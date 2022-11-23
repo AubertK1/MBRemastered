@@ -19,7 +19,7 @@
     toggle: { parent: default, checked: default-round-down }
   },
   ImageButtonStyle: {
-    default: { down: default-round-down, up: default-round, disabled: default-round, over: default-round-down},
+    default: { down: default-round-down, up: default-round, disabled: default-round, over: default-round-large},
     toggle: { parent: default, checked: default-round-down }
   },
   ImageButtonStyle: {
