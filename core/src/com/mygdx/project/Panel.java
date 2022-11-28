@@ -1,5 +1,6 @@
 package com.mygdx.project;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -80,10 +81,13 @@ public class Panel {
             //adds component to the stage so it can be drawn
             Main.stage.addActor(component.getComponent());
             //so that the compID aligns with the component's position on the list
-            component.compID = Main.allComps.size();
+//            component.compID = Main.allComps.size();
         }
         if(component instanceof MBWindow){
             Main.windows.add((MBWindow) component);
+        }
+        if(component instanceof MBScrollpane){
+            Main.scrollpanes.add((MBScrollpane) component);
         }
 //        resetCompIDs();
     }
@@ -117,11 +121,14 @@ public class Panel {
      */
     public void remove(MBComponent component) {
         //removes component from the stage (don't think this does anything tbh)
-        component.remove();
+//        component.remove();
         //removes component from the components list
         components.remove(component);
         if(component instanceof MBWindow){
             Main.windows.remove((MBWindow) component);
+        }
+        if(component instanceof MBScrollpane){
+            Main.scrollpanes.remove((MBScrollpane) component);
         }
 
     }
@@ -139,6 +146,9 @@ public class Panel {
         components.remove(component);
         if(component instanceof MBWindow){
             Main.windows.remove((MBWindow) component);
+        }
+        if(component instanceof MBScrollpane){
+            Main.scrollpanes.remove((MBScrollpane) component);
         }
 
         //reassigns the remaining components' IDs
@@ -281,6 +291,7 @@ public class Panel {
             if(components.get(c).supposedToBeVisible) {
                 //sets the soft visibility of the component to true
                 components.get(c).setSoftVisible(true);
+//                components.get(c).getComponent().act(Gdx.graphics.getDeltaTime());
                 //draws the component
                 components.get(c).draw(components.get(c).aFloat);
             }

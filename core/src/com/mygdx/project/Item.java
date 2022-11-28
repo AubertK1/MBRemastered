@@ -801,6 +801,8 @@ public class Item extends Minipanel{
             if(components.get(c).supposedToBeVisible) {
                 //sets the soft visibility of the component to true
                 components.get(c).setSoftVisible(true);
+//                components.get(c).getComponent().act(1/60f);
+
                 components.get(c).draw(1);
             }
         }

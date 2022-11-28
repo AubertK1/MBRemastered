@@ -19,17 +19,17 @@ public class MBButton extends MBComponent{
         button = new Button(skin);
     }
     public MBButton(Skin skin, String styleName) {
-        skin1 = skin;
-        button = new ImageButton(skin1, styleName);
+        this.skin = skin;
+        button = new ImageButton(this.skin, styleName);
         style = styleName;
     }
     public MBButton(String text, Skin skin) {
-        skin1 = skin;
-        button = new TextButton(text, skin1);
+        this.skin = skin;
+        button = new TextButton(text, this.skin);
     }
     public MBButton(String text, Skin skin, String styleName) {
-        skin1 = skin;
-        button = new TextButton(text, skin1, styleName);
+        this.skin = skin;
+        button = new TextButton(text, this.skin, styleName);
     }
     public void toImageButton(final Texture texture){
         //saves the position of the text button
@@ -46,7 +46,7 @@ public class MBButton extends MBComponent{
         if (buttonID != -1) Main.stage.getActors().get(buttonID).addAction(Actions.removeActor());
 
         //changes this textbutton to an imagebutton
-        button = new ImageButton(skin1);
+        button = new ImageButton(skin);
         //re-initializes the button
         button.setPosition(pos.x, pos.y);
         button.setSize(pos.width, pos.height);
@@ -59,7 +59,7 @@ public class MBButton extends MBComponent{
             public void changed(ChangeEvent event, Actor actor) {
                 if(!hasWindow) {
                     System.out.println("yo");
-                    MBWindow window = new MBWindow(texture, skin1, MBButton.this);
+                    MBWindow window = new MBWindow(texture, skin, MBButton.this);
                     window.setSize(window.image.getWidth(), window.image.getHeight());
                     window.setPosition((float)Gdx.graphics.getWidth()/2 - window.getWidth()/2, (float)Gdx.graphics.getHeight()/2 - window.getHeight()/2);
                     window.setVisible(true);
@@ -98,7 +98,7 @@ public class MBButton extends MBComponent{
         });
 
         //changes the image of the button to the new image
-        skin1.get(style, ImageButton.ImageButtonStyle.class).imageUp = new TextureRegionDrawable(new TextureRegion(texture));
+        skin.get(style, ImageButton.ImageButtonStyle.class).imageUp = new TextureRegionDrawable(new TextureRegion(texture));
 //        skin1.get(style, ImageButton.ImageButtonStyle.class).over = skin1.get(style, ImageButton.ImageButtonStyle.class).up;
     }
     public void toTextButton(String text){
@@ -117,7 +117,7 @@ public class MBButton extends MBComponent{
         if (buttonID != -1) Main.stage.getActors().get(buttonID).addAction(Actions.removeActor());
 
         //changes this imagebutton to a textbutton
-        button = new TextButton(text, skin1);
+        button = new TextButton(text, skin);
         //re-initializes the button
         button.setPosition(pos.x, pos.y);
         button.setSize(pos.width, pos.height);

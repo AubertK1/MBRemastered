@@ -1,5 +1,6 @@
 package com.mygdx.project;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -36,6 +37,8 @@ public class Minipanel extends Panel{
             if(components.get(c).supposedToBeVisible) {
                 //sets the soft visibility of the component to true
                 components.get(c).setSoftVisible(true);
+//                components.get(c).getComponent().act(1/60f);
+
                 components.get(c).getComponent().draw(batch, 1);
             }
         }

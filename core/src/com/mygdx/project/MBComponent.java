@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Essentially making my own version of JComponents where I can group the different components
@@ -21,7 +20,7 @@ public class MBComponent extends Actor {
     Panel parentPanel;
     MBComponent parentActor;
 
-    Skin skin1 = Main.uiSkin;
+    Skin skin = Main.uiSkin;
     float aFloat = 1;
     Item item;
     Texture texture;
@@ -53,10 +52,13 @@ public class MBComponent extends Actor {
             //adds component to the stage so it can be drawn
             Main.stage.addActor(component.getComponent());
             //so that the compID aligns with the component's position on the list
-            component.compID = Main.allComps.size();
+//            component.compID = Main.allComps.size();
         }
         if(component instanceof MBWindow){
             Main.windows.add((MBWindow) component);
+        }
+        if(component instanceof MBScrollpane){
+            Main.scrollpanes.add((MBScrollpane) component);
         }
 //        Panel.resetCompIDs();
     }
@@ -80,6 +82,9 @@ public class MBComponent extends Actor {
         components.remove(component);
         if(component instanceof MBWindow){
             Main.windows.remove((MBWindow) component);
+        }
+        if(component instanceof MBScrollpane){
+            Main.scrollpanes.remove((MBScrollpane) component);
         }
 
         //reassigns the remaining components' IDs

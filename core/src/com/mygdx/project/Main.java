@@ -41,6 +41,7 @@ public class Main extends ApplicationAdapter {
 	String player;
     static ArrayList<Tipbox> tipboxes = new ArrayList<>();
     static ArrayList<MBWindow> windows = new ArrayList<>();
+    static ArrayList<MBScrollpane> scrollpanes = new ArrayList<>();
 
 	static int itemTab = 1;
 	static Skin uiSkin;
@@ -395,7 +396,13 @@ public class Main extends ApplicationAdapter {
 		MBLabel playerNameLabel = new MBLabel(player, uiSkin);
 		playerNameLabel.setPosition(topPanel.getX() + 10, topPanel.getY() + (topPanel.getHeight()/2) - (playerNameLabel.getHeight()/2));
 
+		MBDropdown dropdown = new MBDropdown();
+		dropdown.setSize(300, 40);
+		dropdown.setPosition(topPanel.getX()+ topPanel.getWidth()-305, topPanel.getY()+5);
+		dropdown.setItems(player, "player2", "etc...");
+
 		topPanel.add(playerNameLabel);
+		topPanel.add(dropdown);
 
 		//endregion
 
@@ -425,6 +432,9 @@ public class Main extends ApplicationAdapter {
 		//drawing the components after so that they are on the top
 		for (Tipbox tipbox: tipboxes) {
 			tipbox.render(batch);
+		}
+		for (MBScrollpane scrollpane: scrollpanes) {
+			scrollpane.draw(scrollpane.aFloat);
 		}
 		for (MBWindow window: windows) {
 			window.draw(window.aFloat);
