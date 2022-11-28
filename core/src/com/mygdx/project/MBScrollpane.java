@@ -4,12 +4,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 
 public class MBScrollpane extends MBComponent{
-    SelectBox<String> selectBox;
-    SelectBox.SelectBoxScrollPane scrollPane;
+    SelectBoxWrapper<String> selectBox;
+    SelectBoxScrollPaneWrapper scrollPane;
 
-    public MBScrollpane(SelectBox<String> selectBox2) {
+    public MBScrollpane(SelectBoxWrapper<String> selectBox2) {
         selectBox = selectBox2;
-        scrollPane = selectBox.getScrollPane();
+        scrollPane = (SelectBoxScrollPaneWrapper) selectBox.getScrollPane2();
+        deleteLater = 2;
     }
 
     @Override

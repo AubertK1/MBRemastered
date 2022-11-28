@@ -35,8 +35,6 @@ public class Main extends ApplicationAdapter {
 	static boolean debugMode =false;
 	static ArrayList<MBComponent> allComps = new ArrayList<>();
 
-	static int drawnComps = 0;
-	static ArrayList<MBComponent> newCompss = new ArrayList<>();
 
 	String player;
     static ArrayList<Tipbox> tipboxes = new ArrayList<>();
@@ -396,7 +394,7 @@ public class Main extends ApplicationAdapter {
 		MBLabel playerNameLabel = new MBLabel(player, uiSkin);
 		playerNameLabel.setPosition(topPanel.getX() + 10, topPanel.getY() + (topPanel.getHeight()/2) - (playerNameLabel.getHeight()/2));
 
-		MBDropdown dropdown = new MBDropdown();
+		MBSelectBox dropdown = new MBSelectBox();
 		dropdown.setSize(300, 40);
 		dropdown.setPosition(topPanel.getX()+ topPanel.getWidth()-305, topPanel.getY()+5);
 		dropdown.setItems(player, "player2", "etc...");
