@@ -30,12 +30,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -60,14 +57,15 @@ import com.badlogic.gdx.utils.Pools;
 public class SelectBoxWrapper<T> extends Widget implements Disableable {
     static final Vector2 temp = new Vector2();
 
-    SelectBoxStyle style;
+    SelectBox.SelectBoxStyle style;
     final Array<T> items = new Array();
-    SelectBoxScrollPane<T> scrollPane;
+    SelectBoxScrollPaneWrapper<T> scrollPane;
     private float prefWidth, prefHeight;
     private ClickListener clickListener;
     boolean disabled;
     private int alignment = Align.left;
     boolean selectedPrefWidth;
+    boolean beenClickedYet = false;
 
     final ArraySelection<T> selection = new ArraySelection(items) {
         public boolean fireChangeEvent () {
@@ -77,25 +75,26 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
     };
 
     public SelectBoxWrapper (Skin skin) {
-        this(skin.get(SelectBoxStyle.class));
+        this(skin.get(SelectBox.SelectBoxStyle.class));
     }
 
     public SelectBoxWrapper (Skin skin, String styleName) {
-        this(skin.get(styleName, SelectBoxStyle.class));
+        this(skin.get(styleName, SelectBox.SelectBoxStyle.class));
     }
 
-    public SelectBoxWrapper (SelectBoxStyle style) {
+    public SelectBoxWrapper (SelectBox.SelectBoxStyle style) {
         setStyle(style);
         setSize(getPrefWidth(), getPrefHeight());
 
         selection.setActor(this);
         selection.setRequired(true);
 
-        scrollPane = new SelectBoxScrollPane(this);
-        scrollPane.parentComp = this;
+        scrollPane = new SelectBoxScrollPaneWrapper(this);
+//        scrollPane.parentComp = this;
 
         addListener(clickListener = new ClickListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                if(!beenClickedYet) beenClickedYet = true;
                 if (pointer == 0 && button != 0) return false;
                 if (isDisabled()) return false;
                 if (scrollPane.hasParent())
@@ -108,8 +107,8 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
     }
 
     /** Allows a subclass to customize the scroll pane shown when the select box is open. */
-    protected SelectBoxScrollPane<T> newScrollPane () {
-        return new SelectBoxScrollPane(this);
+    protected SelectBoxScrollPaneWrapper<T> newScrollPane () {
+        return new SelectBoxScrollPaneWrapper<>(this);
     }
 
     /** Set the max number of items to display when the select box is opened. Set to 0 (the default) to display as many as fit in
@@ -128,7 +127,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
         super.setStage(stage);
     }
 
-    public void setStyle (SelectBoxStyle style) {
+    public void setStyle (SelectBox.SelectBoxStyle style) {
         if (style == null) throw new IllegalArgumentException("style cannot be null.");
         this.style = style;
 
@@ -141,7 +140,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
 
     /** Returns the select box's style. Modifying the returned style may not have an effect until {@link #setStyle(SelectBoxStyle)}
      * is called. */
-    public SelectBoxStyle getStyle () {
+    public SelectBox.SelectBoxStyle getStyle () {
         return style;
     }
 
@@ -274,6 +273,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
             font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
             drawItem(batch, font, selected, x, y, width);
         }
+        if(beenClickedYet) scrollPane.draw(batch, parentAlpha);
     }
 
     protected GlyphLayout drawItem (Batch batch, BitmapFont font, T item, float x, float y, float width) {
@@ -400,7 +400,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
     }
 
     /** Returns the scroll pane containing the list that is shown when the select box is open. */
-    public SelectBoxScrollPane getScrollPane () {
+    public SelectBoxScrollPaneWrapper<T> getScrollPane () {
         return scrollPane;
     }
 
@@ -424,7 +424,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
 
     /** The scroll pane shown when a select box is open.
      * @author Nathan Sweet */
-    static public class SelectBoxScrollPane<T> extends ScrollPane {
+    static public class SelectBoxScrollPaneWrapper<T> extends ScrollPane {
         final SelectBoxWrapper<T> selectBox;
         int maxListCount;
         private final Vector2 stagePosition = new Vector2();
@@ -434,7 +434,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
 
         public MBComponent parentComp;
 
-        public SelectBoxScrollPane (final SelectBoxWrapper<T> selectBox) {
+        public SelectBoxScrollPaneWrapper (final SelectBoxWrapper<T> selectBox) {
             super(null, selectBox.style.scrollStyle);
             this.selectBox = selectBox;
 
@@ -607,6 +607,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
     /** The style for a select box, see {@link SelectBoxWrapper}.
      * @author mzechner
      * @author Nathan Sweet */
+/*
     static public class SelectBoxStyle {
         public BitmapFont font;
         public Color fontColor = new Color(1, 1, 1, 1);
@@ -644,4 +645,5 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
             backgroundDisabled = style.backgroundDisabled;
         }
     }
+*/
 }

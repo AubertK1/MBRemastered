@@ -39,7 +39,7 @@ public class Main extends ApplicationAdapter {
 	String player;
     static ArrayList<Tipbox> tipboxes = new ArrayList<>();
     static ArrayList<MBWindow> windows = new ArrayList<>();
-    static ArrayList<MBScrollpane> scrollpanes = new ArrayList<>();
+    static ArrayList<MBSelectBox> scrollpanes = new ArrayList<>();
 
 	static int itemTab = 1;
 	static Skin uiSkin;
@@ -431,8 +431,8 @@ public class Main extends ApplicationAdapter {
 		for (Tipbox tipbox: tipboxes) {
 			tipbox.render(batch);
 		}
-		for (MBScrollpane scrollpane: scrollpanes) {
-			scrollpane.draw(scrollpane.aFloat);
+		for (MBSelectBox selectBox: scrollpanes) {
+			selectBox.draw(selectBox.aFloat);
 		}
 		for (MBWindow window: windows) {
 			window.draw(window.aFloat);

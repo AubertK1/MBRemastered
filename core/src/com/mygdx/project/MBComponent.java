@@ -57,8 +57,8 @@ public class MBComponent extends Actor {
         if(component instanceof MBWindow){
             Main.windows.add((MBWindow) component);
         }
-        if(component instanceof MBScrollpane){
-            Main.scrollpanes.add((MBScrollpane) component);
+        if(component instanceof MBSelectBox){
+            Main.scrollpanes.add((MBSelectBox) component);
         }
 //        Panel.resetCompIDs();
     }
@@ -83,8 +83,8 @@ public class MBComponent extends Actor {
         if(component instanceof MBWindow){
             Main.windows.remove((MBWindow) component);
         }
-        if(component instanceof MBScrollpane){
-            Main.scrollpanes.remove((MBScrollpane) component);
+        if(component instanceof MBSelectBox){
+            Main.scrollpanes.remove((MBSelectBox) component);
         }
 
         //reassigns the remaining components' IDs

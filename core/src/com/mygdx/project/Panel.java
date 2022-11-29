@@ -86,8 +86,8 @@ public class Panel {
         if(component instanceof MBWindow){
             Main.windows.add((MBWindow) component);
         }
-        if(component instanceof MBScrollpane){
-            Main.scrollpanes.add((MBScrollpane) component);
+        if(component instanceof MBSelectBox){
+            Main.scrollpanes.add((MBSelectBox) component);
         }
 //        resetCompIDs();
     }
@@ -127,8 +127,8 @@ public class Panel {
         if(component instanceof MBWindow){
             Main.windows.remove((MBWindow) component);
         }
-        if(component instanceof MBScrollpane){
-            Main.scrollpanes.remove((MBScrollpane) component);
+        if(component instanceof MBSelectBox){
+            Main.scrollpanes.remove((MBSelectBox) component);
         }
 
     }
@@ -147,8 +147,8 @@ public class Panel {
         if(component instanceof MBWindow){
             Main.windows.remove((MBWindow) component);
         }
-        if(component instanceof MBScrollpane){
-            Main.scrollpanes.remove((MBScrollpane) component);
+        if(component instanceof MBSelectBox){
+            Main.scrollpanes.remove((MBSelectBox) component);
         }
 
         //reassigns the remaining components' IDs
