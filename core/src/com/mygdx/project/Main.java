@@ -399,8 +399,8 @@ public class Main extends ApplicationAdapter {
 		dropdown.setPosition(topPanel.getX()+ topPanel.getWidth()-305, topPanel.getY()+5);
 		dropdown.setItems(player, "player2", "etc...", "OPTION 4");
 
-		topPanel.add(playerNameLabel);
 		topPanel.add(dropdown);
+		topPanel.add(playerNameLabel);
 
 		//endregion
 

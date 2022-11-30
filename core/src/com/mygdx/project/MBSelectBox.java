@@ -9,6 +9,7 @@ public class MBSelectBox extends MBComponent{
 
     public MBSelectBox() {
         dropdown = new SelectBoxWrapper<>(skin);
+        deleteLater = 1;
     }
 
     public void setItems(String... items){
