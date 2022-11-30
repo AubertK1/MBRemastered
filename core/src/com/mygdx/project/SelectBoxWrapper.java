@@ -271,6 +271,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
                 y += (int)(height / 2 + font.getData().capHeight / 2);
             }
             font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
+//            font.setColor(1, 0, fontColor.b, fontColor.a * parentAlpha);
             drawItem(batch, font, selected, x, y, width);
         }
         if(beenClickedYet) scrollPane.draw(batch, parentAlpha);

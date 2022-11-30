@@ -397,7 +397,7 @@ public class Main extends ApplicationAdapter {
 		MBSelectBox dropdown = new MBSelectBox();
 		dropdown.setSize(300, 40);
 		dropdown.setPosition(topPanel.getX()+ topPanel.getWidth()-305, topPanel.getY()+5);
-		dropdown.setItems(player, "player2", "etc...");
+		dropdown.setItems(player, "player2", "etc...", "OPTION 4");
 
 		topPanel.add(playerNameLabel);
 		topPanel.add(dropdown);
