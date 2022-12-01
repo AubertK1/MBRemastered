@@ -40,6 +40,7 @@ public class Main extends ApplicationAdapter {
     static ArrayList<Tipbox> tipboxes = new ArrayList<>();
     static ArrayList<MBWindow> windows = new ArrayList<>();
     static ArrayList<MBSelectBox> scrollpanes = new ArrayList<>();
+	Actor scrollPane;
 
 	static int itemTab = 1;
 	static Skin uiSkin;
@@ -427,6 +428,7 @@ public class Main extends ApplicationAdapter {
 		masterboardPanel.render(batch);
 
 //		reminderTextArea.setBorder(batch);
+
 		//drawing the components after so that they are on the top
 		for (Tipbox tipbox: tipboxes) {
 			tipbox.render(batch);
@@ -437,6 +439,14 @@ public class Main extends ApplicationAdapter {
 		for (MBWindow window: windows) {
 			window.draw(window.aFloat);
 		}
+		scrollPane = stage.getActors().get(stage.getActors().size-1);
+		if(scrollPane instanceof SelectBoxWrapper.SelectBoxScrollPaneWrapper){
+//			((MBSelectBox)scrollpanes.get(0)).dropdown.scrollPane.list.setX(((MBSelectBox)scrollpanes.get(0)).getX());
+//			((MBSelectBox)scrollpanes.get(0)).dropdown.scrollPane.list.setY(((MBSelectBox)scrollpanes.get(0)).getY());
+
+			((MBSelectBox)scrollpanes.get(0)).dropdown.scrollPane.list.draw(batch, 1);
+		}
+
 		batch.end();
 
 //		stage.draw();

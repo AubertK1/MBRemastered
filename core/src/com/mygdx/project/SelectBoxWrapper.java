@@ -444,6 +444,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
             setScrollingDisabled(true, false);
 
             list = newList();
+            list.setX(100);
             list.setTouchable(Touchable.disabled);
             list.setTypeToSelect(true);
             setActor(list);
