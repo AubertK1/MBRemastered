@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class MBSelectBox extends MBComponent{
     final SelectBoxWrapper<String> dropdown;
-    Actor scrollPane;
 
     public MBSelectBox() {
         dropdown = new SelectBoxWrapper<>(skin);
@@ -30,17 +29,6 @@ public class MBSelectBox extends MBComponent{
         for (MBComponent innerComp: components) {
             innerComp.draw(innerComp.aFloat);
         }
-        scrollPane = Main.stage.getActors().get(stage.getActors().size-1);
-        if(scrollPane instanceof SelectBoxWrapper.SelectBoxScrollPane){
-//			scrollpanes.get(0).dropdown.scrollPane.list.setX(((MBSelectBox)scrollpanes.get(0)).getX());
-//			scrollpanes.get(0).dropdown.scrollPane.list.setX(200);
-//			scrollpanes.get(0).dropdown.scrollPane.list.item
-//			scrollpanes.get(0).dropdown.scrollPane.list.setY(((MBSelectBox)scrollpanes.get(0)).getY());
-
-//			scrollpanes.get(0).dropdown.scrollPane.list.draw(batch, 1);
-//            dropdown.scrollPane.list.draw(Main.batch, 1);
-        }
-
     }
 
 }

@@ -445,10 +445,6 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
             setScrollingDisabled(true, false);
 
             list = newList();
-/*
-            list.setX(100);
-            list.setY(100);
-*/
             list.setTouchable(Touchable.disabled);
             list.setTypeToSelect(true);
             setActor(list);
@@ -621,43 +617,4 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
     /** The style for a select box, see {@link SelectBoxWrapper}.
      * @author mzechner
      * @author Nathan Sweet */
-/*
-    static public class SelectBoxStyle {
-        public BitmapFont font;
-        public Color fontColor = new Color(1, 1, 1, 1);
-        public @Null Color overFontColor, disabledFontColor;
-        public @Null Drawable background;
-        public ScrollPaneStyle scrollStyle;
-        public ListStyle listStyle;
-        public @Null Drawable backgroundOver, backgroundOpen, backgroundDisabled;
-
-        public SelectBoxStyle () {
-        }
-
-        public SelectBoxStyle (BitmapFont font, Color fontColor, @Null Drawable background, ScrollPaneStyle scrollStyle,
-                               ListStyle listStyle) {
-            this.font = font;
-            this.fontColor.set(fontColor);
-            this.background = background;
-            this.scrollStyle = scrollStyle;
-            this.listStyle = listStyle;
-        }
-
-        public SelectBoxStyle (SelectBoxStyle style) {
-            font = style.font;
-            fontColor.set(style.fontColor);
-
-            if (style.overFontColor != null) overFontColor = new Color(style.overFontColor);
-            if (style.disabledFontColor != null) disabledFontColor = new Color(style.disabledFontColor);
-
-            background = style.background;
-            scrollStyle = new ScrollPaneStyle(style.scrollStyle);
-            listStyle = new ListStyle(style.listStyle);
-
-            backgroundOver = style.backgroundOver;
-            backgroundOpen = style.backgroundOpen;
-            backgroundDisabled = style.backgroundDisabled;
-        }
-    }
-*/
 }

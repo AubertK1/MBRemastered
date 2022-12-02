@@ -441,32 +441,4 @@ public class ListWrapper<T> extends Widget implements Cullable {
     /** The style for a list, see {@link ListWrapper}.
      * @author mzechner
      * @author Nathan Sweet */
-/*    static public class ListStyle {
-        public BitmapFont font;
-        public Color fontColorSelected = new Color(1, 1, 1, 1);
-        public Color fontColorUnselected = new Color(1, 1, 1, 1);
-        public Drawable selection;
-        public @Null Drawable down, over, background;
-
-        public ListStyle () {
-        }
-
-        public ListStyle (BitmapFont font, Color fontColorSelected, Color fontColorUnselected, Drawable selection) {
-            this.font = font;
-            this.fontColorSelected.set(fontColorSelected);
-            this.fontColorUnselected.set(fontColorUnselected);
-            this.selection = selection;
-        }
-
-        public ListStyle (ListStyle style) {
-            font = style.font;
-            fontColorSelected.set(style.fontColorSelected);
-            fontColorUnselected.set(style.fontColorUnselected);
-            selection = style.selection;
-
-            down = style.down;
-            over = style.over;
-            background = style.background;
-        }
-    }*/
 }

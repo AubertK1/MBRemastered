@@ -14,24 +14,38 @@ import com.badlogic.gdx.scenes.scene2d.utils.*;
 public class MBButton extends MBComponent{
     Button button;
     String style = "default";
+    Texture texture;
 
+    /**
+     * Regular plain button
+     * @param skin
+     */
     public MBButton(Skin skin) {
         button = new Button(skin);
     }
+
+    /**
+     * ImageButton with an image from a preset style
+     * @param skin
+     * @param styleName
+     */
     public MBButton(Skin skin, String styleName) {
         this.skin = skin;
         button = new ImageButton(this.skin, styleName);
         style = styleName;
     }
+
+    /**
+     * TextButton
+     * @param text
+     * @param skin
+     */
     public MBButton(String text, Skin skin) {
         this.skin = skin;
         button = new TextButton(text, this.skin);
     }
-    public MBButton(String text, Skin skin, String styleName) {
-        this.skin = skin;
-        button = new TextButton(text, this.skin, styleName);
-    }
     public void toImageButton(final Texture texture){
+        this.texture = texture;
         //saves the position of the text button
         Rectangle pos = new Rectangle(button.getX(), button.getY(), button.getWidth(), button.getHeight());
         //removes the button's listeners
@@ -50,9 +64,57 @@ public class MBButton extends MBComponent{
         //re-initializes the button
         button.setPosition(pos.x, pos.y);
         button.setSize(pos.width, pos.height);
+        //changes the image of the button to the new image
+        skin.get(style, ImageButton.ImageButtonStyle.class).imageUp = new TextureRegionDrawable(new TextureRegion(texture));
+    }
+    public void toTextButton(String text){
+        Rectangle pos = new Rectangle(button.getX(), button.getY(), button.getWidth(), button.getHeight());
+        for (int i = 0; i < button.getListeners().size; i++) {
+            button.removeListener(button.getListeners().get(i));
+        }
+        for (int i = components.size()-1; i >= 0; i--) {
+            delete(components.get(i));
+        }
+        int buttonID = -1;
+
+        for (int i = 0; i < Main.stage.getActors().size; i++) {
+            if (Main.stage.getActors().get(i) == button) buttonID = i;
+        }
+        if (buttonID != -1) Main.stage.getActors().get(buttonID).addAction(Actions.removeActor());
+
+        //changes this imagebutton to a textbutton
+        button = new TextButton(text, skin);
+        //re-initializes the button
+        button.setPosition(pos.x, pos.y);
+        button.setSize(pos.width, pos.height);
+    }
+    public void setupSelectImageTextButton(){
+        aFloat = .5f;
+
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                //allows the user to choose the file they want to display
+                Main.fileChooseChanged();
+            }
+            @Override
+            public boolean handle (Event event) {
+                //if the mouse is not hovered over the imageButton...
+                if (!getButton().isOver()) {
+                    aFloat = .5f;
+                }
+                else aFloat = 1f;
+                //renders the file (in handle because it's always called, so it will be called as soon as the file is chosen)
+                Main.fileChooseHandle(MBButton.this.parentPanel, MBButton.this);
+                if (!(event instanceof ChangeEvent)) return false;
+                changed((ChangeEvent)event, event.getTarget());
+                return false;
+            }
+        });
+    }
+    public void setupSelectImageImageButton(){
         aFloat = .75f;
 
-        final int[] IB = {1};
         //adds a listener to the button
         button.addListener(new ChangeListener() {
             @Override
@@ -96,54 +158,6 @@ public class MBButton extends MBComponent{
                 return false;
             }
         });
-
-        //changes the image of the button to the new image
-        skin.get(style, ImageButton.ImageButtonStyle.class).imageUp = new TextureRegionDrawable(new TextureRegion(texture));
-//        skin1.get(style, ImageButton.ImageButtonStyle.class).over = skin1.get(style, ImageButton.ImageButtonStyle.class).up;
-    }
-    public void toTextButton(String text){
-        Rectangle pos = new Rectangle(button.getX(), button.getY(), button.getWidth(), button.getHeight());
-        for (int i = 0; i < button.getListeners().size; i++) {
-            button.removeListener(button.getListeners().get(i));
-        }
-        for (int i = components.size()-1; i >= 0; i--) {
-            delete(components.get(i));
-        }
-        int buttonID = -1;
-
-        for (int i = 0; i < Main.stage.getActors().size; i++) {
-            if (Main.stage.getActors().get(i) == button) buttonID = i;
-        }
-        if (buttonID != -1) Main.stage.getActors().get(buttonID).addAction(Actions.removeActor());
-
-        //changes this imagebutton to a textbutton
-        button = new TextButton(text, skin);
-        //re-initializes the button
-        button.setPosition(pos.x, pos.y);
-        button.setSize(pos.width, pos.height);
-        aFloat = .5f;
-
-        button.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                //allows the user to choose the file they want to display
-                Main.fileChooseChanged();
-            }
-            @Override
-            public boolean handle (Event event) {
-                //if the mouse is not hovered over the imageButton...
-                if (!getButton().isOver()) {
-                    aFloat = .5f;
-                }
-                else aFloat = 1f;
-                //renders the file (in handle because it's always called, so it will be called as soon as the file is chosen)
-                Main.fileChooseHandle(MBButton.this.parentPanel, MBButton.this);
-                if (!(event instanceof ChangeEvent)) return false;
-                changed((ChangeEvent)event, event.getTarget());
-                return false;
-            }
-        });
-
     }
     @Override
     public boolean addListener(EventListener listener) {

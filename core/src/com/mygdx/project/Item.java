@@ -1,10 +1,13 @@
 package com.mygdx.project;
 
+import com.badlogic.ashley.signals.Listener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -24,6 +27,7 @@ public class Item extends Minipanel{
     //labels for the item (if weapon)
     ArrayList<MBLabel> labels = new ArrayList<>();
     ArrayList<Tipbox> tipboxes = new ArrayList<>();
+    ArrayList<EventListener> usesButtonListeners = new ArrayList<>();
     int itemType;
     public Item(int itemType, int spot) {
         super("core\\pics\\MBSkin2\\ItemPanel.png", new Rectangle(125, 790, 460, 40));
@@ -261,7 +265,7 @@ public class Item extends Minipanel{
         //increasing the next available spot by one
         nextAvaSSpot++;
         //creating the labels
-        MBLabel nameLabel,descLabel;
+        MBLabel nameLabel,descLabel,usesLabel;
         //setting the labels' texts and positions and sizes
         nameLabel = new MBLabel("Spell  "+ (Panel.totalSID), uiSkin);
         nameLabel.setPosition(this.getX()+5, this.getY()+5);
@@ -270,12 +274,18 @@ public class Item extends Minipanel{
 
         descLabel = new MBLabel("Item Description...", uiSkin);
         descLabel.setPosition(nameLabel.getX()+ nameLabel.getWidth()+2, nameLabel.getY());
-        descLabel.setSize(279, nameLabel.getHeight());
+        descLabel.setSize(259, nameLabel.getHeight());
         descLabel.setName("tf");
         names.add(descLabel.label.getText().toString());
 
+        usesLabel = new MBLabel("1", uiSkin);
+        usesLabel.setPosition(descLabel.getX()+ descLabel.getWidth()+2, nameLabel.getY());
+        usesLabel.setSize(20, nameLabel.getHeight());
+        names.add(usesLabel.label.getText().toString());
+
         labels.add(nameLabel);
         labels.add(descLabel);
+        labels.add(usesLabel);
 
         final Tipbox spellDesc = new Tipbox(new Rectangle(115, descLabel.getY()+ (descLabel.getHeight()/2)-300, 770, 300));
         MBTextArea spellDescTF = new MBTextArea("", uiSkin);
@@ -286,27 +296,21 @@ public class Item extends Minipanel{
         add(spellDesc);
         tipboxes.add(spellDesc);
 
-/*
-        modLabel = new MBLabel("ATKMod", uiSkin);
-        modLabel.setPosition(diceLabel.getX()+ diceLabel.getWidth()+2, nameLabel.getY());
-        modLabel.setSize(85, nameLabel.getHeight());
-        mod = modLabel.label.getText().toString();
-
-        typeLabel = new MBLabel("Damage/Type", uiSkin);
-        typeLabel.setPosition(modLabel.getX()+ modLabel.getWidth()+2, nameLabel.getY());
-        typeLabel.setSize(115, nameLabel.getHeight());
-        type = typeLabel.label.getText().toString();
-*/
         //creating buttons and setting their positions and sizes
+        final MBButton usesButton = new MBButton("2",uiSkin);
+        usesButton.setName("usesbutton");
+        usesButton.setPosition(usesLabel.getX(), usesLabel.getY());
+        usesButton.setSize(usesLabel.getWidth(), 30);
+
         final MBButton itemButtonEdit = new MBButton(uiSkin, "edit-toggle");
         itemButtonEdit.button.setChecked(true);
         itemButtonEdit.setName("editbutton");
         itemButtonEdit.button.setName("editbutton");
-        itemButtonEdit.setPosition((descLabel.getX()+descLabel.getWidth()+10), nameLabel.getY()-1);
+        itemButtonEdit.setPosition((usesLabel.getX()+usesLabel.getWidth()+8), nameLabel.getY()-1);
         itemButtonEdit.setSize(20, 15);
 
         final MBButton itemButtonDel = new MBButton(uiSkin, "delete-button");
-        itemButtonDel.setPosition((descLabel.getX()+descLabel.getWidth()+10), itemButtonEdit.getY()+itemButtonEdit.getHeight()+2);
+        itemButtonDel.setPosition((usesLabel.getX()+usesLabel.getWidth()+8), itemButtonEdit.getY()+itemButtonEdit.getHeight()+2);
         itemButtonDel.setSize(20, 15);
 
         final MBButton itemButtonDown = new MBButton(uiSkin, "down-button");
@@ -320,6 +324,7 @@ public class Item extends Minipanel{
         for (int i = 0; i < labels.size(); i++) {
             textFields.add(new MBTextField(String.valueOf(labels.get(i).label.getText()), uiSkin));
             add(textFields.get(i));
+            //detecting when enter is pressed on each MBTextField so that enter can exit out of edit mode
             textFields.get(i).setKeyListener(new TextField.TextFieldListener() {
                 @Override
                 public void keyTyped(TextField textField, char c) {
@@ -334,6 +339,8 @@ public class Item extends Minipanel{
         //adding all the components to this item's components
         add(nameLabel);
         add(descLabel);
+        add(usesLabel);
+        add(usesButton);
         add(itemButtonEdit);
         add(itemButtonDel);
         add(itemButtonDown);
@@ -341,8 +348,27 @@ public class Item extends Minipanel{
         //starting the item in edit mode so the user can immediately edit the item text
         editMode = true;
         edit();
-        //detecting when enter is pressed on each MBTextField so that enter can exit out of edit mode
         //setting the buttons' functions
+        usesButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("uses clicked");
+            }
+            @Override
+            public boolean handle (Event event) {
+                //if the mouse is hovered over the usesButton...
+                if (usesButton.getButton().isOver()) {
+                    usesButton.aFloat = .5f;
+                }
+                else {
+                    usesButton.aFloat = 1f;
+                }
+                return false;
+            }
+        });
+        for (EventListener listener: usesButton.button.getListeners() ) {
+            usesButtonListeners.add(listener);
+        }
         //changes this item in and out of edit mode
         itemButtonEdit.addListener(new ChangeListener() {
             @Override
@@ -358,7 +384,6 @@ public class Item extends Minipanel{
                 }
             }
         });
-        //fixme still need to work on this button
         itemButtonDel.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -550,12 +575,15 @@ public class Item extends Minipanel{
             }
         }
 
-        //finds editbutton and checks it
         for (int i = 0; i < components.size(); i++) {
+            //finds editbutton and checks it
             if(components.get(i).getName() != null && components.get(i).getName().equals("editbutton") && components.get(i) instanceof MBButton){
                 ((MBButton) components.get(i)).button.setChecked(true);
             }
-
+            //finds usesbutton and makes it not rendered so that it's listeners are removed
+            if(components.get(i).getName() != null && components.get(i).getName().equals("usesbutton") && components.get(i) instanceof MBButton){
+                components.get(i).setVisible(false);
+            }
         }
         //loops through this item's textfields list and reassigns the positions, re-adds them to the list, and sets their hard visibility to true
         for (int i = 0; i < textFields.size(); i++) {
@@ -588,12 +616,15 @@ public class Item extends Minipanel{
     public void saveEdit(){
         GlyphLayout layout = new GlyphLayout();
 
-        //finds editbutton and unchecks it
         for (int i = 0; i < components.size(); i++) {
+            //finds editbutton and unchecks it
             if(components.get(i).getName() != null && components.get(i).getName().equals("editbutton") && components.get(i) instanceof MBButton){
                 ((MBButton) components.get(i)).button.setChecked(false);
             }
-
+            //finds usesbutton and makes it rendered again so that it's listeners are back
+            if(components.get(i).getName() != null && components.get(i).getName().equals("usesbutton") && components.get(i) instanceof MBButton){
+                components.get(i).setVisible(true);
+            }
         }
 
 
@@ -803,7 +834,7 @@ public class Item extends Minipanel{
                 components.get(c).setSoftVisible(true);
 //                components.get(c).getComponent().act(1/60f);
 
-                components.get(c).draw(1);
+                components.get(c).draw(components.get(c).aFloat);
             }
         }
         for (int i = 0; i < tipboxes.size(); i++) {

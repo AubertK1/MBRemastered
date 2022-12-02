@@ -362,31 +362,9 @@ public class Main extends ApplicationAdapter {
 		imageButton.aFloat = .5f;
 
 		imageButton.toTextButton("ADD IMAGE");
+		imageButton.setupSelectImageTextButton();
 		genStatsPanel.add(imageButton);
 
-/*
-		//adds a listener to the imageButton while it's a TextButton
-		imageButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				//allows the user to choose the file they want to display
-				fileChooseChanged();
-			}
-			@Override
-			public boolean handle (Event event) {
-				//if the mouse is not hovered over the imageButton...
-				if (!imageButton.getButton().isOver()) {
-					imageButton.aFloat = .5f;
-				}
-				else imageButton.aFloat = 1f;
-				//renders the file (in handle because it's always called, so it will be called as soon as the file is chosen)
-				fileChooseHandle(genStatsPanel, imageButton);
-				if (!(event instanceof ChangeEvent)) return false;
-				changed((ChangeEvent)event, event.getTarget());
-				return false;
-			}
-		});
-*/
 		//endregion
 		//endregion
 
@@ -439,22 +417,13 @@ public class Main extends ApplicationAdapter {
 		for (MBWindow window: windows) {
 			window.draw(window.aFloat);
 		}
-		scrollPane = stage.getActors().get(stage.getActors().size-1);
-		if(scrollPane instanceof SelectBoxWrapper.SelectBoxScrollPane){
-//			scrollpanes.get(0).dropdown.scrollPane.list.setX(((MBSelectBox)scrollpanes.get(0)).getX());
-//			scrollpanes.get(0).dropdown.scrollPane.list.setX(200);
-//			scrollpanes.get(0).dropdown.scrollPane.list.item
-//			scrollpanes.get(0).dropdown.scrollPane.list.setY(((MBSelectBox)scrollpanes.get(0)).getY());
-
-//			scrollpanes.get(0).dropdown.scrollPane.list.draw(batch, 1);
-		}
 
 		batch.end();
 
 //		stage.draw();
 		stage.act();
 	}
-	
+
 	@Override
 	public void dispose () {
 		batch.dispose();
@@ -491,6 +460,7 @@ public class Main extends ApplicationAdapter {
 			genStatsPanel.delete(imageButton);
 			//turns the imageButton into an ImageButton
 			imageButton.toImageButton(tex2);
+			imageButton.setupSelectImageImageButton();
 			//adds the imageButton to the stage so it's listener works
 			genStatsPanel.add(imageButton);
 
@@ -534,6 +504,7 @@ public class Main extends ApplicationAdapter {
 					System.out.println("wassup");
                     genStatsPanel.delete(imageButton);
 					imageButton.toTextButton("ADD IMAGE");
+					imageButton.setupSelectImageTextButton();
                     genStatsPanel.add(imageButton);
 				}
 				@Override

@@ -51,8 +51,6 @@ public class MBComponent extends Actor {
         if(component.getComponent() != null) {
             //adds component to the stage so it can be drawn
             Main.stage.addActor(component.getComponent());
-            //so that the compID aligns with the component's position on the list
-//            component.compID = Main.allComps.size();
         }
         if(component instanceof MBWindow){
             Main.windows.add((MBWindow) component);
@@ -60,7 +58,6 @@ public class MBComponent extends Actor {
         if(component instanceof MBSelectBox){
             Main.scrollpanes.add((MBSelectBox) component);
         }
-//        Panel.resetCompIDs();
     }
     public void remove(MBComponent component) {
         //removes component from the stage (don't think this does anything tbh)
@@ -194,13 +191,4 @@ public class MBComponent extends Actor {
         }
         return newList;
     }
-//    public void setStage(Stage stage){
-//        this.stage = stage;
-//    }
-//    public Stage getStage(){
-//        return stage;
-//    }
-//    public void setPanel(Panel parent){
-//        this.parent = parent;
-//    }
 }
