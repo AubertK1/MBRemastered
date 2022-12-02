@@ -59,7 +59,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
 
     SelectBox.SelectBoxStyle style;
     final Array<T> items = new Array();
-    SelectBoxScrollPaneWrapper<T> scrollPane;
+    SelectBoxScrollPane<T> scrollPane;
     private float prefWidth, prefHeight;
     private ClickListener clickListener;
     boolean disabled;
@@ -89,7 +89,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
         selection.setActor(this);
         selection.setRequired(true);
 
-        scrollPane = new SelectBoxScrollPaneWrapper(this);
+        scrollPane = new SelectBoxScrollPane(this);
 //        scrollPane.parentComp = this;
 
         addListener(clickListener = new ClickListener() {
@@ -107,8 +107,8 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
     }
 
     /** Allows a subclass to customize the scroll pane shown when the select box is open. */
-    protected SelectBoxScrollPaneWrapper<T> newScrollPane () {
-        return new SelectBoxScrollPaneWrapper<>(this);
+    protected SelectBoxScrollPane<T> newScrollPane () {
+        return new SelectBoxScrollPane<>(this);
     }
 
     /** Set the max number of items to display when the select box is opened. Set to 0 (the default) to display as many as fit in
@@ -390,7 +390,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
     }
 
     /** Returns the list shown when the select box is open. */
-    public List<T> getList () {
+    public ListWrapper<T> getList () {
         return scrollPane.list;
     }
 
@@ -401,7 +401,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
     }
 
     /** Returns the scroll pane containing the list that is shown when the select box is open. */
-    public SelectBoxScrollPaneWrapper<T> getScrollPane () {
+    public SelectBoxScrollPane<T> getScrollPane () {
         return scrollPane;
     }
 
@@ -425,17 +425,18 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
 
     /** The scroll pane shown when a select box is open.
      * @author Nathan Sweet */
-    static public class SelectBoxScrollPaneWrapper<T> extends ScrollPaneWrapper {
+    static public class SelectBoxScrollPane<T> extends ScrollPane {
         final SelectBoxWrapper<T> selectBox;
         int maxListCount;
         private final Vector2 stagePosition = new Vector2();
-        final List<T> list;
+        final ListWrapper<T> list;
         private InputListener hideListener;
         private Actor previousScrollFocus;
 
         public MBComponent parentComp;
+        boolean doShow;
 
-        public SelectBoxScrollPaneWrapper (final SelectBoxWrapper<T> selectBox) {
+        public SelectBoxScrollPane (final SelectBoxWrapper<T> selectBox) {
             super(null, selectBox.style.scrollStyle);
             this.selectBox = selectBox;
 
@@ -444,8 +445,10 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
             setScrollingDisabled(true, false);
 
             list = newList();
+/*
             list.setX(100);
             list.setY(100);
+*/
             list.setTouchable(Touchable.disabled);
             list.setTypeToSelect(true);
             setActor(list);
@@ -499,8 +502,8 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
 
         /** Allows a subclass to customize the select box list. The default implementation returns a list that delegates
          * {@link List#toString(Object)} to {@link SelectBoxWrapper#toString(Object)}. */
-        protected List<T> newList () {
-            return new List<T>(selectBox.style.listStyle) {
+        protected ListWrapper<T> newList () {
+            return new ListWrapper<T>(selectBox.style.listStyle) {
                 public String toString (T obj) {
                     return selectBox.toString(obj);
                 }
@@ -510,6 +513,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
         public void show (Stage stage) {
             if (list.isTouchable()) return;
 
+            doShow = true;
             stage.addActor(this);
 
             stage.addCaptureListener(hideListener);
@@ -565,6 +569,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
             if (!list.isTouchable() || !hasParent()) return;
             list.setTouchable(Touchable.disabled);
 
+            doShow = false;
             Stage stage = getStage();
             if (stage != null) {
                 stage.removeCaptureListener(hideListener);
@@ -582,9 +587,12 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
             selectBox.localToStageCoordinates(temp.set(0, 0));
             if (!temp.equals(stagePosition)) hide();
             super.draw(batch, parentAlpha);
-            widgetArea.x=-10;
-            widgetArea.y=getMaxY();
-            list.draw(Main.batch, 1);
+            if(doShow) {
+                list.visualX = getX();
+                list.visualY = getY();
+
+                list.draw(Main.batch, parentAlpha);
+            }
         }
 
         public void act (float delta) {
@@ -601,7 +609,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
             super.setStage(stage);
         }
 
-        public List<T> getList () {
+        public ListWrapper<T> getList () {
             return list;
         }
 

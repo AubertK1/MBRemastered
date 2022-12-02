@@ -398,7 +398,7 @@ public class Main extends ApplicationAdapter {
 		MBSelectBox dropdown = new MBSelectBox();
 		dropdown.setSize(300, 40);
 		dropdown.setPosition(topPanel.getX()+ topPanel.getWidth()-305, topPanel.getY()+5);
-		dropdown.setItems(player, "player2", "etc...", "OPTION 4");
+		dropdown.setItems(player, "player2", "etc...", "OPTION 4", "rando opt");
 
 		topPanel.add(dropdown);
 		topPanel.add(playerNameLabel);
@@ -440,7 +440,7 @@ public class Main extends ApplicationAdapter {
 			window.draw(window.aFloat);
 		}
 		scrollPane = stage.getActors().get(stage.getActors().size-1);
-		if(scrollPane instanceof SelectBoxWrapper.SelectBoxScrollPaneWrapper){
+		if(scrollPane instanceof SelectBoxWrapper.SelectBoxScrollPane){
 //			scrollpanes.get(0).dropdown.scrollPane.list.setX(((MBSelectBox)scrollpanes.get(0)).getX());
 //			scrollpanes.get(0).dropdown.scrollPane.list.setX(200);
 //			scrollpanes.get(0).dropdown.scrollPane.list.item

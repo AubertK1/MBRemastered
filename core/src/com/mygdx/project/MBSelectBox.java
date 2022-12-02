@@ -31,7 +31,7 @@ public class MBSelectBox extends MBComponent{
             innerComp.draw(innerComp.aFloat);
         }
         scrollPane = Main.stage.getActors().get(stage.getActors().size-1);
-        if(scrollPane instanceof SelectBoxWrapper.SelectBoxScrollPaneWrapper){
+        if(scrollPane instanceof SelectBoxWrapper.SelectBoxScrollPane){
 //			scrollpanes.get(0).dropdown.scrollPane.list.setX(((MBSelectBox)scrollpanes.get(0)).getX());
 //			scrollpanes.get(0).dropdown.scrollPane.list.setX(200);
 //			scrollpanes.get(0).dropdown.scrollPane.list.item
