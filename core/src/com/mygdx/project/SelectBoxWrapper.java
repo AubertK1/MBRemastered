@@ -425,7 +425,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
 
     /** The scroll pane shown when a select box is open.
      * @author Nathan Sweet */
-    static public class SelectBoxScrollPaneWrapper<T> extends ScrollPane {
+    static public class SelectBoxScrollPaneWrapper<T> extends ScrollPaneWrapper {
         final SelectBoxWrapper<T> selectBox;
         int maxListCount;
         private final Vector2 stagePosition = new Vector2();
@@ -445,6 +445,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
 
             list = newList();
             list.setX(100);
+            list.setY(100);
             list.setTouchable(Touchable.disabled);
             list.setTypeToSelect(true);
             setActor(list);
@@ -581,6 +582,9 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
             selectBox.localToStageCoordinates(temp.set(0, 0));
             if (!temp.equals(stagePosition)) hide();
             super.draw(batch, parentAlpha);
+            widgetArea.x=-10;
+            widgetArea.y=getMaxY();
+            list.draw(Main.batch, 1);
         }
 
         public void act (float delta) {

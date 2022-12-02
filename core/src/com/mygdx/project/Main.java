@@ -441,10 +441,12 @@ public class Main extends ApplicationAdapter {
 		}
 		scrollPane = stage.getActors().get(stage.getActors().size-1);
 		if(scrollPane instanceof SelectBoxWrapper.SelectBoxScrollPaneWrapper){
-//			((MBSelectBox)scrollpanes.get(0)).dropdown.scrollPane.list.setX(((MBSelectBox)scrollpanes.get(0)).getX());
-//			((MBSelectBox)scrollpanes.get(0)).dropdown.scrollPane.list.setY(((MBSelectBox)scrollpanes.get(0)).getY());
+//			scrollpanes.get(0).dropdown.scrollPane.list.setX(((MBSelectBox)scrollpanes.get(0)).getX());
+//			scrollpanes.get(0).dropdown.scrollPane.list.setX(200);
+//			scrollpanes.get(0).dropdown.scrollPane.list.item
+//			scrollpanes.get(0).dropdown.scrollPane.list.setY(((MBSelectBox)scrollpanes.get(0)).getY());
 
-			((MBSelectBox)scrollpanes.get(0)).dropdown.scrollPane.list.draw(batch, 1);
+//			scrollpanes.get(0).dropdown.scrollPane.list.draw(batch, 1);
 		}
 
 		batch.end();
