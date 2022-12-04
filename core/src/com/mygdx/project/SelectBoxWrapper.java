@@ -456,6 +456,8 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
                     if (selected != null) selectBox.selection.items().clear(51);
                     selectBox.selection.choose(selected);
                     hide();
+                    //MINE
+                    Main.player = (String) selected;
                 }
 
                 public boolean mouseMoved (InputEvent event, float x, float y) {

@@ -36,7 +36,7 @@ public class Main extends ApplicationAdapter {
 	static ArrayList<MBComponent> allComps = new ArrayList<>();
 
 
-	String player;
+	static String player;
     static ArrayList<Tipbox> tipboxes = new ArrayList<>();
     static ArrayList<MBWindow> windows = new ArrayList<>();
     static ArrayList<MBSelectBox> scrollpanes = new ArrayList<>();
@@ -54,7 +54,7 @@ public class Main extends ApplicationAdapter {
 
 	@Override
 	public void create () {
-        player = "PLAYER 1";
+//        player = "PLAYER 1";
 		//setting up batch and stage
 		batch = new SpriteBatch();
 		stage = new Stage();
@@ -101,83 +101,6 @@ public class Main extends ApplicationAdapter {
 		//endregion
 
 		//region General Stats
-		//region stats
-		//creating all the stats panels to hold the player stats
-		final Minipanel strPanel, dexPanel, conPanel, intPanel, wisPanel, chaPanel;
-		strPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
-				new Rectangle(120, 870, 50, 60));
-		dexPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
-				new Rectangle(180, 870, 50, 60));
-		conPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
-				new Rectangle(240, 870, 50, 60));
-		intPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
-				new Rectangle(300, 870, 50, 60));
-		wisPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
-				new Rectangle(360, 870, 50, 60));
-		chaPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
-				new Rectangle(420, 870, 50, 60));
-		//creating the labels to put in the stats' minipanels
-		MBLabel strL = new MBLabel("STR", uiSkin);
-		//setting position equal to its minipanel's left border + half the minipanel's width - half the label's width
-		strL.setPosition(strPanel.getX() + (strPanel.getWidth()/2) - (strL.getWidth()/2), 903);
-		MBLabel dexL = new MBLabel("DEX", uiSkin);
-		dexL.setPosition(dexPanel.getX() + (dexPanel.getWidth()/2) - (dexL.getWidth()/2), 903);
-		MBLabel conL = new MBLabel("CON", uiSkin);
-		conL.setPosition(conPanel.getX() + (conPanel.getWidth()/2) - (conL.getWidth()/2), 903);
-		MBLabel intL = new MBLabel("INT", uiSkin);
-		intL.setPosition(intPanel.getX() + (intPanel.getWidth()/2) - (intL.getWidth()/2), 903);
-		MBLabel wisL = new MBLabel("WIS", uiSkin);
-		wisL.setPosition(wisPanel.getX() + (wisPanel.getWidth()/2) - (wisL.getWidth()/2), 903);
-		MBLabel chaL = new MBLabel("CHA", uiSkin);
-		chaL.setPosition(chaPanel.getX() + (chaPanel.getWidth()/2) - (chaL.getWidth()/2), 903);
-		//creating the textfields to put in the stats' minipanels
-		MBTextField strTF = new MBTextField("", uiSkin);
-		//size and positions set by eyeballing until it looked nice
-		strTF.setSize(42, 35);
-		strTF.setPosition(124, 873);
-		strTF.textField.setAlignment(Align.center);
-		MBTextField dexTF = new MBTextField("", uiSkin);
-		dexTF.setSize(42, 35);
-		dexTF.setPosition(184, 873);
-		dexTF.textField.setAlignment(Align.center);
-		MBTextField conTF = new MBTextField("", uiSkin);
-		conTF.setSize(42, 35);
-		conTF.setPosition(244, 873);
-		conTF.textField.setAlignment(Align.center);
-		MBTextField intTF = new MBTextField("", uiSkin);
-		intTF.setSize(42, 35);
-		intTF.setPosition(304, 873);
-		intTF.textField.setAlignment(Align.center);
-		MBTextField wisTF = new MBTextField("", uiSkin);
-		wisTF.setSize(42, 35);
-		wisTF.setPosition(364, 873);
-		wisTF.textField.setAlignment(Align.center);
-		MBTextField chaTF = new MBTextField("", uiSkin);
-		chaTF.setSize(42, 35);
-		chaTF.setPosition(424, 873);
-		chaTF.textField.setAlignment(Align.center);
-		//adding stats panels to the panel
-		genStatsPanel.add(strPanel);
-		genStatsPanel.add(dexPanel);
-		genStatsPanel.add(conPanel);
-		genStatsPanel.add(intPanel);
-		genStatsPanel.add(wisPanel);
-		genStatsPanel.add(chaPanel);
-		//adding components to their minipanels
-		strPanel.add(strTF);
-		strPanel.add(strL);
-		dexPanel.add(dexTF);
-		dexPanel.add(dexL);
-		conPanel.add(conTF);
-		conPanel.add(conL);
-		intPanel.add(intTF);
-		intPanel.add(intL);
-		wisPanel.add(wisTF);
-		wisPanel.add(wisL);
-		chaPanel.add(chaTF);
-		chaPanel.add(chaL);
-		//endregion
-
 		//region listpanel
 		//creating a list panel to hold all the items and adding it to the genstats panel
 		final Minipanel listPanel = new Minipanel("core\\pics\\MBSkin2\\ListPanel.png",
@@ -353,6 +276,123 @@ public class Main extends ApplicationAdapter {
         });
 		//endregion
 
+		//region stats
+		//creating all the stats panels to hold the player stats
+		final Minipanel strPanel, dexPanel, conPanel, intPanel, wisPanel, chaPanel;
+		strPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
+				new Rectangle(120, 870, 50, 60));
+		dexPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
+				new Rectangle(strPanel.getX()+strPanel.getWidth()+10, strPanel.getY(), 50, 60));
+		conPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
+				new Rectangle(dexPanel.getX()+dexPanel.getWidth()+10, strPanel.getY(), 50, 60));
+		intPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
+				new Rectangle(conPanel.getX()+conPanel.getWidth()+10, strPanel.getY(), 50, 60));
+		wisPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
+				new Rectangle(intPanel.getX()+intPanel.getWidth()+10, strPanel.getY(), 50, 60));
+		chaPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
+				new Rectangle(wisPanel.getX()+wisPanel.getWidth()+10, strPanel.getY(), 50, 60));
+		//creating the labels to put in the stats' minipanels
+		MBLabel strL = new MBLabel("STR", uiSkin);
+		//setting position equal to its minipanel's left border + half the minipanel's width - half the label's width
+		strL.setPosition(strPanel.getX() + (strPanel.getWidth()/2) - (strL.getWidth()/2), 903);
+		MBLabel dexL = new MBLabel("DEX", uiSkin);
+		dexL.setPosition(dexPanel.getX() + (dexPanel.getWidth()/2) - (dexL.getWidth()/2), 903);
+		MBLabel conL = new MBLabel("CON", uiSkin);
+		conL.setPosition(conPanel.getX() + (conPanel.getWidth()/2) - (conL.getWidth()/2), 903);
+		MBLabel intL = new MBLabel("INT", uiSkin);
+		intL.setPosition(intPanel.getX() + (intPanel.getWidth()/2) - (intL.getWidth()/2), 903);
+		MBLabel wisL = new MBLabel("WIS", uiSkin);
+		wisL.setPosition(wisPanel.getX() + (wisPanel.getWidth()/2) - (wisL.getWidth()/2), 903);
+		MBLabel chaL = new MBLabel("CHA", uiSkin);
+		chaL.setPosition(chaPanel.getX() + (chaPanel.getWidth()/2) - (chaL.getWidth()/2), 903);
+		//creating the textfields to put in the stats' minipanels
+		MBTextField strTF = new MBTextField("", uiSkin);
+		//size and positions set by eyeballing until it looked nice
+		strTF.setSize(42, 35);
+		strTF.setPosition(124, 873);
+		strTF.textField.setAlignment(Align.center);
+		MBTextField dexTF = new MBTextField("", uiSkin);
+		dexTF.setSize(42, 35);
+		dexTF.setPosition(184, 873);
+		dexTF.textField.setAlignment(Align.center);
+		MBTextField conTF = new MBTextField("", uiSkin);
+		conTF.setSize(42, 35);
+		conTF.setPosition(244, 873);
+		conTF.textField.setAlignment(Align.center);
+		MBTextField intTF = new MBTextField("", uiSkin);
+		intTF.setSize(42, 35);
+		intTF.setPosition(304, 873);
+		intTF.textField.setAlignment(Align.center);
+		MBTextField wisTF = new MBTextField("", uiSkin);
+		wisTF.setSize(42, 35);
+		wisTF.setPosition(364, 873);
+		wisTF.textField.setAlignment(Align.center);
+		MBTextField chaTF = new MBTextField("", uiSkin);
+		chaTF.setSize(42, 35);
+		chaTF.setPosition(424, 873);
+		chaTF.textField.setAlignment(Align.center);
+		//adding components to their minipanels
+		strPanel.add(strTF);
+		strPanel.add(strL);
+		dexPanel.add(dexTF);
+		dexPanel.add(dexL);
+		conPanel.add(conTF);
+		conPanel.add(conL);
+		intPanel.add(intTF);
+		intPanel.add(intL);
+		wisPanel.add(wisTF);
+		wisPanel.add(wisL);
+		chaPanel.add(chaTF);
+		chaPanel.add(chaL);
+		//adding stats panels to the panel
+		genStatsPanel.add(strPanel);
+		genStatsPanel.add(dexPanel);
+		genStatsPanel.add(conPanel);
+		genStatsPanel.add(intPanel);
+		genStatsPanel.add(wisPanel);
+		genStatsPanel.add(chaPanel);
+
+		//Short Rest and Long Rest buttons
+		Minipanel shortRestPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
+				new Rectangle(chaPanel.getX()+wisPanel.getWidth()+10, strPanel.getY(), 50, 60));
+		Minipanel longRestPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
+				new Rectangle(shortRestPanel.getX()+shortRestPanel.getWidth()+10, strPanel.getY(), 50, 60));
+
+		MBButton srButton = new MBButton("Short \n Rest", uiSkin);
+		srButton.setSize(50, 60);
+		srButton.setPosition(chaPanel.getX()+wisPanel.getWidth()+10, strPanel.getY());
+		srButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				for (Item spell: listPanel.sItems) {
+					((TextButton)spell.getUsesButton().button).setText(String.valueOf(spell.srMax));
+					spell.uses[0] = spell.srMax;
+				}
+			}
+		});
+//		((TextButton)srButton.button).getLabel().setColor(new Color(0x8a8a8aff));
+
+		MBButton lrButton = new MBButton("Long \n Rest", uiSkin);
+		lrButton.setSize(50, 60);
+		lrButton.setPosition(shortRestPanel.getX()+shortRestPanel.getWidth()+10, strPanel.getY());
+		lrButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				for (Item spell: listPanel.sItems) {
+					((TextButton)spell.getUsesButton().button).setText(String.valueOf(spell.lrMax));
+					spell.uses[0] = spell.lrMax;
+				}
+			}
+		});
+//		((TextButton)lrButton.button).getLabel().setColor(new Color(0x8a8a8aff));
+
+		shortRestPanel.add(srButton);
+		longRestPanel.add(lrButton);
+
+		genStatsPanel.add(shortRestPanel);
+		genStatsPanel.add(longRestPanel);
+		//endregion
+
 		//region imagebutton
 		//creating the imageButton as a text button
 		final MBButton imageButton = new MBButton(uiSkin);
@@ -369,17 +409,17 @@ public class Main extends ApplicationAdapter {
 		//endregion
 
 		//region Top Bar
+		MBSelectBox dropdown = new MBSelectBox();
+		dropdown.setSize(300, 40);
+		dropdown.setPosition(topPanel.getX()+ topPanel.getWidth()-305, topPanel.getY()+5);
+		dropdown.setItems("PLAYER 1", "player2", "etc...", "OPTION 4", "rando opt");
+		player = dropdown.dropdown.getSelected();
 
 		MBLabel playerNameLabel = new MBLabel(player, uiSkin);
 		playerNameLabel.setPosition(topPanel.getX() + 10, topPanel.getY() + (topPanel.getHeight()/2) - (playerNameLabel.getHeight()/2));
 
-		MBSelectBox dropdown = new MBSelectBox();
-		dropdown.setSize(300, 40);
-		dropdown.setPosition(topPanel.getX()+ topPanel.getWidth()-305, topPanel.getY()+5);
-		dropdown.setItems(player, "player2", "etc...", "OPTION 4", "rando opt");
-
-		topPanel.add(dropdown);
 		topPanel.add(playerNameLabel);
+		topPanel.add(dropdown);
 
 		//endregion
 
@@ -405,7 +445,6 @@ public class Main extends ApplicationAdapter {
 		toolbarPanel.render(batch);
 		masterboardPanel.render(batch);
 
-//		reminderTextArea.setBorder(batch);
 
 		//drawing the components after so that they are on the top
 		for (Tipbox tipbox: tipboxes) {
@@ -422,6 +461,11 @@ public class Main extends ApplicationAdapter {
 
 //		stage.draw();
 		stage.act();
+
+		//fixme might be inefficient but it does the job
+		if(!player.contentEquals(((MBLabel)topPanel.components.get(0)).label.getText())){
+			((MBLabel)topPanel.components.get(0)).label.setText(player);
+		}
 	}
 
 	@Override

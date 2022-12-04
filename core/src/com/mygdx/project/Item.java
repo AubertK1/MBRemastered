@@ -1,6 +1,5 @@
 package com.mygdx.project;
 
-import com.badlogic.ashley.signals.Listener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,9 +7,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
 
@@ -27,8 +29,15 @@ public class Item extends Minipanel{
     //labels for the item (if weapon)
     ArrayList<MBLabel> labels = new ArrayList<>();
     ArrayList<Tipbox> tipboxes = new ArrayList<>();
-    ArrayList<EventListener> usesButtonListeners = new ArrayList<>();
     int itemType;
+
+    int usesIndexInNames = -1;
+    private MBButton usesButton;
+    final int[] uses = {0};
+    public int srMax = 0;
+    public int lrMax = 0;
+    ArrayList<MBButton> restButtons = new ArrayList<>();
+
     public Item(int itemType, int spot) {
         super("core\\pics\\MBSkin2\\ItemPanel.png", new Rectangle(125, 790, 460, 40));
         this.itemType = itemType;
@@ -264,6 +273,8 @@ public class Item extends Minipanel{
         totalSID++;
         //increasing the next available spot by one
         nextAvaSSpot++;
+
+//        final int[] uses = {0};
         //creating the labels
         MBLabel nameLabel,descLabel,usesLabel;
         //setting the labels' texts and positions and sizes
@@ -274,14 +285,15 @@ public class Item extends Minipanel{
 
         descLabel = new MBLabel("Item Description...", uiSkin);
         descLabel.setPosition(nameLabel.getX()+ nameLabel.getWidth()+2, nameLabel.getY());
-        descLabel.setSize(259, nameLabel.getHeight());
+        descLabel.setSize(257, nameLabel.getHeight());
         descLabel.setName("tf");
         names.add(descLabel.label.getText().toString());
 
-        usesLabel = new MBLabel("1", uiSkin);
+        usesLabel = new MBLabel(String.valueOf(uses[0]), uiSkin);
         usesLabel.setPosition(descLabel.getX()+ descLabel.getWidth()+2, nameLabel.getY());
-        usesLabel.setSize(20, nameLabel.getHeight());
+        usesLabel.setSize(22, nameLabel.getHeight());
         names.add(usesLabel.label.getText().toString());
+        usesIndexInNames = names.size()-1;
 
         labels.add(nameLabel);
         labels.add(descLabel);
@@ -297,10 +309,22 @@ public class Item extends Minipanel{
         tipboxes.add(spellDesc);
 
         //creating buttons and setting their positions and sizes
-        final MBButton usesButton = new MBButton("2",uiSkin);
+        final MBButton usesButton = new MBButton(String.valueOf(uses[0]),uiSkin);
         usesButton.setName("usesbutton");
         usesButton.setPosition(usesLabel.getX(), usesLabel.getY());
         usesButton.setSize(usesLabel.getWidth(), 30);
+        ((TextButton)usesButton.button).getLabel().setAlignment(Align.left);
+        this.usesButton = usesButton;
+
+        final MBButton minusButton = new MBButton(uiSkin, "down-button");
+        minusButton.setPosition(usesButton.getX(), usesButton.getY());
+        minusButton.setSize(usesButton.getWidth(), usesButton.getHeight()/2 - 1);
+        minusButton.aFloat = 0;
+
+        final MBButton plusButton = new MBButton(uiSkin, "up-button");
+        plusButton.setPosition(usesButton.getX(), usesButton.getY()+ minusButton.getHeight()+1);
+        plusButton.setSize(usesButton.getWidth(), usesButton.getHeight()/2 - 1);
+        plusButton.aFloat = 0;
 
         final MBButton itemButtonEdit = new MBButton(uiSkin, "edit-toggle");
         itemButtonEdit.button.setChecked(true);
@@ -349,6 +373,7 @@ public class Item extends Minipanel{
         editMode = true;
         edit();
         //setting the buttons' functions
+        //region Uses Button
         usesButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -357,18 +382,122 @@ public class Item extends Minipanel{
             @Override
             public boolean handle (Event event) {
                 //if the mouse is hovered over the usesButton...
-                if (usesButton.getButton().isOver()) {
-                    usesButton.aFloat = .5f;
+                if (usesButton.getButton().isOver() || minusButton.getButton().isOver() || plusButton.getButton().isOver()) {
+                    minusButton.aFloat = .5f;
+                    plusButton.aFloat = .5f;
+                    usesButton.aFloat = 1;
                 }
                 else {
-                    usesButton.aFloat = 1f;
+                    minusButton.aFloat = 0;
+                    plusButton.aFloat = 0;
+                    usesButton.aFloat = 1;
                 }
+                if (!(event instanceof ChangeEvent)) return false;
+                changed((ChangeEvent)event, event.getTarget());
                 return false;
             }
         });
-        for (EventListener listener: usesButton.button.getListeners() ) {
-            usesButtonListeners.add(listener);
-        }
+
+        minusButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("minus clicked");
+                uses[0]--;
+                ((TextButton)usesButton.button).setText(String.valueOf(uses[0]));
+            }
+            @Override
+            public boolean handle (Event event) {
+                //if the mouse is hovered over the usesButton...
+                if (usesButton.getButton().isOver() || minusButton.getButton().isOver() || plusButton.getButton().isOver()) {
+                    minusButton.aFloat = .5f;
+                    plusButton.aFloat = .5f;
+                    usesButton.aFloat = 1;
+                }
+                else {
+                    minusButton.aFloat = 0;
+                    plusButton.aFloat = 0;
+                    usesButton.aFloat = 1;
+                }
+                if (!(event instanceof ChangeEvent)) return false;
+                changed((ChangeEvent)event, event.getTarget());
+                return false;
+            }
+        });
+        plusButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("plus clicked");
+                uses[0]++;
+                ((TextButton)usesButton.button).setText(String.valueOf(uses[0]));
+            }
+            @Override
+            public boolean handle (Event event) {
+                //if the mouse is hovered over the usesButton...
+                if (usesButton.getButton().isOver() || minusButton.getButton().isOver() || plusButton.getButton().isOver()) {
+                    minusButton.aFloat = .5f;
+                    plusButton.aFloat = .5f;
+                    usesButton.aFloat = 1;
+                }
+                else {
+                    minusButton.aFloat = 0;
+                    plusButton.aFloat = 0;
+                    usesButton.aFloat = 1;
+                }
+                if (!(event instanceof ChangeEvent)) return false;
+                changed((ChangeEvent)event, event.getTarget());
+                return false;
+            }
+        });
+        usesButton.add(minusButton);
+        usesButton.add(plusButton);
+
+        final MBButton srButton = new MBButton("Short Rest", uiSkin);
+        srButton.button.setStyle(Main.uiSkin.get("toggle", TextButton.TextButtonStyle.class));
+        srButton.button.setChecked(true);
+        srButton.setSize(50, itemButtonEdit.getHeight());
+        srButton.setPosition(usesButton.getX()-srButton.getWidth()-2, itemButtonDel.getY());
+        ((TextButton)srButton.button).getLabel().setFontScale(.6f,.7f);
+
+        final MBButton lrButton = new MBButton("Long Rest", uiSkin);
+        lrButton.button.setStyle(Main.uiSkin.get("toggle", TextButton.TextButtonStyle.class));
+        lrButton.button.setChecked(false);
+        lrButton.setSize(50, itemButtonDel.getHeight());
+        lrButton.setPosition(usesButton.getX()-srButton.getWidth()-2, itemButtonEdit.getY());
+        ((TextButton)lrButton.button).getLabel().setFontScale(.6f,.7f);
+        srButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("short rest");
+                //When the button is pressed while checked. Usually it would be if(button.isChecked), but button unchecks itself before this is called, so it's reversed
+                if(!srButton.button.isChecked()){
+                    lrButton.button.setChecked(true);
+                }
+                else if(srButton.button.isChecked()){
+                    lrButton.button.setChecked(false);
+                }
+            }
+        });
+        lrButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("long rest");
+                //When the button is pressed while checked. Usually it would be if(button.isChecked), but button unchecks itself before this is called, so it's reversed
+                if(!lrButton.button.isChecked()){
+                    srButton.button.setChecked(true);
+                }
+                else if(lrButton.button.isChecked()){
+                    srButton.button.setChecked(false);
+                }
+            }
+        });
+        srButton.setVisible(false);
+        lrButton.setVisible(false);
+        restButtons.add(srButton);
+        restButtons.add(lrButton);
+        add(srButton);
+        add(lrButton);
+        //endregion
+
         //changes this item in and out of edit mode
         itemButtonEdit.addListener(new ChangeListener() {
             @Override
@@ -583,6 +712,9 @@ public class Item extends Minipanel{
             //finds usesbutton and makes it not rendered so that it's listeners are removed
             if(components.get(i).getName() != null && components.get(i).getName().equals("usesbutton") && components.get(i) instanceof MBButton){
                 components.get(i).setVisible(false);
+                for (int j = 0; j < components.get(i).components.size(); j++) {
+                    components.get(i).components.get(j).setVisible(false);
+                }
             }
         }
         //loops through this item's textfields list and reassigns the positions, re-adds them to the list, and sets their hard visibility to true
@@ -601,6 +733,13 @@ public class Item extends Minipanel{
                 textFields.get(i).setSize(labels.get(i).getWidth(), 30);
                 add(textFields.get(i));
                 textFields.get(i).setVisible(true);
+            }
+        }
+        //short rest or long rest
+        if(itemType == 2){
+            for (MBButton restButton: restButtons) {
+                restButton.setVisible(true);
+                add(restButton);
             }
         }
         //loops through this item's tipboxes
@@ -624,6 +763,9 @@ public class Item extends Minipanel{
             //finds usesbutton and makes it rendered again so that it's listeners are back
             if(components.get(i).getName() != null && components.get(i).getName().equals("usesbutton") && components.get(i) instanceof MBButton){
                 components.get(i).setVisible(true);
+                for (int j = 0; j < components.get(i).components.size(); j++) {
+                    components.get(i).components.get(j).setVisible(true);
+                }
             }
         }
 
@@ -657,6 +799,25 @@ public class Item extends Minipanel{
                 remove(textFields.get(i));
             }
         }
+        if(itemType == 2){
+            for (int i = 0; i < restButtons.size(); i++) {
+                //if the selected rest button is a short rest...
+                if(restButtons.get(i).button.isChecked() && i == 0){
+                    //set the short rest max uses to the textfield value
+                    srMax = Integer.parseInt(names.get(usesIndexInNames));
+                    //if the long rest max is smaller than the short rest mex set the long  rest max uses to the textfield value too
+                    if(lrMax < srMax) lrMax = Integer.parseInt(names.get(usesIndexInNames));
+                }
+                //if the selected rest button is a long rest...
+                if(restButtons.get(i).button.isChecked() && i == 1){
+                    //set the long rest max uses to the textfield value
+                    lrMax = Integer.parseInt(names.get(usesIndexInNames));
+                }
+                restButtons.get(i).setVisible(false);
+                remove(restButtons.get(i));
+            }
+        }
+
         //loops through this item's tipboxes
         for (int i = 0; i < minipanels.size(); i++) {
             minipanels.get(i).editMode = false;
@@ -817,6 +978,10 @@ public class Item extends Minipanel{
     }
     public int getItemType(){
         return itemType;
+    }
+    public MBButton getUsesButton(){
+        if (usesButton != null) return usesButton;
+        return null;
     }
     /**
      * renders this item and any minipanels it may hold

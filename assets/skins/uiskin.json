@@ -39,7 +39,7 @@
     delete-toggle: { parent: delete-button, checked: default-round-down, imageUp:delete-logo, imageChecked:delete-logo }
   },
   TextButtonStyle: {
-    default: { parent: default, font: default-font, fontColor: tan, disabledFontColor: gray },
+    default: { parent: default, font: default-font, fontColor: darkgray, disabledFontColor: gray },
     toggle: { parent: default, checked: default-round-down, downFontColor: red }
   },
   ScrollPaneStyle: {
