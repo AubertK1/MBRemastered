@@ -19,6 +19,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -28,22 +29,20 @@ public class Main extends ApplicationAdapter {
 	static SpriteBatch batch;
 	//used to draw the MBComponents
 	static Stage stage;
+	//the skin for the components
+	static Skin uiSkin;
 	//creating main panels
 	Panel sidePanel, topPanel, genStatsPanel, reminderPanel, toolbarPanel, masterboardPanel;
 	//list with all the MBComponents
-	static Panel debugPanel;
-	static boolean debugMode =false;
 	static ArrayList<MBComponent> allComps = new ArrayList<>();
 
-
 	static String player;
+	//so these can be drawn last
     static ArrayList<Tipbox> tipboxes = new ArrayList<>();
     static ArrayList<MBWindow> windows = new ArrayList<>();
     static ArrayList<MBSelectBox> scrollpanes = new ArrayList<>();
-	Actor scrollPane;
-
+	//weapons or spell items for the itempanel
 	static int itemTab = 1;
-	static Skin uiSkin;
 
 	//these are initialized from the start so that when they're used time isn't wasted while loading them
 	static String path;
@@ -69,13 +68,12 @@ public class Main extends ApplicationAdapter {
 				new Rectangle(110, 150, 780, 390));
 		toolbarPanel = new Panel("core\\pics\\MBSkin2\\ToolbarPanel.png",
 				new Rectangle(2, 2, 1916, 138));
-		masterboardPanel = new Panel("core\\pics\\MBSkin2\\MasterboardPanel.png",
+		masterboardPanel = new Panel("core\\pics\\MBSkin2\\MasterboardPanel4.png",
 				new Rectangle(900, 150, 1018, 850));
 		//setting up skin for the UI of the app
 		uiSkin = new Skin (Gdx.files.internal(
 				"assets\\skins\\uiskin.json"));
 
-		debugPanel = reminderPanel;
 		sidePanel.setSoftVisible(true);
 		topPanel.setSoftVisible(true);
 		genStatsPanel.setSoftVisible(true);
@@ -483,6 +481,7 @@ public class Main extends ApplicationAdapter {
 				f.setVisible(true);
 				f.toFront();
 				f.setAlwaysOnTop(true);
+				f.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
 				f.setVisible(false);
 				//if the file is selected...
 				int res = chooser.showSaveDialog(f);

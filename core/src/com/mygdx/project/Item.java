@@ -39,7 +39,7 @@ public class Item extends Minipanel{
     ArrayList<MBButton> restButtons = new ArrayList<>();
 
     public Item(int itemType, int spot) {
-        super("core\\pics\\MBSkin2\\ItemPanel.png", new Rectangle(125, 790, 460, 40));
+        super("core\\pics\\MBSkin2\\ItemPanel4.png", new Rectangle(125, 790, 460, 40));
         this.itemType = itemType;
         //if this item is a weapon it sets it up as a weapon item
         if(itemType == 1){

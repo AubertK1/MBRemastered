@@ -19,7 +19,6 @@ public class MBComponent extends Actor {
     ArrayList<MBComponent> components = new ArrayList<>();
     Panel parentPanel;
     MBComponent parentActor;
-    int deleteLater = -1;
     Skin skin = Main.uiSkin;
     float aFloat = 1;
     Item item;
@@ -168,9 +167,6 @@ public class MBComponent extends Actor {
         Main.allComps = reaarrangeList();
         Panel.resetCompIDs();
 
-        if(this.deleteLater != -1){
-            System.out.print("");
-        }
         getComponent().draw(Main.batch, alpha);
         for (MBComponent innerComp: components) {
             innerComp.draw(innerComp.aFloat);

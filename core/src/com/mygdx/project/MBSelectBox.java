@@ -9,7 +9,7 @@ public class MBSelectBox extends MBComponent{
 
     public MBSelectBox() {
         dropdown = new SelectBoxWrapper<>(skin);
-        deleteLater = 1;
+        dropdown.setScrollingDisabled(true);
     }
 
     public void setItems(String... items){
@@ -22,9 +22,6 @@ public class MBSelectBox extends MBComponent{
         Main.allComps = reaarrangeList();
         Panel.resetCompIDs();
 
-        if(this.deleteLater != -1){
-            System.out.print("");
-        }
         getComponent().draw(Main.batch, alpha);
         for (MBComponent innerComp: components) {
             innerComp.draw(innerComp.aFloat);
