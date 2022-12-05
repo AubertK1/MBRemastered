@@ -299,11 +299,57 @@ public class Item extends Minipanel{
         labels.add(descLabel);
         labels.add(usesLabel);
 
+        //region tipbox components
         final Tipbox spellDesc = new Tipbox(new Rectangle(115, descLabel.getY()+ (descLabel.getHeight()/2)-300, 770, 300));
         MBTextArea spellDescTF = new MBTextArea("", uiSkin);
-        spellDescTF.setPosition(spellDesc.getX()+10, spellDesc.getY()+10);
-        spellDescTF.setSize(750, 260);
+        spellDescTF.setPosition(spellDesc.getX()+10, spellDesc.getY()+10+35);
+        spellDescTF.setSize(750, 225);
+        MBLabel spellLevel = new MBLabel("Level: ",uiSkin);
+        spellLevel.setPosition(spellDesc.getX()+10, spellDesc.getY()+10);
+        MBTextField levelTF = new MBTextField("0", uiSkin);
+        levelTF.setPosition(spellLevel.getX() + spellLevel.getWidth() +0, spellLevel.getY());
+        levelTF.setSize(25, 30);
+//        float ogMargin = levelTF.textField.getStyle().background.getLeftWidth();
+//        levelTF.textField.getStyle().background.setLeftWidth(0);
+//        levelTF.textField.getStyle().background.setLeftWidth(ogMargin);
+//        levelTF.textField.setAlignment(Align.center);
+        MBLabel castTime = new MBLabel("Casting Time: ", uiSkin);
+        castTime.setPosition(levelTF.getX() + levelTF.getWidth() +10, spellLevel.getY());
+        MBTextField castTimeTF = new MBTextField("Action", uiSkin);
+        castTimeTF.setPosition(castTime.getX() + castTime.getWidth() +0, spellLevel.getY());
+        castTimeTF.setSize(85, levelTF.getHeight());
+        castTimeTF.textField.setAlignment(Align.center);
+        MBLabel duration = new MBLabel("Duration: ", uiSkin);
+        duration.setPosition(castTimeTF.getX() + castTimeTF.getWidth() +10, spellLevel.getY());
+        MBTextField durationTF = new MBTextField("Instant", uiSkin);
+        durationTF.setPosition(duration.getX() + duration.getWidth() +0, spellLevel.getY());
+        durationTF.setSize(85, levelTF.getHeight());
+        durationTF.textField.setAlignment(Align.center);
+        MBLabel range = new MBLabel("Range: ", uiSkin);
+        range.setPosition(durationTF.getX() + durationTF.getWidth() +10, spellLevel.getY());
+        MBTextField rangeTF = new MBTextField("5 ft", uiSkin);
+        rangeTF.setPosition(range.getX() + range.getWidth() +0, spellLevel.getY());
+        rangeTF.setSize(50, levelTF.getHeight());
+        rangeTF.textField.setAlignment(Align.center);
+        MBLabel damageType = new MBLabel("Damage Type: ", uiSkin);
+        damageType.setPosition(rangeTF.getX() + rangeTF.getWidth() +10, spellLevel.getY());
+        MBTextField damageTypeTF = new MBTextField("Fire", uiSkin);
+        damageTypeTF.setPosition(damageType.getX() + damageType.getWidth() +0, spellLevel.getY());
+        damageTypeTF.setSize(75, levelTF.getHeight());
+        damageTypeTF.textField.setAlignment(Align.center);
+
         spellDesc.add(spellDescTF);
+        spellDesc.add(spellLevel);
+        spellDesc.add(levelTF);
+        spellDesc.add(castTime);
+        spellDesc.add(castTimeTF);
+        spellDesc.add(duration);
+        spellDesc.add(durationTF);
+        spellDesc.add(range);
+        spellDesc.add(rangeTF);
+        spellDesc.add(damageType);
+        spellDesc.add(damageTypeTF);
+        //endregion
 
         add(spellDesc);
         tipboxes.add(spellDesc);
@@ -401,7 +447,7 @@ public class Item extends Minipanel{
         minusButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("minus clicked");
+                System.out.println("minus clicked " +(sID +1));
                 uses[0]--;
                 ((TextButton)usesButton.button).setText(String.valueOf(uses[0]));
             }
@@ -426,7 +472,7 @@ public class Item extends Minipanel{
         plusButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("plus clicked");
+                System.out.println("plus clicked "+(sID +1));
                 uses[0]++;
                 ((TextButton)usesButton.button).setText(String.valueOf(uses[0]));
             }
@@ -467,7 +513,7 @@ public class Item extends Minipanel{
         srButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("short rest");
+                System.out.println("short rest " +(sID +1));
                 //When the button is pressed while checked. Usually it would be if(button.isChecked), but button unchecks itself before this is called, so it's reversed
                 if(!srButton.button.isChecked()){
                     lrButton.button.setChecked(true);
@@ -480,7 +526,7 @@ public class Item extends Minipanel{
         lrButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("long rest");
+                System.out.println("long rest "+(sID +1));
                 //When the button is pressed while checked. Usually it would be if(button.isChecked), but button unchecks itself before this is called, so it's reversed
                 if(!lrButton.button.isChecked()){
                     srButton.button.setChecked(true);
@@ -555,10 +601,15 @@ public class Item extends Minipanel{
                     ArrayList<Panel> nextItemTipbox = itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).minipanels;
 
                     int smallerListSize = Math.min(thisItemComponents.size(), nextItemComponents.size());
-                    //saving this item's components' positions before I change them, so I can use there later
+                    //saving this item's components' positions before I change them, so I can use them later
                     ArrayList<Float> oldYs = new ArrayList<>();
+                    ArrayList<Float> restButtonsYs = new ArrayList<>();
                     for(int i = 0; i < smallerListSize; i++) {
                         oldYs.add(thisItemComponents.get(i).getY());
+                        if (thisItemComponents.get(i).components.size() > 0){
+                            restButtonsYs.add(thisItemComponents.get(i).components.get(0).getY());
+                            restButtonsYs.add(thisItemComponents.get(i).components.get(1).getY());
+                        }
                     }
                     ArrayList<Float> oldYs2 = new ArrayList<>();
                     for(int i = 0; i < thisItemTipbox.size(); i++) {
@@ -567,12 +618,51 @@ public class Item extends Minipanel{
 
                     //repositioning this item to its new spot
                     //looping through the list of this item's components and assigning their positions to the next item's components' positions
+                    for (int i = 0; i < thisItemComponents.size(); i++) {
+                        thisItemComponents.get(i).setPosition(thisItemComponents.get(i).getX(), thisItemComponents.get(i).getY() - (getHeight()+5));
+                        if(thisItemComponents.get(i).components.size() > 0){
+                            thisItemComponents.get(i).components.get(0).setPosition(thisItemComponents.get(i).components.get(0).getX(), thisItemComponents.get(i).components.get(0).getY() - (getHeight()+5));
+                            thisItemComponents.get(i).components.get(1).setPosition(thisItemComponents.get(i).components.get(1).getX(), thisItemComponents.get(i).components.get(1).getY() - (getHeight()+5));
+                        }
+                    }
+                    for (int i = 0; i < nextItemComponents.size(); i++) {
+                        nextItemComponents.get(i).setPosition(nextItemComponents.get(i).getX(), nextItemComponents.get(i).getY() + (getHeight()+5));
+                        if(nextItemComponents.get(i).components.size() > 0){
+                            nextItemComponents.get(i).components.get(0).setPosition(nextItemComponents.get(i).components.get(0).getX(), nextItemComponents.get(i).components.get(0).getY() + (getHeight()+5));
+                            nextItemComponents.get(i).components.get(1).setPosition(nextItemComponents.get(i).components.get(1).getX(), nextItemComponents.get(i).components.get(1).getY() + (getHeight()+5));
+                        }
+                    }
+
+
+                    for (int i = 0; i < thisItemTipbox.size(); i++) {
+                        thisItemTipbox.get(i).setPosition(thisItemTipbox.get(i).getX(), thisItemTipbox.get(i).getY() - (getHeight()+5));
+                        for (int j = 0; j < thisItemTipbox.get(i).components.size(); j++) {
+                            thisItemTipbox.get(i).components.get(j).setPosition(thisItemTipbox.get(i).components.get(j).getX(), thisItemTipbox.get(i).components.get(j).getY() - (getHeight()+5));
+                        }
+                    }
+                    for (int i = 0; i < nextItemTipbox.size(); i++) {
+                        nextItemTipbox.get(i).setPosition(nextItemTipbox.get(i).getX(), nextItemTipbox.get(i).getY() + (getHeight()+5));
+                        for (int j = 0; j < thisItemTipbox.get(i).components.size(); j++) {
+                            nextItemTipbox.get(i).components.get(j).setPosition(nextItemTipbox.get(i).components.get(j).getX(), nextItemTipbox.get(i).components.get(j).getY() + (getHeight() + 5));
+                        }
+                    }
+
+/*
                     for (int i = 0; i < smallerListSize; i++) {
                         thisItemComponents.get(i).setPosition(nextItemComponents.get(i).getX(), nextItemComponents.get(i).getY());
+                        if (thisItemComponents.get(i).components.size() > 0){
+                            thisItemComponents.get(i).components.get(0).setPosition(thisItemComponents.get(i).components.get(0).getX(), nextItemComponents.get(i).components.get(0).getY());
+                            thisItemComponents.get(i).components.get(1).setPosition(thisItemComponents.get(i).components.get(0).getX(), nextItemComponents.get(i).components.get(1).getY());
+                        }
                     }
                     //looping through the list of the next item's components and assigning their positions to this item's components' old positions
                     for (int i = 0; i < smallerListSize; i++) {
                         nextItemComponents.get(i).setPosition(thisItemComponents.get(i).getX(), oldYs.get(i));
+                        if (nextItemComponents.get(i).components.size() > 0){
+                            nextItemComponents.get(i).components.get(0).setPosition(thisItemComponents.get(i).components.get(0).getX(), restButtonsYs.get(0));
+                            nextItemComponents.get(i).components.get(1).setPosition(thisItemComponents.get(i).components.get(0).getX(), restButtonsYs.get(1));
+                        }
+
                     }
                     for (int i = 0; i < thisItemTipbox.size(); i++) {
                         thisItemTipbox.get(i).setPosition(thisItemTipbox.get(i).getX(), thisItemTipbox.get(i).getY() - (getHeight()+5));
@@ -582,6 +672,7 @@ public class Item extends Minipanel{
                         nextItemTipbox.get(i).setPosition(nextItemTipbox.get(i).getX(), oldYs2.get(i));
                         nextItemTipbox.get(i).components.get(i).setPosition(nextItemTipbox.get(i).components.get(i).getX(), oldYs2.get(i)+10);
                     }
+*/
                     //moves the textfields with this item if in edit mode
                     if(editMode){
                         saveEdit();
@@ -599,7 +690,7 @@ public class Item extends Minipanel{
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //filler just for my entertainment
-                System.out.println("Up Button "+(itemButtonUp.getItem().wID +1));
+                System.out.println("Up Button "+(itemButtonUp.getItem().sID +1));
                 //initializing spots into set temporary variables
                 int currSpot = itemButtonUp.getItem().sSpot;
                 int prevSpot = itemButtonUp.getItem().sSpot -1;
@@ -630,6 +721,37 @@ public class Item extends Minipanel{
                     }
                     //repositioning this item to its new spot
                     //looping through the list of this item's components and assigning their positions to the next item's components' positions
+
+                    for (int i = 0; i < thisItemComponents.size(); i++) {
+                        thisItemComponents.get(i).setPosition(thisItemComponents.get(i).getX(), thisItemComponents.get(i).getY() + (getHeight()+5));
+                        if(thisItemComponents.get(i).components.size() > 0){
+                            thisItemComponents.get(i).components.get(0).setPosition(thisItemComponents.get(i).components.get(0).getX(), thisItemComponents.get(i).components.get(0).getY() + (getHeight()+5));
+                            thisItemComponents.get(i).components.get(1).setPosition(thisItemComponents.get(i).components.get(1).getX(), thisItemComponents.get(i).components.get(1).getY() + (getHeight()+5));
+                        }
+                    }
+                    for (int i = 0; i < prevItemComponents.size(); i++) {
+                        prevItemComponents.get(i).setPosition(prevItemComponents.get(i).getX(), prevItemComponents.get(i).getY() - (getHeight()+5));
+                        if(prevItemComponents.get(i).components.size() > 0){
+                            prevItemComponents.get(i).components.get(0).setPosition(prevItemComponents.get(i).components.get(0).getX(), prevItemComponents.get(i).components.get(0).getY() - (getHeight()+5));
+                            prevItemComponents.get(i).components.get(1).setPosition(prevItemComponents.get(i).components.get(1).getX(), prevItemComponents.get(i).components.get(1).getY() - (getHeight()+5));
+                        }
+                    }
+
+
+                    for (int i = 0; i < thisItemTipbox.size(); i++) {
+                        thisItemTipbox.get(i).setPosition(thisItemTipbox.get(i).getX(), thisItemTipbox.get(i).getY() + (getHeight()+5));
+                        for (int j = 0; j < thisItemTipbox.get(i).components.size(); j++) {
+                            thisItemTipbox.get(i).components.get(j).setPosition(thisItemTipbox.get(i).components.get(j).getX(), thisItemTipbox.get(i).components.get(j).getY() + (getHeight() + 5));
+                        }
+                    }
+                    for (int i = 0; i < prevItemTipbox.size(); i++) {
+                        prevItemTipbox.get(i).setPosition(prevItemTipbox.get(i).getX(), prevItemTipbox.get(i).getY() - (getHeight()+5));
+                        for (int j = 0; j < thisItemTipbox.get(i).components.size(); j++) {
+                            prevItemTipbox.get(i).components.get(j).setPosition(prevItemTipbox.get(i).components.get(j).getX(), prevItemTipbox.get(i).components.get(j).getY() - (getHeight() + 5));
+                        }
+                    }
+
+/*
                     for (int i = 0; i < smallerListSize; i++) {
                         thisItemComponents.get(i).setPosition(prevItemComponents.get(i).getX(), prevItemComponents.get(i).getY());
                     }
@@ -645,6 +767,7 @@ public class Item extends Minipanel{
                         prevItemTipbox.get(i).setPosition(prevItemTipbox.get(i).getX(), oldYs2.get(i));
                         prevItemTipbox.get(i).components.get(i).setPosition(prevItemTipbox.get(i).components.get(i).getX(), oldYs2.get(i)+10);
                     }
+*/
                     //moves the textfields with this item if in edit mode
                     if(editMode){
                         saveEdit();
@@ -739,7 +862,7 @@ public class Item extends Minipanel{
         if(itemType == 2){
             for (MBButton restButton: restButtons) {
                 restButton.setVisible(true);
-                add(restButton);
+//                add(restButton);
             }
         }
         //loops through this item's tipboxes
@@ -814,7 +937,7 @@ public class Item extends Minipanel{
                     lrMax = Integer.parseInt(names.get(usesIndexInNames));
                 }
                 restButtons.get(i).setVisible(false);
-                remove(restButtons.get(i));
+//                remove(restButtons.get(i));
             }
         }
 
