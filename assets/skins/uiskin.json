@@ -92,4 +92,7 @@
       background: default-pane, wrapWidth: 150
     }
   },
+  com.mygdx.project.Board$BoardStyle: {
+    default: {background: default-round-down}
+  }
 }

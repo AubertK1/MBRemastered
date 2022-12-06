@@ -82,6 +82,11 @@ public class Main extends ApplicationAdapter {
 		reminderPanel.setSoftVisible(true);
 		masterboardPanel.setSoftVisible(true);
 
+		MBBoard masterBoard = new MBBoard();
+		masterBoard.setPosition(800, 300);
+		masterBoard.setSize(200, 200);
+		masterboardPanel.add(masterBoard);
+
 		//region Reminders
 		//creating a textarea
 		MBTextArea reminderTextArea;
