@@ -11,9 +11,13 @@ public class MBBoard extends MBComponent{
 
     public MBBoard(){
         board = new Board(skin);
-
     }
 
+    public void setPosition(float x, float y){
+        getComponent().setPosition(x, y);
+        board.setOffsetX(x);
+        board.setOffsetY(y);
+    }
 
     public Actor getComponent(){
         return board;

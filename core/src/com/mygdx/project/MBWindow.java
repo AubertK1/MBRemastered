@@ -15,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class MBWindow extends MBComponent{
     Window window;
     Image image;
-    MBWindow thisW = this;
     float inWidth;
     float inHeight;
     float gap;

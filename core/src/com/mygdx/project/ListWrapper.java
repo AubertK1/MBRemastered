@@ -59,8 +59,7 @@ public class ListWrapper<T> extends Widget implements Cullable {
     private InputListener keyListener;
     boolean typeToSelect;
 
-    public float visualX=0;
-    public float visualY=0;
+    public float visualX = 0, visualY = 0;
 
     public ListWrapper (Skin skin) {
         this(skin.get(List.ListStyle.class));
@@ -215,6 +214,7 @@ public class ListWrapper<T> extends Widget implements Cullable {
         Color color = getColor();
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 
+        //MINE
         float x = visualX, y = visualY, width = getWidth(), height = getHeight();
         float itemY = height;
 
