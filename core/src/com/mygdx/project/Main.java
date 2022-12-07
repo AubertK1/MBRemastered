@@ -83,8 +83,8 @@ public class Main extends ApplicationAdapter {
 		masterboardPanel.setSoftVisible(true);
 
 		MBBoard masterBoard = new MBBoard();
-		masterBoard.setPosition(masterboardPanel.getX(), masterboardPanel.getY());
-		masterBoard.setSize(masterboardPanel.getWidth(), masterboardPanel.getHeight());
+		masterBoard.setPosition(masterboardPanel.getX()+1, masterboardPanel.getY()+1);
+		masterBoard.setSize(masterboardPanel.getWidth()-2, masterboardPanel.getHeight()-2);
 		masterboardPanel.add(masterBoard);
 
 		//region Reminders
