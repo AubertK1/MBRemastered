@@ -51,7 +51,7 @@ import com.badlogic.gdx.utils.Pools;
  * {@link ChangeEvent} is fired when the selectbox selection changes.
  * <p>
  * The preferred size of the select box is determined by the maximum text bounds of the items and the size of the
- * {@link SelectBoxStyle#background}.
+ * {@link SelectBox.SelectBoxStyle#background}.
  * @author mzechner
  * @author Nathan Sweet */
 public class SelectBoxWrapper<T> extends Widget implements Disableable {
@@ -90,7 +90,6 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
         selection.setRequired(true);
 
         scrollPane = new SelectBoxScrollPane(this);
-//        scrollPane.parentComp = this;
 
         addListener(clickListener = new ClickListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -138,7 +137,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
         invalidateHierarchy();
     }
 
-    /** Returns the select box's style. Modifying the returned style may not have an effect until {@link #setStyle(SelectBoxStyle)}
+    /** Returns the select box's style. Modifying the returned style may not have an effect until {@link #setStyle(SelectBox.SelectBoxStyle)}
      * is called. */
     public SelectBox.SelectBoxStyle getStyle () {
         return style;

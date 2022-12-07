@@ -18,13 +18,17 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
 
+import java.util.ArrayList;
+
 public class Board extends Widget {
     BoardStyle style;
     private InputListener inputListener;
+    private ClickListener clickListener;
     private float offsetX = 0, offsetY = 0;
 
     public float visualX = 0, visualY = 0;
-    Pixmap cursor;
+    private Pixmap cursor;
+    ArrayList<Doodle> doodles = new ArrayList<>();
 
 
     public Board (Skin skin) {
@@ -45,6 +49,8 @@ public class Board extends Widget {
     }
     protected void initialize () {
         setTouchable(Touchable.enabled);
+
+        addListener(clickListener = new ClickListener());
         addListener(inputListener = new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 visualX = offsetX + x;
@@ -58,18 +64,23 @@ public class Board extends Widget {
             }
 
             public void touchDragged (InputEvent event, float x, float y, int pointer) {
-                System.out.println("X: "+x+"; Y: "+y);
+                visualX = offsetX + x;
+                visualY = offsetY + y;
+                System.out.println("X: "+visualX+"; Y: "+visualY);
             }
 
             public boolean mouseMoved (InputEvent event, float x, float y) {
-//                System.out.println("Over Board");
-                Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursor,0,0));
+                if(clickListener.isOver()) {
+                    Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursor, 0, 0));
+                }
                 return false;
             }
 
             public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
-                System.out.println("Left Board");
-                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                if(!clickListener.isOver()) {
+                    System.out.println("Left Board");
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                }
             }
         });
     }
