@@ -33,6 +33,7 @@ public class Main extends ApplicationAdapter {
 	static Skin uiSkin;
 	//creating main panels
 	Panel sidePanel, topPanel, genStatsPanel, reminderPanel, toolbarPanel, masterboardPanel;
+	MBBoard masterBoard;
 	//list with all the MBComponents
 	static ArrayList<MBComponent> allComps = new ArrayList<>();
 
@@ -82,7 +83,7 @@ public class Main extends ApplicationAdapter {
 		reminderPanel.setSoftVisible(true);
 		masterboardPanel.setSoftVisible(true);
 
-		MBBoard masterBoard = new MBBoard();
+		masterBoard = new MBBoard();
 		masterBoard.setPosition(masterboardPanel.getX()+1, masterboardPanel.getY()+1);
 		masterBoard.setSize(masterboardPanel.getWidth()-2, masterboardPanel.getHeight()-2);
 		masterboardPanel.add(masterBoard);
@@ -456,6 +457,9 @@ public class Main extends ApplicationAdapter {
 		for (MBSelectBox selectBox: scrollpanes) {
 			selectBox.draw(selectBox.aFloat);
 		}
+		
+		batch.draw(masterBoard.board.getDoodleTex(), 900, 150);
+
 		for (MBWindow window: windows) {
 			window.draw(window.aFloat);
 		}
@@ -578,20 +582,4 @@ public class Main extends ApplicationAdapter {
 			path = null;
 		}
 	}
-	public static int launch(Class c) {
-		String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
-		String classpath = System.getProperty("java.class.path");
-		String className = c.getCanonicalName();
-
-		ProcessBuilder builder = new ProcessBuilder(javaBin, "-cp", classpath, className);
-		try{
-			Process process = builder.start();
-			process.waitFor();
-			return process.exitValue();
-		} catch(Exception e){
-			e.printStackTrace();
-			return 1;
-		}
-	}
-
 }
