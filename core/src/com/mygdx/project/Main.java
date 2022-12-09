@@ -8,9 +8,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -82,11 +84,6 @@ public class Main extends ApplicationAdapter {
 		toolbarPanel.setSoftVisible(true);
 		reminderPanel.setSoftVisible(true);
 		masterboardPanel.setSoftVisible(true);
-
-		masterBoard = new MBBoard();
-		masterBoard.setPosition(masterboardPanel.getX()+1, masterboardPanel.getY()+1);
-		masterBoard.setSize(masterboardPanel.getWidth()-2, masterboardPanel.getHeight()-2);
-		masterboardPanel.add(masterBoard);
 
 		//region Reminders
 		//creating a textarea
@@ -413,11 +410,16 @@ public class Main extends ApplicationAdapter {
 		//endregion
 
 		//region Top Bar
-		MBSelectBox dropdown = new MBSelectBox();
+		final MBSelectBox dropdown = new MBSelectBox();
 		dropdown.setSize(300, 40);
 		dropdown.setPosition(topPanel.getX()+ topPanel.getWidth()-305, topPanel.getY()+5);
 		dropdown.setItems("PLAYER 1", "player2", "etc...", "OPTION 4", "rando opt");
 		player = dropdown.dropdown.getSelected();
+		dropdown.addScrollPaneListener(new ClickListener() {
+			public void clicked (InputEvent event, float x, float y) {
+				player = dropdown.dropdown.getSelected();
+			}
+		});
 
 		MBLabel playerNameLabel = new MBLabel(player, uiSkin);
 		playerNameLabel.setPosition(topPanel.getX() + 10, topPanel.getY() + (topPanel.getHeight()/2) - (playerNameLabel.getHeight()/2));
@@ -427,6 +429,61 @@ public class Main extends ApplicationAdapter {
 
 		//endregion
 
+		//region MasterBoard
+		masterBoard = new MBBoard();
+		masterBoard.setPosition(masterboardPanel.getX()+1, masterboardPanel.getY()+1);
+		masterBoard.setSize(masterboardPanel.getWidth()-2, masterboardPanel.getHeight()-2);
+		masterboardPanel.add(masterBoard);
+
+		//endregion
+
+		//region Tool Bar
+		MBButton selectButton = new MBButton("Select", uiSkin);
+		selectButton.setPosition(toolbarPanel.getX() + 10, toolbarPanel.getY() +10);
+		selectButton.setSize(200, toolbarPanel.getHeight()-20);
+		selectButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if (!masterBoard.board.getSelectMode()){
+					masterBoard.board.enterSelectMode();
+				}
+			}
+		});
+
+		MBButton drawButton = new MBButton("Draw", uiSkin);
+		drawButton.setPosition(selectButton.getX() + selectButton.getWidth() + 5, selectButton.getY());
+		drawButton.setSize(selectButton.getWidth(), selectButton.getHeight());
+		drawButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if (!masterBoard.board.getDrawMode()){
+					masterBoard.board.enterDrawMode();
+				}
+			}
+		});
+
+		MBButton eraseButton = new MBButton("Erase", uiSkin);
+		eraseButton.setPosition(drawButton.getX() + drawButton.getWidth() + 5, selectButton.getY());
+		eraseButton.setSize(selectButton.getWidth(), selectButton.getHeight());
+		eraseButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if (!masterBoard.board.getEraseMode()){
+					masterBoard.board.enterEraseMode();
+				}
+			}
+		});
+
+		MBSelectBox sizesBox = new MBSelectBox();
+		sizesBox.setPosition(eraseButton.getX() + eraseButton.getWidth() + 5, selectButton.getY());
+		sizesBox.setSize(100, 40);
+		sizesBox.setItems("1", "2", "3", "5", "10");
+
+		toolbarPanel.add(selectButton);
+		toolbarPanel.add(drawButton);
+		toolbarPanel.add(eraseButton);
+		toolbarPanel.add(sizesBox);
+		//endregion
 
 		//honestly don't know what this does, but it's essential
 		InputMultiplexer multiplexer = new InputMultiplexer();
@@ -454,12 +511,12 @@ public class Main extends ApplicationAdapter {
 		for (Tipbox tipbox: tipboxes) {
 			tipbox.render(batch);
 		}
+
+		batch.draw(masterBoard.board.getDoodleTex(), 900, 150);
+
 		for (MBSelectBox selectBox: scrollpanes) {
 			selectBox.draw(selectBox.aFloat);
 		}
-		
-		batch.draw(masterBoard.board.getDoodleTex(), 900, 150);
-
 		for (MBWindow window: windows) {
 			window.draw(window.aFloat);
 		}
