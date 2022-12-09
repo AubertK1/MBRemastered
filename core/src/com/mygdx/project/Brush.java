@@ -24,65 +24,42 @@ public class Brush {
         this.brush = brush;
     }
 
+    //fixme
     public static Brush generateBrush(int width, boolean soft){
-        int size = (int)width/2;
-        int fadedSize = size;
-        if(width > 5) fadedSize = 2;
+        int size = width/2;
+        int absSpotR;
+        int absSpotC;
 
         float[][] brushLayout = new float[width][width];
-        int lastSpot = brushLayout.length-1;
 
-        if(!soft) {
+        if(!soft || width == 1) {
             for (int i = 0; i < brushLayout.length; i++) {
                 for (int j = 0; j < brushLayout.length; j++) {
                     brushLayout[i][j] = 1;
                 }
             }
         }
-        if(soft) {
+        else {
             for (int i = 0; i < brushLayout.length; i++) {
                 for (int j = 0; j < brushLayout.length; j++) {
-                    //middle row
-                    if(i == fadedSize+1 || i == brushLayout.length - fadedSize){
-                        //center
-                        if(j == fadedSize+1){
-                            brushLayout[i][j] = 1;
-                        }
-                        //first and last column
-                        else if(j == 0 || j == lastSpot){
-                            brushLayout[i][j] = 1f/2;
-                        }
-                        else brushLayout[i][j] = 1;
-                    }
-                    //2nd abd 2nd to last row
-                    else if(i == 1 || i == lastSpot - 1){
-                        //first and last column
-                        if(j == 0 || j == lastSpot){
-                            brushLayout[i][j] = 1f/4;
-                        }
-                        //second and second to last column
-                        if(j == fadedSize || j == lastSpot+1-fadedSize){
-                            brushLayout[i][j] = 1f/2;
-                        }
-                        else brushLayout[i][j] = 1;
-                    }
-                    //top and bottow row
-                    else if(i == 0 || i == lastSpot){
-                        //first and last column / corners
-                        if(j == 0 || j == lastSpot){
-                            brushLayout[i][j] = 0.0f;
-                        }
-                        //second and second to last column
-                        if(j == 0 || j == lastSpot+1-fadedSize){
-                            brushLayout[i][j] = 1f/4;
-                        }
+                    absSpotR = i;
+                    absSpotC = j;
+                    if(i > size) absSpotR = (width-1) - i;
+                    if(j > size) absSpotC = (width-1) - j;
 
-                        if(j == fadedSize || j == lastSpot-fadedSize){
-                            brushLayout[i][j] = 1f/2;
-                        }
-                        else brushLayout[i][j] = 1;
+                    if(absSpotR == 0) {
+                        if ((absSpotR+absSpotC) >= 4) brushLayout[i][j] = 1.0f;
+                        else brushLayout[i][j] = (float)(absSpotR+absSpotC)/4.0f;
                     }
-                    else brushLayout[i][j] = 1;
+                    else if(absSpotR == 1) {
+                        if ((absSpotR+absSpotC+1) >= 4) brushLayout[i][j] = 1.0f;
+                        else brushLayout[i][j] = (float)(absSpotR+absSpotC)/4.0f;
+                    }
+                    else if(absSpotR == 2) {
+                        if ((absSpotR+absSpotC+1) >= 4) brushLayout[i][j] = 1.0f;
+                        else brushLayout[i][j] = (float)(absSpotR+absSpotC)/4.0f;
+                    }
+                    else brushLayout[i][j] = 1.0f;
                 }
             }
         }
@@ -124,7 +101,7 @@ public class Brush {
         Pixmap canvas = new Pixmap(32, 32, Format.RGBA8888);
         canvas.setFilter(Filter.NearestNeighbour);
         pix.setFilter(Filter.NearestNeighbour);
-        canvas.drawPixmap(pix, 0, 0, brush.length, brush.length, 0, 0, brush.length*2, brush.length*2);
+        canvas.drawPixmap(pix, 0, 0, brush.length, brush.length, 0, 0, brush.length, brush.length);
 
         return canvas;
     }

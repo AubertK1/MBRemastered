@@ -474,10 +474,17 @@ public class Main extends ApplicationAdapter {
 			}
 		});
 
-		MBSelectBox sizesBox = new MBSelectBox();
+		final MBSelectBox sizesBox = new MBSelectBox();
 		sizesBox.setPosition(eraseButton.getX() + eraseButton.getWidth() + 5, selectButton.getY());
 		sizesBox.setSize(100, 40);
-		sizesBox.setItems("1", "2", "3", "5", "10");
+		sizesBox.setItems("1", "3", "5", "11", "23");
+		sizesBox.dropdown.setSelected(String.valueOf(masterBoard.board.getCurrentBrush().brush.length));
+		sizesBox.addScrollPaneListener(new ClickListener(){
+			public void clicked (InputEvent event, float x, float y) {
+				int newSize = Integer.parseInt(sizesBox.dropdown.getSelected());
+				masterBoard.board.setPixelSize(newSize, true);
+			}
+		});
 
 		toolbarPanel.add(selectButton);
 		toolbarPanel.add(drawButton);

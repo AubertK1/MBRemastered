@@ -82,7 +82,7 @@ public class Board extends Widget {
                 {0.0f,0.5f,0.5f,0.5f,0.0f}
         });
 */
-        currentBrush = Brush.generateBrush(3, true);
+        currentBrush = Brush.generateBrush(11, true);
         brushCenterX = (float)(currentBrush.size+1);
         brushCenterY = (float)(currentBrush.size+1);
         cursor = currentBrush.getPixmap();
@@ -171,7 +171,7 @@ public class Board extends Widget {
 
             //flipping the y so that the coordinates aren't upside down for the pixmap
             int y2 = (doodle.getHeight() - y) + (int) brushCenterY;
-            int x2 = x + (int) brushCenterX * 2;
+            int x2 = x + (int) brushCenterX;
             color = currentColor;
 
             // This might look redundant, but should be more efficient because
@@ -182,6 +182,7 @@ public class Board extends Widget {
                         if (brush[brushSize - j][brushSize + i] != 0) {
                             doodlePixel.setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i]);
                             doodlePixel.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
+                            doodle.storeLine(true, lastx + i, lasty + j, x2 + i, y2 + j);
                         }
                     }
                 }
@@ -191,6 +192,7 @@ public class Board extends Widget {
                         if (brush[brushSize - j][brushSize + i] != 0) {
                             doodlePixel.setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i]);
                             doodlePixel.drawPixel(x2 + i, y2 + j);
+                            doodle.storeLine(true, lastx + i, lasty + j, -1, -1);
                         }
                     }
                 }
@@ -201,6 +203,9 @@ public class Board extends Widget {
 
             doodleTex.dispose();
             doodleTex = new Texture(getDoodle());
+        }
+        if(eraseMode){
+
         }
     }
 
@@ -239,8 +244,8 @@ public class Board extends Widget {
     public void setCurrentColor(Color color) {
         currentColor = color;
     }
-    public void setPixelSize(int width){
-        currentBrush = Brush.generateBrush(width, true);
+    public void setPixelSize(int width, boolean soft){
+        currentBrush = Brush.generateBrush(width, soft);
         brushCenterX = (float)(currentBrush.brush.length/2)+0;
         brushCenterY = (float)(currentBrush.brush[0].length/2)+0;
         cursor = currentBrush.getPixmap();
@@ -284,6 +289,9 @@ public class Board extends Widget {
     }
     public Texture getDoodleTex() {
         return doodleTex;
+    }
+    public Brush getCurrentBrush(){
+        return currentBrush;
     }
     public ArrayList<Texture> getDoodleTexs() {
         return doodleTexs;
