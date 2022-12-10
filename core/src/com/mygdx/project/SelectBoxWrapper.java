@@ -66,6 +66,7 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
     private int alignment = Align.left;
     boolean selectedPrefWidth;
     boolean beenClickedYet = false;
+    boolean isActive = false;
 
     final ArraySelection<T> selection = new ArraySelection(items) {
         public boolean fireChangeEvent () {
@@ -582,12 +583,16 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
             selectBox.localToStageCoordinates(temp.set(0, 0));
             if (!temp.equals(stagePosition)) hide();
             super.draw(batch, parentAlpha);
+
+            //MINE
             if(doShow) {
                 list.visualX = getX();
                 list.visualY = getY();
 
                 list.draw(Main.batch, parentAlpha);
             }
+            //MINE
+            selectBox.isActive = doShow;
         }
 
         public void act (float delta) {

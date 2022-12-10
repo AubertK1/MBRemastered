@@ -35,6 +35,7 @@ public class Board extends Widget {
     private Brush currentBrush;
     private float brushCenterX;
     private float brushCenterY;
+    private boolean brushSoft = true;
 
     private boolean selectMode = true;
     private boolean drawMode = false;
@@ -82,7 +83,7 @@ public class Board extends Widget {
                 {0.0f,0.5f,0.5f,0.5f,0.0f}
         });
 */
-        currentBrush = Brush.generateBrush(11, true);
+        currentBrush = Brush.generateBrush(23, brushSoft);
         brushCenterX = (float)(currentBrush.size+1);
         brushCenterY = (float)(currentBrush.size+1);
         cursor = currentBrush.getPixmap();
@@ -164,7 +165,7 @@ public class Board extends Widget {
     }
 
     public void drawAt(int x, int y) {
-        if(!selectMode) {
+        if(drawMode) {
             int brushSize = currentBrush.getSize();
             float[][] brush = currentBrush.getBrush();
             Color color;
@@ -179,8 +180,8 @@ public class Board extends Widget {
             if (lastx != -1 && lasty != -1) {
                 for (int i = -brushSize; i < brushSize + 1; i++) {
                     for (int j = -brushSize; j < brushSize + 1; j++) {
-                        if (brush[brushSize - j][brushSize + i] != 0) {
-                            doodlePixel.setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i]);
+                        if (brush[brushSize - j][brushSize + i] > 0.15) {
+                            doodlePixel.setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i] * .4f);
                             doodlePixel.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
                             doodle.storeLine(true, lastx + i, lasty + j, x2 + i, y2 + j);
                         }
@@ -189,10 +190,54 @@ public class Board extends Widget {
             } else {
                 for (int i = -brushSize; i < brushSize + 1; i++) {
                     for (int j = -brushSize; j < brushSize + 1; j++) {
-                        if (brush[brushSize - j][brushSize + i] != 0) {
+                        if (brush[brushSize - j][brushSize + i] > 0.15) {
                             doodlePixel.setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i]);
                             doodlePixel.drawPixel(x2 + i, y2 + j);
                             doodle.storeLine(true, lastx + i, lasty + j, -1, -1);
+                        }
+                    }
+                }
+            }
+            //so that it doesn't draw old points again
+            doodle.setColor(Color.CLEAR);
+            doodle.fill();
+            doodle.drawPixmap(doodlePixel, 0, 0, 1018, 850, 0, 0, 1018, 850);
+            lastx = x2;
+            lasty = y2;
+
+            doodleTex.dispose();
+            doodleTex = new Texture(getDoodle());
+        }
+        else if(eraseMode){
+            int brushSize = currentBrush.getSize();
+            float[][] brush = currentBrush.getBrush();
+
+            //flipping the y so that the coordinates aren't upside down for the pixmap
+            int y2 = (doodle.getHeight() - y) + (int) brushCenterY;
+            int x2 = x + (int) brushCenterX;
+
+            doodle.setBlending(Pixmap.Blending.None); // before you start drawing pixels.
+            doodlePixel.setBlending(Pixmap.Blending.None); // before you start drawing pixels.
+
+            // This might look redundant, but should be more efficient because
+            // the condition is not evaluated for each pixel on the brush
+            if (lastx != -1 && lasty != -1) {
+                for (int i = -brushSize; i < brushSize + 1; i++) {
+                    for (int j = -brushSize; j < brushSize + 1; j++) {
+                        if (brush[brushSize - j][brushSize + i] > 0.15) {
+                            doodlePixel.setColor(0x00000000);
+                            doodlePixel.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
+                            doodle.storeLine(false, lastx + i, lasty + j, x2 + i, y2 + j);
+                        }
+                    }
+                }
+            } else {
+                for (int i = -brushSize; i < brushSize + 1; i++) {
+                    for (int j = -brushSize; j < brushSize + 1; j++) {
+                        if (brush[brushSize - j][brushSize + i] > 0.15) {
+                            doodlePixel.setColor(0x00000000);
+                            doodlePixel.drawPixel(x2 + i, y2 + j, 0x00000000);
+                            doodle.storeLine(false, lastx + i, lasty + j, -1, -1);
                         }
                     }
                 }
@@ -203,8 +248,9 @@ public class Board extends Widget {
 
             doodleTex.dispose();
             doodleTex = new Texture(getDoodle());
-        }
-        if(eraseMode){
+
+            doodle.setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
+            doodlePixel.setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
 
         }
     }
@@ -229,6 +275,7 @@ public class Board extends Widget {
 
     public void setBackgroundColor(Color color) {
         backgroundColor = color;
+        //sets board background to the color
         Pixmap bgColor = new Pixmap(1, 1, Pixmap.Format.RGB888);
         bgColor.setColor(color);
         bgColor.fill();
@@ -244,11 +291,21 @@ public class Board extends Widget {
     public void setCurrentColor(Color color) {
         currentColor = color;
     }
-    public void setPixelSize(int width, boolean soft){
+    public void setBrush(int width, boolean soft){
         currentBrush = Brush.generateBrush(width, soft);
         brushCenterX = (float)(currentBrush.brush.length/2)+0;
         brushCenterY = (float)(currentBrush.brush[0].length/2)+0;
         cursor = currentBrush.getPixmap();
+    }
+
+    public void setBrushSoft(boolean isSoft) {
+        brushSoft = isSoft;
+
+        setBrush(currentBrush.getWidth(), isSoft);
+    }
+
+    public boolean isBrushSoft() {
+        return brushSoft;
     }
 
     public BoardStyle getStyle () {
@@ -271,8 +328,6 @@ public class Board extends Widget {
         drawMode = false;
         selectMode = false;
         eraseMode = true;
-
-        setCurrentColor(backgroundColor);
     }
     public boolean getSelectMode() {
         return selectMode;

@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
  */
 public class Brush {
     int size;
+    int width;
     float[][] brush;
 
     /**
@@ -21,14 +22,16 @@ public class Brush {
      */
     public Brush(int size, float[][] brush) {
         this.size = size;
+        width = size*2+1;
         this.brush = brush;
     }
 
     //fixme
     public static Brush generateBrush(int width, boolean soft){
         int size = width/2;
-        int absSpotR;
-        int absSpotC;
+        int absRow;
+        int absCol;
+        double rounded;
 
         float[][] brushLayout = new float[width][width];
 
@@ -42,24 +45,19 @@ public class Brush {
         else {
             for (int i = 0; i < brushLayout.length; i++) {
                 for (int j = 0; j < brushLayout.length; j++) {
-                    absSpotR = i;
-                    absSpotC = j;
-                    if(i > size) absSpotR = (width-1) - i;
-                    if(j > size) absSpotC = (width-1) - j;
+                    absRow = i;
+                    absCol = j;
+                    //so that the opposite rows/columns are the same value
+                    if(i > size) absRow = (width-1) - i;
+                    if(j > size) absCol = (width-1) - j;
 
-                    if(absSpotR == 0) {
-                        if ((absSpotR+absSpotC) >= 4) brushLayout[i][j] = 1.0f;
-                        else brushLayout[i][j] = (float)(absSpotR+absSpotC)/4.0f;
+                    rounded = Math.round(((float)(absRow+absCol)/(size*2.0)) * 100.00)/100.00 * 1.5f;
+                    if (rounded >= 1.0) brushLayout[i][j] = 1.0f;
+                    else brushLayout[i][j] = (float) rounded;
+                    //fixme for testing purposes
+                    if(i == brushLayout.length-1 && j == brushLayout.length-1){
+                        System.out.print("");
                     }
-                    else if(absSpotR == 1) {
-                        if ((absSpotR+absSpotC+1) >= 4) brushLayout[i][j] = 1.0f;
-                        else brushLayout[i][j] = (float)(absSpotR+absSpotC)/4.0f;
-                    }
-                    else if(absSpotR == 2) {
-                        if ((absSpotR+absSpotC+1) >= 4) brushLayout[i][j] = 1.0f;
-                        else brushLayout[i][j] = (float)(absSpotR+absSpotC)/4.0f;
-                    }
-                    else brushLayout[i][j] = 1.0f;
                 }
             }
         }
@@ -75,6 +73,9 @@ public class Brush {
     public int getSize() {
         return size;
     }
+    public int getWidth() {
+        return width;
+    }
 
     /**
      * Gets the brush data
@@ -89,6 +90,8 @@ public class Brush {
      * @return a {@link Pixmap}
      */
     public Pixmap getPixmap() {
+        if (size*2+1 > 32) return getBigPixmap();
+
         Pixmap pix = new Pixmap(brush.length, brush.length, Format.RGBA8888);
         for (int i = 0; i < brush.length; i++) {
             for (int j = 0; j < brush.length; j++) {
@@ -99,6 +102,23 @@ public class Brush {
         }
 
         Pixmap canvas = new Pixmap(32, 32, Format.RGBA8888);
+        canvas.setFilter(Filter.NearestNeighbour);
+        pix.setFilter(Filter.NearestNeighbour);
+        canvas.drawPixmap(pix, 0, 0, brush.length, brush.length, 0, 0, brush.length, brush.length);
+
+        return canvas;
+    }
+    public Pixmap getBigPixmap() {
+        Pixmap pix = new Pixmap(brush.length, brush.length, Format.RGBA8888);
+        for (int i = 0; i < brush.length; i++) {
+            for (int j = 0; j < brush.length; j++) {
+                //changed the original code to only vary the opacity of the pixel and hard set the color to black
+                pix.setColor(new Color( 0, 0, 0, brush[i][j]));
+                pix.drawPixel(j, i);
+            }
+        }
+
+        Pixmap canvas = new Pixmap(128, 128, Format.RGBA8888);
         canvas.setFilter(Filter.NearestNeighbour);
         pix.setFilter(Filter.NearestNeighbour);
         canvas.drawPixmap(pix, 0, 0, brush.length, brush.length, 0, 0, brush.length, brush.length);

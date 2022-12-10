@@ -476,13 +476,59 @@ public class Main extends ApplicationAdapter {
 
 		final MBSelectBox sizesBox = new MBSelectBox();
 		sizesBox.setPosition(eraseButton.getX() + eraseButton.getWidth() + 5, selectButton.getY());
-		sizesBox.setSize(100, 40);
-		sizesBox.setItems("1", "3", "5", "11", "23");
+		sizesBox.setSize(100, eraseButton.getHeight()/3 - 1);
+		sizesBox.setItems("1", "3", "5", "11", "23", "45");
 		sizesBox.dropdown.setSelected(String.valueOf(masterBoard.board.getCurrentBrush().brush.length));
 		sizesBox.addScrollPaneListener(new ClickListener(){
 			public void clicked (InputEvent event, float x, float y) {
 				int newSize = Integer.parseInt(sizesBox.dropdown.getSelected());
-				masterBoard.board.setPixelSize(newSize, true);
+				masterBoard.board.setBrush(newSize, true);
+			}
+		});
+
+		final MBSelectBox softnessBox = new MBSelectBox();
+		softnessBox.setPosition(sizesBox.getX(), sizesBox.getY() + sizesBox.getHeight() + 2);
+		softnessBox.setSize(100, eraseButton.getHeight()/3 - 1);
+		softnessBox.setItems("soft", "hard");
+		softnessBox.addScrollPaneListener(new ClickListener(){
+			public void clicked (InputEvent event, float x, float y) {
+				masterBoard.board.setBrushSoft(softnessBox.dropdown.getSelected().equals("soft"));
+			}
+		});
+
+		final MBSelectBox colorBox = new MBSelectBox();
+		colorBox.setPosition(sizesBox.getX(), softnessBox.getY() + softnessBox.getHeight() + 2);
+		colorBox.setSize(100, eraseButton.getHeight()/3 - 1);
+		colorBox.setItems("BLACK", "WHITE", "RED", "YELLOW", "GREEN", "BLUE");
+		colorBox.addScrollPaneListener(new ClickListener(){
+			public void clicked (InputEvent event, float x, float y) {
+				String color = colorBox.dropdown.getSelected();
+				switch (color){
+					case "BLACK":
+						masterBoard.board.setCurrentColor(Color.BLACK);
+						masterBoard.board.setDrawingColor(Color.BLACK);
+						break;
+					case "WHITE":
+						masterBoard.board.setCurrentColor(Color.WHITE);
+						masterBoard.board.setDrawingColor(Color.WHITE);
+						break;
+					case "RED":
+						masterBoard.board.setCurrentColor(Color.RED);
+						masterBoard.board.setDrawingColor(Color.RED);
+						break;
+					case "YELLOW":
+						masterBoard.board.setCurrentColor(Color.YELLOW);
+						masterBoard.board.setDrawingColor(Color.YELLOW);
+						break;
+					case "GREEN":
+						masterBoard.board.setCurrentColor(Color.GREEN);
+						masterBoard.board.setDrawingColor(Color.GREEN);
+						break;
+					case "BLUE":
+						masterBoard.board.setCurrentColor(Color.BLUE);
+						masterBoard.board.setDrawingColor(Color.BLUE);
+						break;
+				}
 			}
 		});
 
@@ -490,6 +536,8 @@ public class Main extends ApplicationAdapter {
 		toolbarPanel.add(drawButton);
 		toolbarPanel.add(eraseButton);
 		toolbarPanel.add(sizesBox);
+		toolbarPanel.add(softnessBox);
+		toolbarPanel.add(colorBox);
 		//endregion
 
 		//honestly don't know what this does, but it's essential
@@ -522,7 +570,7 @@ public class Main extends ApplicationAdapter {
 		batch.draw(masterBoard.board.getDoodleTex(), 900, 150);
 
 		for (MBSelectBox selectBox: scrollpanes) {
-			selectBox.draw(selectBox.aFloat);
+			if(selectBox.dropdown.isActive) selectBox.draw(selectBox.aFloat);
 		}
 		for (MBWindow window: windows) {
 			window.draw(window.aFloat);
