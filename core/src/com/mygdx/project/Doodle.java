@@ -1,6 +1,7 @@
 package com.mygdx.project;
 
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -8,26 +9,42 @@ import java.util.ArrayList;
 public class Doodle extends Pixmap {
     ArrayList<Point> drawnPoints = new ArrayList<>();
     ArrayList<Point> erasePoints = new ArrayList<>();
+    //fixme
+    public Doodle2 doodle2 = new Doodle2(this);
 
     public Doodle(int width, int height, Format format) {
         super(width, height, format);
     }
-    public void storeLine(boolean drawMode, int x, int y, int x2, int y2){
+    public void storePoints(boolean drawMode, int x, int y, int x2, int y2){
+        Point point1 = new Point(x, y);
+        Point point2 = new Point(x2, y2);
+
+        int P1Index = -1;
+        int P2Index = -1;
+
         if (drawMode){
-            Point point1 = new Point(x, y);
-            Point point2 = new Point(x2, y2);
-            boolean addP1 = true;
-            boolean addP2 = true;
             for (Point point: drawnPoints) {
                 if (point.x == point1.x && point.y == point1.y){
-                    addP1 = false;
+                    P1Index = 1;
                 }
                 if (point.x == point2.x && point.y == point2.y){
-                    addP2 = false;
+                    P2Index = 1;
                 }
             }
-            if(addP1) drawnPoints.add(point1);
-            if(addP2) drawnPoints.add(point2);
+            if(P1Index == -1) drawnPoints.add(point1);
+            if(P2Index == -1) drawnPoints.add(point2);
+        }
+        if(!drawMode){
+            for (int i = drawnPoints.size()-1; i >= 0; i--) {
+                if (drawnPoints.get(i).x == point1.x && drawnPoints.get(i).y == point1.y){
+                    P1Index = i;
+                }
+                if (drawnPoints.get(i).x == point2.x && drawnPoints.get(i).y == point2.y){
+                    P2Index = i;
+                }
+            }
+            if(P1Index != -1) drawnPoints.remove(P1Index);
+            if(P2Index != -1) drawnPoints.remove(P2Index);
         }
     }
 }

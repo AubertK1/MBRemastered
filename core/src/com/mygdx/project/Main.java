@@ -44,6 +44,7 @@ public class Main extends ApplicationAdapter {
     static ArrayList<Tipbox> tipboxes = new ArrayList<>();
     static ArrayList<MBWindow> windows = new ArrayList<>();
     static ArrayList<MBSelectBox> scrollpanes = new ArrayList<>();
+    static ArrayList<Doodle2> doodle2s = new ArrayList<>();
 	//weapons or spell items for the itempanel
 	static int itemTab = 1;
 
@@ -482,7 +483,7 @@ public class Main extends ApplicationAdapter {
 		sizesBox.addScrollPaneListener(new ClickListener(){
 			public void clicked (InputEvent event, float x, float y) {
 				int newSize = Integer.parseInt(sizesBox.dropdown.getSelected());
-				masterBoard.board.setBrush(newSize, true);
+				masterBoard.board.setBrush(newSize, masterBoard.board.isBrushSoft());
 			}
 		});
 
@@ -569,6 +570,10 @@ public class Main extends ApplicationAdapter {
 
 		batch.draw(masterBoard.board.getDoodleTex(), 900, 150);
 
+		//fixme
+		for (Doodle2 doodle2: doodle2s) {
+			doodle2.draw(batch, 1);
+		}
 		for (MBSelectBox selectBox: scrollpanes) {
 			if(selectBox.dropdown.isActive) selectBox.draw(selectBox.aFloat);
 		}

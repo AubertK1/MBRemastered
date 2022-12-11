@@ -11,10 +11,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Board extends Widget {
@@ -26,7 +28,7 @@ public class Board extends Widget {
     public float visualX = 0, visualY = 0;
     private Pixmap cursor;
     private Doodle doodle;
-    private Doodle doodlePixel;
+    private Doodle doodleDot;
     private Texture doodleTex;
 
     private Color backgroundColor;
@@ -74,16 +76,7 @@ public class Board extends Widget {
         doodleTex.bind();
 
         //setting brush/cursor
-/*
-        currentBrush = new Brush(2, new float[][]{
-                {0.0f,0.5f,0.5f,0.5f,0.0f},
-                {0.5f,0.8f,1.0f,0.8f,0.5f},
-                {0.5f,1.0f,1.0f,1.0f,0.5f},
-                {0.5f,0.8f,1.0f,0.8f,0.5f},
-                {0.0f,0.5f,0.5f,0.5f,0.0f}
-        });
-*/
-        currentBrush = Brush.generateBrush(23, brushSoft);
+        currentBrush = Brush.generateBrush(11, brushSoft);
         brushCenterX = (float)(currentBrush.size+1);
         brushCenterY = (float)(currentBrush.size+1);
         cursor = currentBrush.getPixmap();
@@ -91,9 +84,9 @@ public class Board extends Widget {
     protected void initialize () {
         backgroundColor = new Color(0xd2b48cff);
 
-        doodlePixel = new Doodle(1018, 850, Pixmap.Format.RGBA8888);
+        doodleDot = new Doodle(1018, 850, Pixmap.Format.RGBA8888);
         doodle = new Doodle(1018, 850, Pixmap.Format.RGBA8888);
-        doodlePixel.setFilter(Pixmap.Filter.NearestNeighbour);
+        doodleDot.setFilter(Pixmap.Filter.NearestNeighbour);
         doodle.setFilter(Pixmap.Filter.NearestNeighbour);
         doodle.setColor(new Color(0f,0f,0f,0f));
         doodle.fill();
@@ -105,8 +98,9 @@ public class Board extends Widget {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 visualX = offsetX + x + brushCenterX;
                 visualY = offsetY + y - brushCenterY;
-                System.out.println("X: "+visualX+"; Y: "+visualY);
                 drawAt((int)x,(int)y);
+//                System.out.println(doodle.drawnPoints.toString());
+                System.out.println(doodle.drawnPoints.size());
                 return true;
             }
 
@@ -114,23 +108,39 @@ public class Board extends Widget {
                 if (pointer != 0 || button != 0) return;
                 lastx = -1;
                 lasty = -1;
+
+                //so that the program doesn't slow down the more that you draw
+                //(I think this works because it stops storing the same information over and over again in its memory)
+                //called here so that it's only called when drawing but isn't called too often
+//                doodlePixel.dispose();
+                ArrayList<Point> points = doodle.drawnPoints;
+                doodle.dispose();
+//                doodlePixel = new Doodle(1018, 850, Pixmap.Format.RGBA8888);
+                doodle = new Doodle(1018, 850, Pixmap.Format.RGBA8888);
+                doodle.drawnPoints = points;
+                //fixme
+                doodle.doodle2.reinitialize();
             }
 
             public void touchDragged (InputEvent event, float x, float y, int pointer) {
                 visualX = offsetX + x;
                 visualY = offsetY + y;
-                System.out.println("X: "+visualX+"; Y: "+visualY);
+//                System.out.println("X: "+visualX+"; Y: "+visualY);
                 drawAt((int)x,(int)y);
 
-                if(!drawCursor && !selectMode){
+                if(clickListener.isOver() && !selectMode && !drawCursor){
+                    cursor = currentBrush.getPixmap();
                     Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursor, 0, 0));
+                    cursor.dispose();
                     drawCursor = true;
                 }
             }
 
             public boolean mouseMoved (InputEvent event, float x, float y) {
-                if(clickListener.isOver() && !selectMode) {
+                if(clickListener.isOver() && !selectMode && !drawCursor) {
+                    cursor = currentBrush.getPixmap();
                     Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursor, 0, 0));
+                    cursor.dispose();
                     drawCursor = true;
                 }
                 return false;
@@ -161,7 +171,8 @@ public class Board extends Widget {
         if (background != null) {
             background.draw(batch, x, y, width, height);
         }
-
+        //fixme
+        doodle.doodle2.draw(batch, 1);
     }
 
     public void drawAt(int x, int y) {
@@ -181,19 +192,23 @@ public class Board extends Widget {
                 for (int i = -brushSize; i < brushSize + 1; i++) {
                     for (int j = -brushSize; j < brushSize + 1; j++) {
                         if (brush[brushSize - j][brushSize + i] > 0.15) {
-                            doodlePixel.setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i] * .4f);
-                            doodlePixel.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
-                            doodle.storeLine(true, lastx + i, lasty + j, x2 + i, y2 + j);
+                            //making the line lighter
+                            doodleDot.setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i] * .4f);
+                            doodleDot.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
+                            doodle.storePoints(true, lastx + i, lasty + j, x2 + i, y2 + j);
                         }
                     }
                 }
             } else {
                 for (int i = -brushSize; i < brushSize + 1; i++) {
                     for (int j = -brushSize; j < brushSize + 1; j++) {
-                        if (brush[brushSize - j][brushSize + i] > 0.15) {
-                            doodlePixel.setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i]);
-                            doodlePixel.drawPixel(x2 + i, y2 + j);
-                            doodle.storeLine(true, lastx + i, lasty + j, -1, -1);
+                        if (brush[brushSize - j][brushSize + i] > 0.2) {
+                            //making the dot darker
+                            float a = brush[brushSize - j][brushSize + i] * 1.3f;
+                            if (a > 1) a = 1;
+                            doodleDot.setColor(color.r, color.g, color.b, a);
+                            doodleDot.drawPixel(x2 + i, y2 + j);
+                            doodle.storePoints(true, x2 + i, y2 + j, -1, -1);
                         }
                     }
                 }
@@ -201,7 +216,8 @@ public class Board extends Widget {
             //so that it doesn't draw old points again
             doodle.setColor(Color.CLEAR);
             doodle.fill();
-            doodle.drawPixmap(doodlePixel, 0, 0, 1018, 850, 0, 0, 1018, 850);
+            doodle.drawPixmap(doodleDot, 0, 0, 1018, 850, 0, 0, 1018, 850);
+
             lastx = x2;
             lasty = y2;
 
@@ -217,7 +233,7 @@ public class Board extends Widget {
             int x2 = x + (int) brushCenterX;
 
             doodle.setBlending(Pixmap.Blending.None); // before you start drawing pixels.
-            doodlePixel.setBlending(Pixmap.Blending.None); // before you start drawing pixels.
+            doodleDot.setBlending(Pixmap.Blending.None); // before you start drawing pixels.
 
             // This might look redundant, but should be more efficient because
             // the condition is not evaluated for each pixel on the brush
@@ -225,9 +241,9 @@ public class Board extends Widget {
                 for (int i = -brushSize; i < brushSize + 1; i++) {
                     for (int j = -brushSize; j < brushSize + 1; j++) {
                         if (brush[brushSize - j][brushSize + i] > 0.15) {
-                            doodlePixel.setColor(0x00000000);
-                            doodlePixel.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
-                            doodle.storeLine(false, lastx + i, lasty + j, x2 + i, y2 + j);
+                            doodleDot.setColor(0x00000000);
+                            doodleDot.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
+                            doodle.storePoints(false, lastx + i, lasty + j, x2 + i, y2 + j);
                         }
                     }
                 }
@@ -235,14 +251,14 @@ public class Board extends Widget {
                 for (int i = -brushSize; i < brushSize + 1; i++) {
                     for (int j = -brushSize; j < brushSize + 1; j++) {
                         if (brush[brushSize - j][brushSize + i] > 0.15) {
-                            doodlePixel.setColor(0x00000000);
-                            doodlePixel.drawPixel(x2 + i, y2 + j, 0x00000000);
-                            doodle.storeLine(false, lastx + i, lasty + j, -1, -1);
+                            doodleDot.setColor(0x00000000);
+                            doodleDot.drawPixel(x2 + i, y2 + j, 0x00000000);
+                            doodle.storePoints(false, x2 + i, y2 + j, -1, -1);
                         }
                     }
                 }
             }
-            doodle.drawPixmap(doodlePixel, 0, 0, 1018, 850, 0, 0, 1018, 850);
+            doodle.drawPixmap(doodleDot, 0, 0, 1018, 850, 0, 0, 1018, 850);
             lastx = x2;
             lasty = y2;
 
@@ -250,7 +266,7 @@ public class Board extends Widget {
             doodleTex = new Texture(getDoodle());
 
             doodle.setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
-            doodlePixel.setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
+            doodleDot.setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
 
         }
     }
@@ -351,6 +367,7 @@ public class Board extends Widget {
     public ArrayList<Texture> getDoodleTexs() {
         return doodleTexs;
     }
+
     static public class BoardStyle{
         public @Null
         Drawable background;
