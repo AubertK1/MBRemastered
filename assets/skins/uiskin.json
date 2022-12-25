@@ -95,4 +95,7 @@
   com.mygdx.project.Board$BoardStyle: {
     default: {background: default-round-down}
   }
+  com.mygdx.project.Outline$OutlineStyle: {
+    default: {background: board-outline}
+  }
 }

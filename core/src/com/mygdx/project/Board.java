@@ -31,6 +31,8 @@ public class Board extends Widget {
     private Doodle doodleDot;
     private Texture doodleTex;
 
+    public Outline outline;
+
     private Color backgroundColor;
     private Color drawingColor;
     private Color currentColor;
@@ -84,12 +86,15 @@ public class Board extends Widget {
     protected void initialize () {
         backgroundColor = new Color(0xd2b48cff);
 
-        doodleDot = new Doodle(1018, 850, Pixmap.Format.RGBA8888);
-        doodle = new Doodle(1018, 850, Pixmap.Format.RGBA8888);
+        doodleDot = new Doodle(1018, 850, Pixmap.Format.RGBA8888, null);
+        doodle = new Doodle(1018, 850, Pixmap.Format.RGBA8888, outline);
         doodleDot.setFilter(Pixmap.Filter.NearestNeighbour);
         doodle.setFilter(Pixmap.Filter.NearestNeighbour);
         doodle.setColor(new Color(0f,0f,0f,0f));
         doodle.fill();
+
+        outline = new Outline(doodle, Main.uiSkin);
+        doodle.setOutline(outline);
 
         setTouchable(Touchable.enabled);
 
@@ -116,10 +121,10 @@ public class Board extends Widget {
                 ArrayList<Point> points = doodle.drawnPoints;
                 doodle.dispose();
 //                doodlePixel = new Doodle(1018, 850, Pixmap.Format.RGBA8888);
-                doodle = new Doodle(1018, 850, Pixmap.Format.RGBA8888);
+                doodle = new Doodle(1018, 850, Pixmap.Format.RGBA8888, outline);
                 doodle.drawnPoints = points;
                 //fixme
-                doodle.doodle2.reinitialize();
+                doodle.outline.reinitialize();
             }
 
             public void touchDragged (InputEvent event, float x, float y, int pointer) {
@@ -172,7 +177,7 @@ public class Board extends Widget {
             background.draw(batch, x, y, width, height);
         }
         //fixme
-        doodle.doodle2.draw(batch, 1);
+        doodle.outline.draw(batch, 1);
     }
 
     public void drawAt(int x, int y) {
@@ -283,10 +288,12 @@ public class Board extends Widget {
 
     public void setOffsetX(float offsetX) {
         this.offsetX = offsetX;
+        outline.setOffsetX(offsetX);
     }
 
     public void setOffsetY(float offsetY) {
         this.offsetY = offsetY;
+        outline.setOffsetY(offsetY);
     }
 
     public void setBackgroundColor(Color color) {
@@ -299,6 +306,13 @@ public class Board extends Widget {
         tempStyle.background = new Image(new Texture(bgColor)).getDrawable();
         setStyle(tempStyle);
         bgColor.dispose();
+    }
+
+    @Override
+    public void setSize(float width, float height){
+        super.setSize(width, height);
+        outline.setBoardHeight(height);
+        outline.setBoardWidth(width);
     }
 
     public void setDrawingColor(Color color) {

@@ -1,7 +1,6 @@
 package com.mygdx.project;
 
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -10,10 +9,11 @@ public class Doodle extends Pixmap {
     ArrayList<Point> drawnPoints = new ArrayList<>();
     ArrayList<Point> erasePoints = new ArrayList<>();
     //fixme
-    public Doodle2 doodle2 = new Doodle2(this);
+    public Outline outline;
 
-    public Doodle(int width, int height, Format format) {
+    public Doodle(int width, int height, Format format, Outline outline) {
         super(width, height, format);
+        this.outline = outline;
     }
     public void storePoints(boolean drawMode, int x, int y, int x2, int y2){
         Point point1 = new Point(x, y);
@@ -46,5 +46,9 @@ public class Doodle extends Pixmap {
             if(P1Index != -1) drawnPoints.remove(P1Index);
             if(P2Index != -1) drawnPoints.remove(P2Index);
         }
+    }
+
+    public void setOutline(Outline outline) {
+        this.outline = outline;
     }
 }
