@@ -62,6 +62,8 @@ public class Outline extends Widget {
                 if(clickListener.isOver()){
                     System.out.println("OVER");
                 }
+                x=x;
+                y=y;
                 return false;
             }
 
@@ -74,10 +76,14 @@ public class Outline extends Widget {
         setPosition(rec.x, rec.y);
 //        setPosition(1000, 200);
         setSize(rec.width, rec.height);
+        initialize();
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        if(doodle.drawnPoints.size() == 0) return;
+        validate();
+
         final Drawable background = getBackgroundDrawable();
 
         Color color = getColor();

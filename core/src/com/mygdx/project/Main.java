@@ -3,6 +3,7 @@ package com.mygdx.project;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import com.badlogic.gdx.math.Rectangle;
+import jdk.nashorn.internal.scripts.JD;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -600,6 +602,10 @@ public class Main extends ApplicationAdapter {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
+				//disabling input from the program so this is the only thing clickable
+				InputProcessor processor = Gdx.input.getInputProcessor();
+				Gdx.input.setInputProcessor(null);
+
 				//makes only .jpg .png or .gif files able to be selected
 				chooser.setFileFilter(filter);
 				chooser.setDialogTitle("Select Image");
@@ -618,6 +624,8 @@ public class Main extends ApplicationAdapter {
 					//saves the file location as a string
 					path = file.toString();
 				}
+				//re-enabling input
+				Gdx.input.setInputProcessor(processor);
 			}
 		}).start();
 	}

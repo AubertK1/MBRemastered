@@ -114,17 +114,19 @@ public class Board extends Widget {
                 lastx = -1;
                 lasty = -1;
 
-                //so that the program doesn't slow down the more that you draw
-                //(I think this works because it stops storing the same information over and over again in its memory)
-                //called here so that it's only called when drawing but isn't called too often
+                if(!selectMode) {
+                    //so that the program doesn't slow down the more that you draw
+                    //(I think this works because it stops storing the same information over and over again in its memory)
+                    //called here so that it's only called when drawing but isn't called too often
 //                doodlePixel.dispose();
-                ArrayList<Point> points = doodle.drawnPoints;
-                doodle.dispose();
+                    ArrayList<Point> points = doodle.drawnPoints;
+                    doodle.dispose();
 //                doodlePixel = new Doodle(1018, 850, Pixmap.Format.RGBA8888);
-                doodle = new Doodle(1018, 850, Pixmap.Format.RGBA8888, outline);
-                doodle.drawnPoints = points;
-                //fixme
-                doodle.outline.reinitialize();
+                    doodle = new Doodle(1018, 850, Pixmap.Format.RGBA8888, outline);
+                    doodle.drawnPoints = points;
+                    //fixme
+                    doodle.outline.reinitialize();
+                }
             }
 
             public void touchDragged (InputEvent event, float x, float y, int pointer) {
@@ -177,7 +179,7 @@ public class Board extends Widget {
             background.draw(batch, x, y, width, height);
         }
         //fixme
-        doodle.outline.draw(batch, 1);
+//        doodle.outline.draw(batch, 1);
     }
 
     public void drawAt(int x, int y) {
