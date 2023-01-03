@@ -15,9 +15,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
+
+import static com.mygdx.project.Main.batch;
 
 public class Board extends Widget {
     BoardStyle style;
@@ -52,6 +55,9 @@ public class Board extends Widget {
 
     ArrayList<Doodle> doodles = new ArrayList<>();
     ArrayList<Texture> doodleTexs = new ArrayList<>();
+
+    //fixme temp
+    SelectBoxWrapper<String> tempBox = new SelectBoxWrapper<>(Main.uiSkin);
 
 
     public Board (Skin skin) {
@@ -104,7 +110,6 @@ public class Board extends Widget {
                 visualX = offsetX + x + brushCenterX;
                 visualY = offsetY + y - brushCenterY;
                 drawAt((int)x,(int)y);
-//                System.out.println(doodle.drawnPoints.toString());
                 System.out.println(doodle.drawnPoints.size());
                 return true;
             }
@@ -180,6 +185,9 @@ public class Board extends Widget {
         }
         //fixme
 //        doodle.outline.draw(batch, 1);
+        batch.draw(getDoodleTex(), offsetX, offsetY);
+        outline.draw(batch, 1);
+        tempBox.draw(batch, 1);
     }
 
     public void drawAt(int x, int y) {
@@ -224,6 +232,11 @@ public class Board extends Widget {
             doodle.setColor(Color.CLEAR);
             doodle.fill();
             doodle.drawPixmap(doodleDot, 0, 0, 1018, 850, 0, 0, 1018, 850);
+            batch.begin();
+            batch.draw(getDoodleTex(), 900, 150);
+            outline.draw(batch, 1);
+            tempBox.draw(batch, 1);
+            batch.end();
 
             lastx = x2;
             lasty = y2;
@@ -315,6 +328,19 @@ public class Board extends Widget {
         super.setSize(width, height);
         outline.setBoardHeight(height);
         outline.setBoardWidth(width);
+    }
+
+    //fixme
+    @Override
+    public void setPosition(float x, float y){
+        super.setPosition(x, y);
+        setOffsetX(x);
+        setOffsetY(y);
+
+        //fixme
+        tempBox.setPosition(1000, 300);
+        tempBox.setSize(100, 50);
+        tempBox.setItems("testing", "1 or 2", "more...");
     }
 
     public void setDrawingColor(Color color) {
