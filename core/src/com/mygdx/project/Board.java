@@ -15,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -99,8 +98,6 @@ public class Board extends Widget {
         doodle.setColor(new Color(0f,0f,0f,0f));
         doodle.fill();
 
-        outline = new Outline(doodle, Main.uiSkin);
-        doodle.setOutline(outline);
 
         setTouchable(Touchable.enabled);
 
@@ -130,7 +127,7 @@ public class Board extends Widget {
                     doodle = new Doodle(1018, 850, Pixmap.Format.RGBA8888, outline);
                     doodle.drawnPoints = points;
                     //fixme
-                    doodle.outline.reinitialize();
+                    doodle.outline.update();
                 }
             }
 
@@ -160,12 +157,14 @@ public class Board extends Widget {
 
             public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
                 if(!clickListener.isOver()) {
-                    System.out.println("Left Board");
                     Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                     drawCursor = false;
                 }
             }
         });
+
+        outline = new Outline(doodle, Main.uiSkin);
+        doodle.setOutline(outline);
     }
 
     public void draw (Batch batch, float parentAlpha) {
@@ -338,7 +337,7 @@ public class Board extends Widget {
         setOffsetY(y);
 
         //fixme
-        tempBox.setPosition(1000, 300);
+        tempBox.setPosition(1400, 130);
         tempBox.setSize(100, 50);
         tempBox.setItems("testing", "1 or 2", "more...");
     }

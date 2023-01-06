@@ -71,12 +71,11 @@ public class Outline extends Widget {
             }
         });
     }
-    public void reinitialize(){
+    public void update(){
         Rectangle rec = findBounds();
         setPosition(rec.x, rec.y);
 //        setPosition(1000, 200);
         setSize(rec.width, rec.height);
-        initialize();
     }
 
     @Override
