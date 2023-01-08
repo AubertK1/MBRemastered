@@ -1,6 +1,7 @@
 package com.mygdx.project;
 
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 public class Doodle extends Pixmap {
     ArrayList<Point> drawnPoints = new ArrayList<>();
     ArrayList<Point> tempPoints = new ArrayList<>();
+    Texture texture;
 
     public Outline outline;
 
@@ -15,8 +17,16 @@ public class Doodle extends Pixmap {
         super(width, height, format);
         this.outline = outline;
         if(outline != null) outline.setDoodle(this);
+        texture = new Texture(this);
     }
     public void storePoints(boolean drawMode, int x, int y, int x2, int y2){
+        //if the point is out of bounds, do not store
+        if(x > getWidth() || x2 > getWidth()) return;
+        if(x < 0 || x2 < 0) return;
+        if(y > getHeight() || y2 > getHeight()) return;
+        if(y < 0 || y2 < 0) return;
+
+
         Point point1 = new Point(x, y);
         Point point2 = new Point(x2, y2);
 
@@ -49,6 +59,12 @@ public class Doodle extends Pixmap {
         }
     }
     public void storeTempPoints(boolean drawMode, int x, int y, int x2, int y2){
+        //if the point is out of bounds, do not store
+        if(x > getWidth() || x2 > getWidth()) return;
+        if(x < 0 || x2 < 0) return;
+        if(y > getHeight() || y2 > getHeight()) return;
+        if(y < 0 || y2 < 0) return;
+
         Point point1 = new Point(x, y);
         Point point2 = new Point(x2, y2);
 
