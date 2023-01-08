@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -27,9 +28,12 @@ public class Board extends Widget {
 
     public float visualX = 0, visualY = 0;
     private Pixmap cursor;
+    //this only draws the doodles
     private Pixmap pixmapBoard;
     private Doodle doodle;
     private Texture doodleTex;
+    private Vector2 doodleTexOffset = new Vector2(0 ,0);
+    private Vector2 doodleTexOffset2 = new Vector2(0 ,0);
 
     public Outline outline;
     private Outline selectedOutline;
@@ -108,9 +112,9 @@ public class Board extends Widget {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 visualX = offsetX + x + brushCenterX;
                 visualY = offsetY + y - brushCenterY;
-                if(selectMode) findOutline((int) x, (int) y);
+
+                if(selectMode) selectedOutline = findOutline((int) x, (int) y);
                 else drawAt((int)x,(int)y);
-                System.out.println(doodle.drawnPoints.size());
                 return true;
             }
 
@@ -119,27 +123,54 @@ public class Board extends Widget {
                 lastx = -1;
                 lasty = -1;
 
-                if(!selectMode) {
+                if(selectMode){
+                    if(selectedOutline == null) return;
+                    //so the program doesn't keep drawing on itself
+                    pixmapBoard.dispose();
+                    pixmapBoard = new Pixmap(1018, 850, Pixmap.Format.RGBA8888);
+
+                    //temporary pixmap with the points moved over
+                    Pixmap px = shiftPixmap(doodle, (int) doodleTexOffset.x, (int) doodleTexOffset.y);
+                    //clearing the doodle
+                    doodle.setColor(Color.CLEAR);
+                    doodle.fill();
+                    //setting the doodle's pixels to the shifted pixmap's pixels
+                    doodle.setPixels(px.getPixels());
+                    //no more need for this pismap
+                    px.dispose();
+
+                    //so that the board doesn't draw on top of itself
+                    pixmapBoard.setColor(Color.CLEAR);
+                    pixmapBoard.fill();
+                    pixmapBoard.drawPixmap(doodle, 0, 0, 1018, 850, 0, 0, 1018, 850);
+                    //resetting the texture to the new shifted doodle so that it's realigned with the board
+                    doodleTex.dispose();
+                    doodleTex = new Texture(getDoodle());
+                    doodleTexOffset.set(0, 0);
+                }
+                else{
                     //so that the program doesn't slow down the more that you draw
                     //(I think this works because it stops storing the same information over and over again in its memory)
                     //called here so that it's only called when drawing but isn't called too often
-//                doodleDot.dispose();
-//                doodleDot = new Doodle(1018, 850, Pixmap.Format.RGBA8888, null);
-//                    ArrayList<Point> points = doodleDot.drawnPoints;
                     pixmapBoard.dispose();
-                    pixmapBoard = new Doodle(1018, 850, Pixmap.Format.RGBA8888, null);
-//                    doodleDot.drawnPoints = points;
-                    //fixme
+                    pixmapBoard = new Pixmap(1018, 850, Pixmap.Format.RGBA8888);
                     doodle.getOutline().update();
+
+                    doodleTexOffset2.x = doodle.getOutline().getX() - offsetX;
+                    doodleTexOffset2.y = doodle.getOutline().getY() - offsetY;
                 }
-                outline.update();
+
+                selectedOutline.update();
             }
 
             public void touchDragged (InputEvent event, float x, float y, int pointer) {
                 visualX = offsetX + x;
                 visualY = offsetY + y;
-//                System.out.println("X: "+visualX+"; Y: "+visualY);
-                if(selectMode) dragOutline(selectedOutline, (int)x, (int)y);
+
+                if(selectMode){
+                    dragOutline(selectedOutline, (int)x, (int)y);
+
+                }
                 else drawAt((int)x,(int)y);
 
                 if(clickListener.isOver() && !selectMode && !drawCursor){
@@ -184,9 +215,32 @@ public class Board extends Widget {
         if (background != null) {
             background.draw(batch, x, y, width, height);
         }
-        //fixme
-//        doodle.outline.draw(batch, 1);
-        batch.draw(getDoodleTex(), offsetX, offsetY);
+
+        //if the outline is visible and out of bounds
+        if(selectedOutline != null && selectedOutline.getDoodle().getPoints().size() != 0 && selectedOutline.isOutOfBounds()) {
+            //checking which bound it broke
+            if (selectedOutline.brokeLeftBounds()) {
+                //finding how much the outline shifted by
+                float deltaX = (selectedOutline.getX() - offsetX);
+                //shifting the doodle texture back into place (where it's supposed to be relative to the outline) based on how much the outline got moved out of place
+                doodleTexOffset.x -= deltaX;
+            }
+            else if(selectedOutline.brokeRightBounds()){ //repeat for the rest of the cases
+                float deltaX = ((selectedOutline.getX()+ selectedOutline.getWidth()) - (offsetX+getWidth()));
+                doodleTexOffset.x -= deltaX;
+
+            }
+            if(selectedOutline.brokeUpperBounds()){
+                float deltaY = (selectedOutline.getY() - offsetY);
+                doodleTexOffset.y -= deltaY;
+            }
+            else if(selectedOutline.brokeLowerBounds()){
+                float deltaY = ((selectedOutline.getY()+ selectedOutline.getHeight()) - (offsetY+getHeight()));
+                doodleTexOffset.y -= deltaY;
+            }
+        }
+
+        batch.draw(getDoodleTex(), offsetX + doodleTexOffset.x, offsetY + doodleTexOffset.y);
         outline.draw(batch, 1);
     }
 
@@ -279,67 +333,18 @@ public class Board extends Widget {
             pixmapBoard.setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
             doodle.setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
         }
-        else if(selectMode){
-            int brushSize = currentBrush.getSize();
-            float[][] brush = currentBrush.getBrush();
-            Color color;
-
-            //flipping the y so that the coordinates aren't upside down for the pixmap
-            int y2 = (pixmapBoard.getHeight() - y) + (int) brushCenterY;
-            int x2 = x + (int) brushCenterX;
-            color = currentColor;
-
-            // This might look redundant, but should be more efficient because
-            // the condition is not evaluated for each pixel on the brush
-            if (lastx != -1 && lasty != -1) {
-                for (int i = -brushSize; i < brushSize + 1; i++) {
-                    for (int j = -brushSize; j < brushSize + 1; j++) {
-                        if (brush[brushSize - j][brushSize + i] > 0.15) {
-                            //making the line lighter
-                            doodle.setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i] * .4f);
-                            doodle.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
-//                            doodle.storeTempPoints(true, lastx + i, lasty + j, x2 + i, y2 + j);
-                        }
-                    }
-                }
-            } else {
-                for (int i = -brushSize; i < brushSize + 1; i++) {
-                    for (int j = -brushSize; j < brushSize + 1; j++) {
-                        if (brush[brushSize - j][brushSize + i] > 0.2) {
-                            //making the dot darker
-                            float a = brush[brushSize - j][brushSize + i] * 1.3f;
-                            if (a > 1) a = 1;
-                            doodle.setColor(color.r, color.g, color.b, a);
-                            doodle.drawPixel(x2 + i, y2 + j);
-//                            doodle.storeTempPoints(true, x2 + i, y2 + j, -1, -1);
-                        }
-                    }
-                }
-            }
-            //so that it doesn't draw old points again
-            pixmapBoard.setColor(Color.CLEAR);
-            pixmapBoard.fill();
-            pixmapBoard.drawPixmap(doodle, 0, 0, 1018, 850, 0, 0, 1018, 850);
-
-            lastx = x2;
-            lasty = y2;
-
-            doodleTex.dispose();
-            doodleTex = new Texture(getDoodle());
-        }
     }
-    public boolean findOutline(int x, int y){
+
+    public Outline findOutline(int x, int y){
         float x2 = x + offsetX;
         float y2 = y + offsetY;
         for (Outline outline: outlines) {
             if(outline.getBounds().contains(x2, y2)){
-                System.out.print("HERE :D");
-                selectedOutline = outline;
-                return true;
+                System.out.print("HERE :D ");
+                return outline;
             }
         }
-        selectedOutline = null;
-        return false;
+        return null;
     }
     public void dragOutline(Outline outline, int x, int y){
         if(selectedOutline == null) return;
@@ -354,16 +359,29 @@ public class Board extends Widget {
 
 
         //moving outline
-        if(!(outline.getX() <= offsetX && deltaX < 0)) outline.setX(outline.getX()+(deltaX)); //move outline x if in bounds
-        else{
+        if((outline.getX() <= offsetX && deltaX < 0)){ //testing left bounds
             outline.setX(offsetX);
-            deltaX = 0; //if out of bounds, set so that the points can't move
+            deltaX = 0; //if trying to go out of bounds, set so that the points can't move
         }
-        if(!(outline.getY() <= offsetY && deltaY < 0)) outline.setY(outline.getY()+(deltaY)); //move outline y if in bounds
+        else if((outline.getX()+outline.getWidth() >= offsetX+getWidth() && deltaX > 0)){ //testing right bounds
+            outline.setX(offsetX+getWidth() - outline.getWidth());
+            deltaX = 0; //if trying to go out of bounds, set so that the points can't move
+        }
         else{
-            outline.setY(offsetY);
-            deltaY = 0; //if out of bounds, set so that the points can't move
+            outline.setX(outline.getX()+(deltaX));
         }
+        if((outline.getY() <= offsetY && deltaY < 0)){ //testing lower bounds
+            outline.setY(offsetY);
+            deltaY = 0; //if trying to go out of bounds, set so that the points can't move
+        }
+        else if((outline.getY()+outline.getHeight() >= offsetY+getHeight() && deltaY > 0)){ //testing upper bounds
+            outline.setY(offsetY+getHeight() - outline.getHeight());
+            deltaY = 0; //if trying to go out of bounds, set so that the points can't move
+        }
+        else{
+            outline.setY(outline.getY()+(deltaY));
+        }
+
 
         //moving doodle points
         for (Point point: outline.getDoodle().getPoints()) {
@@ -372,8 +390,26 @@ public class Board extends Widget {
             point.y -= deltaY;
         }
 
+        doodleTexOffset.x += deltaX;
+        doodleTexOffset.y += deltaY;
+
         lastx = (int) x2;
         lasty = (int) y2;
+    }
+
+    public static Pixmap shiftPixmap(Pixmap src, int offsetX, int offsetY){
+        final int width = src.getWidth();
+        final int height = src.getHeight();
+        Pixmap movedPX = new Pixmap(width, height, src.getFormat());
+        final int offsetY2 = -offsetY;
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if(x - offsetX >= 0 && y - offsetY2 >= 0) movedPX.drawPixel(x, y, src.getPixel(x-offsetX, y-offsetY2));
+                else movedPX.drawPixel(x, y);
+            }
+        }
+        return movedPX;
     }
 
     public void setStyle (BoardStyle style) {

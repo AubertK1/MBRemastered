@@ -34,6 +34,7 @@ public class Outline extends Widget {
 
     public Outline(Doodle doodle, OutlineStyle style) {
         this.doodle = doodle;
+        if(doodle != null) doodle.setOutline(this);
         initialize();
         setStyle(style);
 
@@ -79,7 +80,7 @@ public class Outline extends Widget {
         Rectangle rec = findBounds();
 
         //detects if the outline is out of bounds
-        if(rec.x < offsetX || rec.y < offsetY || rec.x + rec.width > offsetX + boardWidth || rec.y + rec.height > offsetY + boardHeight){
+        if(isOutOfBounds()){
             ArrayList<Point> deltaPoints = new ArrayList<>();
             for (Point point: getDoodle().getPoints()) {
                 float newY = getDoodle().getHeight() - point.y;
@@ -110,16 +111,6 @@ public class Outline extends Widget {
             rec = findBounds();
         }
 
-/*
-        if(getDoodle()!=null)getDoodle().dispose();
-        setDoodle(new Doodle(1018, 850, Pixmap.Format.RGBA8888, this));
-        for (Point point: getDoodle().getPoints()) {
-            if(point.x == -1 && point.y == -1) continue;
-            Main.masterBoard.board.drawAt(point.x, point.y);
-        }
-        getDoodle().transferPoints();
-*/
-
         setPosition(rec.x, rec.y);
         setSize(rec.width, rec.height);
         bounds.setBounds(rec);
@@ -129,7 +120,7 @@ public class Outline extends Widget {
     public void draw(Batch batch, float parentAlpha) {
         if(doodle.drawnPoints.size() == 0) return;
         //more detections for if the outline is out of bounds
-        if(findBounds().x < offsetX || findBounds().y < offsetY || findBounds().x + findBounds().width > offsetX + boardWidth || findBounds().y + findBounds().height > offsetY + boardHeight) update();
+        if(isOutOfBounds()) update();
 
         validate();
 
@@ -195,6 +186,24 @@ public class Outline extends Widget {
     }
     public void setBoardHeight(float boardHeight) {
         this.boardHeight = boardHeight;
+    }
+
+    public boolean isOutOfBounds(){
+        Rectangle rec = findBounds();
+
+        return (rec.x < offsetX || rec.y < offsetY || rec.x + rec.width > offsetX + boardWidth || rec.y + rec.height > offsetY + boardHeight);
+    }
+    public boolean brokeLeftBounds(){
+        return findBounds().x < offsetX;
+    }
+    public boolean brokeRightBounds(){
+        return findBounds().x + findBounds().width > offsetX + boardWidth;
+    }
+    public boolean brokeUpperBounds(){
+        return findBounds().y < offsetY;
+    }
+    public boolean brokeLowerBounds(){
+        return findBounds().y + findBounds().height > offsetY + boardHeight;
     }
 
     public Rectangle getBounds(){

@@ -14,6 +14,7 @@ public class Doodle extends Pixmap {
     public Doodle(int width, int height, Format format, Outline outline) {
         super(width, height, format);
         this.outline = outline;
+        if(outline != null) outline.setDoodle(this);
     }
     public void storePoints(boolean drawMode, int x, int y, int x2, int y2){
         Point point1 = new Point(x, y);
@@ -82,6 +83,7 @@ public class Doodle extends Pixmap {
     public void transferPoints(){
         drawnPoints.clear();
         drawnPoints.addAll(tempPoints);
+        tempPoints.clear();
     }
     public void setOutline(Outline outline) {
         this.outline = outline;
