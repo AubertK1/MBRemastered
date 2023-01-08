@@ -535,86 +535,12 @@ public class Main extends ApplicationAdapter {
 			}
 		});
 
-		//fixme
-		final MBSelectBox colorBox2 = new MBSelectBox();
-		colorBox2.setPosition(1000, 50);
-		colorBox2.setSize(100, eraseButton.getHeight()/3 - 1);
-		colorBox2.setItems("BLACK", "WHITE", "RED", "YELLOW", "GREEN", "BLUE");
-		colorBox2.addScrollPaneListener(new ClickListener(){
-			public void clicked (InputEvent event, float x, float y) {
-				String color = colorBox2.dropdown.getSelected();
-				switch (color){
-					case "BLACK":
-						masterBoard.board.setCurrentColor(Color.BLACK);
-						masterBoard.board.setDrawingColor(Color.BLACK);
-						break;
-					case "WHITE":
-						masterBoard.board.setCurrentColor(Color.WHITE);
-						masterBoard.board.setDrawingColor(Color.WHITE);
-						break;
-					case "RED":
-						masterBoard.board.setCurrentColor(Color.RED);
-						masterBoard.board.setDrawingColor(Color.RED);
-						break;
-					case "YELLOW":
-						masterBoard.board.setCurrentColor(Color.YELLOW);
-						masterBoard.board.setDrawingColor(Color.YELLOW);
-						break;
-					case "GREEN":
-						masterBoard.board.setCurrentColor(Color.GREEN);
-						masterBoard.board.setDrawingColor(Color.GREEN);
-						break;
-					case "BLUE":
-						masterBoard.board.setCurrentColor(Color.BLUE);
-						masterBoard.board.setDrawingColor(Color.BLUE);
-						break;
-				}
-			}
-		});
-		final MBSelectBox colorBox3 = new MBSelectBox();
-		colorBox3.setPosition(1000, 140);
-		colorBox3.setSize(100, eraseButton.getHeight()/3 - 1);
-		colorBox3.setItems("BLACK", "WHITE", "RED", "YELLOW", "GREEN", "BLUE");
-		colorBox3.addScrollPaneListener(new ClickListener(){
-			public void clicked (InputEvent event, float x, float y) {
-				String color = colorBox3.dropdown.getSelected();
-				switch (color){
-					case "BLACK":
-						masterBoard.board.setCurrentColor(Color.BLACK);
-						masterBoard.board.setDrawingColor(Color.BLACK);
-						break;
-					case "WHITE":
-						masterBoard.board.setCurrentColor(Color.WHITE);
-						masterBoard.board.setDrawingColor(Color.WHITE);
-						break;
-					case "RED":
-						masterBoard.board.setCurrentColor(Color.RED);
-						masterBoard.board.setDrawingColor(Color.RED);
-						break;
-					case "YELLOW":
-						masterBoard.board.setCurrentColor(Color.YELLOW);
-						masterBoard.board.setDrawingColor(Color.YELLOW);
-						break;
-					case "GREEN":
-						masterBoard.board.setCurrentColor(Color.GREEN);
-						masterBoard.board.setDrawingColor(Color.GREEN);
-						break;
-					case "BLUE":
-						masterBoard.board.setCurrentColor(Color.BLUE);
-						masterBoard.board.setDrawingColor(Color.BLUE);
-						break;
-				}
-			}
-		});
-
 		toolbarPanel.add(selectButton);
 		toolbarPanel.add(drawButton);
 		toolbarPanel.add(eraseButton);
 		toolbarPanel.add(sizesBox);
 		toolbarPanel.add(softnessBox);
 		toolbarPanel.add(colorBox);
-		toolbarPanel.add(colorBox2);
-		toolbarPanel.add(colorBox3);
 		//endregion
 
 		//honestly don't know what this does, but it's essential

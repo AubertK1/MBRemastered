@@ -1,6 +1,7 @@
 package com.mygdx.project;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -13,17 +14,19 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Outline extends Widget {
     private InputListener inputListener;
     private ClickListener clickListener;
     private Doodle doodle;
     OutlineStyle style;
-    private float offsetX = 0, offsetY = 0;
 
+    private Rectangle bounds = new Rectangle();
+
+    private float offsetX = 0, offsetY = 0;
     private float boardHeight;
     private float boardWidth;
-
 
     public Outline (Doodle doodle, Skin skin) {
         this(doodle, skin.get(OutlineStyle.class));
@@ -37,6 +40,7 @@ public class Outline extends Widget {
         Rectangle rec = findBounds();
         setPosition(rec.x, rec.y);
         setSize(rec.width, rec.height);
+        bounds.setBounds(rec);
 
         Main.outlines.add(this);
     }
@@ -73,14 +77,60 @@ public class Outline extends Widget {
     }
     public void update(){
         Rectangle rec = findBounds();
+
+        //detects if the outline is out of bounds
+        if(rec.x < offsetX || rec.y < offsetY || rec.x + rec.width > offsetX + boardWidth || rec.y + rec.height > offsetY + boardHeight){
+            ArrayList<Point> deltaPoints = new ArrayList<>();
+            for (Point point: getDoodle().getPoints()) {
+                float newY = getDoodle().getHeight() - point.y;
+                deltaPoints.add(new Point((int) ((offsetX+point.x) - getX()), (int) ((offsetY+newY) - getY())));
+            }
+
+            //holding outline at border
+            if(rec.x < offsetX) setX(offsetX); //if at left border...
+            if(rec.y < offsetY) setY(offsetY); //if at bottom border...
+            if(rec.x + rec.width > offsetX + boardWidth) setX((offsetX + boardWidth) - getWidth()); //if at right border...
+            if(rec.y + rec.height > offsetY + boardHeight) setY((offsetY + boardHeight) - getHeight()); //if at top border...
+
+            //moving doodle points
+            int i = 0;
+            for (Point point: getDoodle().getPoints()) {
+                if(point.x == -1 && point.y == -1){
+                    i++;
+                    continue;
+                }
+
+                point.x = (int) (getX()+deltaPoints.get(i).x - offsetX);
+                int revertY = (int) (getY()+deltaPoints.get(i).y - offsetY);
+                point.y = getDoodle().getHeight() - revertY;
+                i++;
+            }
+
+            //resets bounds after changing position
+            rec = findBounds();
+        }
+
+/*
+        if(getDoodle()!=null)getDoodle().dispose();
+        setDoodle(new Doodle(1018, 850, Pixmap.Format.RGBA8888, this));
+        for (Point point: getDoodle().getPoints()) {
+            if(point.x == -1 && point.y == -1) continue;
+            Main.masterBoard.board.drawAt(point.x, point.y);
+        }
+        getDoodle().transferPoints();
+*/
+
         setPosition(rec.x, rec.y);
-//        setPosition(1000, 200);
         setSize(rec.width, rec.height);
+        bounds.setBounds(rec);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         if(doodle.drawnPoints.size() == 0) return;
+        //more detections for if the outline is out of bounds
+        if(findBounds().x < offsetX || findBounds().y < offsetY || findBounds().x + findBounds().width > offsetX + boardWidth || findBounds().y + findBounds().height > offsetY + boardHeight) update();
+
         validate();
 
         final Drawable background = getBackgroundDrawable();
@@ -97,8 +147,9 @@ public class Outline extends Widget {
         }
 
     }
+    private Rectangle findBounds(){
+        if(doodle.drawnPoints.size() == 0) return new Rectangle(-1, -1,0,0);
 
-    public Rectangle findBounds(){
         int mostLeft = 2000;
         int mostRight = 0;
         int mostLow = 0;
@@ -128,6 +179,9 @@ public class Outline extends Widget {
     public void setDoodle(Doodle doodle) {
         this.doodle = doodle;
     }
+    public Doodle getDoodle(){
+        return doodle;
+    }
     public void setOffsetX(float offsetX) {
         this.offsetX = offsetX;
     }
@@ -141,6 +195,10 @@ public class Outline extends Widget {
     }
     public void setBoardHeight(float boardHeight) {
         this.boardHeight = boardHeight;
+    }
+
+    public Rectangle getBounds(){
+        return bounds;
     }
 
     public float getBoardHeight() {
