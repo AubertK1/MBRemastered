@@ -19,8 +19,6 @@ import com.badlogic.gdx.utils.Null;
 import java.awt.*;
 import java.util.ArrayList;
 
-import static com.mygdx.project.Main.batch;
-
 public class Board extends Widget {
     BoardStyle style;
     private InputListener inputListener;
@@ -29,8 +27,8 @@ public class Board extends Widget {
 
     public float visualX = 0, visualY = 0;
     private Pixmap cursor;
+    private Pixmap pixmapBoard;
     private Doodle doodle;
-    private Doodle doodleDot;
     private Texture doodleTex;
 
     public Outline outline;
@@ -91,12 +89,14 @@ public class Board extends Widget {
     protected void initialize () {
         backgroundColor = new Color(0xd2b48cff);
 
-        doodleDot = new Doodle(1018, 850, Pixmap.Format.RGBA8888, outline);
         doodle = new Doodle(1018, 850, Pixmap.Format.RGBA8888, outline);
-        doodleDot.setFilter(Pixmap.Filter.NearestNeighbour);
         doodle.setFilter(Pixmap.Filter.NearestNeighbour);
         doodle.setColor(new Color(0f,0f,0f,0f));
         doodle.fill();
+        pixmapBoard = new Pixmap(1018, 850, Pixmap.Format.RGBA8888);
+        pixmapBoard.setFilter(Pixmap.Filter.NearestNeighbour);
+        pixmapBoard.setColor(new Color(0f,0f,0f,0f));
+        pixmapBoard.fill();
 
         outline = new Outline(doodle, Main.uiSkin);
         doodle.setOutline(outline);
@@ -125,10 +125,10 @@ public class Board extends Widget {
                     //called here so that it's only called when drawing but isn't called too often
 //                doodleDot.dispose();
 //                doodleDot = new Doodle(1018, 850, Pixmap.Format.RGBA8888, null);
-                    ArrayList<Point> points = doodle.drawnPoints;
-                    doodle.dispose();
-                    doodle = new Doodle(1018, 850, Pixmap.Format.RGBA8888, outline);
-                    doodle.drawnPoints = points;
+//                    ArrayList<Point> points = doodleDot.drawnPoints;
+                    pixmapBoard.dispose();
+                    pixmapBoard = new Doodle(1018, 850, Pixmap.Format.RGBA8888, null);
+//                    doodleDot.drawnPoints = points;
                     //fixme
                     doodle.getOutline().update();
                 }
@@ -197,7 +197,7 @@ public class Board extends Widget {
             Color color;
 
             //flipping the y so that the coordinates aren't upside down for the pixmap
-            int y2 = (doodle.getHeight() - y) + (int) brushCenterY;
+            int y2 = (pixmapBoard.getHeight() - y) + (int) brushCenterY;
             int x2 = x + (int) brushCenterX;
             color = currentColor;
 
@@ -208,8 +208,8 @@ public class Board extends Widget {
                     for (int j = -brushSize; j < brushSize + 1; j++) {
                         if (brush[brushSize - j][brushSize + i] > 0.15) {
                             //making the line lighter
-                            doodleDot.setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i] * .4f);
-                            doodleDot.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
+                            doodle.setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i] * .4f);
+                            doodle.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
                             doodle.storePoints(true, lastx + i, lasty + j, x2 + i, y2 + j);
                         }
                     }
@@ -221,21 +221,17 @@ public class Board extends Widget {
                             //making the dot darker
                             float a = brush[brushSize - j][brushSize + i] * 1.3f;
                             if (a > 1) a = 1;
-                            doodleDot.setColor(color.r, color.g, color.b, a);
-                            doodleDot.drawPixel(x2 + i, y2 + j);
+                            doodle.setColor(color.r, color.g, color.b, a);
+                            doodle.drawPixel(x2 + i, y2 + j);
                             doodle.storePoints(true, x2 + i, y2 + j, -1, -1);
                         }
                     }
                 }
             }
             //so that it doesn't draw old points again
-            doodle.setColor(Color.CLEAR);
-            doodle.fill();
-            doodle.drawPixmap(doodleDot, 0, 0, 1018, 850, 0, 0, 1018, 850);
-            batch.begin();
-            batch.draw(getDoodleTex(), 900, 150);
-            outline.draw(batch, 1);
-            batch.end();
+            pixmapBoard.setColor(Color.CLEAR);
+            pixmapBoard.fill();
+            pixmapBoard.drawPixmap(doodle, 0, 0, 1018, 850, 0, 0, 1018, 850);
 
             lastx = x2;
             lasty = y2;
@@ -248,40 +244,40 @@ public class Board extends Widget {
             float[][] brush = currentBrush.getBrush();
 
             //flipping the y so that the coordinates aren't upside down for the pixmap
-            int y2 = (doodle.getHeight() - y) + (int) brushCenterY;
+            int y2 = (pixmapBoard.getHeight() - y) + (int) brushCenterY;
             int x2 = x + (int) brushCenterX;
 
+            pixmapBoard.setBlending(Pixmap.Blending.None); // before you start drawing pixels.
             doodle.setBlending(Pixmap.Blending.None); // before you start drawing pixels.
-            doodleDot.setBlending(Pixmap.Blending.None); // before you start drawing pixels.
 
             // This might look redundant, but should be more efficient because
             // the condition is not evaluated for each pixel on the brush
             if (lastx != -1 && lasty != -1) {
                 for (int i = -brushSize; i < brushSize + 1; i++) {
                     for (int j = -brushSize; j < brushSize + 1; j++) {
-                        doodleDot.setColor(0x00000000);
-                        doodleDot.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
+                        doodle.setColor(0x00000000);
+                        doodle.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
                         doodle.storePoints(false, lastx + i, lasty + j, x2 + i, y2 + j);
                     }
                 }
             } else {
                 for (int i = -brushSize; i < brushSize + 1; i++) {
                     for (int j = -brushSize; j < brushSize + 1; j++) {
-                        doodleDot.setColor(0x00000000);
-                        doodleDot.drawPixel(x2 + i, y2 + j, 0x00000000);
+                        doodle.setColor(0x00000000);
+                        doodle.drawPixel(x2 + i, y2 + j, 0x00000000);
                         doodle.storePoints(false, x2 + i, y2 + j, -1, -1);
                     }
                 }
             }
-            doodle.drawPixmap(doodleDot, 0, 0, 1018, 850, 0, 0, 1018, 850);
+            pixmapBoard.drawPixmap(doodle, 0, 0, 1018, 850, 0, 0, 1018, 850);
             lastx = x2;
             lasty = y2;
 
             doodleTex.dispose();
             doodleTex = new Texture(getDoodle());
 
+            pixmapBoard.setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
             doodle.setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
-            doodleDot.setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
         }
         else if(selectMode){
             int brushSize = currentBrush.getSize();
@@ -289,7 +285,7 @@ public class Board extends Widget {
             Color color;
 
             //flipping the y so that the coordinates aren't upside down for the pixmap
-            int y2 = (doodle.getHeight() - y) + (int) brushCenterY;
+            int y2 = (pixmapBoard.getHeight() - y) + (int) brushCenterY;
             int x2 = x + (int) brushCenterX;
             color = currentColor;
 
@@ -300,9 +296,9 @@ public class Board extends Widget {
                     for (int j = -brushSize; j < brushSize + 1; j++) {
                         if (brush[brushSize - j][brushSize + i] > 0.15) {
                             //making the line lighter
-                            doodleDot.setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i] * .4f);
-                            doodleDot.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
-                            doodle.storeTempPoints(true, lastx + i, lasty + j, x2 + i, y2 + j);
+                            doodle.setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i] * .4f);
+                            doodle.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
+//                            doodle.storeTempPoints(true, lastx + i, lasty + j, x2 + i, y2 + j);
                         }
                     }
                 }
@@ -313,21 +309,17 @@ public class Board extends Widget {
                             //making the dot darker
                             float a = brush[brushSize - j][brushSize + i] * 1.3f;
                             if (a > 1) a = 1;
-                            doodleDot.setColor(color.r, color.g, color.b, a);
-                            doodleDot.drawPixel(x2 + i, y2 + j);
-                            doodle.storeTempPoints(true, x2 + i, y2 + j, -1, -1);
+                            doodle.setColor(color.r, color.g, color.b, a);
+                            doodle.drawPixel(x2 + i, y2 + j);
+//                            doodle.storeTempPoints(true, x2 + i, y2 + j, -1, -1);
                         }
                     }
                 }
             }
             //so that it doesn't draw old points again
-            doodle.setColor(Color.CLEAR);
-            doodle.fill();
-            doodle.drawPixmap(doodleDot, 0, 0, 1018, 850, 0, 0, 1018, 850);
-            batch.begin();
-            batch.draw(getDoodleTex(), 900, 150);
-            outline.draw(batch, 1);
-            batch.end();
+            pixmapBoard.setColor(Color.CLEAR);
+            pixmapBoard.fill();
+            pixmapBoard.drawPixmap(doodle, 0, 0, 1018, 850, 0, 0, 1018, 850);
 
             lastx = x2;
             lasty = y2;
