@@ -226,7 +226,7 @@ public class Board extends Widget {
         for (Outline outline: outlines) {
             if(outline == selectedOutline) batch.draw(outline.getDoodle().texture, offsetX + doodleTexOffset.x, offsetY + doodleTexOffset.y);
             else batch.draw(outline.getDoodle().texture, offsetX, offsetY);
-            if(selectMode) outline.draw(batch, 1);
+            if(selectMode && outline == selectedOutline) outline.draw(batch, 1);
         }
 
         //fixme best version of a keylistener I could think of
