@@ -35,6 +35,8 @@ public class Main extends ApplicationAdapter {
 	static Stage stage;
 	//the skin for the components
 	static Skin uiSkin;
+
+	public static MBContextMenu<String> contextMenu;
 	//creating main panels
 	Panel sidePanel, topPanel, genStatsPanel, reminderPanel, toolbarPanel, masterboardPanel;
 	MBBoard masterBoard;
@@ -78,6 +80,8 @@ public class Main extends ApplicationAdapter {
 		//setting up skin for the UI of the app
 		uiSkin = new Skin (Gdx.files.internal(
 				"assets\\skins\\uiskin.json"));
+
+		contextMenu = new MBContextMenu<>();
 
 		sidePanel.setSoftVisible(true);
 		topPanel.setSoftVisible(true);
@@ -581,6 +585,9 @@ public class Main extends ApplicationAdapter {
 		}
 		for (MBWindow window: windows) {
 			window.draw(window.aFloat);
+		}
+		if(contextMenu.isActive()){
+			contextMenu.draw(contextMenu.aFloat);
 		}
 
 		batch.end();

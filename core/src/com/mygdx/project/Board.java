@@ -92,17 +92,41 @@ public class Board extends Widget {
         addListener(clickListener = new ClickListener());
         addListener(inputListener = new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                //so that the computer knows which outline to drag / erase from
-                if(selectMode || eraseMode) selectedOutline = findOutline((int) x, (int) y);
-                else if (drawMode){
-                    //if the user isn't drawing on an outline, make a new one
-                    if(selectedOutline == null){
-                        Outline newO = new Outline(Board.this, Main.uiSkin);
-                        selectedOutline = newO;
-                        outlines.add(newO);
+                if(button == Input.Buttons.LEFT) {
+                    //so that the computer knows which outline to drag / erase from
+                    if (selectMode || eraseMode) selectedOutline = findOutline((int) x, (int) y);
+                    else if (drawMode) {
+                        //if the user isn't drawing on an outline, make a new one
+                        if (selectedOutline == null) {
+                            Outline newO = new Outline(Board.this, Main.uiSkin);
+                            selectedOutline = newO;
+                            outlines.add(newO);
+                        }
+                        drawAt((int) x, (int) y);
                     }
-                    drawAt((int)x,(int)y);
                 }
+                else if (button == Input.Buttons.RIGHT){
+                    Main.contextMenu.setItems("hi", "hi again", "last one");
+                    Main.contextMenu.addListener(new ClickListener(){
+                        public void clicked (InputEvent event, float x, float y) {
+                            String word = Main.contextMenu.getSelected();
+                            switch (word){
+                                case "hi":
+                                    System.out.println("hi");
+                                    break;
+                                case "hi again":
+                                    System.out.println("hi again");
+                                    break;
+                                case "last one":
+                                    System.out.println("last one");
+                                    break;
+                            }
+                        }
+                    });
+                    Main.contextMenu.showAt((int) (x+offsetX), (int) (y+offsetY));
+                    return false;
+                }
+
                 return true;
             }
 
@@ -153,14 +177,16 @@ public class Board extends Widget {
             }
 
             public void touchDragged (InputEvent event, float x, float y, int pointer) {
-                if(selectMode) dragOutline(selectedOutline, (int)x, (int)y);
-                else drawAt((int)x,(int)y);
+                if(pointer == Input.Buttons.LEFT) {
+                    if (selectMode) dragOutline(selectedOutline, (int) x, (int) y);
+                    else drawAt((int) x, (int) y);
 
-                if(clickListener.isOver() && !selectMode && !drawCursor){
-                    cursor = currentBrush.getPixmap();
-                    Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursor, 0, 0));
-                    cursor.dispose();
-                    drawCursor = true;
+                    if (clickListener.isOver() && !selectMode && !drawCursor) {
+                        cursor = currentBrush.getPixmap();
+                        Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursor, 0, 0));
+                        cursor.dispose();
+                        drawCursor = true;
+                    }
                 }
             }
 

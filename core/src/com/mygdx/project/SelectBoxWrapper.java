@@ -433,7 +433,6 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
         private InputListener hideListener;
         private Actor previousScrollFocus;
 
-        public MBComponent parentComp;
         boolean doShow;
 
         public SelectBoxScrollPane (final SelectBoxWrapper<T> selectBox) {

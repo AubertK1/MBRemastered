@@ -23,16 +23,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
-import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Null;
@@ -58,6 +56,8 @@ public class ListWrapper<T> extends Widget implements Cullable {
     int pressedIndex = -1, overIndex = -1;
     private InputListener keyListener;
     boolean typeToSelect;
+
+    public ClickListener tempListener;
 
     public float visualX = 0, visualY = 0;
 
@@ -258,7 +258,16 @@ public class ListWrapper<T> extends Widget implements Cullable {
     protected void drawSelection (Batch batch, @Null Drawable drawable, float x, float y, float width, float height) {
         if (drawable != null) drawable.draw(batch, x, y, width, height);
     }
-
+    public boolean addTempListener (ClickListener listener) {
+        boolean done = addListener(listener);
+        if(done){
+            tempListener = listener;
+        }
+        return done;
+    }
+    public void removeTempListener(){
+        if(tempListener != null) removeListener(tempListener);
+    }
     /** Called to draw the background. Default implementation draws the style background drawable. */
     protected void drawBackground (Batch batch, float parentAlpha) {
         if (style.background != null) {
