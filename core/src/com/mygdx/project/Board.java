@@ -220,7 +220,7 @@ public class Board extends Widget {
         }
 
         //if the outline is visible and out of bounds
-        if(selectedOutline != null && selectedOutline.getDoodle().getPoints().size() != 0 && selectedOutline.isOutOfBounds()) {
+        if(selectMode && selectedOutline != null && selectedOutline.getDoodle().getPoints().size() != 0 && selectedOutline.isOutOfBounds()) {
             //checking which bound it broke
             if (selectedOutline.brokeLeftBounds()) {
                 //finding how much the outline shifted by
