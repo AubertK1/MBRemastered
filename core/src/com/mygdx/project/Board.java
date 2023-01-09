@@ -1,6 +1,7 @@
 package com.mygdx.project;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -26,18 +27,14 @@ public class Board extends Widget {
     private ClickListener clickListener;
     private float offsetX = 0, offsetY = 0;
 
-    public float visualX = 0, visualY = 0;
     private Pixmap cursor;
-    //this only draws the doodles
-    private Pixmap pixmapBoard;
-    private Doodle doodle;
-//    private Texture doodleTex;
-    //displacement of texture's bottom left corner relative to board's bottom left corner
-    private Vector2 doodleTexOffset = new Vector2(0 ,0);
 
-    public Outline outline;
+    //this draws the doodles
+    private Pixmap pixmapBoard;
+    //displacement of texture's bottom left corner relative to board's bottom left corner
+    private final Vector2 doodleTexOffset = new Vector2(0 ,0);
+
     private Outline selectedOutline;
-    private Doodle selectedDoodle;
 
     private Color backgroundColor;
     private Color drawingColor;
@@ -56,9 +53,7 @@ public class Board extends Widget {
 
     boolean drawCursor;
 
-    ArrayList<Doodle> doodles = new ArrayList<>();
     ArrayList<Outline> outlines = new ArrayList<>();
-    ArrayList<Texture> doodleTexs = new ArrayList<>();
 
 
     public Board (Skin skin) {
@@ -77,14 +72,6 @@ public class Board extends Widget {
         setDrawingColor(Color.BLACK);
         setCurrentColor(drawingColor);
 
-        doodles.add(doodle);
-        doodleTexs.add(doodle.texture);
-        outlines.add(outline);
-
-        doodle.texture = new Texture(getDoodle());
-        doodle.texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        doodle.texture.bind();
-
         //setting brush/cursor
         currentBrush = Brush.generateBrush(11, brushSoft);
         brushCenterX = (float)(currentBrush.size+1);
@@ -94,29 +81,26 @@ public class Board extends Widget {
     protected void initialize () {
         backgroundColor = new Color(0xd2b48cff);
 
-        doodle = new Doodle(1018, 850, Pixmap.Format.RGBA8888, outline);
-        doodle.setFilter(Pixmap.Filter.NearestNeighbour);
-        doodle.setColor(new Color(0f,0f,0f,0f));
-        doodle.fill();
+        //setting up the pixmap board
         pixmapBoard = new Pixmap(1018, 850, Pixmap.Format.RGBA8888);
         pixmapBoard.setFilter(Pixmap.Filter.NearestNeighbour);
         pixmapBoard.setColor(new Color(0f,0f,0f,0f));
         pixmapBoard.fill();
-
-        outline = new Outline(doodle, Main.uiSkin);
-        doodle.setOutline(outline);
 
         setTouchable(Touchable.enabled);
 
         addListener(clickListener = new ClickListener());
         addListener(inputListener = new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                visualX = offsetX + x + brushCenterX;
-                visualY = offsetY + y - brushCenterY;
-
-                if(selectMode) selectedOutline = findOutline((int) x, (int) y);
-                else{
-                    if(selectedOutline == null) selectedOutline = doodle.getOutline();
+                //so that the computer knows which outline to drag / erase from
+                if(selectMode || eraseMode) selectedOutline = findOutline((int) x, (int) y);
+                else if (drawMode){
+                    //if the user isn't drawing on an outline, make a new one
+                    if(selectedOutline == null){
+                        Outline newO = new Outline(Board.this, Main.uiSkin);
+                        selectedOutline = newO;
+                        outlines.add(newO);
+                    }
                     drawAt((int)x,(int)y);
                 }
                 return true;
@@ -127,6 +111,7 @@ public class Board extends Widget {
                 lastx = -1;
                 lasty = -1;
 
+                //goal is to lock in the position of the outline after being done dragged
                 if(selectMode){
                     if(selectedOutline == null) return; //if no outline was being dragged or clicked, then return
 
@@ -150,30 +135,25 @@ public class Board extends Widget {
                     pixmapBoard.drawPixmap(selectedOutline.getDoodle(), 0, 0, 1018, 850, 0, 0, 1018, 850);
                     //resetting the texture to the new shifted doodle so that it's realigned with the board
                     selectedOutline.getDoodle().texture.dispose();
-                    selectedOutline.getDoodle().texture = new Texture(getDoodle());
+                    selectedOutline.getDoodle().texture = new Texture(selectedOutline.getDoodle());
                     doodleTexOffset.set(0, 0);
                     //update the selected outline's bounds
                     selectedOutline.update();
                 }
+                //goal is to update the doodle
                 else{
                     //so that the program doesn't slow down the more that you draw
                     //(I think this works because it stops storing the same information over and over again in its memory)
                     //called here so that it's only called when drawing but isn't called too often
                     pixmapBoard.dispose();
                     pixmapBoard = new Pixmap(1018, 850, Pixmap.Format.RGBA8888);
-                    selectedOutline.update();
+                    if(selectedOutline != null) selectedOutline.update();
+//                    selectedOutline = null;
                 }
-
             }
 
             public void touchDragged (InputEvent event, float x, float y, int pointer) {
-                visualX = offsetX + x;
-                visualY = offsetY + y;
-
-                if(selectMode){
-                    dragOutline(selectedOutline, (int)x, (int)y);
-
-                }
+                if(selectMode) dragOutline(selectedOutline, (int)x, (int)y);
                 else drawAt((int)x,(int)y);
 
                 if(clickListener.isOver() && !selectMode && !drawCursor){
@@ -219,7 +199,7 @@ public class Board extends Widget {
             background.draw(batch, x, y, width, height);
         }
 
-        //if the outline is visible and out of bounds
+        //if in select mode and the outline is visible and out of bounds
         if(selectMode && selectedOutline != null && selectedOutline.getDoodle().getPoints().size() != 0 && selectedOutline.isOutOfBounds()) {
             //checking which bound it broke
             if (selectedOutline.brokeLeftBounds()) {
@@ -231,21 +211,26 @@ public class Board extends Widget {
             else if(selectedOutline.brokeRightBounds()){ //repeat for the rest of the cases
                 float deltaX = ((selectedOutline.getX()+ selectedOutline.getWidth()) - (offsetX+getWidth()));
                 doodleTexOffset.x -= deltaX;
-
             }
-            if(selectedOutline.brokeUpperBounds()){
+            if(selectedOutline.brokeLowerBounds()){
                 float deltaY = (selectedOutline.getY() - offsetY);
                 doodleTexOffset.y -= deltaY;
             }
-            else if(selectedOutline.brokeLowerBounds()){
+            else if(selectedOutline.brokeUpperBounds()){
                 float deltaY = ((selectedOutline.getY()+ selectedOutline.getHeight()) - (offsetY+getHeight()));
                 doodleTexOffset.y -= deltaY;
             }
         }
 
-        //fixme Change to a loop that draws each outline and its doodle's texture
-        batch.draw(outline.getDoodle().texture, offsetX + doodleTexOffset.x, offsetY + doodleTexOffset.y);
-        outline.draw(batch, 1);
+        //loops through the outlines and draws each outline + its texture
+        for (Outline outline: outlines) {
+            if(outline == selectedOutline) batch.draw(outline.getDoodle().texture, offsetX + doodleTexOffset.x, offsetY + doodleTexOffset.y);
+            else batch.draw(outline.getDoodle().texture, offsetX, offsetY);
+            if(selectMode) outline.draw(batch, 1);
+        }
+
+        //fixme best version of a keylistener I could think of
+        if (Gdx.input.isKeyPressed(Input.Keys.D) && selectedOutline != null) selectedOutline = null;
     }
 
     public void drawAt(int x, int y) {
@@ -266,9 +251,9 @@ public class Board extends Widget {
                     for (int j = -brushSize; j < brushSize + 1; j++) {
                         if (brush[brushSize - j][brushSize + i] > 0.15) {
                             //making the line lighter
-                            doodle.setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i] * .4f);
-                            doodle.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
-                            doodle.storePoints(true, lastx + i, lasty + j, x2 + i, y2 + j);
+                            selectedOutline.getDoodle().setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i] * .4f);
+                            selectedOutline.getDoodle().drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
+                            selectedOutline.getDoodle().storePoints(true, lastx + i, lasty + j, x2 + i, y2 + j);
                         }
                     }
                 }
@@ -279,9 +264,9 @@ public class Board extends Widget {
                             //making the dot darker
                             float a = brush[brushSize - j][brushSize + i] * 1.3f;
                             if (a > 1) a = 1;
-                            doodle.setColor(color.r, color.g, color.b, a);
-                            doodle.drawPixel(x2 + i, y2 + j);
-                            doodle.storePoints(true, x2 + i, y2 + j, -1, -1);
+                            selectedOutline.getDoodle().setColor(color.r, color.g, color.b, a);
+                            selectedOutline.getDoodle().drawPixel(x2 + i, y2 + j);
+                            selectedOutline.getDoodle().storePoints(true, x2 + i, y2 + j, -1, -1);
                         }
                     }
                 }
@@ -289,15 +274,16 @@ public class Board extends Widget {
             //so that it doesn't draw old points again
             pixmapBoard.setColor(Color.CLEAR);
             pixmapBoard.fill();
-            pixmapBoard.drawPixmap(doodle, 0, 0, 1018, 850, 0, 0, 1018, 850);
+            pixmapBoard.drawPixmap(selectedOutline.getDoodle(), 0, 0, 1018, 850, 0, 0, 1018, 850);
 
             lastx = x2;
             lasty = y2;
 
-            doodle.texture.dispose();
-            doodle.texture = new Texture(getDoodle());
+            selectedOutline.getDoodle().texture.dispose();
+            selectedOutline.getDoodle().texture = new Texture(selectedOutline.getDoodle());
         }
         else if(eraseMode){
+            if(selectedOutline == null) return;
             int brushSize = currentBrush.getSize();
             float[][] brush = currentBrush.getBrush();
 
@@ -306,46 +292,46 @@ public class Board extends Widget {
             int x2 = x + (int) brushCenterX;
 
             pixmapBoard.setBlending(Pixmap.Blending.None); // before you start drawing pixels.
-            doodle.setBlending(Pixmap.Blending.None); // before you start drawing pixels.
+            selectedOutline.getDoodle().setBlending(Pixmap.Blending.None); // before you start drawing pixels.
 
             // This might look redundant, but should be more efficient because
             // the condition is not evaluated for each pixel on the brush
             if (lastx != -1 && lasty != -1) {
                 for (int i = -brushSize; i < brushSize + 1; i++) {
                     for (int j = -brushSize; j < brushSize + 1; j++) {
-                        doodle.setColor(0x00000000);
-                        doodle.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
-                        doodle.storePoints(false, lastx + i, lasty + j, x2 + i, y2 + j);
+                        selectedOutline.getDoodle().setColor(0x00000000);
+                        selectedOutline.getDoodle().drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
+                        selectedOutline.getDoodle().storePoints(false, lastx + i, lasty + j, x2 + i, y2 + j);
                     }
                 }
             } else {
                 for (int i = -brushSize; i < brushSize + 1; i++) {
                     for (int j = -brushSize; j < brushSize + 1; j++) {
-                        doodle.setColor(0x00000000);
-                        doodle.drawPixel(x2 + i, y2 + j, 0x00000000);
-                        doodle.storePoints(false, x2 + i, y2 + j, -1, -1);
+                        selectedOutline.getDoodle().setColor(0x00000000);
+                        selectedOutline.getDoodle().drawPixel(x2 + i, y2 + j, 0x00000000);
+                        selectedOutline.getDoodle().storePoints(false, x2 + i, y2 + j, -1, -1);
                     }
                 }
             }
-            pixmapBoard.drawPixmap(doodle, 0, 0, 1018, 850, 0, 0, 1018, 850);
+            pixmapBoard.drawPixmap(selectedOutline.getDoodle(), 0, 0, 1018, 850, 0, 0, 1018, 850);
             lastx = x2;
             lasty = y2;
 
-            doodle.texture.dispose();
-            doodle.texture = new Texture(getDoodle());
+            selectedOutline.getDoodle().texture.dispose();
+            selectedOutline.getDoodle().texture = new Texture(selectedOutline.getDoodle());
 
             pixmapBoard.setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
-            doodle.setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
+            selectedOutline.getDoodle().setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
         }
     }
 
     public Outline findOutline(int x, int y){
         float x2 = x + offsetX;
         float y2 = y + offsetY;
-        for (Outline outline: outlines) {
-            if(outline.getBounds().contains(x2, y2)){
+        for (int i = outlines.size() - 1; i > -1; i--) { //so that if two are stacked it gets the most recent one
+            if(outlines.get(i).getBounds().contains(x2, y2)){
                 System.out.print("HERE :D ");
-                return outline;
+                return outlines.get(i);
             }
         }
         return null;
@@ -363,32 +349,32 @@ public class Board extends Widget {
 
 
         //moving outline
-        if((outline.getX() <= offsetX && deltaX < 0)){ //testing left bounds
-            outline.setX(offsetX);
+        if((selectedOutline.getX() <= offsetX && deltaX < 0)){ //testing left bounds
+            selectedOutline.setX(offsetX);
             deltaX = 0; //if trying to go out of bounds, set so that the points can't move
         }
-        else if((outline.getX()+outline.getWidth() >= offsetX+getWidth() && deltaX > 0)){ //testing right bounds
-            outline.setX(offsetX+getWidth() - outline.getWidth());
+        else if((selectedOutline.getX()+selectedOutline.getWidth() >= offsetX+getWidth() && deltaX > 0)){ //testing right bounds
+            selectedOutline.setX(offsetX+getWidth() - selectedOutline.getWidth());
             deltaX = 0; //if trying to go out of bounds, set so that the points can't move
         }
         else{
-            outline.setX(outline.getX()+(deltaX));
+            selectedOutline.setX(selectedOutline.getX()+(deltaX));
         }
-        if((outline.getY() <= offsetY && deltaY < 0)){ //testing lower bounds
-            outline.setY(offsetY);
+        if((selectedOutline.getY() <= offsetY && deltaY < 0)){ //testing lower bounds
+            selectedOutline.setY(offsetY);
             deltaY = 0; //if trying to go out of bounds, set so that the points can't move
         }
-        else if((outline.getY()+outline.getHeight() >= offsetY+getHeight() && deltaY > 0)){ //testing upper bounds
-            outline.setY(offsetY+getHeight() - outline.getHeight());
+        else if((selectedOutline.getY()+selectedOutline.getHeight() >= offsetY+getHeight() && deltaY > 0)){ //testing upper bounds
+            selectedOutline.setY(offsetY+getHeight() - selectedOutline.getHeight());
             deltaY = 0; //if trying to go out of bounds, set so that the points can't move
         }
         else{
-            outline.setY(outline.getY()+(deltaY));
+            selectedOutline.setY(selectedOutline.getY()+(deltaY));
         }
 
 
         //moving doodle points
-        for (Point point: outline.getDoodle().getPoints()) {
+        for (Point point: selectedOutline.getDoodle().getPoints()) {
             if(point.x == -1 && point.y == -1) continue;
             point.x += deltaX;
             point.y -= deltaY;
@@ -428,14 +414,16 @@ public class Board extends Widget {
 
     public void setOffsetX(float offsetX) {
         this.offsetX = offsetX;
-        //fixme Put a board variable in outline and set this in the constructor (offsetX = board.getX())
-        outline.setOffsetX(offsetX);
     }
 
     public void setOffsetY(float offsetY) {
         this.offsetY = offsetY;
-        //fixme Do that here too
-        outline.setOffsetY(offsetY);
+    }
+    public float getOffsetX(){
+        return offsetX;
+    }
+    public float getOffsetY(){
+        return offsetY;
     }
 
     public void setBackgroundColor(Color color) {
@@ -453,9 +441,6 @@ public class Board extends Widget {
     @Override
     public void setSize(float width, float height){
         super.setSize(width, height);
-        //fixme And here too
-        outline.setBoardHeight(height);
-        outline.setBoardWidth(width);
     }
 
     @Override
@@ -519,17 +504,11 @@ public class Board extends Widget {
         return eraseMode;
     }
 
-    public Pixmap getDoodle() {
-        return doodle;
-    }
-    public Texture getDoodleTex() {
-        return doodle.texture;
+    public Pixmap getCurrentDoodle() {
+        return selectedOutline.getDoodle();
     }
     public Brush getCurrentBrush(){
         return currentBrush;
-    }
-    public ArrayList<Texture> getDoodleTexs() {
-        return doodleTexs;
     }
 
     static public class BoardStyle{

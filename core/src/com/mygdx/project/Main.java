@@ -46,7 +46,6 @@ public class Main extends ApplicationAdapter {
     static ArrayList<Tipbox> tipboxes = new ArrayList<>();
     static ArrayList<MBWindow> windows = new ArrayList<>();
     static ArrayList<MBSelectBox> scrollpanes = new ArrayList<>();
-    static ArrayList<Outline> outlines = new ArrayList<>();
 	//weapons or spell items for the itempanel
 	static int itemTab = 1;
 

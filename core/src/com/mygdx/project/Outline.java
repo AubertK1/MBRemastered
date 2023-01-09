@@ -2,6 +2,7 @@ package com.mygdx.project;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -20,30 +21,44 @@ public class Outline extends Widget {
     private InputListener inputListener;
     private ClickListener clickListener;
     private Doodle doodle;
+    private Board parentBoard;
     OutlineStyle style;
 
     private Rectangle bounds = new Rectangle();
 
-    private float offsetX = 0, offsetY = 0;
+    private float offsetX, offsetY;
     private float boardHeight;
     private float boardWidth;
 
-    public Outline (Doodle doodle, Skin skin) {
-        this(doodle, skin.get(OutlineStyle.class));
+    public Outline (Board board, Skin skin) {
+        this(board, skin.get(OutlineStyle.class));
     }
 
-    public Outline(Doodle doodle, OutlineStyle style) {
-        this.doodle = doodle;
-        if(doodle != null) doodle.setOutline(this);
+    public Outline(Board board, OutlineStyle style) {
+        //creates a new doodle
+        doodle = new Doodle(1018, 850, Pixmap.Format.RGBA8888, this);
+        doodle.setFilter(Pixmap.Filter.NearestNeighbour);
+        doodle.setColor(new Color(0f,0f,0f,0f));
+        doodle.fill();
+        //sets the doodle's texture
+        doodle.texture = new Texture(getDoodle());
+        doodle.texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        doodle.texture.bind();
+        //sets the board and transfers variables
+        parentBoard = board;
+        boardHeight = parentBoard.getHeight();
+        boardWidth = parentBoard.getWidth();
+        offsetX = parentBoard.getOffsetX();
+        offsetY = parentBoard.getOffsetY();
+
         initialize();
         setStyle(style);
 
+        //setting bounds
         Rectangle rec = findBounds();
         setPosition(rec.x, rec.y);
         setSize(rec.width, rec.height);
         bounds.setBounds(rec);
-
-        Main.outlines.add(this);
     }
     protected void initialize() {
         setTouchable(Touchable.enabled);
@@ -67,8 +82,6 @@ public class Outline extends Widget {
                 if(clickListener.isOver()){
                     System.out.println("OVER");
                 }
-                x=x;
-                y=y;
                 return false;
             }
 
@@ -88,10 +101,10 @@ public class Outline extends Widget {
             }
 
             //holding outline at border
-            if(rec.x < offsetX) setX(offsetX); //if at left border...
-            if(rec.y < offsetY) setY(offsetY); //if at bottom border...
-            if(rec.x + rec.width > offsetX + boardWidth) setX((offsetX + boardWidth) - getWidth()); //if at right border...
-            if(rec.y + rec.height > offsetY + boardHeight) setY((offsetY + boardHeight) - getHeight()); //if at top border...
+            if(brokeLeftBounds()) setX(offsetX); //if at left border...
+            if(brokeLowerBounds()) setY(offsetY); //if at bottom border...
+            if(brokeRightBounds()) setX((offsetX + boardWidth) - getWidth()); //if at right border...
+            if(brokeUpperBounds()) setY((offsetY + boardHeight) - getHeight()); //if at top border...
 
             //moving doodle points
             int i = 0;
@@ -199,10 +212,10 @@ public class Outline extends Widget {
     public boolean brokeRightBounds(){
         return findBounds().x + findBounds().width > offsetX + boardWidth;
     }
-    public boolean brokeUpperBounds(){
+    public boolean brokeLowerBounds(){
         return findBounds().y < offsetY;
     }
-    public boolean brokeLowerBounds(){
+    public boolean brokeUpperBounds(){
         return findBounds().y + findBounds().height > offsetY + boardHeight;
     }
 

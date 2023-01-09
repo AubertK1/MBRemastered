@@ -22,9 +22,9 @@ public class Doodle extends Pixmap {
     public void storePoints(boolean drawMode, int x, int y, int x2, int y2){
         //if the point is out of bounds, do not store
         if(x > getWidth() || x2 > getWidth()) return;
-        if(x < 0 || x2 < 0) return;
+        if(x < -1 || x2 < -1) return;
         if(y > getHeight() || y2 > getHeight()) return;
-        if(y < 0 || y2 < 0) return;
+        if(y < -1 || y2 < -1) return;
 
 
         Point point1 = new Point(x, y);
