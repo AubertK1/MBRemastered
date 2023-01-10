@@ -5,6 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import static com.mygdx.project.Main.batch;
+
 public class MBSelectBox extends MBComponent{
     final SelectBoxWrapper<String> dropdown;
 
@@ -23,6 +25,8 @@ public class MBSelectBox extends MBComponent{
         return dropdown;
     }
     public void draw(float alpha){
+        batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
+
         Main.allComps = reaarrangeList();
         Panel.resetCompIDs();
 

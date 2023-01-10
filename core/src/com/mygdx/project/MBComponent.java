@@ -10,6 +10,8 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 
+import static com.mygdx.project.Main.batch;
+
 /**
  * Essentially making my own version of JComponents where I can group the different components
  * together and edit any methods I need
@@ -163,10 +165,12 @@ public class MBComponent extends Actor {
         return null;
     }
     public void draw(float alpha){
+        batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
+
         Main.allComps = reaarrangeList();
         Panel.resetCompIDs();
 
-        getComponent().draw(Main.batch, alpha);
+        getComponent().draw(batch, alpha);
         for (MBComponent innerComp: components) {
             innerComp.draw(innerComp.aFloat);
         }

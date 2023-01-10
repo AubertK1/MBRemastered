@@ -16,6 +16,8 @@ import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
 
+import static com.mygdx.project.Main.batch;
+
 public class Item extends Minipanel{
     //skin of the item
     Skin uiSkin = new Skin (Gdx.files.internal(
@@ -1112,6 +1114,8 @@ public class Item extends Minipanel{
      */
     @Override
     public void render(SpriteBatch batch) {
+        batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
+
         if(itemType == 1) batch.draw(texture, position.x, (position.y-((position.height+5)* wSpot)), position.width, position.height);
         if(itemType == 2) batch.draw(texture, position.x, (position.y-((position.height+5)* sSpot)), position.width, position.height);
 

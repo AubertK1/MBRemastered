@@ -39,7 +39,7 @@ public class ContextMenu<T> extends ScrollPane {
     };
 
     public ContextMenu (Skin skin) {
-        this(skin.get(ScrollPaneStyle.class));
+        this(skin.get("contextmenu", ScrollPaneStyle.class));
     }
 
     public ContextMenu (ScrollPaneStyle style) {
@@ -51,7 +51,7 @@ public class ContextMenu<T> extends ScrollPane {
         setOverscroll(false, false);
         setFadeScrollBars(false);
         setScrollingDisabled(true, false);
-        listStyle = Main.uiSkin.get(List.ListStyle.class);
+        listStyle = Main.uiSkin.get("contextmenu", List.ListStyle.class);
 
         list = newList();
         list.setTouchable(Touchable.disabled);
@@ -153,7 +153,7 @@ public class ContextMenu<T> extends ScrollPane {
         }
 
         if (below)
-            setY(stagePosition.y - height);
+            setY(stagePosition.y - height - 1);
         else
             setY(stagePosition.y);
         setX(stagePosition.x);
@@ -174,7 +174,7 @@ public class ContextMenu<T> extends ScrollPane {
         list.getSelection().set(getSelected());
         list.setTouchable(Touchable.enabled);
         clearActions();
-//        onShow(this, below);
+        onShow(this, below);
     }
 
     public void hide () {
@@ -193,7 +193,7 @@ public class ContextMenu<T> extends ScrollPane {
 
         list.removeTempListener();
         clearActions();
-//        onHide(this);
+        onHide(this);
     }
 
     public void draw (Batch batch, float parentAlpha) {

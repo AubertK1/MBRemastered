@@ -3,6 +3,8 @@ package com.mygdx.project;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
+import static com.mygdx.project.Main.batch;
+
 public class Tipbox extends Minipanel{
     public Tipbox(Rectangle position) {
         super("core\\pics\\MBSkin2\\TipBox4.png", position);
@@ -11,6 +13,8 @@ public class Tipbox extends Minipanel{
 
     @Override
     public void render(SpriteBatch batch) {
+        batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
+
         if (getPanel().editMode && getPanel().supposedToBeVisible) {
 
             batch.draw(texture, position.x, position.y, position.width, position.height);

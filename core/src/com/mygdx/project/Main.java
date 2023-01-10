@@ -36,7 +36,7 @@ public class Main extends ApplicationAdapter {
 	public static MBContextMenu contextMenu;
 	//creating main panels
 	Panel sidePanel, topPanel, genStatsPanel, reminderPanel, toolbarPanel, masterboardPanel;
-	MBBoard masterBoard;
+	static MBBoard masterBoard;
 	//list with all the MBComponents
 	static ArrayList<MBComponent> allComps = new ArrayList<>();
 
@@ -536,9 +536,8 @@ public class Main extends ApplicationAdapter {
 		});
 
 		MBColorPicker colorPicker = new MBColorPicker();
-		colorPicker.setPosition( 1000, toolbarPanel.getY()+5);
-		float sizeTemp = toolbarPanel.getHeight() - 10;
-		colorPicker.setSize(sizeTemp, sizeTemp);
+		colorPicker.setSize(0, toolbarPanel.getHeight() - 10);
+		colorPicker.setPosition((toolbarPanel.getX() + toolbarPanel.getWidth()) - (colorPicker.getWidth() + 5), toolbarPanel.getY()+5);
 
 		toolbarPanel.add(selectButton);
 		toolbarPanel.add(drawButton);
@@ -551,7 +550,6 @@ public class Main extends ApplicationAdapter {
 
 		//honestly don't know what this does, but it's essential
 		InputMultiplexer multiplexer = new InputMultiplexer();
-//		multiplexer.addProcessor((InputProcessor) this);
 		InputProcessor screenProcessor = new InputProcessor() {
 			@Override
 			public boolean keyDown(int keycode) {

@@ -17,16 +17,25 @@ public class ColorPicker extends Widget {
     Texture texture;
     Pixmap pixmap;
     InputListener inputListener;
+    private Color newColor;
 
     public ColorPicker() {
-        texture = new Texture("core\\pics\\MBSkin2\\colormap.png");
+        texture = new Texture("core\\pics\\MBSkin2\\colormap2.png");
 
-        texture.getTextureData().prepare();
+        if (!texture.getTextureData().isPrepared()) {
+            texture.getTextureData().prepare();
+        }
         pixmap = texture.getTextureData().consumePixmap();
+        pixmap.setFilter(Pixmap.Filter.NearestNeighbour);
 
         addListener(inputListener = new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                System.out.print(x + ", " + y + "; ");
+                newColor = getColor(x, y);
+                if(newColor != null) {
+                    System.out.println(newColor);
+                    Main.masterBoard.board.setDrawingColor(newColor);
+                    Main.masterBoard.board.setCurrentColor(newColor);
+                }
                 return true;
             }
 
@@ -56,21 +65,35 @@ public class ColorPicker extends Widget {
     }
 
     private Color getColor(float x, float y){
-        pixmap.getPixel((int) x, (int) y);
-        return null;
-    }
+        float y2 = getHeight()-y;
 
-    public void convertTex(Texture texture){
-        for (int width = 0; width < texture.getWidth() + 1; width++) {
-            for (int height = 0; height < texture.getHeight() + 1; height++) {
+        int i = pixmap.getPixel((int) x, (int) y2);
+        Color color = new Color(i);
 
-            }
-        }
+        if(color.toString().equals("00000000"))
+            return null;
+        else return color;
     }
 
     @Override
     public void setSize(float width, float height){
         width = height * 1.173f;
         super.setSize(width, height);
+
+        Pixmap imagePixmap = new Pixmap(Gdx.files.internal("core\\pics\\MBSkin2\\colormap2.png"));
+        Pixmap resizedPixmap = new Pixmap((int) width, (int) height, imagePixmap.getFormat());
+        resizedPixmap.drawPixmap(imagePixmap,
+                0, 0, imagePixmap.getWidth(), imagePixmap.getHeight(),
+                0, 0, resizedPixmap.getWidth(), resizedPixmap.getHeight()
+        );
+        texture = new Texture(resizedPixmap);
+        imagePixmap.dispose();
+        resizedPixmap.dispose();
+
+        if (!texture.getTextureData().isPrepared()) {
+            texture.getTextureData().prepare();
+        }
+        pixmap = texture.getTextureData().consumePixmap();
+        pixmap.setFilter(Pixmap.Filter.NearestNeighbour);
     }
 }

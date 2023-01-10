@@ -45,11 +45,14 @@
   ScrollPaneStyle: {
     default: { vScroll: default-scroll, hScrollKnob: default-round-large, background: default-rect, hScroll: default-scroll, vScrollKnob: default-round-large }
   },
+  ScrollPaneStyle: {
+    contextmenu: { vScroll: default-scroll, hScrollKnob: default-round-large, background: context-rect, hScroll: default-scroll, vScrollKnob: default-round-large }
+  },
   SelectBoxStyle: {
     default: {
       font: default-font, fontColor: white, background: default-select,
       scrollStyle: default,
-      listStyle: { font: default-font, selection: default-select-selection }
+      listStyle: { font: default-font, selection: context-select-selection }
     }
   },
   SplitPaneStyle: {
@@ -79,6 +82,9 @@
   },
   ListStyle: {
     default: { fontColorUnselected: white, selection: selection, fontColorSelected: white, font: default-font }
+  },
+  ListStyle: {
+    contextmenu: { fontColorUnselected: darkgray, selection: context-select-selection, fontColorSelected: darkgray, font: default-font }
   },
   TouchpadStyle: {
     default: { background: default-pane, knob: default-round-large }
