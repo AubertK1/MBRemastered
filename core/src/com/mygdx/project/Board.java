@@ -137,6 +137,23 @@ public class Board extends Widget {
                             }
                         });
                     }
+                    else {
+                        Main.contextMenu.setItems("Create New Doodle", "Create New Sticky Note");
+                        Main.contextMenu.addListener(new ClickListener() {
+                            public void clicked(InputEvent event, float x, float y) {
+                                String word = Main.contextMenu.getSelected();
+                                switch (word) {
+                                    case "Create New Doodle":
+                                        selectedOutline = null;
+                                        enterDrawMode();
+                                        break;
+                                    case "Create New Sticky Note":
+                                        System.out.println("Sticky note functionality not supported yet lol");
+                                        break;
+                                }
+                            }
+                        });
+                    }
                     Main.contextMenu.showAt((int) (x+offsetX), (int) (y+offsetY));
                     return false;
                 }

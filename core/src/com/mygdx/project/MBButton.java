@@ -44,6 +44,16 @@ public class MBButton extends MBComponent{
         this.skin = skin;
         button = new TextButton(text, this.skin);
     }
+    /**
+     * TextButton
+     * @param text
+     * @param skin
+     */
+    public MBButton(String text, Skin skin, String style) {
+        this.skin = skin;
+        this.style = style;
+        button = new TextButton(text, this.skin, style);
+    }
     public void toImageButton(final Texture texture){
         this.texture = texture;
         //saves the position of the text button
