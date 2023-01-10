@@ -131,6 +131,7 @@ public class Board extends Widget {
                                         break;
                                     case "Delete":
                                         deleteOutline(selectedOutline);
+                                        selectedOutline = null;
                                         break;
                                 }
                             }
