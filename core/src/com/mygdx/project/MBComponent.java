@@ -15,7 +15,6 @@ import java.util.ArrayList;
  * together and edit any methods I need
  */
 public class MBComponent extends Actor {
-    Rectangle position;
     ArrayList<MBComponent> components = new ArrayList<>();
     Panel parentPanel;
     MBComponent parentActor;

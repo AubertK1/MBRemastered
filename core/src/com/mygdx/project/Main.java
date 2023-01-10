@@ -1,9 +1,6 @@
 package com.mygdx.project;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -36,7 +33,7 @@ public class Main extends ApplicationAdapter {
 	//the skin for the components
 	static Skin uiSkin;
 
-	public static MBContextMenu<String> contextMenu;
+	public static MBContextMenu contextMenu;
 	//creating main panels
 	Panel sidePanel, topPanel, genStatsPanel, reminderPanel, toolbarPanel, masterboardPanel;
 	MBBoard masterBoard;
@@ -81,7 +78,7 @@ public class Main extends ApplicationAdapter {
 		uiSkin = new Skin (Gdx.files.internal(
 				"assets\\skins\\uiskin.json"));
 
-		contextMenu = new MBContextMenu<>();
+		contextMenu = new MBContextMenu();
 
 		sidePanel.setSoftVisible(true);
 		topPanel.setSoftVisible(true);
@@ -538,18 +535,70 @@ public class Main extends ApplicationAdapter {
 			}
 		});
 
+		MBColorPicker colorPicker = new MBColorPicker();
+		colorPicker.setPosition( 1000, toolbarPanel.getY()+5);
+		float sizeTemp = toolbarPanel.getHeight() - 10;
+		colorPicker.setSize(sizeTemp, sizeTemp);
+
 		toolbarPanel.add(selectButton);
 		toolbarPanel.add(drawButton);
 		toolbarPanel.add(eraseButton);
 		toolbarPanel.add(sizesBox);
 		toolbarPanel.add(softnessBox);
 		toolbarPanel.add(colorBox);
+		toolbarPanel.add(colorPicker);
 		//endregion
 
 		//honestly don't know what this does, but it's essential
 		InputMultiplexer multiplexer = new InputMultiplexer();
 //		multiplexer.addProcessor((InputProcessor) this);
+		InputProcessor screenProcessor = new InputProcessor() {
+			@Override
+			public boolean keyDown(int keycode) {
+				return false;
+			}
+
+			@Override
+			public boolean keyUp(int keycode) {
+				return false;
+			}
+
+			@Override
+			public boolean keyTyped(char character) {
+				return false;
+			}
+
+			@Override
+			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+				if(button == Input.Buttons.RIGHT && !contextMenu.isCustomized()) {
+					contextMenu.buildDefaultMenu();
+					contextMenu.showAt(screenX, Gdx.graphics.getHeight()-screenY);
+				}
+				return false;
+			}
+
+			@Override
+			public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+				return false;
+			}
+
+			@Override
+			public boolean touchDragged(int screenX, int screenY, int pointer) {
+				return false;
+			}
+
+			@Override
+			public boolean mouseMoved(int screenX, int screenY) {
+				return false;
+			}
+
+			@Override
+			public boolean scrolled(float amountX, float amountY) {
+				return false;
+			}
+		};
 		multiplexer.addProcessor(stage);
+		multiplexer.addProcessor(screenProcessor);
 		Gdx.input.setInputProcessor(multiplexer);
 	}
 
@@ -572,23 +621,14 @@ public class Main extends ApplicationAdapter {
 		for (Tipbox tipbox: tipboxes) {
 			tipbox.render(batch);
 		}
-
-
-		//fixme
-/*
-		for (Outline outline : outlines) {
-			outline.draw(batch, 1);
-		}
-*/
 		for (MBSelectBox selectBox: scrollpanes) {
 			if(selectBox.dropdown.isActive) selectBox.draw(selectBox.aFloat);
 		}
 		for (MBWindow window: windows) {
 			window.draw(window.aFloat);
 		}
-		if(contextMenu.isActive()){
-			contextMenu.draw(contextMenu.aFloat);
-		}
+		if(contextMenu.isActive()) contextMenu.draw(contextMenu.aFloat);
+		else contextMenu.setPosition(-100, -100); //when it's not being rendered move it offscreen, so it isn't blocking anything's listener
 
 		batch.end();
 

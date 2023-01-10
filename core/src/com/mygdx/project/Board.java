@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.Null;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Board extends Widget {
     BoardStyle style;
@@ -80,7 +81,6 @@ public class Board extends Widget {
     }
     protected void initialize () {
         backgroundColor = new Color(0xd2b48cff);
-
         //setting up the pixmap board
         pixmapBoard = new Pixmap(1018, 850, Pixmap.Format.RGBA8888);
         pixmapBoard.setFilter(Pixmap.Filter.NearestNeighbour);
@@ -92,37 +92,50 @@ public class Board extends Widget {
         addListener(clickListener = new ClickListener());
         addListener(inputListener = new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                //so that the computer knows which outline to drag / erase from
+                if (selectMode || eraseMode){
+                    if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) selectedOutline = findOutlineBehind((int) x, (int) y);
+                    else selectedOutline = findOutline((int) x, (int) y);
+                }
                 if(button == Input.Buttons.LEFT) {
-                    //so that the computer knows which outline to drag / erase from
-                    if (selectMode || eraseMode) selectedOutline = findOutline((int) x, (int) y);
-                    else if (drawMode) {
                         //if the user isn't drawing on an outline, make a new one
-                        if (selectedOutline == null) {
+                        if (selectedOutline == null && drawMode) {
                             Outline newO = new Outline(Board.this, Main.uiSkin);
                             selectedOutline = newO;
                             outlines.add(newO);
                         }
                         drawAt((int) x, (int) y);
-                    }
+
                 }
-                else if (button == Input.Buttons.RIGHT){
-                    Main.contextMenu.setItems("hi", "hi again", "last one");
-                    Main.contextMenu.addListener(new ClickListener(){
-                        public void clicked (InputEvent event, float x, float y) {
-                            String word = Main.contextMenu.getSelected();
-                            switch (word){
-                                case "hi":
-                                    System.out.println("hi");
-                                    break;
-                                case "hi again":
-                                    System.out.println("hi again");
-                                    break;
-                                case "last one":
-                                    System.out.println("last one");
-                                    break;
+                else if (button == Input.Buttons.RIGHT && selectMode){
+                    if (selectedOutline != null) {
+                        Main.contextMenu.setItems("Bring Forward", "Bring Backward", "Bring to Front", "Bring to Back", "Edit", "Delete");
+                        Main.contextMenu.addListener(new ClickListener() {
+                            public void clicked(InputEvent event, float x, float y) {
+                                String word = Main.contextMenu.getSelected();
+                                switch (word) {
+                                    case "Bring Forward":
+                                        moveForward(selectedOutline);
+                                        break;
+                                    case "Bring Backward":
+                                        moveBackward(selectedOutline);
+                                        break;
+                                    case "Bring to Front":
+                                        moveToFront(selectedOutline);
+                                        break;
+                                    case "Bring to Back":
+                                        moveToBack(selectedOutline);
+                                        break;
+                                    case "Edit":
+                                        enterDrawMode();
+                                        break;
+                                    case "Delete":
+                                        deleteOutline(selectedOutline);
+                                        break;
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                     Main.contextMenu.showAt((int) (x+offsetX), (int) (y+offsetY));
                     return false;
                 }
@@ -261,6 +274,8 @@ public class Board extends Widget {
 
     public void drawAt(int x, int y) {
         if(drawMode) {
+            if(selectedOutline == null) return;
+
             int brushSize = currentBrush.getSize();
             float[][] brush = currentBrush.getBrush();
             Color color;
@@ -355,10 +370,25 @@ public class Board extends Widget {
         float x2 = x + offsetX;
         float y2 = y + offsetY;
         for (int i = outlines.size() - 1; i > -1; i--) { //so that if two are stacked it gets the most recent one
-            if(outlines.get(i).getBounds().contains(x2, y2)){
-                System.out.print("HERE :D ");
+            if(outlines.get(i).getBounds().contains(x2, y2)){ //if the point is inside the outline's borders...
                 return outlines.get(i);
             }
+        }
+        return null;
+    }
+    public Outline findOutlineBehind(int x, int y){
+        float x2 = x + offsetX;
+        float y2 = y + offsetY;
+        boolean triggered = false;
+        int frontOutlineIndex = -1;
+        for (int i = outlines.size() - 1; i > -1; i--) { //so that if two are stacked it gets the most recent one
+            if(outlines.get(i).getBounds().contains(x2, y2)){ //if the point is inside the outline's borders...
+                if(triggered) return outlines.get(i);
+                //if it meets qualifies the first time activate the trigger so that it returns the next outline to qualify
+                triggered = true;
+                frontOutlineIndex = i;
+            }
+            if(i == 0 && triggered) return outlines.get(frontOutlineIndex); //if there aren't any outlines behind, return the front outline
         }
         return null;
     }
@@ -414,6 +444,30 @@ public class Board extends Widget {
         lasty = (int) y2;
     }
 
+    public void moveForward(Outline outline){
+        int i = outlines.indexOf(outline);
+        if(i+1 < outlines.size()) Collections.swap(outlines, i, ++i);
+    }
+    public void moveBackward(Outline outline){
+        int i = outlines.indexOf(outline);
+        if(i-1 >= 0) Collections.swap(outlines, i, --i);
+    }
+    public void moveToBack(Outline outline){
+        outlines.remove(outline);
+        outlines.add(0, outline);
+    }
+    public void moveToFront(Outline outline){
+        outlines.remove(outline);
+        outlines.add(outline);
+    }
+
+    public void deleteOutline(Outline outline){
+        outline.getDoodle().texture.dispose();
+        outline.getDoodle().dispose();
+        outline.clear();
+        outlines.remove(outline);
+    }
+
     public static Pixmap shiftPixmap(Pixmap src, int offsetX, int offsetY){
         final int width = src.getWidth();
         final int height = src.getHeight();
@@ -427,6 +481,32 @@ public class Board extends Widget {
             }
         }
         return movedPX;
+    }
+
+    //fixme DO NOT USE UNTIL FURTHER NOTICE
+    public static Pixmap rotatePixmap (Pixmap src, float angle){
+        final int width = src.getWidth();
+        final int height = src.getHeight();
+        Pixmap rotated = new Pixmap(width, height, src.getFormat());
+
+        final double radians = Math.toRadians(angle);
+        final double cos = Math.cos(radians);
+        final double sin = Math.sin(radians);
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                final int centerX = width/2;
+                final int centerY = height / 2;
+                final int m = x - centerX;
+                final int n = y - centerY;
+                final int j = ((int) (m * cos + n * sin)) + centerX;
+                final int k = ((int) (n * cos - m * sin)) + centerY;
+                if (j >= 0 && j < width && k >= 0 && k < height){
+                    rotated.drawPixel(x, y, src.getPixel(j, k));
+                }
+            }
+        }
+        return rotated;
     }
 
     public void setStyle (BoardStyle style) {

@@ -30,6 +30,11 @@ public class Outline extends Widget {
     private float boardHeight;
     private float boardWidth;
 
+    public int LEFTBOUND = 0;
+    public int RIGHTBOUND = 0;
+    public int UPPERBOUND = 0;
+    public int LOWERBOUND = 0;
+
     public Outline (Board board, Skin skin) {
         this(board, skin.get(OutlineStyle.class));
     }
@@ -168,6 +173,11 @@ public class Outline extends Widget {
         }
 
         Rectangle rec = new Rectangle((int)offsetX + mostLeft, ((int) boardHeight - mostLow)+(int)offsetY, mostRight-mostLeft, (mostHigh-mostLow)*-1);
+        LEFTBOUND = rec.x;
+        RIGHTBOUND = rec.x + rec.width;
+        LOWERBOUND = rec.y;
+        UPPERBOUND = rec.y + rec.height;
+
         return rec;
     }
     protected @Null Drawable getBackgroundDrawable () {
@@ -202,21 +212,24 @@ public class Outline extends Widget {
     }
 
     public boolean isOutOfBounds(){
-        Rectangle rec = findBounds();
-
-        return (rec.x < offsetX || rec.y < offsetY || rec.x + rec.width > offsetX + boardWidth || rec.y + rec.height > offsetY + boardHeight);
+        findBounds(); //updating the bound
+        return (LEFTBOUND < offsetX || LOWERBOUND < offsetY || RIGHTBOUND > offsetX + boardWidth || UPPERBOUND > offsetY + boardHeight);
     }
     public boolean brokeLeftBounds(){
-        return findBounds().x < offsetX;
+        findBounds(); //updating the bound
+        return LEFTBOUND < offsetX;
     }
     public boolean brokeRightBounds(){
-        return findBounds().x + findBounds().width > offsetX + boardWidth;
+        findBounds(); //updating the bound
+        return RIGHTBOUND > offsetX + boardWidth;
     }
     public boolean brokeLowerBounds(){
-        return findBounds().y < offsetY;
+        findBounds(); //updating the bound
+        return LOWERBOUND < offsetY;
     }
     public boolean brokeUpperBounds(){
-        return findBounds().y + findBounds().height > offsetY + boardHeight;
+        findBounds(); //updating the bound
+        return UPPERBOUND > offsetY + boardHeight;
     }
 
     public Rectangle getBounds(){

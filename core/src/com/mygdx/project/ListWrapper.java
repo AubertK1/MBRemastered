@@ -42,7 +42,7 @@ import com.badlogic.gdx.utils.Pools;
  * <p>
  * {@link ChangeEvent} is fired when the list selection changes.
  * <p>
- * The preferred size of the list is determined by the text bounds of the items and the size of the {@link ListStyle#selection}.
+ * The preferred size of the list is determined by the text bounds of the items and the size of the {@link List.ListStyle#selection}.
  * @author mzechner
  * @author Nathan Sweet */
 public class ListWrapper<T> extends Widget implements Cullable {
@@ -57,6 +57,7 @@ public class ListWrapper<T> extends Widget implements Cullable {
     private InputListener keyListener;
     boolean typeToSelect;
 
+    private boolean customized = false;
     public ClickListener tempListener;
 
     public float visualX = 0, visualY = 0;
@@ -170,7 +171,7 @@ public class ListWrapper<T> extends Widget implements Cullable {
         invalidateHierarchy();
     }
 
-    /** Returns the list's style. Modifying the returned style may not have an effect until {@link #setStyle(ListStyle)} is
+    /** Returns the list's style. Modifying the returned style may not have an effect until {@link #setStyle(List.ListStyle)} is
      * called. */
     public List.ListStyle getStyle () {
         return style;
@@ -262,11 +263,15 @@ public class ListWrapper<T> extends Widget implements Cullable {
         boolean done = addListener(listener);
         if(done){
             tempListener = listener;
+            customized = true;
         }
         return done;
     }
     public void removeTempListener(){
-        if(tempListener != null) removeListener(tempListener);
+        if(tempListener != null){
+            removeListener(tempListener);
+            customized = false;
+        }
     }
     /** Called to draw the background. Default implementation draws the style background drawable. */
     protected void drawBackground (Batch batch, float parentAlpha) {
@@ -421,6 +426,10 @@ public class ListWrapper<T> extends Widget implements Cullable {
 
     public void setCullingArea (@Null Rectangle cullingArea) {
         this.cullingArea = cullingArea;
+    }
+
+    public boolean isCustomized(){
+        return customized;
     }
 
     /** @return May be null.
