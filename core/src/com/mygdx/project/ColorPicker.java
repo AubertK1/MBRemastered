@@ -22,11 +22,11 @@ public class ColorPicker extends Widget {
     public ColorPicker() {
         texture = new Texture("core\\pics\\MBSkin2\\colormap2.png");
 
-        if (!texture.getTextureData().isPrepared()) {
-            texture.getTextureData().prepare();
-        }
-        pixmap = texture.getTextureData().consumePixmap();
-        pixmap.setFilter(Pixmap.Filter.NearestNeighbour);
+//        if (!texture.getTextureData().isPrepared()) {
+//            texture.getTextureData().prepare();
+//        }
+//        pixmap = texture.getTextureData().consumePixmap();
+//        pixmap.setFilter(Pixmap.Filter.NearestNeighbour);
 
         addListener(inputListener = new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -36,6 +36,13 @@ public class ColorPicker extends Widget {
                     Main.masterBoard.board.setDrawingColor(newColor);
                     Main.masterBoard.board.setCurrentColor(newColor);
                 }
+
+//                if (!texture.getTextureData().isPrepared()) {
+//                    texture.getTextureData().prepare();
+//                }
+//                pixmap = texture.getTextureData().consumePixmap();
+//                pixmap.setFilter(Pixmap.Filter.NearestNeighbour);
+
                 return true;
             }
 
@@ -66,8 +73,15 @@ public class ColorPicker extends Widget {
 
     private Color getColor(float x, float y){
         float y2 = getHeight()-y;
+        if (!texture.getTextureData().isPrepared()) {
+            texture.getTextureData().prepare();
+        }
+        Pixmap pixmap = texture.getTextureData().consumePixmap();
+        pixmap.setFilter(Pixmap.Filter.NearestNeighbour);
 
-        int i = pixmap.getPixel((int) x, (int) y2);
+        if(x > pixmap.getWidth() || y2 > pixmap.getHeight()) return null;
+
+        int i = pixmap. getPixel((int) x, (int) y2);
         Color color = new Color(i);
 
         if(color.toString().equals("00000000"))
@@ -89,11 +103,11 @@ public class ColorPicker extends Widget {
         texture = new Texture(resizedPixmap);
         imagePixmap.dispose();
         resizedPixmap.dispose();
-
-        if (!texture.getTextureData().isPrepared()) {
-            texture.getTextureData().prepare();
-        }
-        pixmap = texture.getTextureData().consumePixmap();
-        pixmap.setFilter(Pixmap.Filter.NearestNeighbour);
+//
+//        if (!texture.getTextureData().isPrepared()) {
+//            texture.getTextureData().prepare();
+//        }
+//        pixmap = texture.getTextureData().consumePixmap();
+//        pixmap.setFilter(Pixmap.Filter.NearestNeighbour);
     }
 }

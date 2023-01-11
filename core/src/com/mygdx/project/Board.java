@@ -95,6 +95,7 @@ public class Board extends Widget {
                 //so that the computer knows which outline to drag / erase from
                 if (selectMode || eraseMode){
                     if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) selectedOutline = findOutlineBehind((int) x, (int) y);
+                    else if(selectedOutline != null && selectedOutline.getBounds().contains(x + offsetX,y + offsetY)) ;
                     else selectedOutline = findOutline((int) x, (int) y);
                 }
                 if(button == Input.Buttons.LEFT) {

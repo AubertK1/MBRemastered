@@ -545,7 +545,8 @@ public class Main extends ApplicationAdapter {
 		toolbarPanel.add(sizesBox);
 		toolbarPanel.add(softnessBox);
 		toolbarPanel.add(colorBox);
-		toolbarPanel.add(colorPicker);
+		//fixme Fix ColorPicker code before adding back
+//		toolbarPanel.add(colorPicker);
 		//endregion
 
 		//honestly don't know what this does, but it's essential
