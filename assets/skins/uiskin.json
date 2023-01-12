@@ -68,4 +68,16 @@
       background: default-pane, wrapWidth: 150
     }
   },
+<<<<<<< Updated upstream
+=======
+  com.mygdx.project.Board$BoardStyle: {
+    default: {background: default-round-down}
+  }
+  com.mygdx.project.Doodle$DoodleStyle: {
+    default: {background: board-outline}
+  }
+  com.mygdx.project.StickyNote$StickyNoteStyle: {
+    default: {background: default-stickynote}
+  }
+>>>>>>> Stashed changes
 }
