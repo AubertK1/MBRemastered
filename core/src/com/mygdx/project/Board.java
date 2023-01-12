@@ -32,8 +32,6 @@ public class Board extends Widget {
 
     //this draws the doodles
     private Pixmap pixmapBoard;
-    //displacement of texture's bottom left corner relative to board's bottom left corner
-    private final Vector2 doodleTexOffset = new Vector2(0 ,0);
 
     private Outline selectedOutline;
 
@@ -105,7 +103,7 @@ public class Board extends Widget {
                             selectedOutline = newO;
                             outlines.add(newO);
                         }
-                        drawAt((int) x, (int) y);
+                        if(selectedOutline != null) selectedOutline.drawAt((int) x, (int) y);
 
                 }
                 else if (button == Input.Buttons.RIGHT && selectMode){
@@ -116,22 +114,22 @@ public class Board extends Widget {
                                 String word = Main.contextMenu.getSelected();
                                 switch (word) {
                                     case "Bring Forward":
-                                        moveForward(selectedOutline);
+                                        selectedOutline.moveForward();
                                         break;
                                     case "Bring Backward":
-                                        moveBackward(selectedOutline);
+                                        selectedOutline.moveBackward();
                                         break;
                                     case "Bring to Front":
-                                        moveToFront(selectedOutline);
+                                        selectedOutline.moveToFront();
                                         break;
                                     case "Bring to Back":
-                                        moveToBack(selectedOutline);
+                                        selectedOutline.moveToBack();
                                         break;
                                     case "Edit":
                                         enterDrawMode();
                                         break;
                                     case "Delete":
-                                        deleteOutline(selectedOutline);
+                                        selectedOutline.delete();
                                         selectedOutline = null;
                                         break;
                                 }
@@ -166,52 +164,27 @@ public class Board extends Widget {
                 if (pointer != 0 || button != 0) return;
                 lastx = -1;
                 lasty = -1;
+                Outline.wipe();
 
-                //goal is to lock in the position of the outline after being done dragged
                 if(selectMode){
-                    if(selectedOutline == null) return; //if no outline was being dragged or clicked, then return
-
-                    //getting ready to redraw the board
-                    pixmapBoard.dispose();
-                    pixmapBoard = new Pixmap(1018, 850, Pixmap.Format.RGBA8888);
-
-                    //temporary pixmap with the points moved over
-                    Pixmap px = shiftPixmap(selectedOutline.getDoodle(), (int) doodleTexOffset.x, (int) doodleTexOffset.y);
-                    //clearing the selected outline's doodle
-                    selectedOutline.getDoodle().setColor(Color.CLEAR);
-                    selectedOutline.getDoodle().fill();
-                    //setting the doodle's pixels to the shifted pixmap's pixels
-                    selectedOutline.getDoodle().setPixels(px.getPixels());
-                    //no more need for this pixmap
-                    px.dispose();
-
-                    //clearing the board then drawing the updated doodle
-                    pixmapBoard.setColor(Color.CLEAR);
-                    pixmapBoard.fill();
-                    pixmapBoard.drawPixmap(selectedOutline.getDoodle(), 0, 0, 1018, 850, 0, 0, 1018, 850);
-                    //resetting the texture to the new shifted doodle so that it's realigned with the board
-                    selectedOutline.getDoodle().texture.dispose();
-                    selectedOutline.getDoodle().texture = new Texture(selectedOutline.getDoodle());
-                    doodleTexOffset.set(0, 0);
-                    //update the selected outline's bounds
-                    selectedOutline.update();
+                    if(selectMode && selectedOutline != null) selectedOutline.lockIn();
                 }
                 //goal is to update the doodle
                 else{
                     //so that the program doesn't slow down the more that you draw
                     //(I think this works because it stops storing the same information over and over again in its memory)
                     //called here so that it's only called when drawing but isn't called too often
-                    pixmapBoard.dispose();
+                    if(!pixmapBoard.isDisposed()) pixmapBoard.dispose();
                     pixmapBoard = new Pixmap(1018, 850, Pixmap.Format.RGBA8888);
                     if(selectedOutline != null) selectedOutline.update();
-//                    selectedOutline = null;
                 }
             }
 
             public void touchDragged (InputEvent event, float x, float y, int pointer) {
                 if(pointer == Input.Buttons.LEFT) {
-                    if (selectMode) dragOutline(selectedOutline, (int) x, (int) y);
-                    else drawAt((int) x, (int) y);
+//                    if (selectMode) dragOutline(selectedOutline, (int) x, (int) y);
+                    if (selectMode && selectedOutline!=null) selectedOutline.drag((int) x, (int) y);
+                    else if(selectedOutline != null) selectedOutline.drawAt((int) x, (int) y);
 
                     if (clickListener.isOver() && !selectMode && !drawCursor) {
                         cursor = currentBrush.getPixmap();
@@ -257,44 +230,94 @@ public class Board extends Widget {
             background.draw(batch, x, y, width, height);
         }
 
-        //if in select mode and the outline is visible and out of bounds
-        if(selectMode && selectedOutline != null && selectedOutline.getDoodle().getPoints().size() != 0 && selectedOutline.isOutOfBounds()) {
-            //checking which bound it broke
-            if (selectedOutline.brokeLeftBounds()) {
-                //finding how much the outline shifted by
-                float deltaX = (selectedOutline.getX() - offsetX);
-                //shifting the doodle texture back into place (where it's supposed to be relative to the outline) based on how much the outline got moved out of place
-                doodleTexOffset.x -= deltaX;
-            }
-            else if(selectedOutline.brokeRightBounds()){ //repeat for the rest of the cases
-                float deltaX = ((selectedOutline.getX()+ selectedOutline.getWidth()) - (offsetX+getWidth()));
-                doodleTexOffset.x -= deltaX;
-            }
-            if(selectedOutline.brokeLowerBounds()){
-                float deltaY = (selectedOutline.getY() - offsetY);
-                doodleTexOffset.y -= deltaY;
-            }
-            else if(selectedOutline.brokeUpperBounds()){
-                float deltaY = ((selectedOutline.getY()+ selectedOutline.getHeight()) - (offsetY+getHeight()));
-                doodleTexOffset.y -= deltaY;
-            }
-        }
-
         //loops through the outlines and draws each outline + its texture
         for (Outline outline: outlines) {
-            if(outline == selectedOutline) batch.draw(outline.getDoodle().texture, offsetX + doodleTexOffset.x, offsetY + doodleTexOffset.y);
-            else batch.draw(outline.getDoodle().texture, offsetX, offsetY);
-            if(selectMode && outline == selectedOutline) outline.draw(batch, 1);
+            outline.draw(batch, 1);
         }
 
         //fixme best version of a keylistener I could think of
         if (Gdx.input.isKeyPressed(Input.Keys.D) && selectedOutline != null) selectedOutline = null;
     }
+    public void drawAt(int x, int y){
+        if(selectedOutline == null) return;
+        if(!(drawMode || eraseMode)) return;
 
-    public void drawAt(int x, int y) {
+        int brushSize = currentBrush.getSize();
+        float[][] brush = currentBrush.getBrush();
+        Color color = currentColor;
+
+        //flipping the y so that the coordinates aren't upside down for the pixmap
+        int y2 = (pixmapBoard.getHeight() - y) + (int) brushCenterY;
+        int x2 = x + (int) brushCenterX;
+
+        if(eraseMode){
+            pixmapBoard.setBlending(Pixmap.Blending.None); // before you start drawing pixels.
+            selectedOutline.getDoodle().setBlending(Pixmap.Blending.None); // before you start drawing pixels.
+        }
+
+        // This might look redundant, but should be more efficient because
+        // the condition is not evaluated for each pixel on the brush
+        if (lastx != -1 && lasty != -1) {
+            for (int i = -brushSize; i < brushSize + 1; i++) {
+                for (int j = -brushSize; j < brushSize + 1; j++) {
+                    if(drawMode) {
+                        if (brush[brushSize - j][brushSize + i] > 0.15) {
+                            //making the line lighter
+                            selectedOutline.getDoodle().setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i] * .4f);
+                            selectedOutline.getDoodle().drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
+                            selectedOutline.getDoodle().storePoints(true, lastx + i, lasty + j, x2 + i, y2 + j);
+                        }
+                    }
+                    else if(eraseMode){
+                        selectedOutline.getDoodle().setColor(0x00000000);
+                        selectedOutline.getDoodle().drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
+                        selectedOutline.getDoodle().storePoints(false, lastx + i, lasty + j, x2 + i, y2 + j);
+                    }
+                }
+            }
+        } else {
+            for (int i = -brushSize; i < brushSize + 1; i++) {
+                for (int j = -brushSize; j < brushSize + 1; j++) {
+                    if(drawMode) {
+                        if (brush[brushSize - j][brushSize + i] > 0.2) {
+                            //making the dot darker
+                            float a = brush[brushSize - j][brushSize + i] * 1.3f;
+                            if (a > 1) a = 1;
+                            selectedOutline.getDoodle().setColor(color.r, color.g, color.b, a);
+                            selectedOutline.getDoodle().drawPixel(x2 + i, y2 + j);
+                            selectedOutline.getDoodle().storePoints(true, x2 + i, y2 + j, -1, -1);
+                        }
+                    }
+                    else if(eraseMode){
+                        selectedOutline.getDoodle().setColor(0x00000000);
+                        selectedOutline.getDoodle().drawPixel(x2 + i, y2 + j, 0x00000000);
+                        selectedOutline.getDoodle().storePoints(false, x2 + i, y2 + j, -1, -1);
+                    }
+                }
+            }
+        }
         if(drawMode) {
-            if(selectedOutline == null) return;
+            //so that it doesn't draw old points again
+            pixmapBoard.setColor(Color.CLEAR);
+            pixmapBoard.fill();
+        }
+        pixmapBoard.drawPixmap(selectedOutline.getDoodle(), 0, 0, 1018, 850, 0, 0, 1018, 850);
 
+        lastx = x2;
+        lasty = y2;
+
+        selectedOutline.getDoodle().texture.dispose();
+        selectedOutline.getDoodle().texture = new Texture(selectedOutline.getDoodle());
+
+        if(eraseMode) {
+            pixmapBoard.setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
+            selectedOutline.getDoodle().setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
+        }
+    }
+    public void drawAt2(int x, int y) {
+        if(selectedOutline == null) return;
+
+        if(drawMode) {
             int brushSize = currentBrush.getSize();
             float[][] brush = currentBrush.getBrush();
             Color color;
@@ -343,9 +366,7 @@ public class Board extends Widget {
             selectedOutline.getDoodle().texture = new Texture(selectedOutline.getDoodle());
         }
         else if(eraseMode){
-            if(selectedOutline == null) return;
             int brushSize = currentBrush.getSize();
-            float[][] brush = currentBrush.getBrush();
 
             //flipping the y so that the coordinates aren't upside down for the pixmap
             int y2 = (pixmapBoard.getHeight() - y) + (int) brushCenterY;
@@ -456,8 +477,8 @@ public class Board extends Widget {
         }
 
         //moving the doodle texture
-        doodleTexOffset.x += deltaX;
-        doodleTexOffset.y += deltaY;
+        selectedOutline.doodleTexOffset.x += deltaX;
+        selectedOutline.doodleTexOffset.y += deltaY;
 
         lastx = (int) x2;
         lasty = (int) y2;
@@ -619,21 +640,33 @@ public class Board extends Widget {
         selectMode = false;
         eraseMode = true;
     }
-    public boolean getSelectMode() {
+    public boolean isInSelectMode() {
         return selectMode;
     }
-    public boolean getDrawMode() {
+    public boolean isInDrawMode() {
         return drawMode;
     }
-    public boolean getEraseMode() {
+    public boolean isInEraseMode() {
         return eraseMode;
     }
 
-    public Pixmap getCurrentDoodle() {
-        return selectedOutline.getDoodle();
+    public Outline getSelectedOutline() {
+        return selectedOutline;
+    }
+    public Vector2 getBrushCenter(){
+        return new Vector2(brushCenterX, brushCenterY);
+    }
+    public ArrayList<Outline> getOutlines(){
+        return outlines;
     }
     public Brush getCurrentBrush(){
         return currentBrush;
+    }
+    public Pixmap getPixmapBoard(){
+        return pixmapBoard;
+    }
+    public Color getCurrentColor(){
+        return currentColor;
     }
 
     static public class BoardStyle{

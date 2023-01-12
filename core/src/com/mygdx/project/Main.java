@@ -16,7 +16,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import com.badlogic.gdx.math.Rectangle;
-import jdk.nashorn.internal.scripts.JD;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -447,7 +446,7 @@ public class Main extends ApplicationAdapter {
 		selectButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				if (!masterBoard.board.getSelectMode()){
+				if (!masterBoard.board.isInSelectMode()){
 					masterBoard.board.enterSelectMode();
 				}
 			}
@@ -459,7 +458,7 @@ public class Main extends ApplicationAdapter {
 		drawButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				if (!masterBoard.board.getDrawMode()){
+				if (!masterBoard.board.isInDrawMode()){
 					masterBoard.board.enterDrawMode();
 				}
 			}
@@ -471,7 +470,7 @@ public class Main extends ApplicationAdapter {
 		eraseButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				if (!masterBoard.board.getEraseMode()){
+				if (!masterBoard.board.isInEraseMode()){
 					masterBoard.board.enterEraseMode();
 				}
 			}

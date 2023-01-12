@@ -104,4 +104,7 @@
   com.mygdx.project.Outline$OutlineStyle: {
     default: {background: board-outline}
   }
+  com.mygdx.project.StickyNote$StickyNoteStyle: {
+    default: {background: default-stickynote}
+  }
 }
