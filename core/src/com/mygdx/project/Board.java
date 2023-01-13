@@ -33,7 +33,7 @@ public class Board extends Widget {
     //this draws the doodles
     private Pixmap pixmapBoard;
 
-    private Outline selectedOutline;
+    private GenOutline selectedOutline;
 
     private Color backgroundColor;
     private Color drawingColor;
@@ -94,7 +94,9 @@ public class Board extends Widget {
                 if (selectMode || eraseMode){
                     if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) selectedOutline = findOutlineBehind((int) x, (int) y);
                     else if(selectedOutline != null && selectedOutline.getBounds().contains(x + offsetX,y + offsetY)) ;
-                    else selectedOutline = findOutline((int) x, (int) y);
+                    else {
+                        if(!(eraseMode && findOutline((int) x, (int) y) == null)) selectedOutline = findOutline((int) x, (int) y);
+                    }
                 }
                 if(button == Input.Buttons.LEFT) {
                         //if the user isn't drawing on an outline, make a new one
@@ -103,7 +105,8 @@ public class Board extends Widget {
                             selectedOutline = newO;
                             outlines.add(newO);
                         }
-                        if(selectedOutline != null) selectedOutline.drawAt((int) x, (int) y);
+                        if(selectedOutline != null)
+                            selectedOutline.drawAt((int) x, (int) y);
 
                 }
                 else if (button == Input.Buttons.RIGHT && selectMode){
@@ -238,6 +241,7 @@ public class Board extends Widget {
         //fixme best version of a keylistener I could think of
         if (Gdx.input.isKeyPressed(Input.Keys.D) && selectedOutline != null) selectedOutline = null;
     }
+/*
     public void drawAt(int x, int y){
         if(selectedOutline == null) return;
         if(!(drawMode || eraseMode)) return;
@@ -314,6 +318,8 @@ public class Board extends Widget {
             selectedOutline.getDoodle().setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
         }
     }
+*/
+/*
     public void drawAt2(int x, int y) {
         if(selectedOutline == null) return;
 
@@ -405,6 +411,7 @@ public class Board extends Widget {
             selectedOutline.getDoodle().setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
         }
     }
+*/
 
     public Outline findOutline(int x, int y){
         float x2 = x + offsetX;
@@ -432,6 +439,7 @@ public class Board extends Widget {
         }
         return null;
     }
+/*
     public void dragOutline(Outline outline, int x, int y){
         if(selectedOutline == null) return;
         float x2 = x + offsetX;
@@ -483,6 +491,8 @@ public class Board extends Widget {
         lastx = (int) x2;
         lasty = (int) y2;
     }
+*/
+/*
 
     public void moveForward(Outline outline){
         int i = outlines.indexOf(outline);
@@ -507,6 +517,7 @@ public class Board extends Widget {
         outline.clear();
         outlines.remove(outline);
     }
+*/
 
     public static Pixmap shiftPixmap(Pixmap src, int offsetX, int offsetY){
         final int width = src.getWidth();
@@ -650,7 +661,7 @@ public class Board extends Widget {
         return eraseMode;
     }
 
-    public Outline getSelectedOutline() {
+    public GenOutline getSelectedOutline() {
         return selectedOutline;
     }
     public Vector2 getBrushCenter(){

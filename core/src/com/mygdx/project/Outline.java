@@ -210,7 +210,7 @@ public class Outline extends GenOutline {
 
         if(parentBoard.isInEraseMode()){
             parentBoard.getPixmapBoard().setBlending(Pixmap.Blending.None); // before you start drawing pixels.
-            getDoodle().setBlending(Pixmap.Blending.None); // before you start drawing pixels.
+            doodle.setBlending(Pixmap.Blending.None); // before you start drawing pixels.
         }
 
         // This might look redundant, but should be more efficient because
@@ -221,15 +221,15 @@ public class Outline extends GenOutline {
                     if(parentBoard.isInDrawMode()) {
                         if (brush[brushSize - j][brushSize + i] > 0.15) {
                             //making the line lighter
-                            getDoodle().setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i] * .4f);
-                            getDoodle().drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
-                            getDoodle().storePoints(true, lastx + i, lasty + j, x2 + i, y2 + j);
+                            doodle.setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i] * .4f);
+                            doodle.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
+                            doodle.storePoints(true, lastx + i, lasty + j, x2 + i, y2 + j);
                         }
                     }
                     else if(parentBoard.isInEraseMode()){
-                        getDoodle().setColor(0x00000000);
-                        getDoodle().drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
-                        getDoodle().storePoints(false, lastx + i, lasty + j, x2 + i, y2 + j);
+                        doodle.setColor(0x00000000);
+                        doodle.drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
+                        doodle.storePoints(false, lastx + i, lasty + j, x2 + i, y2 + j);
                     }
                 }
             }
@@ -241,15 +241,15 @@ public class Outline extends GenOutline {
                             //making the dot darker
                             float a = brush[brushSize - j][brushSize + i] * 1.3f;
                             if (a > 1) a = 1;
-                            getDoodle().setColor(color.r, color.g, color.b, a);
-                            getDoodle().drawPixel(x2 + i, y2 + j);
-                            getDoodle().storePoints(true, x2 + i, y2 + j, -1, -1);
+                            doodle.setColor(color.r, color.g, color.b, a);
+                            doodle.drawPixel(x2 + i, y2 + j);
+                            doodle.storePoints(true, x2 + i, y2 + j, -1, -1);
                         }
                     }
                     else if(parentBoard.isInEraseMode()){
-                        getDoodle().setColor(0x00000000);
-                        getDoodle().drawPixel(x2 + i, y2 + j, 0x00000000);
-                        getDoodle().storePoints(false, x2 + i, y2 + j, -1, -1);
+                        doodle.setColor(0x00000000);
+                        doodle.drawPixel(x2 + i, y2 + j, 0x00000000);
+                        doodle.storePoints(false, x2 + i, y2 + j, -1, -1);
                     }
                 }
             }
@@ -259,17 +259,21 @@ public class Outline extends GenOutline {
             parentBoard.getPixmapBoard().setColor(Color.CLEAR);
             parentBoard.getPixmapBoard().fill();
         }
-        parentBoard.getPixmapBoard().drawPixmap(getDoodle(), 0, 0, 1018, 850, 0, 0, 1018, 850);
+        try {
+            parentBoard.getPixmapBoard().drawPixmap(doodle, 0, 0, 1018, 850, 0, 0, 1018, 850);
+        } catch (Exception e){
+            System.out.println("caught");
+        }
 
         lastx = x2;
         lasty = y2;
 
-        getDoodle().texture.dispose();
-        getDoodle().texture = new Texture(getDoodle());
+        doodle.texture.dispose();
+        doodle.texture = new Texture(getDoodle());
 
         if(parentBoard.isInEraseMode()) {
             parentBoard.getPixmapBoard().setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
-            getDoodle().setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
+            doodle.setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
         }
     }
 
