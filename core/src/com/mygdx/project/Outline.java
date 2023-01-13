@@ -23,11 +23,9 @@ public class Outline extends GenOutline {
     private ClickListener clickListener;
     private Doodle doodle;
     //displacement of texture's bottom left corner relative to board's bottom left corner
-    public final Vector2 doodleTexOffset = new Vector2(0 ,0);
+    private final Vector2 doodleTexOffset = new Vector2(0 ,0);
 
     private OutlineStyle style;
-    
-    static private int lastx = -1, lasty = -1;
 
 
     public Outline (Board board, Skin skin) {
@@ -91,8 +89,8 @@ public class Outline extends GenOutline {
         //detects if the outline is out of bounds
         if(isOutOfBounds()){
             ArrayList<Point> deltaPoints = new ArrayList<>();
-            for (Point point: getDoodle().getPoints()) {
-                float newY = getDoodle().getHeight() - point.y;
+            for (Point point: doodle.getPoints()) {
+                float newY = doodle.getHeight() - point.y;
                 deltaPoints.add(new Point((int) ((offsetX+point.x) - getX()), (int) ((offsetY+newY) - getY())));
             }
 
@@ -104,7 +102,7 @@ public class Outline extends GenOutline {
 
             //moving doodle points
             int i = 0;
-            for (Point point: getDoodle().getPoints()) {
+            for (Point point: doodle.getPoints()) {
                 if(point.x == -1 && point.y == -1){
                     i++;
                     continue;
@@ -112,7 +110,7 @@ public class Outline extends GenOutline {
 
                 point.x = (int) (getX()+deltaPoints.get(i).x - offsetX);
                 int revertY = (int) (getY()+deltaPoints.get(i).y - offsetY);
-                point.y = getDoodle().getHeight() - revertY;
+                point.y = doodle.getHeight() - revertY;
                 i++;
             }
 
@@ -125,10 +123,8 @@ public class Outline extends GenOutline {
         bounds.setBounds(rec);
     }
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        if(doodle.drawnPoints.size() == 0) return; //if there's no doodle points, do not continue
-
+    public void drawOutline(Batch batch){
+        drawable = doodle.drawnPoints.size() != 0; //if there's no doodle points, do not draw
         //more detections for if the outline is out of bounds
         if(isOutOfBounds()){
             //checking which bound it broke
@@ -153,7 +149,11 @@ public class Outline extends GenOutline {
             update(); //fixing the outline
         }
         //draws the doodle
-        batch.draw(getDoodle().texture, offsetX + doodleTexOffset.x, offsetY + doodleTexOffset.y);
+        batch.draw(doodle.texture, offsetX + doodleTexOffset.x, offsetY + doodleTexOffset.y);
+    }
+    @Override
+    public void draw(Batch batch, float parentAlpha) { //fixme BIG ASSUMPTION that drawOutline will always be ran before this function if this object is being dragged
+        if(!drawable) return; //if there's no doodle points, do not continue
         if(parentBoard.getSelectedOutline() != this || !parentBoard.isInSelectMode()) return; //keep going only if this is the selected outline and the board is in select mode
 
         validate();
@@ -278,7 +278,6 @@ public class Outline extends GenOutline {
     }
 
     public void drag(int x, int y){
-//        if(selectedOutline == null) return;
         float x2 = x + offsetX;
         float y2 = y + offsetY;
 
@@ -314,7 +313,7 @@ public class Outline extends GenOutline {
 
 
         //moving doodle points
-        for (Point point: getDoodle().getPoints()) {
+        for (Point point: doodle.getPoints()) {
             if(point.x == -1 && point.y == -1) continue;
             point.x += deltaX;
             point.y -= deltaY;
@@ -333,68 +332,42 @@ public class Outline extends GenOutline {
      * so that the texture can go back to being aligned with the board
      */
     @Override
-    public void lockIn() {
-        Pixmap pixmapBoard = parentBoard.getPixmapBoard();
+    public void fix() {
         //getting ready to redraw the board
-        if(!pixmapBoard.isDisposed()) pixmapBoard.dispose();
-        pixmapBoard = new Pixmap(1018, 850, Pixmap.Format.RGBA8888);
+        if(!parentBoard.pixmapBoard.isDisposed()) parentBoard.pixmapBoard.dispose();
+        parentBoard.pixmapBoard = new Pixmap(1018, 850, Pixmap.Format.RGBA8888);
 
         //temporary pixmap with the points moved over
-        Pixmap px = Board.shiftPixmap(getDoodle(), (int) doodleTexOffset.x, (int) doodleTexOffset.y);
+        Pixmap px = Board.shiftPixmap(doodle, (int) doodleTexOffset.x, (int) doodleTexOffset.y);
         //clearing the selected outline's doodle
-        getDoodle().setColor(Color.CLEAR);
-        getDoodle().fill();
+        doodle.setColor(Color.CLEAR);
+        doodle.fill();
         //setting the doodle's pixels to the shifted pixmap's pixels
-        getDoodle().setPixels(px.getPixels());
+        doodle.setPixels(px.getPixels());
         //no more need for this pixmap
         px.dispose();
 
         //clearing the board then drawing the updated doodle
-        pixmapBoard.setColor(Color.CLEAR);
-        pixmapBoard.fill();
-        pixmapBoard.drawPixmap(getDoodle(), 0, 0, 1018, 850, 0, 0, 1018, 850);
+        parentBoard.pixmapBoard.setColor(Color.CLEAR);
+        parentBoard.pixmapBoard.fill();
+        parentBoard.pixmapBoard.drawPixmap(doodle, 0, 0, 1018, 850, 0, 0, 1018, 850);
         //resetting the texture to the new shifted doodle so that it's realigned with the board
-        getDoodle().texture.dispose();
-        getDoodle().texture = new Texture(getDoodle());
+        doodle.texture.dispose();
+        doodle.texture = new Texture(getDoodle());
         doodleTexOffset.set(0, 0);
         //update the selected outline's bounds
         update();
     }
 
-    public void moveForward(){
-        ArrayList<Outline> outlines = parentBoard.getOutlines();
-        int i = outlines.indexOf(this);
-        if(i+1 < outlines.size()) Collections.swap(outlines, i, ++i);
-    }
-    public void moveBackward(){
-        ArrayList<Outline> outlines = parentBoard.getOutlines();
-        int i = outlines.indexOf(this);
-        if(i-1 >= 0) Collections.swap(outlines, i, --i);
-    }
-    public void moveToBack(){
-        ArrayList<Outline> outlines = parentBoard.getOutlines();
-        outlines.remove(this);
-        outlines.add(0, this);
-    }
-    public void moveToFront(){
-        ArrayList<Outline> outlines = parentBoard.getOutlines();
-        outlines.remove(this);
-        outlines.add(this);
-    }
     public void delete(){
-        ArrayList<Outline> outlines = parentBoard.getOutlines();
-        getDoodle().texture.dispose();
-        getDoodle().dispose();
+        ArrayList<GenOutline> outlines = parentBoard.getOutlines();
+        doodle.texture.dispose();
+        doodle.dispose();
         clear();
         outlines.remove(this);
     }
-
-    static void wipe(){
-        lastx = -1;
-        lasty = -1;
-    }
-
-    private @Null Drawable getBackgroundDrawable () {
+    @Override
+    protected @Null Drawable getBackgroundDrawable () {
         return style.background;
     }
     public void setStyle (OutlineStyle style) {

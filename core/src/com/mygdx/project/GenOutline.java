@@ -1,9 +1,14 @@
 package com.mygdx.project;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Null;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class GenOutline extends Widget {
     protected Board parentBoard;
@@ -18,7 +23,9 @@ public class GenOutline extends Widget {
     protected int LOWERBOUND = 0;
 
     protected Rectangle bounds = new Rectangle();
+    protected boolean drawable = true;
 
+    static protected int lastx = -1, lasty = -1;
 
     public GenOutline(Board board) {
         //sets the board and transfers variables
@@ -32,8 +39,26 @@ public class GenOutline extends Widget {
     public void update() {
     }
 
+    public void drawOutline(Batch batch){}
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        if(!drawable) return; //if there's no doodle points, do not continue
+        if(parentBoard.getSelectedOutline() != this || !parentBoard.isInSelectMode()) return; //keep going only if this is the selected outline and the board is in select mode
+
+        validate();
+
+        final Drawable background = getBackgroundDrawable();
+
+        Color color = getColor();
+        float x = getX();
+        float y = getY();
+        float width = getWidth();
+        float height = getHeight();
+
+        batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+        if (background != null) {
+            background.draw(batch, x, y, width, height);
+        }
     }
 
     protected Rectangle findBounds() {
@@ -42,43 +67,33 @@ public class GenOutline extends Widget {
     public void drawAt(int x, int y){
 
     }
-    public void lockIn(){
+    public void fix(){
 
     }
     public void drag(int x, int y){
     }
     public void moveForward(){
+        ArrayList<GenOutline> outlines = parentBoard.getOutlines();
+        int i = outlines.indexOf(this);
+        if(i+1 < outlines.size()) Collections.swap(outlines, i, ++i);
     }
     public void moveBackward(){
+        ArrayList<GenOutline> outlines = parentBoard.getOutlines();
+        int i = outlines.indexOf(this);
+        if(i-1 >= 0) Collections.swap(outlines, i, --i);
     }
     public void moveToBack(){
+        ArrayList<GenOutline> outlines = parentBoard.getOutlines();
+        outlines.remove(this);
+        outlines.add(0, this);
     }
     public void moveToFront(){
+        ArrayList<GenOutline> outlines = parentBoard.getOutlines();
+        outlines.remove(this);
+        outlines.add(this);
     }
     public void delete(){
-    }
 
-    static void wipe(){
-    }
-
-    public void setOffsetX(float offsetX) {
-        this.offsetX = offsetX;
-    }
-    public void setOffsetY(float offsetY) {
-        this.offsetY = offsetY;
-    }
-
-    public void setBoardWidth(float boardWidth) {
-        this.boardWidth = boardWidth;
-    }
-    public void setBoardHeight(float boardHeight) {
-        this.boardHeight = boardHeight;
-    }
-    public float getBoardHeight() {
-        return boardHeight;
-    }
-    public float getBoardWidth() {
-        return boardWidth;
     }
 
     public boolean isOutOfBounds(){
@@ -100,6 +115,35 @@ public class GenOutline extends Widget {
     public boolean brokeUpperBounds(){
         findBounds(); //updating the bound
         return UPPERBOUND > offsetY + boardHeight;
+    }
+
+    static void wipe(){
+        lastx = -1;
+        lasty = -1;
+    }
+
+    public void setOffsetX(float offsetX) {
+        this.offsetX = offsetX;
+    }
+
+    public void setOffsetY(float offsetY) {
+        this.offsetY = offsetY;
+    }
+    public void setBoardWidth(float boardWidth) {
+        this.boardWidth = boardWidth;
+    }
+    public void setBoardHeight(float boardHeight) {
+        this.boardHeight = boardHeight;
+    }
+    public float getBoardHeight() {
+        return boardHeight;
+    }
+    protected @Null Drawable getBackgroundDrawable () {
+        return null;
+    }
+
+    public float getBoardWidth() {
+        return boardWidth;
     }
     public Rectangle getBounds(){
         return bounds;

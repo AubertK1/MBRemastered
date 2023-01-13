@@ -14,19 +14,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class ColorPicker extends Widget {
-    Texture texture;
-    Pixmap pixmap;
-    InputListener inputListener;
+    private Texture texture;
+    private Pixmap pixmap;
+    private InputListener inputListener;
     private Color newColor;
 
     public ColorPicker() {
-        texture = new Texture("core\\pics\\MBSkin2\\colormap2.png");
+        texture = new Texture("core\\pics\\MBSkin2\\colormap4.png");
 
-//        if (!texture.getTextureData().isPrepared()) {
-//            texture.getTextureData().prepare();
-//        }
-//        pixmap = texture.getTextureData().consumePixmap();
-//        pixmap.setFilter(Pixmap.Filter.NearestNeighbour);
+        if (!texture.getTextureData().isPrepared()) {
+            texture.getTextureData().prepare();
+        }
+        pixmap = new Pixmap(Gdx.files.internal("core\\pics\\MBSkin2\\colormap4.png"));
+        pixmap.setFilter(Pixmap.Filter.NearestNeighbour);
 
         addListener(inputListener = new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -36,13 +36,6 @@ public class ColorPicker extends Widget {
                     Main.masterBoard.board.setDrawingColor(newColor);
                     Main.masterBoard.board.setCurrentColor(newColor);
                 }
-
-//                if (!texture.getTextureData().isPrepared()) {
-//                    texture.getTextureData().prepare();
-//                }
-//                pixmap = texture.getTextureData().consumePixmap();
-//                pixmap.setFilter(Pixmap.Filter.NearestNeighbour);
-
                 return true;
             }
 
@@ -73,15 +66,8 @@ public class ColorPicker extends Widget {
 
     private Color getColor(float x, float y){
         float y2 = getHeight()-y;
-        if (!texture.getTextureData().isPrepared()) {
-            texture.getTextureData().prepare();
-        }
-        Pixmap pixmap = texture.getTextureData().consumePixmap();
-        pixmap.setFilter(Pixmap.Filter.NearestNeighbour);
 
-        if(x > pixmap.getWidth() || y2 > pixmap.getHeight()) return null;
-
-        int i = pixmap. getPixel((int) x, (int) y2);
+        int i = pixmap.getPixel((int) x, (int) y2);
         Color color = new Color(i);
 
         if(color.toString().equals("00000000"))
@@ -93,21 +79,5 @@ public class ColorPicker extends Widget {
     public void setSize(float width, float height){
         width = height * 1.173f;
         super.setSize(width, height);
-
-        Pixmap imagePixmap = new Pixmap(Gdx.files.internal("core\\pics\\MBSkin2\\colormap2.png"));
-        Pixmap resizedPixmap = new Pixmap((int) width, (int) height, imagePixmap.getFormat());
-        resizedPixmap.drawPixmap(imagePixmap,
-                0, 0, imagePixmap.getWidth(), imagePixmap.getHeight(),
-                0, 0, resizedPixmap.getWidth(), resizedPixmap.getHeight()
-        );
-        texture = new Texture(resizedPixmap);
-        imagePixmap.dispose();
-        resizedPixmap.dispose();
-//
-//        if (!texture.getTextureData().isPrepared()) {
-//            texture.getTextureData().prepare();
-//        }
-//        pixmap = texture.getTextureData().consumePixmap();
-//        pixmap.setFilter(Pixmap.Filter.NearestNeighbour);
     }
 }

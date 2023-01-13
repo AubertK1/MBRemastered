@@ -18,9 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Board extends Widget {
     BoardStyle style;
@@ -31,7 +29,7 @@ public class Board extends Widget {
     private Pixmap cursor;
 
     //this draws the doodles
-    private Pixmap pixmapBoard;
+    public Pixmap pixmapBoard;
 
     private GenOutline selectedOutline;
 
@@ -52,7 +50,7 @@ public class Board extends Widget {
 
     boolean drawCursor;
 
-    ArrayList<Outline> outlines = new ArrayList<>();
+    ArrayList<GenOutline> outlines = new ArrayList<>();
 
 
     public Board (Skin skin) {
@@ -101,7 +99,7 @@ public class Board extends Widget {
                 if(button == Input.Buttons.LEFT) {
                         //if the user isn't drawing on an outline, make a new one
                         if (selectedOutline == null && drawMode) {
-                            Outline newO = new Outline(Board.this, Main.uiSkin);
+                            GenOutline newO = new Outline(Board.this, Main.uiSkin);
                             selectedOutline = newO;
                             outlines.add(newO);
                         }
@@ -150,7 +148,10 @@ public class Board extends Widget {
                                         enterDrawMode();
                                         break;
                                     case "Create New Sticky Note":
-                                        System.out.println("Sticky note functionality not supported yet lol");
+                                        GenOutline newS = new StickyNote(Board.this, Main.uiSkin, (int) Main.contextMenu.getX(),
+                                                (int) (Main.contextMenu.getY()+Main.contextMenu.getHeight()));
+                                        selectedOutline = newS;
+                                        outlines.add(newS);
                                         break;
                                 }
                             }
@@ -167,10 +168,10 @@ public class Board extends Widget {
                 if (pointer != 0 || button != 0) return;
                 lastx = -1;
                 lasty = -1;
-                Outline.wipe();
+                GenOutline.wipe();
 
                 if(selectMode){
-                    if(selectMode && selectedOutline != null) selectedOutline.lockIn();
+                    if(selectedOutline != null) selectedOutline.fix();
                 }
                 //goal is to update the doodle
                 else{
@@ -233,187 +234,20 @@ public class Board extends Widget {
             background.draw(batch, x, y, width, height);
         }
 
-        //loops through the outlines and draws each outline + its texture
-        for (Outline outline: outlines) {
+        //loops through each outline and draws its texture
+        for (GenOutline outline: outlines) {
+            outline.drawOutline(batch);
+        }
+        //loops through each outline and draws its outline last so that it's always on top
+        for (GenOutline outline: outlines) {
             outline.draw(batch, 1);
         }
 
         //fixme best version of a keylistener I could think of
         if (Gdx.input.isKeyPressed(Input.Keys.D) && selectedOutline != null) selectedOutline = null;
     }
-/*
-    public void drawAt(int x, int y){
-        if(selectedOutline == null) return;
-        if(!(drawMode || eraseMode)) return;
 
-        int brushSize = currentBrush.getSize();
-        float[][] brush = currentBrush.getBrush();
-        Color color = currentColor;
-
-        //flipping the y so that the coordinates aren't upside down for the pixmap
-        int y2 = (pixmapBoard.getHeight() - y) + (int) brushCenterY;
-        int x2 = x + (int) brushCenterX;
-
-        if(eraseMode){
-            pixmapBoard.setBlending(Pixmap.Blending.None); // before you start drawing pixels.
-            selectedOutline.getDoodle().setBlending(Pixmap.Blending.None); // before you start drawing pixels.
-        }
-
-        // This might look redundant, but should be more efficient because
-        // the condition is not evaluated for each pixel on the brush
-        if (lastx != -1 && lasty != -1) {
-            for (int i = -brushSize; i < brushSize + 1; i++) {
-                for (int j = -brushSize; j < brushSize + 1; j++) {
-                    if(drawMode) {
-                        if (brush[brushSize - j][brushSize + i] > 0.15) {
-                            //making the line lighter
-                            selectedOutline.getDoodle().setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i] * .4f);
-                            selectedOutline.getDoodle().drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
-                            selectedOutline.getDoodle().storePoints(true, lastx + i, lasty + j, x2 + i, y2 + j);
-                        }
-                    }
-                    else if(eraseMode){
-                        selectedOutline.getDoodle().setColor(0x00000000);
-                        selectedOutline.getDoodle().drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
-                        selectedOutline.getDoodle().storePoints(false, lastx + i, lasty + j, x2 + i, y2 + j);
-                    }
-                }
-            }
-        } else {
-            for (int i = -brushSize; i < brushSize + 1; i++) {
-                for (int j = -brushSize; j < brushSize + 1; j++) {
-                    if(drawMode) {
-                        if (brush[brushSize - j][brushSize + i] > 0.2) {
-                            //making the dot darker
-                            float a = brush[brushSize - j][brushSize + i] * 1.3f;
-                            if (a > 1) a = 1;
-                            selectedOutline.getDoodle().setColor(color.r, color.g, color.b, a);
-                            selectedOutline.getDoodle().drawPixel(x2 + i, y2 + j);
-                            selectedOutline.getDoodle().storePoints(true, x2 + i, y2 + j, -1, -1);
-                        }
-                    }
-                    else if(eraseMode){
-                        selectedOutline.getDoodle().setColor(0x00000000);
-                        selectedOutline.getDoodle().drawPixel(x2 + i, y2 + j, 0x00000000);
-                        selectedOutline.getDoodle().storePoints(false, x2 + i, y2 + j, -1, -1);
-                    }
-                }
-            }
-        }
-        if(drawMode) {
-            //so that it doesn't draw old points again
-            pixmapBoard.setColor(Color.CLEAR);
-            pixmapBoard.fill();
-        }
-        pixmapBoard.drawPixmap(selectedOutline.getDoodle(), 0, 0, 1018, 850, 0, 0, 1018, 850);
-
-        lastx = x2;
-        lasty = y2;
-
-        selectedOutline.getDoodle().texture.dispose();
-        selectedOutline.getDoodle().texture = new Texture(selectedOutline.getDoodle());
-
-        if(eraseMode) {
-            pixmapBoard.setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
-            selectedOutline.getDoodle().setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
-        }
-    }
-*/
-/*
-    public void drawAt2(int x, int y) {
-        if(selectedOutline == null) return;
-
-        if(drawMode) {
-            int brushSize = currentBrush.getSize();
-            float[][] brush = currentBrush.getBrush();
-            Color color;
-
-            //flipping the y so that the coordinates aren't upside down for the pixmap
-            int y2 = (pixmapBoard.getHeight() - y) + (int) brushCenterY;
-            int x2 = x + (int) brushCenterX;
-            color = currentColor;
-
-            // This might look redundant, but should be more efficient because
-            // the condition is not evaluated for each pixel on the brush
-            if (lastx != -1 && lasty != -1) {
-                for (int i = -brushSize; i < brushSize + 1; i++) {
-                    for (int j = -brushSize; j < brushSize + 1; j++) {
-                        if (brush[brushSize - j][brushSize + i] > 0.15) {
-                            //making the line lighter
-                            selectedOutline.getDoodle().setColor(color.r, color.g, color.b, brush[brushSize - j][brushSize + i] * .4f);
-                            selectedOutline.getDoodle().drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
-                            selectedOutline.getDoodle().storePoints(true, lastx + i, lasty + j, x2 + i, y2 + j);
-                        }
-                    }
-                }
-            } else {
-                for (int i = -brushSize; i < brushSize + 1; i++) {
-                    for (int j = -brushSize; j < brushSize + 1; j++) {
-                        if (brush[brushSize - j][brushSize + i] > 0.2) {
-                            //making the dot darker
-                            float a = brush[brushSize - j][brushSize + i] * 1.3f;
-                            if (a > 1) a = 1;
-                            selectedOutline.getDoodle().setColor(color.r, color.g, color.b, a);
-                            selectedOutline.getDoodle().drawPixel(x2 + i, y2 + j);
-                            selectedOutline.getDoodle().storePoints(true, x2 + i, y2 + j, -1, -1);
-                        }
-                    }
-                }
-            }
-            //so that it doesn't draw old points again
-            pixmapBoard.setColor(Color.CLEAR);
-            pixmapBoard.fill();
-            pixmapBoard.drawPixmap(selectedOutline.getDoodle(), 0, 0, 1018, 850, 0, 0, 1018, 850);
-
-            lastx = x2;
-            lasty = y2;
-
-            selectedOutline.getDoodle().texture.dispose();
-            selectedOutline.getDoodle().texture = new Texture(selectedOutline.getDoodle());
-        }
-        else if(eraseMode){
-            int brushSize = currentBrush.getSize();
-
-            //flipping the y so that the coordinates aren't upside down for the pixmap
-            int y2 = (pixmapBoard.getHeight() - y) + (int) brushCenterY;
-            int x2 = x + (int) brushCenterX;
-
-            pixmapBoard.setBlending(Pixmap.Blending.None); // before you start drawing pixels.
-            selectedOutline.getDoodle().setBlending(Pixmap.Blending.None); // before you start drawing pixels.
-
-            // This might look redundant, but should be more efficient because
-            // the condition is not evaluated for each pixel on the brush
-            if (lastx != -1 && lasty != -1) {
-                for (int i = -brushSize; i < brushSize + 1; i++) {
-                    for (int j = -brushSize; j < brushSize + 1; j++) {
-                        selectedOutline.getDoodle().setColor(0x00000000);
-                        selectedOutline.getDoodle().drawLine(lastx + i, lasty + j, x2 + i, y2 + j);
-                        selectedOutline.getDoodle().storePoints(false, lastx + i, lasty + j, x2 + i, y2 + j);
-                    }
-                }
-            } else {
-                for (int i = -brushSize; i < brushSize + 1; i++) {
-                    for (int j = -brushSize; j < brushSize + 1; j++) {
-                        selectedOutline.getDoodle().setColor(0x00000000);
-                        selectedOutline.getDoodle().drawPixel(x2 + i, y2 + j, 0x00000000);
-                        selectedOutline.getDoodle().storePoints(false, x2 + i, y2 + j, -1, -1);
-                    }
-                }
-            }
-            pixmapBoard.drawPixmap(selectedOutline.getDoodle(), 0, 0, 1018, 850, 0, 0, 1018, 850);
-            lastx = x2;
-            lasty = y2;
-
-            selectedOutline.getDoodle().texture.dispose();
-            selectedOutline.getDoodle().texture = new Texture(selectedOutline.getDoodle());
-
-            pixmapBoard.setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
-            selectedOutline.getDoodle().setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
-        }
-    }
-*/
-
-    public Outline findOutline(int x, int y){
+    public GenOutline findOutline(int x, int y){
         float x2 = x + offsetX;
         float y2 = y + offsetY;
         for (int i = outlines.size() - 1; i > -1; i--) { //so that if two are stacked it gets the most recent one
@@ -423,7 +257,7 @@ public class Board extends Widget {
         }
         return null;
     }
-    public Outline findOutlineBehind(int x, int y){
+    public GenOutline findOutlineBehind(int x, int y){
         float x2 = x + offsetX;
         float y2 = y + offsetY;
         boolean triggered = false;
@@ -439,85 +273,6 @@ public class Board extends Widget {
         }
         return null;
     }
-/*
-    public void dragOutline(Outline outline, int x, int y){
-        if(selectedOutline == null) return;
-        float x2 = x + offsetX;
-        float y2 = y + offsetY;
-
-        //so that everything moves relative to where it was
-        if(lastx == -1) lastx = (int) x2;
-        if(lasty == -1) lasty = (int) y2;
-        float deltaX = x2-lastx;
-        float deltaY = y2-lasty;
-
-
-        //moving outline
-        if((selectedOutline.getX() <= offsetX && deltaX < 0)){ //testing left bounds
-            selectedOutline.setX(offsetX);
-            deltaX = 0; //if trying to go out of bounds, set so that the points can't move
-        }
-        else if((selectedOutline.getX()+selectedOutline.getWidth() >= offsetX+getWidth() && deltaX > 0)){ //testing right bounds
-            selectedOutline.setX(offsetX+getWidth() - selectedOutline.getWidth());
-            deltaX = 0; //if trying to go out of bounds, set so that the points can't move
-        }
-        else{
-            selectedOutline.setX(selectedOutline.getX()+(deltaX));
-        }
-        if((selectedOutline.getY() <= offsetY && deltaY < 0)){ //testing lower bounds
-            selectedOutline.setY(offsetY);
-            deltaY = 0; //if trying to go out of bounds, set so that the points can't move
-        }
-        else if((selectedOutline.getY()+selectedOutline.getHeight() >= offsetY+getHeight() && deltaY > 0)){ //testing upper bounds
-            selectedOutline.setY(offsetY+getHeight() - selectedOutline.getHeight());
-            deltaY = 0; //if trying to go out of bounds, set so that the points can't move
-        }
-        else{
-            selectedOutline.setY(selectedOutline.getY()+(deltaY));
-        }
-
-
-        //moving doodle points
-        for (Point point: selectedOutline.getDoodle().getPoints()) {
-            if(point.x == -1 && point.y == -1) continue;
-            point.x += deltaX;
-            point.y -= deltaY;
-        }
-
-        //moving the doodle texture
-        selectedOutline.doodleTexOffset.x += deltaX;
-        selectedOutline.doodleTexOffset.y += deltaY;
-
-        lastx = (int) x2;
-        lasty = (int) y2;
-    }
-*/
-/*
-
-    public void moveForward(Outline outline){
-        int i = outlines.indexOf(outline);
-        if(i+1 < outlines.size()) Collections.swap(outlines, i, ++i);
-    }
-    public void moveBackward(Outline outline){
-        int i = outlines.indexOf(outline);
-        if(i-1 >= 0) Collections.swap(outlines, i, --i);
-    }
-    public void moveToBack(Outline outline){
-        outlines.remove(outline);
-        outlines.add(0, outline);
-    }
-    public void moveToFront(Outline outline){
-        outlines.remove(outline);
-        outlines.add(outline);
-    }
-
-    public void deleteOutline(Outline outline){
-        outline.getDoodle().texture.dispose();
-        outline.getDoodle().dispose();
-        outline.clear();
-        outlines.remove(outline);
-    }
-*/
 
     public static Pixmap shiftPixmap(Pixmap src, int offsetX, int offsetY){
         final int width = src.getWidth();
@@ -667,7 +422,7 @@ public class Board extends Widget {
     public Vector2 getBrushCenter(){
         return new Vector2(brushCenterX, brushCenterY);
     }
-    public ArrayList<Outline> getOutlines(){
+    public ArrayList<GenOutline> getOutlines(){
         return outlines;
     }
     public Brush getCurrentBrush(){
