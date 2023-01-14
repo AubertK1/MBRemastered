@@ -17,10 +17,12 @@ public class GenOutline extends Widget {
     protected float boardHeight;
     protected float boardWidth;
 
+    protected int BORDERSIZE = 4;
     protected int LEFTBOUND = 0;
     protected int RIGHTBOUND = 0;
     protected int UPPERBOUND = 0;
     protected int LOWERBOUND = 0;
+    protected int resize = -1;
     protected boolean activated;
 
     protected Rectangle bounds = new Rectangle();
@@ -75,6 +77,9 @@ public class GenOutline extends Widget {
     }
     public void drag(int x, int y){
     }
+    public void resize(int x, int y){
+
+    }
     public void moveForward(){
         ArrayList<GenOutline> outlines = parentBoard.getOutlines();
         int i = outlines.indexOf(this);
@@ -102,6 +107,25 @@ public class GenOutline extends Widget {
         activated = activate;
     }
 
+    public int onBorder(int x, int y){
+        if(resize != -1) return resize; //so the changed border isn't switched while resizing
+        x += offsetX;
+        y += offsetY;
+        if(x >= LEFTBOUND && x < LEFTBOUND + BORDERSIZE){ //if touching left border
+            if(y <= UPPERBOUND && y > UPPERBOUND - BORDERSIZE) return resize = 1; //if also touching top border
+            if(y >= LOWERBOUND && y < LOWERBOUND + BORDERSIZE) return resize = 7; //if also touching bottom border
+            return resize = 0; //if only touching left border
+        }
+        if(x <= RIGHTBOUND && x > RIGHTBOUND - BORDERSIZE){ //if touching right border
+            if(y <= UPPERBOUND && y > UPPERBOUND - BORDERSIZE) return resize = 3; //if also touching top border
+            if(y >= LOWERBOUND && y < LOWERBOUND + BORDERSIZE) return resize = 5; //if also touching bottom border
+
+            return resize = 4; //if only touching right border
+        }
+        if(y <= UPPERBOUND && y > UPPERBOUND - BORDERSIZE) return resize = 2; //if only touching top border
+        if(y >= LOWERBOUND && y < LOWERBOUND + BORDERSIZE) return resize = 6; //if only touching bottom border
+        return resize = -1; //if not touching any border
+    }
     public boolean isOutOfBounds(){
         findBounds(); //updating the bound
         return (LEFTBOUND < offsetX || LOWERBOUND < offsetY || RIGHTBOUND > offsetX + boardWidth || UPPERBOUND > offsetY + boardHeight);
@@ -119,8 +143,19 @@ public class GenOutline extends Widget {
         return LOWERBOUND < offsetY;
     }
     public boolean brokeUpperBounds(){
-        findBounds(); //updating the bound
         return UPPERBOUND > offsetY + boardHeight;
+    }
+    public boolean breakingLeftBounds(float deltaX){
+        return (getX() <= offsetX && deltaX < 0);
+    }
+    public boolean breakingRightBounds(float deltaX){
+        return (getX()+getWidth() >= offsetX+parentBoard.getWidth() && deltaX > 0);
+    }
+    public boolean breakingLowerBounds(float deltaY){
+        return (getY() <= offsetY && deltaY < 0);
+    }
+    public boolean breakingUpperBounds(float deltaY){
+        return (getY()+getHeight() >= offsetY+parentBoard.getHeight() && deltaY > 0);
     }
 
     static void wipe(){
@@ -140,6 +175,9 @@ public class GenOutline extends Widget {
     }
     public void setBoardHeight(float boardHeight) {
         this.boardHeight = boardHeight;
+    }
+    public boolean isResizing(){
+        return resize != -1;
     }
     public float getBoardHeight() {
         return boardHeight;

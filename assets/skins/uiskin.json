@@ -108,7 +108,7 @@
   com.mygdx.project.StickyNote$StickyNoteStyle: {
     default: {
       outline: board-outline, background: default-stickynote,
-      textfield: { selection: selection, background: stickynote-text, font: default-font, fontColor: tan, cursor: cursor }
+      textfield: { selection: context-select-selection, background: stickynote-text, font: default-font, fontColor: tan, cursor: cursor }
     }
   }
 }

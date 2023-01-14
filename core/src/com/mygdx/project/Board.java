@@ -95,6 +95,7 @@ public class Board extends Widget {
                     else {
                         if(!(eraseMode && findOutline((int) x, (int) y) == null)) selectedOutline = findOutline((int) x, (int) y);
                     }
+                    if(selectedOutline != null) selectedOutline.onBorder((int) x, (int) y);
                 }
                 if(button == Input.Buttons.LEFT) {
                         //if the user isn't drawing on an outline, make a new one
@@ -186,7 +187,10 @@ public class Board extends Widget {
 
             public void touchDragged (InputEvent event, float x, float y, int pointer) {
                 if(pointer == Input.Buttons.LEFT) {
-                    if (selectMode && selectedOutline!=null) selectedOutline.drag((int) x, (int) y);
+                    if (selectMode && selectedOutline!=null){
+                        if(selectedOutline.isResizing()) selectedOutline.resize((int) x, (int) y);
+                        else selectedOutline.drag((int) x, (int) y);
+                    }
                     else if(selectedOutline != null) selectedOutline.drawAt((int) x, (int) y);
 
                     if (clickListener.isOver() && !selectMode && !drawCursor) {
