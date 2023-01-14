@@ -21,6 +21,7 @@ public class GenOutline extends Widget {
     protected int RIGHTBOUND = 0;
     protected int UPPERBOUND = 0;
     protected int LOWERBOUND = 0;
+    protected boolean activated;
 
     protected Rectangle bounds = new Rectangle();
     protected boolean drawable = true;
@@ -39,15 +40,17 @@ public class GenOutline extends Widget {
     public void update() {
     }
 
-    public void drawOutline(Batch batch){}
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
+    public void drawContent(Batch batch){
+
+    }
+
+    public void drawOutline(Batch batch, float parentAlpha) {
         if(!drawable) return; //if there's no doodle points, do not continue
         if(parentBoard.getSelectedOutline() != this || !parentBoard.isInSelectMode()) return; //keep going only if this is the selected outline and the board is in select mode
 
         validate();
 
-        final Drawable background = getBackgroundDrawable();
+        final Drawable outline = getOutlineDrawable();
 
         Color color = getColor();
         float x = getX();
@@ -56,8 +59,8 @@ public class GenOutline extends Widget {
         float height = getHeight();
 
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-        if (background != null) {
-            background.draw(batch, x, y, width, height);
+        if (outline != null) {
+            outline.draw(batch, x, y, width, height);
         }
     }
 
@@ -94,6 +97,9 @@ public class GenOutline extends Widget {
     }
     public void delete(){
 
+    }
+    public void setActivated(boolean activate){
+        activated = activate;
     }
 
     public boolean isOutOfBounds(){
@@ -138,7 +144,7 @@ public class GenOutline extends Widget {
     public float getBoardHeight() {
         return boardHeight;
     }
-    protected @Null Drawable getBackgroundDrawable () {
+    protected @Null Drawable getOutlineDrawable() {
         return null;
     }
 

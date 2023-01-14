@@ -102,9 +102,13 @@
     default: {background: default-round-down}
   }
   com.mygdx.project.Outline$OutlineStyle: {
-    default: {background: board-outline}
+    default: {
+      outline: board-outline}
   }
   com.mygdx.project.StickyNote$StickyNoteStyle: {
-    default: {background: default-stickynote}
+    default: {
+      outline: board-outline, background: default-stickynote,
+      textfield: { selection: selection, background: stickynote-text, font: default-font, fontColor: tan, cursor: cursor }
+    }
   }
 }

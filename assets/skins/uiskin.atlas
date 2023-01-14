@@ -1,5 +1,5 @@
 
-uiskin19.png
+uiskin21.png
 size: 256,128
 format: RGBA8888
 filter: Linear,Linear
@@ -153,10 +153,18 @@ board-outline
   index: -1
 default-stickynote
   rotate: false
-  xy: 26, 11
-  size: 4, 4
+  xy: 26, 12
+  size: 3, 3
   split: 1, 1, 1, 1
-  orig: 4, 4
+  orig: 3, 3
+  offset: 0, 0
+  index: -1
+stickynote-text
+  rotate: false
+  xy: 30, 12
+  size: 3, 3
+  split: 1, 1, 1, 1
+  orig: 3, 3
   offset: 0, 0
   index: -1
 default-round-large
@@ -257,6 +265,13 @@ tree-plus
   xy: 155, 35
   size: 14, 14
   orig: 14, 14
+  offset: 0, 0
+  index: -1
+clear
+  rotate: false
+  xy: 27, 1
+  size: 3, 3
+  orig: 1, 1
   offset: 0, 0
   index: -1
 white

@@ -98,7 +98,7 @@ public class Board extends Widget {
                 }
                 if(button == Input.Buttons.LEFT) {
                         //if the user isn't drawing on an outline, make a new one
-                        if (selectedOutline == null && drawMode) {
+                        if ((selectedOutline == null || selectedOutline instanceof StickyNote) && drawMode) {
                             GenOutline newO = new Outline(Board.this, Main.uiSkin);
                             selectedOutline = newO;
                             outlines.add(newO);
@@ -186,7 +186,6 @@ public class Board extends Widget {
 
             public void touchDragged (InputEvent event, float x, float y, int pointer) {
                 if(pointer == Input.Buttons.LEFT) {
-//                    if (selectMode) dragOutline(selectedOutline, (int) x, (int) y);
                     if (selectMode && selectedOutline!=null) selectedOutline.drag((int) x, (int) y);
                     else if(selectedOutline != null) selectedOutline.drawAt((int) x, (int) y);
 
@@ -236,15 +235,15 @@ public class Board extends Widget {
 
         //loops through each outline and draws its texture
         for (GenOutline outline: outlines) {
-            outline.drawOutline(batch);
+            outline.drawContent(batch);
         }
         //loops through each outline and draws its outline last so that it's always on top
         for (GenOutline outline: outlines) {
-            outline.draw(batch, 1);
+            outline.drawOutline(batch, 1);
         }
 
         //fixme best version of a keylistener I could think of
-        if (Gdx.input.isKeyPressed(Input.Keys.D) && selectedOutline != null) selectedOutline = null;
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE) && selectedOutline != null) selectedOutline = null;
     }
 
     public GenOutline findOutline(int x, int y){

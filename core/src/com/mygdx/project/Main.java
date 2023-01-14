@@ -33,6 +33,7 @@ public class Main extends ApplicationAdapter {
 	static Skin uiSkin;
 
 	public static MBContextMenu contextMenu;
+	public static int stageIndexOffset = 0;
 	//creating main panels
 	Panel sidePanel, topPanel, genStatsPanel, reminderPanel, toolbarPanel, masterboardPanel;
 	static MBBoard masterBoard;

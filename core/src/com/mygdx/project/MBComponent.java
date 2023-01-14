@@ -181,11 +181,11 @@ public class MBComponent extends Actor {
         Actor actor;
         MBComponent comp;
 
-        for (int i = 0; i < actors.size; i++) {
+        for (int i = 0; i < actors.size; i++) { //loop through the stage's actors
             actor = actors.get(i);
-            for (int j = 0; j < Main.allComps.size(); j++) {
+            for (int j = 0; j < Main.allComps.size(); j++) { //find its corresponding component in allComps
                 comp = Main.allComps.get(j);
-                if(comp.getComponent() == actor) newList.add(comp);
+                if(actor == comp.getComponent()) newList.add(comp);
             }
         }
         return newList;

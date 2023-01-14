@@ -16,7 +16,6 @@ import com.badlogic.gdx.utils.Null;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Outline extends GenOutline {
     private InputListener inputListener;
@@ -123,8 +122,8 @@ public class Outline extends GenOutline {
         bounds.setBounds(rec);
     }
 
-    public void drawOutline(Batch batch){
-        drawable = doodle.drawnPoints.size() != 0; //if there's no doodle points, do not draw
+    public void drawContent(Batch batch){
+        drawable = doodle.drawnPoints.size() != 0; //if there's no doodle points, do not draw the outline
         //more detections for if the outline is out of bounds
         if(isOutOfBounds()){
             //checking which bound it broke
@@ -151,26 +150,7 @@ public class Outline extends GenOutline {
         //draws the doodle
         batch.draw(doodle.texture, offsetX + doodleTexOffset.x, offsetY + doodleTexOffset.y);
     }
-    @Override
-    public void draw(Batch batch, float parentAlpha) { //fixme BIG ASSUMPTION that drawOutline will always be ran before this function if this object is being dragged
-        if(!drawable) return; //if there's no doodle points, do not continue
-        if(parentBoard.getSelectedOutline() != this || !parentBoard.isInSelectMode()) return; //keep going only if this is the selected outline and the board is in select mode
 
-        validate();
-
-        final Drawable background = getBackgroundDrawable();
-
-        Color color = getColor();
-        float x = getX();
-        float y = getY();
-        float width = getWidth();
-        float height = getHeight();
-
-        batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-        if (background != null) {
-            background.draw(batch, x, y, width, height);
-        }
-    }
     protected Rectangle findBounds(){
         if(doodle.drawnPoints.size() == 0) return new Rectangle(-1, -1,0,0);
 
@@ -367,8 +347,8 @@ public class Outline extends GenOutline {
         outlines.remove(this);
     }
     @Override
-    protected @Null Drawable getBackgroundDrawable () {
-        return style.background;
+    protected @Null Drawable getOutlineDrawable() {
+        return style.outline;
     }
     public void setStyle (OutlineStyle style) {
         if (style == null) throw new IllegalArgumentException("style cannot be null.");
@@ -384,13 +364,13 @@ public class Outline extends GenOutline {
     
     static public class OutlineStyle{
         public @Null
-        Drawable background;
+        Drawable outline;
 
         public OutlineStyle(){
         }
 
         public OutlineStyle(Board.BoardStyle style){
-            background = style.background;
+            outline = style.background;
         }
     }
 }

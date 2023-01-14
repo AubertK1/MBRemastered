@@ -19,6 +19,7 @@ public class Doodle extends Pixmap {
         if(outline != null) outline.setDoodle(this);
         texture = new Texture(this);
     }
+
     public void storePoints(boolean drawMode, int x, int y, int x2, int y2){
         //if the point is out of bounds, do not store
         if(x > getWidth() || x2 > getWidth()) return;
