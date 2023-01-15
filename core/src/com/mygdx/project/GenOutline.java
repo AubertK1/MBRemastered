@@ -193,5 +193,7 @@ public class GenOutline extends Widget {
         return bounds;
     }
 
+    public void dispose(){
 
+    }
 }

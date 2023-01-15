@@ -301,13 +301,9 @@ public class Panel {
         for (Panel minipanel : minipanels) {
             minipanel.dispose();
         }
-        //fixme
-/*
-        for (int i = 0; i < Main.allComps.size(); i++){
-            components.get(i).remove();
-            components.remove(i);
+        for (MBComponent component : components) {
+            component.dispose();
         }
         texture.dispose();
-*/
     }
 }

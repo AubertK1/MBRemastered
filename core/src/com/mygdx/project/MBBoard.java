@@ -17,4 +17,7 @@ public class MBBoard extends MBComponent{
         return board;
     }
 
+    public void dispose(){
+        board.dispose();
+    }
 }

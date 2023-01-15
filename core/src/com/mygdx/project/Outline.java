@@ -346,6 +346,10 @@ public class Outline extends GenOutline {
         clear();
         outlines.remove(this);
     }
+    public void dispose(){
+        doodle.dispose();
+    }
+
     @Override
     protected @Null Drawable getOutlineDrawable() {
         return style.outline;
@@ -358,17 +362,17 @@ public class Outline extends GenOutline {
     public void setDoodle(Doodle doodle) {
         this.doodle = doodle;
     }
+
     public Doodle getDoodle(){
         return doodle;
     }
-    
     static public class OutlineStyle{
+
         public @Null
         Drawable outline;
 
         public OutlineStyle(){
         }
-
         public OutlineStyle(Board.BoardStyle style){
             outline = style.background;
         }

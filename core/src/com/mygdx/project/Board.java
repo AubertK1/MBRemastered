@@ -449,4 +449,12 @@ public class Board extends Widget {
             background = style.background;
         }
     }
+
+    public void dispose(){
+        pixmapBoard.dispose();
+        cursor.dispose();
+        for (GenOutline outline: outlines) {
+            outline.dispose();
+        }
+    }
 }

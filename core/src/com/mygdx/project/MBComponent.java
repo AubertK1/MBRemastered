@@ -23,7 +23,6 @@ public class MBComponent extends Actor {
     Skin skin = Main.uiSkin;
     float aFloat = 1;
     Item item;
-    Texture texture;
     boolean hasWindow = false;
     //setting the component's ID in the list
     int compID = Main.allComps.size();
@@ -189,5 +188,8 @@ public class MBComponent extends Actor {
             }
         }
         return newList;
+    }
+    public void dispose(){
+
     }
 }

@@ -33,7 +33,6 @@ public class Main extends ApplicationAdapter {
 	static Skin uiSkin;
 
 	public static MBContextMenu contextMenu;
-	public static int stageIndexOffset = 0;
 	//creating main panels
 	Panel sidePanel, topPanel, genStatsPanel, reminderPanel, toolbarPanel, masterboardPanel;
 	static MBBoard masterBoard;
@@ -642,6 +641,16 @@ public class Main extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
+		sidePanel.dispose();
+		topPanel.dispose();
+		genStatsPanel.dispose();
+		reminderPanel.dispose();
+		toolbarPanel.dispose();
+		masterboardPanel.dispose();
+		uiSkin.dispose();
+		stage.dispose();
+		chooser.setEnabled(false);
+		f.dispose();
 	}
 	static public void fileChooseChanged(){
 		new Thread(new Runnable() {

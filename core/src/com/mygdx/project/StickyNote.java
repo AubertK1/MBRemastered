@@ -372,6 +372,11 @@ public class StickyNote extends GenOutline{
         return style.textfield;
     }
 
+    public void dispose(){
+        generator.dispose();
+        font.dispose();
+    }
+
     static public class StickyNoteStyle{
         public @Null
         Drawable outline;
