@@ -1,61 +1,38 @@
 package com.mygdx.project;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 
 import java.awt.*;
 import java.util.ArrayList;
 
-public class StickyNote extends Outline {
-    private StickyNoteStyle style;
-
+public class TextBox extends Outline{
+    private TextBoxStyle style;
     private final TextArea textArea;
-    /**Initialises the generator using the file location given.*/
-    private final FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.local("assets\\fonts\\doodlefont-normal.ttf"));
-    private final FreeTypeFontParameter params = new FreeTypeFontParameter();
-    private BitmapFont font;
-    private boolean fontChanged = false;
 
-    private final float MINWIDTH = 150, MINHEIGHT = 130;
-    private final float padLeft = 5, padTop = 40, padRight = 5, padBottom = 5;
+    private final float MINWIDTH = 40, MINHEIGHT = 20;
+    private final float padLeft = 2, padTop = 5, padRight = 2, padBottom = 2;
 
     private String fullText = "";
     private boolean toosmall = false;
     private boolean activateTF;
 
-
-    public StickyNote(Board board, Skin skin, int x, int y) {
-        this(board, skin.get(StickyNoteStyle.class), x, y);
+    public TextBox(Board board, Skin skin, int x, int y) {
+        this(board, skin.get(TextBoxStyle.class), x, y);
     }
-    public StickyNote(Board board, StickyNoteStyle style, int x, int y) {
+    public TextBox(Board board, TextBoxStyle style, int x, int y) {
         super(board);
-
-        /**Sets the parameters of the object constant for the font, regardless of size.*/
-        params.borderWidth = 0;
-        params.borderColor = Color.DARK_GRAY;
-        params.color = Color.BLACK;
-        params.characters = FreeTypeFontGenerator.DEFAULT_CHARS;
-        params.magFilter = Texture.TextureFilter.Nearest;
-        params.minFilter = Texture.TextureFilter.Nearest;
-        params.genMipMaps = true;
-        params.size = 26;
 
         textArea = new TextArea("", style.textfield);
         textArea.addListener(new InputListener(){
@@ -71,11 +48,11 @@ public class StickyNote extends Outline {
                             String word = Main.contextMenu.getSelected();
                             switch (word) {
                                 case "Increase Size":
-                                    setFontSize(params.size + 2);
+                                    setFontSize(30);
                                     fit(getWidth(), getHeight());
                                     break;
                                 case "Decrease Size":
-                                    setFontSize(params.size - 2);
+                                    setFontSize(10);
                                     fit(textArea.getWidth(), getHeight());
                                     break;
                                 case "Blue":
@@ -92,14 +69,14 @@ public class StickyNote extends Outline {
                 activateTF = false;
             }
         });
-        textArea.setTextFieldListener(new TextField.TextFieldListener() { //this happens AFTER the text has been entered
+        textArea.setTextFieldListener(new com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener() { //this happens AFTER the text has been entered
             @Override
             public void keyTyped(TextField textField, char c) {
                 fullText = textArea.getText();
             }
         });
 
-        setSize(300, 250);
+        setSize(200, 40);
         setPosition(x, y-getHeight());
 
         setStyle(style);
@@ -110,44 +87,6 @@ public class StickyNote extends Outline {
         setSize(rec.width, rec.height);
         format();
         bounds.setBounds(rec);
-    }
-
-    private void format(){
-        textArea.setBounds(getX()+padLeft, getY()+padBottom, getWidth()-(padLeft+padRight), getHeight()-padTop);
-        float length = textArea.getWidth() * (textArea.getLinesShowing()-.25f);
-        String packedString = shortenString(fullText, length);
-        if(!packedString.equals(fullText)){
-            textArea.setText(packedString);
-            toosmall = true;
-        }
-        else{
-            textArea.setText(fullText);
-            toosmall = false;
-        }
-    }
-
-    private void fit(){
-        GlyphLayout layout = new GlyphLayout();
-        float prefWidth = 250 + (padLeft+padRight), prefHeight, lineHeight = font.getLineHeight() * 1.35f, lines, length;
-        layout.setText(getTextFieldStyle().font, fullText);
-        length = layout.width;
-        lines = length/prefWidth;
-        prefHeight = lineHeight * lines + (padTop + padBottom);
-        if(prefHeight < MINHEIGHT) prefHeight = MINHEIGHT;
-        if(prefWidth < MINWIDTH) prefWidth = MINWIDTH;
-        setSize(prefWidth, prefHeight);
-
-        format();
-    }
-
-    private void fit(float width, float height){
-        float prefWidth = width + (padLeft+padRight), prefHeight = height;
-
-        if(prefHeight < MINHEIGHT) prefHeight = MINHEIGHT;
-        if(prefWidth < MINWIDTH) prefWidth = MINWIDTH;
-        setSize(prefWidth, prefHeight);
-
-        format();
     }
 
     public void update(){
@@ -183,16 +122,6 @@ public class StickyNote extends Outline {
             textArea.remove();
         }
 
-        /**Generates the font using the generator object.*/
-        if(!fontChanged) {
-            if(getTextFieldStyle().font != null) getTextFieldStyle().font.dispose();
-            font = generator.generateFont(params);
-            getTextFieldStyle().font = font;
-            fontChanged = true;
-        }
-
-        final Drawable background  = getBackgroundDrawable();
-
         Color color = getColor();
         float x = getX();
         float y = getY();
@@ -200,9 +129,6 @@ public class StickyNote extends Outline {
         float height = getHeight();
 
         batch.setColor(color.r, color.g, color.b, color.a * 1);
-        if (background != null) {
-            background.draw(batch, x, y, width, height);
-        }
 
         textArea.draw(batch, 1);
     }
@@ -303,7 +229,6 @@ public class StickyNote extends Outline {
 
         return rec;
     }
-
     @Override
     public void fix(){
         resize = -1;
@@ -366,6 +291,42 @@ public class StickyNote extends Outline {
         outlines.remove(this);
     }
 
+    private void format(){
+        textArea.setBounds(getX()+padLeft, getY()+padBottom, getWidth()-(padLeft+padRight), getHeight()-padTop);
+        float length = textArea.getWidth() * (textArea.getLinesShowing()-.25f);
+        String packedString = shortenString(fullText, length);
+        if(!packedString.equals(fullText)){
+            textArea.setText(packedString);
+            toosmall = true;
+        }
+        else{
+            textArea.setText(fullText);
+            toosmall = false;
+        }
+    }
+    private void fit(){
+        GlyphLayout layout = new GlyphLayout();
+        float prefWidth = 250 + (padLeft+padRight), prefHeight, lineHeight = getTextFieldStyle().font.getLineHeight() * 1.35f, lines, length;
+        layout.setText(getTextFieldStyle().font, textArea.getText());
+        length = layout.width;
+        lines = length/prefWidth;
+        prefHeight = lineHeight * lines + (padTop + padBottom);
+        if(prefHeight < MINHEIGHT) prefHeight = MINHEIGHT;
+        if(prefWidth < MINWIDTH) prefWidth = MINWIDTH;
+        setSize(prefWidth, prefHeight);
+
+        format();
+    }
+    private void fit(float width, float height){
+        float prefWidth = width + (padLeft+padRight), prefHeight = height;
+
+        if(prefHeight < MINHEIGHT) prefHeight = MINHEIGHT;
+        if(prefWidth < MINWIDTH) prefWidth = MINWIDTH;
+        setSize(prefWidth, prefHeight);
+
+        format();
+    }
+
     private String shortenString(String str, float length){
         GlyphLayout layout = new GlyphLayout();
         String shortenedString;
@@ -384,57 +345,51 @@ public class StickyNote extends Outline {
     }
 
     public void setFontSize(int size){
-        StickyNoteStyle newStyle = new StickyNoteStyle(Main.uiSkin.get(StickyNoteStyle.class));
+/*
+        StickyNote.StickyNoteStyle newStyle = new StickyNote.StickyNoteStyle(Main.uiSkin.get(StickyNote.StickyNoteStyle.class));
         params.size = size;
         font = generator.generateFont(params);
         newStyle.textfield.font = font;
         setStyle(newStyle);
+*/
     }
 
     public void setFontColor(Color color){
-        StickyNoteStyle newStyle = new StickyNoteStyle(getStyle());
+/*
+        StickyNote.StickyNoteStyle newStyle = new StickyNote.StickyNoteStyle(getStyle());
         params.color = color;
         newStyle.textfield.font = generator.generateFont(params);
         setStyle(newStyle);
+*/
     }
 
-    public void setStyle (StickyNoteStyle style) {
+    public void setStyle (TextBoxStyle style) {
         if (style == null) throw new IllegalArgumentException("style cannot be null.");
         this.style = style;
         invalidateHierarchy();
     }
 
-    public StickyNoteStyle getStyle(){
+    public TextBoxStyle getStyle(){
         return style;
     }
 
     protected @Null Drawable getOutlineDrawable() {
         return style.outline;
     }
-    private @Null Drawable getBackgroundDrawable(){
-        return style.background;
-    }
+
     private @Null TextFieldStyle getTextFieldStyle(){
         return style.textfield;
     }
-
-    public void dispose(){
-        generator.dispose();
-        font.dispose();
-    }
-
-    static public class StickyNoteStyle{
+    static public class TextBoxStyle {
         public @Null
         Drawable outline;
-        Drawable background;
         TextFieldStyle textfield;
 
-        public StickyNoteStyle(){
+        public TextBoxStyle(){
         }
 
-        public StickyNoteStyle(StickyNoteStyle style){
+        public TextBoxStyle(TextBoxStyle style){
             outline = style.outline;
-            background = style.background;
             textfield = style.textfield;
         }
     }

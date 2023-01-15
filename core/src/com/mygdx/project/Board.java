@@ -31,7 +31,7 @@ public class Board extends Widget {
     //this draws the doodles
     public Pixmap pixmapBoard;
 
-    private GenOutline selectedOutline;
+    private Outline selectedOutline;
 
     private Color backgroundColor;
     private Color drawingColor;
@@ -50,7 +50,7 @@ public class Board extends Widget {
 
     boolean drawCursor;
 
-    ArrayList<GenOutline> outlines = new ArrayList<>();
+    ArrayList<Outline> outlines = new ArrayList<>();
 
 
     public Board (Skin skin) {
@@ -90,17 +90,18 @@ public class Board extends Widget {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 //so that the computer knows which outline to drag / erase from
                 if (selectMode || eraseMode){
-                    if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) selectedOutline = findOutlineBehind((int) x, (int) y);
-                    else if(selectedOutline != null && selectedOutline.getBounds().contains(x + offsetX,y + offsetY)) ;
-                    else {
-                        if(!(eraseMode && findOutline((int) x, (int) y) == null)) selectedOutline = findOutline((int) x, (int) y);
-                    }
+                    if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) selectOutline(findOutlineBehind((int) x, (int) y)); //if trying to select the outline behind
+                    //if an outline is already selected and is trying to be dragged
+                    else if(selectedOutline != null && selectedOutline.getBounds().contains(x + offsetX,y + offsetY)) selectOutline(selectedOutline);
+                    else if(!eraseMode) selectOutline(findOutline((int) x, (int) y));
+                    //if in erase mode and no outline is clicked on, it erases the last outline that was selected
+
                     if(selectedOutline != null) selectedOutline.onBorder((int) x, (int) y);
                 }
                 if(button == Input.Buttons.LEFT) {
                         //if the user isn't drawing on an outline, make a new one
                         if ((selectedOutline == null || selectedOutline instanceof StickyNote) && drawMode) {
-                            GenOutline newO = new Outline(Board.this, Main.uiSkin);
+                            Outline newO = new Doodle(Board.this, Main.uiSkin);
                             selectedOutline = newO;
                             outlines.add(newO);
                         }
@@ -139,7 +140,7 @@ public class Board extends Widget {
                         });
                     }
                     else {
-                        Main.contextMenu.setItems("Create New Doodle", "Create New Sticky Note");
+                        Main.contextMenu.setItems("Create New Doodle", "Create New Sticky Note", "Create New Text Box");
                         Main.contextMenu.addListener(new ClickListener() {
                             public void clicked(InputEvent event, float x, float y) {
                                 String word = Main.contextMenu.getSelected();
@@ -149,10 +150,16 @@ public class Board extends Widget {
                                         enterDrawMode();
                                         break;
                                     case "Create New Sticky Note":
-                                        GenOutline newS = new StickyNote(Board.this, Main.uiSkin, (int) Main.contextMenu.getX(),
+                                        Outline newS = new StickyNote(Board.this, Main.uiSkin, (int) Main.contextMenu.getX(),
                                                 (int) (Main.contextMenu.getY()+Main.contextMenu.getHeight()));
                                         selectedOutline = newS;
                                         outlines.add(newS);
+                                        break;
+                                    case "Create New Text Box":
+                                        Outline newT = new TextBox(Board.this, Main.uiSkin, (int) Main.contextMenu.getX(),
+                                                (int) (Main.contextMenu.getY()+Main.contextMenu.getHeight()));
+                                        selectedOutline = newT;
+                                        outlines.add(newT);
                                         break;
                                 }
                             }
@@ -169,12 +176,12 @@ public class Board extends Widget {
                 if (pointer != 0 || button != 0) return;
                 lastx = -1;
                 lasty = -1;
-                GenOutline.wipe();
+                Outline.wipe();
 
                 if(selectMode){
                     if(selectedOutline != null) selectedOutline.fix();
                 }
-                //goal is to update the doodle
+                //goal is to update the doodleMap
                 else{
                     //so that the program doesn't slow down the more that you draw
                     //(I think this works because it stops storing the same information over and over again in its memory)
@@ -238,19 +245,20 @@ public class Board extends Widget {
         }
 
         //loops through each outline and draws its texture
-        for (GenOutline outline: outlines) {
+        for (Outline outline: outlines) {
             outline.drawContent(batch);
         }
         //loops through each outline and draws its outline last so that it's always on top
-        for (GenOutline outline: outlines) {
+        for (Outline outline: outlines) {
             outline.drawOutline(batch, 1);
         }
 
         //fixme best version of a keylistener I could think of
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE) && selectedOutline != null) selectedOutline = null;
+        if (Gdx.input.isKeyPressed(Input.Keys.FORWARD_DEL) && selectedOutline != null) selectedOutline.delete();
     }
 
-    public GenOutline findOutline(int x, int y){
+    public Outline findOutline(int x, int y){
         float x2 = x + offsetX;
         float y2 = y + offsetY;
         for (int i = outlines.size() - 1; i > -1; i--) { //so that if two are stacked it gets the most recent one
@@ -260,7 +268,7 @@ public class Board extends Widget {
         }
         return null;
     }
-    public GenOutline findOutlineBehind(int x, int y){
+    public Outline findOutlineBehind(int x, int y){
         float x2 = x + offsetX;
         float y2 = y + offsetY;
         boolean triggered = false;
@@ -391,6 +399,17 @@ public class Board extends Widget {
     public BoardStyle getStyle () {
         return style;
     }
+    public void selectOutline(Outline o){
+        for (Outline o2: outlines) {
+            o2.setSelect(false);
+        }
+        selectedOutline = o;
+
+        if(o == null) return;
+
+        o.setSelect(true);
+
+    }
 
     public void enterDrawMode() {
         drawMode = true;
@@ -419,13 +438,13 @@ public class Board extends Widget {
         return eraseMode;
     }
 
-    public GenOutline getSelectedOutline() {
+    public Outline getSelectedOutline() {
         return selectedOutline;
     }
     public Vector2 getBrushCenter(){
         return new Vector2(brushCenterX, brushCenterY);
     }
-    public ArrayList<GenOutline> getOutlines(){
+    public ArrayList<Outline> getOutlines(){
         return outlines;
     }
     public Brush getCurrentBrush(){
@@ -453,7 +472,7 @@ public class Board extends Widget {
     public void dispose(){
         pixmapBoard.dispose();
         cursor.dispose();
-        for (GenOutline outline: outlines) {
+        for (Outline outline: outlines) {
             outline.dispose();
         }
     }

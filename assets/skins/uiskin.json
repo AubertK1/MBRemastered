@@ -101,9 +101,14 @@
   com.mygdx.project.Board$BoardStyle: {
     default: {background: default-round-down}
   }
-  com.mygdx.project.Outline$OutlineStyle: {
+  com.mygdx.project.Doodle$DoodleStyle: {
+    default: {outline: board-outline }
+  }
+  com.mygdx.project.TextBox$TextBoxStyle: {
     default: {
-      outline: board-outline}
+      outline: board-outline
+      textfield: { selection: context-select-selection, background: clear, font: default-font, fontColor: tan, cursor: cursor }
+    }
   }
   com.mygdx.project.StickyNote$StickyNoteStyle: {
     default: {
