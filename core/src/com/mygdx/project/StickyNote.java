@@ -62,7 +62,8 @@ public class StickyNote extends Outline {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 if(button == Input.Buttons.LEFT){
                     activateTF = true;
-                    if(toosmall) fit();
+                    if(toosmall)
+                        fit();
                 }
                 else if(button == Input.Buttons.RIGHT){
                     Main.contextMenu.setItems("Increase Size", "Decrease Size", "Blue");

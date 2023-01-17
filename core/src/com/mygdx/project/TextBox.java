@@ -21,7 +21,7 @@ public class TextBox extends Outline{
     private TextBoxStyle style;
     private final TextArea textArea;
 
-    private final float MINWIDTH = 40, MINHEIGHT = 20;
+    private final float MINWIDTH = 40, MINHEIGHT = 30;
     private final float padLeft = 2, padTop = 5, padRight = 2, padBottom = 2;
 
     private String fullText = "";
@@ -39,7 +39,8 @@ public class TextBox extends Outline{
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 if(button == Input.Buttons.LEFT){
                     activateTF = true;
-                    if(toosmall) fit();
+                    if(toosmall)
+                        fit();
                 }
                 else if(button == Input.Buttons.RIGHT){
                     Main.contextMenu.setItems("Increase Size", "Decrease Size", "Blue");
@@ -307,7 +308,7 @@ public class TextBox extends Outline{
     private void fit(){
         GlyphLayout layout = new GlyphLayout();
         float prefWidth = 250 + (padLeft+padRight), prefHeight, lineHeight = getTextFieldStyle().font.getLineHeight() * 1.35f, lines, length;
-        layout.setText(getTextFieldStyle().font, textArea.getText());
+        layout.setText(getTextFieldStyle().font, fullText);
         length = layout.width;
         lines = length/prefWidth;
         prefHeight = lineHeight * lines + (padTop + padBottom);
