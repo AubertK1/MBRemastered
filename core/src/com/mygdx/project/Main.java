@@ -61,17 +61,17 @@ public class Main extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		stage = new Stage();
 		//setting up panels
-		sidePanel = new Panel("core\\pics\\MBSkin2\\SidecardPanel.png",
+		sidePanel = new Panel("assets\\Panels\\SidecardPanel.png",
 				new Rectangle(2, 150, 98, 850));
-		topPanel = new Panel("core\\pics\\MBSkin2\\TopbarPanel.png",
+		topPanel = new Panel("assets\\Panels\\TopbarPanel.png",
 				new Rectangle(110, 950, 780, 50));
-		genStatsPanel = new Panel("core\\pics\\MBSkin2\\GenstatsPanel.png",
+		genStatsPanel = new Panel("assets\\Panels\\GenstatsPanel.png",
 				new Rectangle(110, 550, 780, 390));
-		reminderPanel = new Panel("core\\pics\\MBSkin2\\ReminderPanel.png",
+		reminderPanel = new Panel("assets\\Panels\\ReminderPanel.png",
 				new Rectangle(110, 150, 780, 390));
-		toolbarPanel = new Panel("core\\pics\\MBSkin2\\ToolbarPanel.png",
+		toolbarPanel = new Panel("assets\\Panels\\ToolbarPanel.png",
 				new Rectangle(2, 2, 1916, 138));
-		masterboardPanel = new Panel("core\\pics\\MBSkin2\\MasterboardPanel4.png",
+		masterboardPanel = new Panel("assets\\Panels\\MasterboardPanel4.png",
 				new Rectangle(900, 150, 1018, 850));
 		//setting up skin for the UI of the app
 		uiSkin = new Skin (Gdx.files.internal(
@@ -106,7 +106,7 @@ public class Main extends ApplicationAdapter {
 		//region General Stats
 		//region listpanel
 		//creating a list panel to hold all the items and adding it to the genstats panel
-		final Minipanel listPanel = new Minipanel("core\\pics\\MBSkin2\\ListPanel.png",
+		final Minipanel listPanel = new Minipanel("assets\\Panels\\ListPanel.png",
 				new Rectangle(120, 560, 470, 300));
 		genStatsPanel.add(listPanel);
 
@@ -166,7 +166,7 @@ public class Main extends ApplicationAdapter {
 						item.setSoftVisible(false);
 					}
 					for (Tipbox tipbox: tipboxes) {
-						if (tipbox.getPanel().editMode && tipbox.getPanel().supposedToBeVisible) {
+						if (tipbox.getParentPanel().editMode && tipbox.getParentPanel().supposedToBeVisible) {
 							tipbox.setSoftVisible(true);
 						}
 					}
@@ -238,16 +238,16 @@ public class Main extends ApplicationAdapter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 				if(itemTab == 1 && (listPanel.wItems.size() > 0)) {
-					for (int i = 0; i < listPanel.wItems.get(0).getPanel().minipanels.size(); i++) {
-						if (listPanel.wItems.get(0).getPanel().minipanels.get(i).wSpot > 0) {
+					for (int i = 0; i < listPanel.wItems.get(0).getParentPanel().minipanels.size(); i++) {
+						if (listPanel.wItems.get(0).getParentPanel().minipanels.get(i).wSpot > 0) {
 							listPanel.wItems.get(0).shuffleItemsUp();
 							break;
 						}
 					}
 				}
 				else if(itemTab == 2 && (listPanel.sItems.size() > 0)) {
-					for (int i = 0; i < listPanel.sItems.get(0).getPanel().minipanels.size(); i++) {
-						if (listPanel.sItems.get(0).getPanel().minipanels.get(i).sSpot > 0) {
+					for (int i = 0; i < listPanel.sItems.get(0).getParentPanel().minipanels.size(); i++) {
+						if (listPanel.sItems.get(0).getParentPanel().minipanels.get(i).sSpot > 0) {
 							listPanel.sItems.get(0).shuffleItemsUp();
 							break;
 						}
@@ -260,16 +260,16 @@ public class Main extends ApplicationAdapter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 				if(itemTab == 1 && (listPanel.wItems.size() > 0)) {
-					for (int i = 0; i < listPanel.wItems.get(0).getPanel().minipanels.size(); i++) {
-						if (listPanel.wItems.get(0).getPanel().minipanels.get(i).wSpot < 0) {
+					for (int i = 0; i < listPanel.wItems.get(0).getParentPanel().minipanels.size(); i++) {
+						if (listPanel.wItems.get(0).getParentPanel().minipanels.get(i).wSpot < 0) {
 							listPanel.wItems.get(0).shuffleItemsDown();
 							break;
 						}
 					}
 				}
 				if(itemTab == 2 && (listPanel.sItems.size() > 0)) {
-					for (int i = 0; i < listPanel.sItems.get(0).getPanel().minipanels.size(); i++) {
-						if (listPanel.sItems.get(0).getPanel().minipanels.get(i).sSpot < 0) {
+					for (int i = 0; i < listPanel.sItems.get(0).getParentPanel().minipanels.size(); i++) {
+						if (listPanel.sItems.get(0).getParentPanel().minipanels.get(i).sSpot < 0) {
 							listPanel.sItems.get(0).shuffleItemsDown();
 							break;
 						}
@@ -282,17 +282,17 @@ public class Main extends ApplicationAdapter {
 		//region stats
 		//creating all the stats panels to hold the player stats
 		final Minipanel strPanel, dexPanel, conPanel, intPanel, wisPanel, chaPanel;
-		strPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
+		strPanel = new Minipanel("assets\\Panels\\minipanel2.png",
 				new Rectangle(120, 870, 50, 60));
-		dexPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
+		dexPanel = new Minipanel("assets\\Panels\\minipanel2.png",
 				new Rectangle(strPanel.getX()+strPanel.getWidth()+10, strPanel.getY(), 50, 60));
-		conPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
+		conPanel = new Minipanel("assets\\Panels\\minipanel2.png",
 				new Rectangle(dexPanel.getX()+dexPanel.getWidth()+10, strPanel.getY(), 50, 60));
-		intPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
+		intPanel = new Minipanel("assets\\Panels\\minipanel2.png",
 				new Rectangle(conPanel.getX()+conPanel.getWidth()+10, strPanel.getY(), 50, 60));
-		wisPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
+		wisPanel = new Minipanel("assets\\Panels\\minipanel2.png",
 				new Rectangle(intPanel.getX()+intPanel.getWidth()+10, strPanel.getY(), 50, 60));
-		chaPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
+		chaPanel = new Minipanel("assets\\Panels\\minipanel2.png",
 				new Rectangle(wisPanel.getX()+wisPanel.getWidth()+10, strPanel.getY(), 50, 60));
 		//creating the labels to put in the stats' minipanels
 		MBLabel strL = new MBLabel("STR", uiSkin);
@@ -356,9 +356,9 @@ public class Main extends ApplicationAdapter {
 		genStatsPanel.add(chaPanel);
 
 		//Short Rest and Long Rest buttons
-		Minipanel shortRestPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
+		Minipanel shortRestPanel = new Minipanel("assets\\Panels\\minipanel2.png",
 				new Rectangle(chaPanel.getX()+wisPanel.getWidth()+10, strPanel.getY(), 50, 60));
-		Minipanel longRestPanel = new Minipanel("core\\pics\\MBSkin2\\minipanel2.png",
+		Minipanel longRestPanel = new Minipanel("assets\\Panels\\minipanel2.png",
 				new Rectangle(shortRestPanel.getX()+shortRestPanel.getWidth()+10, strPanel.getY(), 50, 60));
 
 		MBButton srButton = new MBButton("Short \n Rest", uiSkin);

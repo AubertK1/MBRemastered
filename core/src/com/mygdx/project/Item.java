@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -16,23 +14,17 @@ import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
 
-import static com.mygdx.project.Main.batch;
-
 public class Item extends Minipanel{
     //skin of the item
-    Skin uiSkin = new Skin (Gdx.files.internal(
-        "assets\\skins\\uiskin.json"));
-    //strings for the labels (if weapon)
-    String name, hitDie, mod, type;
+    Skin uiSkin;
+    //strings for the labels
     ArrayList<String> names = new ArrayList<>();
     //textfields for when you edit the item (if weapon)
-    MBTextField nameLabelTF, hitDieLabelTF, modLabelTF, typeLabelTF;
     ArrayList<MBTextField> textFields = new ArrayList<>();
     //labels for the item (if weapon)
     ArrayList<MBLabel> labels = new ArrayList<>();
     ArrayList<Tipbox> tipboxes = new ArrayList<>();
     int itemType;
-
     int usesIndexInNames = -1;
     private MBButton usesButton;
     final int[] uses = {0};
@@ -41,15 +33,13 @@ public class Item extends Minipanel{
     ArrayList<MBButton> restButtons = new ArrayList<>();
 
     public Item(int itemType, int spot) {
-        super("core\\pics\\MBSkin2\\ItemPanel4.png", new Rectangle(125, 790, 460, 40));
+        super("assets\\Panels\\ItemPanel4.png", new Rectangle(125, 790, 460, 40));
         this.itemType = itemType;
+        uiSkin = new Skin (Gdx.files.internal("assets\\skins\\uiskin.json"));
+
         //if this item is a weapon it sets it up as a weapon item
-        if(itemType == 1){
-            makeWeaponItem(spot);
-        }
-        if(itemType == 2){
-            makeSpellItem(spot);
-        }
+        if(itemType == 1) makeWeaponItem(spot);
+        else if(itemType == 2) makeSpellItem(spot);
     }
 
     /**
@@ -90,6 +80,7 @@ public class Item extends Minipanel{
         labels.add(diceLabel);
         labels.add(modLabel);
         labels.add(typeLabel);
+
         //creating buttons and setting their positions and sizes
         final MBButton itemButtonEdit = new MBButton(uiSkin, "edit-toggle");
         itemButtonEdit.button.setChecked(true);
@@ -165,7 +156,7 @@ public class Item extends Minipanel{
                 for (int i = itemButtonDel.getItem().components.size()-1; i >= 0; i--) {
                     itemButtonDel.getItem().delete(itemButtonDel.getItem().components.get(i));
                 }
-                itemButtonDel.getItem().getPanel().remove(itemButtonDel.getItem());
+                itemButtonDel.getItem().getParentPanel().delete(itemButtonDel.getItem());
 
             }
         });
@@ -183,12 +174,12 @@ public class Item extends Minipanel{
                     //reassigns the spots to different variables
                     //assigns this item's spot to an arbitrary number so that the two items are never at the same spot
                     itemButtonDown.getItem().wSpot = -100;
-                    itemButtonDown.getItem().getPanel().getItemBySpot(nextSpot).wSpot = currSpot;
+                    itemButtonDown.getItem().getParentPanel().getItemBySpot2(nextSpot).wSpot = currSpot;
                     itemButtonDown.getItem().wSpot = nextSpot;
                     //making it easier to read
                     ArrayList<MBComponent> thisItemComponents = itemButtonDown.getItem().components;
                     //making it easier to read
-                    ArrayList<MBComponent> nextItemComponents = itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).components;
+                    ArrayList<MBComponent> nextItemComponents = itemButtonDown.getItem().getParentPanel().getItemBySpot2(currSpot).components;
 
                     int smallerListSize = Math.min(thisItemComponents.size(), nextItemComponents.size());
                     //saving this item's components' positions before I change them, so I can use there later
@@ -211,9 +202,9 @@ public class Item extends Minipanel{
                         edit();
                     }
                     //moves the textfields of the item being swapped if it is in edit mode
-                    if(itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).getEditMode()){
-                        itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).saveEdit();
-                        itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).edit();
+                    if(itemButtonDown.getItem().getParentPanel().getItemBySpot2(currSpot).getEditMode()){
+                        itemButtonDown.getItem().getParentPanel().getItemBySpot2(currSpot).saveEdit();
+                        itemButtonDown.getItem().getParentPanel().getItemBySpot2(currSpot).edit();
                     }
                 }
             }
@@ -231,12 +222,12 @@ public class Item extends Minipanel{
                     //reassigns the spots to different variables
                     //assigns this item's spot to an arbitrary number so that the two items are never at the same spot
                     itemButtonUp.getItem().wSpot = -100;
-                    itemButtonUp.getItem().getPanel().getItemBySpot(prevSpot).wSpot = currSpot;
+                    itemButtonUp.getItem().getParentPanel().getItemBySpot2(prevSpot).wSpot = currSpot;
                     itemButtonUp.getItem().wSpot = prevSpot;
                     //making it easier to read
                     ArrayList<MBComponent> thisItemComponents = itemButtonUp.getItem().components;
                     //making it easier to read
-                    ArrayList<MBComponent> prevItemComponents = itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).components;
+                    ArrayList<MBComponent> prevItemComponents = itemButtonUp.getItem().getParentPanel().getItemBySpot2(currSpot).components;
 
                     int smallerListSize = Math.min(thisItemComponents.size(), prevItemComponents.size());
                     //saving this item's components' positions before I change them, so I can use there later
@@ -259,9 +250,9 @@ public class Item extends Minipanel{
                         edit();
                     }
                     //moves the textfields of the item being swapped if it is in edit mode
-                    if(itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).getEditMode()){
-                        itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).saveEdit();
-                        itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).edit();
+                    if(itemButtonDown.getItem().getParentPanel().getItemBySpot2(currSpot).getEditMode()){
+                        itemButtonDown.getItem().getParentPanel().getItemBySpot2(currSpot).saveEdit();
+                        itemButtonDown.getItem().getParentPanel().getItemBySpot2(currSpot).edit();
                     }
                 }
             }
@@ -573,8 +564,8 @@ public class Item extends Minipanel{
                 for (int i = itemButtonDel.getItem().components.size()-1; i >= 0; i--) {
                     itemButtonDel.getItem().delete(itemButtonDel.getItem().components.get(i));
                 }
-                itemButtonDel.getItem().remove(spellDesc);
-                itemButtonDel.getItem().getPanel().remove(itemButtonDel.getItem());
+                itemButtonDel.getItem().delete(spellDesc);
+                itemButtonDel.getItem().getParentPanel().delete(itemButtonDel.getItem());
 
             }
         });
@@ -592,15 +583,15 @@ public class Item extends Minipanel{
                     //reassigns the spots to different variables
                     //assigns this item's spot to an arbitrary number so that the two items are never at the same spot
                     itemButtonDown.getItem().sSpot = -100;
-                    itemButtonDown.getItem().getPanel().getItemBySpot(nextSpot).sSpot = currSpot;
+                    itemButtonDown.getItem().getParentPanel().getItemBySpot2(nextSpot).sSpot = currSpot;
                     itemButtonDown.getItem().sSpot = nextSpot;
                     //making it easier to read
                     ArrayList<MBComponent> thisItemComponents = itemButtonDown.getItem().components;
                     //making it easier to read
-                    ArrayList<MBComponent> nextItemComponents = itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).components;
+                    ArrayList<MBComponent> nextItemComponents = itemButtonDown.getItem().getParentPanel().getItemBySpot2(currSpot).components;
 
                     ArrayList<Panel> thisItemTipbox = itemButtonUp.getItem().minipanels;
-                    ArrayList<Panel> nextItemTipbox = itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).minipanels;
+                    ArrayList<Panel> nextItemTipbox = itemButtonUp.getItem().getParentPanel().getItemBySpot2(currSpot).minipanels;
 
                     int smallerListSize = Math.min(thisItemComponents.size(), nextItemComponents.size());
                     //saving this item's components' positions before I change them, so I can use them later
@@ -681,9 +672,9 @@ public class Item extends Minipanel{
                         edit();
                     }
                     //moves the textfields of the item being swapped if it is in edit mode
-                    if(itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).getEditMode()){
-                        itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).saveEdit();
-                        itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).edit();
+                    if(itemButtonDown.getItem().getParentPanel().getItemBySpot2(currSpot).getEditMode()){
+                        itemButtonDown.getItem().getParentPanel().getItemBySpot2(currSpot).saveEdit();
+                        itemButtonDown.getItem().getParentPanel().getItemBySpot2(currSpot).edit();
                     }
                 }
             }
@@ -701,15 +692,15 @@ public class Item extends Minipanel{
                     //reassigns the spots to different variables
                     //assigns this item's spot to an arbitrary number so that the two items are never at the same spot
                     itemButtonUp.getItem().sSpot = -100;
-                    itemButtonUp.getItem().getPanel().getItemBySpot(prevSpot).sSpot = currSpot;
+                    itemButtonUp.getItem().getParentPanel().getItemBySpot2(prevSpot).sSpot = currSpot;
                     itemButtonUp.getItem().sSpot = prevSpot;
                     //making it easier to read
                     ArrayList<MBComponent> thisItemComponents = itemButtonUp.getItem().components;
                     //making it easier to read
-                    ArrayList<MBComponent> prevItemComponents = itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).components;
+                    ArrayList<MBComponent> prevItemComponents = itemButtonUp.getItem().getParentPanel().getItemBySpot2(currSpot).components;
 
                     ArrayList<Panel> thisItemTipbox = itemButtonUp.getItem().minipanels;
-                    ArrayList<Panel> prevItemTipbox = itemButtonUp.getItem().getPanel().getItemBySpot(currSpot).minipanels;
+                    ArrayList<Panel> prevItemTipbox = itemButtonUp.getItem().getParentPanel().getItemBySpot2(currSpot).minipanels;
 
                     int smallerListSize = Math.min(thisItemComponents.size(), prevItemComponents.size());
                     //saving this item's components' positions before I change them, so I can use there later
@@ -776,9 +767,9 @@ public class Item extends Minipanel{
                         edit();
                     }
                     //moves the textfields of the item being swapped if it is in edit mode
-                    if(itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).getEditMode()){
-                        itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).saveEdit();
-                        itemButtonDown.getItem().getPanel().getItemBySpot(currSpot).edit();
+                    if(itemButtonDown.getItem().getParentPanel().getItemBySpot2(currSpot).getEditMode()){
+                        itemButtonDown.getItem().getParentPanel().getItemBySpot2(currSpot).saveEdit();
+                        itemButtonDown.getItem().getParentPanel().getItemBySpot2(currSpot).edit();
                     }
                 }
             }
@@ -1004,9 +995,9 @@ public class Item extends Minipanel{
         }
     }
     public ArrayList<Item> getList(){
-        if(getPanel() != null) {
-            if (Main.itemTab == 1) return getPanel().wItems;
-            else if (Main.itemTab == 2) return getPanel().sItems;
+        if(getParentPanel() != null) {
+            if (Main.itemTab == 1) return getParentPanel().wItems;
+            else if (Main.itemTab == 2) return getParentPanel().sItems;
         }
         return null;
     }
@@ -1088,7 +1079,7 @@ public class Item extends Minipanel{
     /**
      * @return returns this item's spot value
      */
-    public float getSpot() {
+    public int getSpot() {
         if(itemType == 1) return wSpot;
         else if(itemType == 2) return sSpot;
         else return -100;

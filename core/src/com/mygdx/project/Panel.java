@@ -1,6 +1,5 @@
 package com.mygdx.project;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -30,7 +29,7 @@ public class Panel {
 //    static int panelNum = 0;
 //    int panelID;
     //the parent panel of the minipanel
-    Panel parent = null;
+    protected Panel parentPanel = null;
     //spot of the items relative to the top of the panel
     int wSpot;
     int sSpot;
@@ -100,7 +99,7 @@ public class Panel {
         //adds the minipanel given to this panel
         minipanels.add(minipanel);
         //sets the minipanel's parent to this panel
-        minipanel.parent = this;
+        minipanel.parentPanel = this;
         //if the minipanel is an item...
         if(minipanel instanceof Item){
             //adds the item to this panel's associated items list too
@@ -120,8 +119,6 @@ public class Panel {
      * @param component the component you want to remove
      */
     public void remove(MBComponent component) {
-        //removes component from the stage (don't think this does anything tbh)
-//        component.remove();
         //removes component from the components list
         components.remove(component);
         if(component instanceof MBWindow){
@@ -144,6 +141,8 @@ public class Panel {
         Main.allComps.remove(component);
         //removes component from the item's components list
         components.remove(component);
+        //disposes of the MBComponent
+        component.dispose();
         if(component instanceof MBWindow){
             Main.windows.remove((MBWindow) component);
         }
@@ -156,12 +155,16 @@ public class Panel {
     }
 
     /**
-     * removes panel from lists making it unable to be rendered
+     * removes panel from lists making it unable to be rendered and deletes its texture
      * @param panel the panel you want to remove
      */
-    public void remove(Panel panel){
+    public void delete(Panel panel){
+        //DO NOT CALL THIS IF YOU PLAN ON ADDING THE PANEL BACK LATER
         //removes component from the components list
         minipanels.remove(panel);
+        //disposes of the texture
+        panel.texture.dispose();
+
         if(panel instanceof Item){
             if(Main.itemTab == 1) wItems.remove(panel);
             else if(Main.itemTab == 2) sItems.remove(panel);
@@ -190,8 +193,8 @@ public class Panel {
     /**
      * @return returns the panel this panel belongs to
      */
-    public Panel getPanel() {
-        return parent;
+    public Panel getParentPanel() {
+        return parentPanel;
     }
 
     /**
@@ -232,7 +235,7 @@ public class Panel {
         }
         return null;
     }
-    public Item getItemBySpot(int spot){
+    public Item getItemBySpot2(int spot){
         if(Main.itemTab == 1) {
             for (Item minipanel : wItems) {
                 if (minipanel.getSpot() == spot) {
@@ -260,7 +263,7 @@ public class Panel {
     /**
      * future potentially needed functions
      */
-    public float getSpot() {
+    public int getSpot() {
         return -1;
     }
     public void edit(){

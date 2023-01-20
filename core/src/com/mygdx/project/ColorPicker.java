@@ -20,12 +20,9 @@ public class ColorPicker extends Widget {
     private Color newColor;
 
     public ColorPicker() {
-        texture = new Texture("core\\pics\\MBSkin2\\colormap4.png");
+        texture = new Texture("assets\\Panels\\colormap4.png");
 
-        if (!texture.getTextureData().isPrepared()) {
-            texture.getTextureData().prepare();
-        }
-        pixmap = new Pixmap(Gdx.files.internal("core\\pics\\MBSkin2\\colormap4.png"));
+        pixmap = new Pixmap(Gdx.files.internal("assets\\Panels\\colormap4.png"));
         pixmap.setFilter(Pixmap.Filter.NearestNeighbour);
 
         addListener(inputListener = new InputListener() {
