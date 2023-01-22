@@ -9,8 +9,13 @@ import com.badlogic.gdx.utils.Align;
 
 public class MBLabel extends MBComponent{
     //making the label
-    Label label;
+    private final Label label;
+
     public MBLabel(String text, Skin skin) {
+        //setting the label
+        label = new Label(text, skin);
+    }
+    public MBLabel(String text) {
         //setting the label
         label = new Label(text, skin);
     }
@@ -19,6 +24,10 @@ public class MBLabel extends MBComponent{
     }
 
     public Actor getComponent(){
+        return label;
+    }
+
+    public Label getLabel() {
         return label;
     }
 }

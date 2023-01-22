@@ -14,16 +14,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.Widget;
  */
 public class MBTextArea extends MBComponent{
     //making the text area
-    TextArea textArea;
+    private final TextArea textArea;
 
     public MBTextArea(String text, Skin skin) {
-        Skin uiSkin = new Skin (Gdx.files.internal(
-                "assets\\skins\\uiskin.json"));
+        //setting the text area
+        textArea = new TextArea(text, skin);
+    }
+    public MBTextArea(String text) {
         //setting the text area
         textArea = new TextArea(text, skin);
     }
 
     public Actor getComponent(){
+        return textArea;
+    }
+    public TextArea getTextArea(){
         return textArea;
     }
 }

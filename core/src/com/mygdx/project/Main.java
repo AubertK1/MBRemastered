@@ -91,8 +91,8 @@ public class Main extends ApplicationAdapter {
 		//creating a textarea
 		MBTextArea reminderTextArea;
 		reminderTextArea = new MBTextArea("", uiSkin);
-		reminderTextArea.textArea.setSize(760,330);
-		reminderTextArea.textArea.setPosition(120,160);
+		reminderTextArea.getTextArea().setSize(760,330);
+		reminderTextArea.getTextArea().setPosition(120,160);
 		//creating a label
 		MBLabel reminderLabel = new MBLabel("REMINDERS", uiSkin);
 		reminderLabel.setSize(760, 40);
@@ -112,12 +112,12 @@ public class Main extends ApplicationAdapter {
 
 		//creating item tab buttons
 		final MBButton weaponsButton = new MBButton("Weapons", uiSkin);
-		((TextButton)weaponsButton.button).getLabel().setFontScale(.92f, .9f);
+		((TextButton)weaponsButton.getButton()).getLabel().setFontScale(.92f, .9f);
 		weaponsButton.setPosition(listPanel.getX()+5, listPanel.getY()+ listPanel.getHeight()-20);
 		weaponsButton.setSize(80, 15);
 
 		final MBButton spellsButton = new MBButton("Spells", uiSkin);
-		((TextButton)spellsButton.button).getLabel().setFontScale(1f, .9f);
+		((TextButton)spellsButton.getButton()).getLabel().setFontScale(1f, .9f);
 		spellsButton.setPosition(weaponsButton.getX()+ weaponsButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
 		spellsButton.setSize(80, 15);
 
@@ -278,6 +278,182 @@ public class Main extends ApplicationAdapter {
             }
         });
 		//endregion
+/*
+		//region listpanel
+		//creating a list panel to hold all the items and adding it to the genstats panel
+		final Minipanel listPanel = new Minipanel("assets\\Panels\\ListPanel.png",
+				new Rectangle(120, 560, 470, 300));
+		genStatsPanel.add(listPanel);
+
+		//creating item tab buttons
+		final MBButton weaponsButton = new MBButton("Weapons", uiSkin);
+		((TextButton)weaponsButton.getButton()).getLabel().setFontScale(.92f, .9f);
+		weaponsButton.setPosition(listPanel.getX()+5, listPanel.getY()+ listPanel.getHeight()-20);
+		weaponsButton.setSize(80, 15);
+
+		final MBButton spellsButton = new MBButton("Spells", uiSkin);
+		((TextButton)spellsButton.getButton()).getLabel().setFontScale(1f, .9f);
+		spellsButton.setPosition(weaponsButton.getX()+ weaponsButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
+		spellsButton.setSize(80, 15);
+
+		listPanel.add(weaponsButton);
+		listPanel.add(spellsButton);
+
+		weaponsButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if(itemTab == 2){
+					itemTab = 1;
+					for (Item item: listPanel.sItems) {
+						item.setSoftVisible(false);
+					}
+					for (Item item: listPanel.wItems) {
+						if(item.getSpot() >= 0 && item.getSpot() <= 5) {
+							item.setSoftVisible(true);
+							if (item.editMode && item.supposedToBeVisible) {
+								item.saveEdit();
+								item.edit();
+							}
+						}
+					}
+					for (Tipbox tipbox: tipboxes) {
+						tipbox.setSoftVisible(true);
+					}
+				}
+			}
+		});
+
+		spellsButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if(itemTab == 1){
+					itemTab = 2;
+					for (Item item: listPanel.sItems) {
+						if(item.getSpot() >= 0 && item.getSpot() <= 5) {
+							item.setSoftVisible(true);
+							if (item.editMode && item.supposedToBeVisible) {
+								item.saveEdit();
+								item.edit();
+							}
+						}
+					}
+					for (Item item: listPanel.wItems) {
+						item.setSoftVisible(false);
+					}
+					for (Tipbox tipbox: tipboxes) {
+						if (tipbox.getParentPanel().editMode && tipbox.getParentPanel().supposedToBeVisible) {
+							tipbox.setSoftVisible(true);
+						}
+					}
+				}
+			}
+		});
+
+		//creating item shift buttons and setting their sizes
+		MBButton addButton = new MBButton(uiSkin);
+		//XPosition = (ListPanelXPos + ListPanelWidth - GapBetweenBorderAndButton - DownButtonWidth - GapBetweenButtons - UpButtonWidth - GapBetweenButtons - AddButtonWidth)
+		//which ends up being XPosition = (120 + 470 - 5 - 40 - 2 - 40 - 2 - 40) = 461
+		addButton.setPosition(461, listPanel.getY()+ listPanel.getHeight()-20);
+		addButton.setSize(40, 15);
+
+		final MBButton upButton = new MBButton(uiSkin);
+		upButton.setPosition(addButton.getX()+ addButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
+		upButton.setSize(40, 15);
+
+		final MBButton downButton = new MBButton(uiSkin);
+		downButton.setPosition(upButton.getX()+ upButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
+		downButton.setSize(40, 15);
+		//adding item buttons to the list panel
+		listPanel.add(addButton);
+		listPanel.add(upButton);
+		listPanel.add(downButton);
+		//making the first WEAPON item and assigning it to the first spot
+		final Item item1 = new Item(1, 0);
+		//making the first SPELL item and assigning it to the first spot
+		final Item itemS1 = new Item(2, 0);
+		listPanel.add(item1);
+		listPanel.add(itemS1);
+		if(itemTab == 1){
+			for (Item item: listPanel.sItems) {
+				item.setSoftVisible(false);
+			}
+			for (Tipbox tipbox: tipboxes) {
+				tipbox.setSoftVisible(false);
+			}
+		}
+		if(itemTab == 2){
+			for (Item item: listPanel.wItems) {
+				item.setSoftVisible(false);
+			}
+			for (Tipbox tipbox: tipboxes) {
+				tipbox.setSoftVisible(true);
+			}
+		}
+
+		//adds a new item
+		addButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+				if(itemTab == 1) {
+					Item item2 = new Item(1, Panel.nextAvaWSpot);
+					listPanel.add(item2);
+					item2.edit();
+                    if(item2.getSpot() > 5) item2.setSoftVisible(false);
+				}
+				else if(itemTab == 2) {
+					Item item2 = new Item(2, Panel.nextAvaSSpot);
+					listPanel.add(item2);
+					item2.edit();
+					if(item2.getSpot() > 5) item2.setSoftVisible(false);
+                }
+            }
+        });
+		//shifts all the items up
+		upButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+				if(itemTab == 1 && (listPanel.wItems.size() > 0)) {
+					for (int i = 0; i < listPanel.wItems.get(0).getParentPanel().minipanels.size(); i++) {
+						if (listPanel.wItems.get(0).getParentPanel().minipanels.get(i).wSpot > 0) {
+							listPanel.wItems.get(0).shuffleItemsUp();
+							break;
+						}
+					}
+				}
+				else if(itemTab == 2 && (listPanel.sItems.size() > 0)) {
+					for (int i = 0; i < listPanel.sItems.get(0).getParentPanel().minipanels.size(); i++) {
+						if (listPanel.sItems.get(0).getParentPanel().minipanels.get(i).sSpot > 0) {
+							listPanel.sItems.get(0).shuffleItemsUp();
+							break;
+						}
+					}
+				}
+            }
+        });
+		//shifts all the buttons down
+		downButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+				if(itemTab == 1 && (listPanel.wItems.size() > 0)) {
+					for (int i = 0; i < listPanel.wItems.get(0).getParentPanel().minipanels.size(); i++) {
+						if (listPanel.wItems.get(0).getParentPanel().minipanels.get(i).wSpot < 0) {
+							listPanel.wItems.get(0).shuffleItemsDown();
+							break;
+						}
+					}
+				}
+				if(itemTab == 2 && (listPanel.sItems.size() > 0)) {
+					for (int i = 0; i < listPanel.sItems.get(0).getParentPanel().minipanels.size(); i++) {
+						if (listPanel.sItems.get(0).getParentPanel().minipanels.get(i).sSpot < 0) {
+							listPanel.sItems.get(0).shuffleItemsDown();
+							break;
+						}
+					}
+				}
+            }
+        });
+		//endregion
+*/
 
 		//region stats
 		//creating all the stats panels to hold the player stats
@@ -313,27 +489,27 @@ public class Main extends ApplicationAdapter {
 		//size and positions set by eyeballing until it looked nice
 		strTF.setSize(42, 35);
 		strTF.setPosition(124, 873);
-		strTF.textField.setAlignment(Align.center);
+		strTF.getTextField().setAlignment(Align.center);
 		MBTextField dexTF = new MBTextField("", uiSkin);
 		dexTF.setSize(42, 35);
 		dexTF.setPosition(184, 873);
-		dexTF.textField.setAlignment(Align.center);
+		dexTF.getTextField().setAlignment(Align.center);
 		MBTextField conTF = new MBTextField("", uiSkin);
 		conTF.setSize(42, 35);
 		conTF.setPosition(244, 873);
-		conTF.textField.setAlignment(Align.center);
+		conTF.getTextField().setAlignment(Align.center);
 		MBTextField intTF = new MBTextField("", uiSkin);
 		intTF.setSize(42, 35);
 		intTF.setPosition(304, 873);
-		intTF.textField.setAlignment(Align.center);
+		intTF.getTextField().setAlignment(Align.center);
 		MBTextField wisTF = new MBTextField("", uiSkin);
 		wisTF.setSize(42, 35);
 		wisTF.setPosition(364, 873);
-		wisTF.textField.setAlignment(Align.center);
+		wisTF.getTextField().setAlignment(Align.center);
 		MBTextField chaTF = new MBTextField("", uiSkin);
 		chaTF.setSize(42, 35);
 		chaTF.setPosition(424, 873);
-		chaTF.textField.setAlignment(Align.center);
+		chaTF.getTextField().setAlignment(Align.center);
 		//adding components to their minipanels
 		strPanel.add(strTF);
 		strPanel.add(strL);
@@ -368,7 +544,7 @@ public class Main extends ApplicationAdapter {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				for (Item spell: listPanel.sItems) {
-					((TextButton)spell.getUsesButton().button).setText(String.valueOf(spell.srMax));
+					((TextButton)spell.getUsesButton().getButton()).setText(String.valueOf(spell.srMax));
 					spell.uses[0] = spell.srMax;
 				}
 			}
@@ -382,7 +558,7 @@ public class Main extends ApplicationAdapter {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				for (Item spell: listPanel.sItems) {
-					((TextButton)spell.getUsesButton().button).setText(String.valueOf(spell.lrMax));
+					((TextButton)spell.getUsesButton().getButton()).setText(String.valueOf(spell.lrMax));
 					spell.uses[0] = spell.lrMax;
 				}
 			}
@@ -633,8 +809,8 @@ public class Main extends ApplicationAdapter {
 		stage.act();
 
 		//fixme might be inefficient but it does the job
-		if(!player.contentEquals(((MBLabel)topPanel.components.get(0)).label.getText())){
-			((MBLabel)topPanel.components.get(0)).label.setText(player);
+		if(!player.contentEquals(((MBLabel)topPanel.components.get(0)).getLabel().getText())){
+			((MBLabel)topPanel.components.get(0)).getLabel().setText(player);
 		}
 	}
 

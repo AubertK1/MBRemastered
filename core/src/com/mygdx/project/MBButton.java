@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 
 public class MBButton extends MBComponent{
-    Button button;
+    private Button button;
     String style = "default";
     Texture texture;
 
@@ -45,7 +45,7 @@ public class MBButton extends MBComponent{
         button = new TextButton(text, this.skin);
     }
     /**
-     * TextButton
+     * TextButton with a special style
      * @param text
      * @param skin
      */
@@ -69,7 +69,7 @@ public class MBButton extends MBComponent{
         }
         if (buttonID != -1) Main.stage.getActors().get(buttonID).addAction(Actions.removeActor());
 
-        //changes this textbutton to an imagebutton
+        //changes this button to an imagebutton
         button = new ImageButton(skin);
         //re-initializes the button
         button.setPosition(pos.x, pos.y);
@@ -92,7 +92,7 @@ public class MBButton extends MBComponent{
         }
         if (buttonID != -1) Main.stage.getActors().get(buttonID).addAction(Actions.removeActor());
 
-        //changes this imagebutton to a textbutton
+        //changes this button to a textbutton
         button = new TextButton(text, skin);
         //re-initializes the button
         button.setPosition(pos.x, pos.y);

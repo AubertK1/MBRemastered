@@ -1,6 +1,7 @@
 package com.mygdx.project;
 
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -18,6 +19,9 @@ public class Item2 extends Minipanel{
 
     //if the panel is in edit mode
     protected boolean editMode = false;
+
+    protected int spot;
+    protected int ID;
 
     protected final float ITEMGAP = 5;
 
@@ -40,17 +44,17 @@ public class Item2 extends Minipanel{
         for (MBComponent component : components) {
             //finds editbutton and checks it
             if (component.getName() != null && component.getName().equals("editbutton") && component instanceof MBButton) {
-                ((MBButton) component).button.setChecked(true);
+                ((MBButton) component).getButton().setChecked(true);
             }
         }
 
         //loops through this item's textfields list and updates their positions, re-adds them to the list, and sets their hard visibility to true
         for (int i = 0; i < textFields.size(); i++) {
-            textFields.get(i).textField.setText(labelTexts.get(i));
-            labels.get(i).label.setText("");
+            textFields.get(i).getTextField().setText(labelTexts.get(i));
+            labels.get(i).getLabel().setText("");
             textFields.get(i).setPosition(labels.get(i).getX(), getY() + 5);
             textFields.get(i).setSize(labels.get(i).getWidth(), 30);
-            add(textFields.get(i));
+//            add(textFields.get(i));
             textFields.get(i).setVisible(true);
         }
 
@@ -63,18 +67,18 @@ public class Item2 extends Minipanel{
         for (MBComponent component : components) {
             //finds editbutton and unchecks it
             if (component.getName() != null && component.getName().equals("editbutton") && component instanceof MBButton) {
-                ((MBButton) component).button.setChecked(false);
+                ((MBButton) component).getButton().setChecked(false);
             }
         }
 
         //removing the textfields
         for (int i = 0; i < textFields.size(); i++) {
-                labelTexts.set(i, textFields.get(i).textField.getText()); //updating the label list's text
+            labelTexts.set(i, textFields.get(i).getTextField().getText()); //updating the label list's text
 
-                labels.get(i).label.setText(shortenString(labelTexts.get(i), labels.get(i).getWidth())); //updating the label's text
+            labels.get(i).getLabel().setText(shortenString(labelTexts.get(i), labels.get(i).getWidth())); //updating the label's text
 
-                textFields.get(i).setVisible(false); //fixme I don't think this is necessary
-                remove(textFields.get(i));
+            textFields.get(i).setVisible(false); //fixme I don't think this is necessary
+//            remove(textFields.get(i));
         }
 
         editMode = false;
@@ -184,10 +188,29 @@ public class Item2 extends Minipanel{
     public ArrayList<Item2> getItems(){
         return null;
     }
+    /**
+     * @return returns this item's spot value
+     */
     public int getSpot(){
-        return -1;
+        return spot;
+    }
+    public int getID(){
+        return ID;
     }
     public Item2 getItemBySpot(int spot){
         return null;
+    }
+    /**
+     * @return returns this item's y value
+     */
+    public float getY(){
+        return (position.y-((position.height+5) * spot));
+    }
+
+    /**
+     * @return returns if the panel is in edit mode
+     */
+    public boolean getEditMode(){
+        return editMode;
     }
 }
