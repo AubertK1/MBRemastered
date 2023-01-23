@@ -13,10 +13,6 @@ import java.util.ArrayList;
 public class SpellItem extends Item2{
     private final Tipbox spellDesc;
 
-    private static int totalItems = 0;
-    private static ArrayList<Item2> allItems = new ArrayList<>();
-    private static int nextAvaSpot = 0;
-
     int usesIndexInNames = -1;
     private MBButton usesButton;
     int uses = 0;
@@ -27,14 +23,13 @@ public class SpellItem extends Item2{
     public SpellItem() {
         super();
 
-        this.spot = nextAvaSpot;
-        ID = totalItems;
-
+/*
         allItems.add(this);
         //increasing the total number of items by one (this item's ID was already set when it was created (code in panel class))
         totalItems++;
         //increasing the next available spot by one
         nextAvaSpot++;
+*/
 
         //fixme Look over this code and make sure its optimal
         //region labels
@@ -72,10 +67,10 @@ public class SpellItem extends Item2{
         final MBButton usesButton = new MBButton(String.valueOf(uses), skin),
                 minusButton = new MBButton(skin, "down-button"),
                 plusButton = new MBButton(skin, "up-button"),
-                itemButtonEdit = new MBButton(skin, "edit-toggle"),
-                itemButtonDel = new MBButton(skin, "delete-button"),
-                itemButtonDown = new MBButton(skin, "down-button"),
-                itemButtonUp = new MBButton(skin, "up-button");
+                editButton = new MBButton(skin, "edit-toggle"),
+                delButton = new MBButton(skin, "delete-button"),
+                downButton = new MBButton(skin, "down-button"),
+                upButton = new MBButton(skin, "up-button");
 
         usesButton.setName("usesbutton"); //setting the name so I can identify it later
         usesButton.setPosition(usesLabel.getX(), usesLabel.getY());
@@ -91,26 +86,26 @@ public class SpellItem extends Item2{
         plusButton.setSize(usesButton.getWidth(), usesButton.getHeight()/2 - 1);
         plusButton.aFloat = 0;
 
-        itemButtonEdit.getButton().setChecked(true);
-        itemButtonEdit.setName("editbutton");
-        itemButtonEdit.getButton().setName("editbutton"); //setting the name so I can identify it later
-        itemButtonEdit.setPosition((usesLabel.getX()+usesLabel.getWidth()+8), nameLabel.getY()-1);
-        itemButtonEdit.setSize(20, 15);
+        editButton.getButton().setChecked(true);
+        editButton.setName("editbutton");
+        editButton.getButton().setName("editbutton"); //setting the name so I can identify it later
+        editButton.setPosition((usesLabel.getX()+usesLabel.getWidth()+8), nameLabel.getY()-1);
+        editButton.setSize(20, 15);
 
-        itemButtonDel.setPosition(itemButtonEdit.getX(), itemButtonEdit.getY()+itemButtonEdit.getHeight()+2);
-        itemButtonDel.setSize(20, 15);
+        delButton.setPosition(editButton.getX(), editButton.getY()+editButton.getHeight()+2);
+        delButton.setSize(20, 15);
 
-        itemButtonDown.setPosition((itemButtonDel.getX()+itemButtonDel.getWidth()+2), itemButtonEdit.getY());
-        itemButtonDown.setSize(20, 15);
+        downButton.setPosition((delButton.getX()+delButton.getWidth()+2), editButton.getY());
+        downButton.setSize(20, 15);
 
-        itemButtonUp.setPosition(itemButtonDown.getX(), itemButtonDown.getY()+itemButtonDown.getHeight()+2);
-        itemButtonUp.setSize(20, 15);
+        upButton.setPosition(downButton.getX(), downButton.getY()+downButton.getHeight()+2);
+        upButton.setSize(20, 15);
 
         add(usesButton);
-        add(itemButtonEdit);
-        add(itemButtonDel);
-        add(itemButtonDown);
-        add(itemButtonUp);
+        add(editButton);
+        add(delButton);
+        add(downButton);
+        add(upButton);
         //endregion
 
         //region uses button
@@ -141,7 +136,7 @@ public class SpellItem extends Item2{
         minusButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("minus clicked " + (ID + 1));
+                System.out.println("minus clicked " + (getID() + 1));
                 uses--;
                 ((TextButton)usesButton.getButton()).setText(String.valueOf(uses));
             }
@@ -166,7 +161,7 @@ public class SpellItem extends Item2{
         plusButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("plus clicked "+(ID + 1));
+                System.out.println("plus clicked "+(getID() + 1));
                 uses++;
                 ((TextButton)usesButton.getButton()).setText(String.valueOf(uses));
             }
@@ -194,20 +189,20 @@ public class SpellItem extends Item2{
         final MBButton srButton = new MBButton("Short Rest", skin);
         srButton.getButton().setStyle(Main.uiSkin.get("toggle", TextButton.TextButtonStyle.class));
         srButton.getButton().setChecked(true);
-        srButton.setSize(50, itemButtonEdit.getHeight());
-        srButton.setPosition(usesButton.getX()-srButton.getWidth()-2, itemButtonDel.getY());
+        srButton.setSize(50, editButton.getHeight());
+        srButton.setPosition(usesButton.getX()-srButton.getWidth()-2, delButton.getY());
         ((TextButton)srButton.getButton()).getLabel().setFontScale(.6f,.7f);
 
         final MBButton lrButton = new MBButton("Long Rest", skin);
         lrButton.getButton().setStyle(Main.uiSkin.get("toggle", TextButton.TextButtonStyle.class));
         lrButton.getButton().setChecked(false);
-        lrButton.setSize(50, itemButtonDel.getHeight());
-        lrButton.setPosition(srButton.getX(), itemButtonEdit.getY());
+        lrButton.setSize(50, delButton.getHeight());
+        lrButton.setPosition(srButton.getX(), editButton.getY());
         ((TextButton)lrButton.getButton()).getLabel().setFontScale(.6f,.7f);
         srButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("short rest " +(ID + 1));
+                System.out.println("short rest " +(getID() + 1));
                 //When the button is pressed while checked. Usually it would be if(button.isChecked), but button unchecks itself before this is called, so it's reversed
                 if(!srButton.getButton().isChecked()){
                     lrButton.getButton().setChecked(true);
@@ -220,7 +215,7 @@ public class SpellItem extends Item2{
         lrButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("long rest "+(ID + 1));
+                System.out.println("long rest "+(getID() + 1));
                 //When the button is pressed while checked. Usually it would be if(button.isChecked), but button unchecks itself before this is called, so it's reversed
                 if(!lrButton.getButton().isChecked()){
                     srButton.getButton().setChecked(true);
@@ -240,10 +235,10 @@ public class SpellItem extends Item2{
 
         //region button listeners
         //changes this item in and out of edit mode
-        itemButtonEdit.addListener(new ChangeListener() {
+        editButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Edit Button " + (ID +1));
+                System.out.println("Edit Button " + (getID() +1));
 
                 if(!editMode) {
                     edit();
@@ -257,32 +252,32 @@ public class SpellItem extends Item2{
         });
         //deletes the item from existence
         //fixme still need to work on this button
-        itemButtonDel.addListener(new ChangeListener() {
+        delButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Delete Button " + (ID +1));
+                System.out.println("Delete Button " + (getID() +1));
 
                 int currSpot = getSpot();
-                shuffleItemsUp(currSpot);
+                parentIP.shuffleItemsUp(currSpot);
 
                 for (int i = components.size()-1; i >= 0; i--) {
                     delete(components.get(i));
                 }
-                parentPanel.delete(SpellItem.this);
+                parentIP.delete(SpellItem.this);
             }
         });
 
         //swaps this item with the item under it
-        itemButtonDown.addListener(new ChangeListener() {
+        downButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //filler just for my entertainment
-                System.out.println("Down Button " + (ID + 1));
+                System.out.println("Down Button " + (getID() + 1));
 
-                int nextSpot = spot + 1;
+                int nextSpot = getSpot() + 1;
                 //if it's not at the bottom...
-                if (nextSpot < nextAvaSpot) {
-                    Item2 nextItem = getItemBySpot(nextSpot);
+                if (nextSpot < parentIP.getNextAvaSpot()) {
+                    Item2 nextItem = parentIP.getItemBySpot(nextSpot);
 
                     //loops through this item's components' position and decreases the Y value by the item's height plus the gap between items (moving it down)
                     for (MBComponent component : components) {
@@ -314,17 +309,19 @@ public class SpellItem extends Item2{
             }
         });
 
-        itemButtonUp.addListener(new ChangeListener() {
+        upButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //filler just for my entertainment
-                System.out.println("Up Button "+ (ID + 1));
+                System.out.println("Up Button "+ (getID() + 1));
 
-                int prevSpot = spot - 1;
+                int currSpot = getSpot();
+                int prevSpot = getSpot() - 1;
                 //if it's not at the top...
                 if(prevSpot >= 0) {
                     Item2 prevItem = getItemBySpot(prevSpot);
 
+/*
                     //reassigns the spots to different variables
                     //loops through this item's components' position and decreases the Y value by the item's height plus the gap between items (moving it up)
                     for (MBComponent component : components) {
@@ -341,6 +338,13 @@ public class SpellItem extends Item2{
                     //decreases the previous item's tipbox's Y value by the item's height plus the gap between items (moving it down)
                     if(prevItem instanceof SpellItem) ((SpellItem) prevItem).getTipbox().setPosition(((SpellItem) prevItem).getTipbox().getX(),
                             ((SpellItem) prevItem).getTipbox().getY() + (getHeight() + ITEMGAP));
+*/
+                    //fixme TEST IF THIS WORKS
+                    setSpot(prevSpot);
+                    prevItem.setSpot(currSpot);
+
+                    reformat();
+                    prevItem.reformat();
 
                     //moves the textfields with this item if in edit mode
                     if(editMode){
@@ -443,8 +447,8 @@ public class SpellItem extends Item2{
 
     public void edit() {
         //to have only one item edited at a time
-        if(allItems != null) {
-            for (Item2 item2: allItems) {
+        if(parentIP.getItems() != null) {
+            for (Item2 item2: parentIP.getItems()) {
                 if(item2 != this) item2.saveEdit(); //if this isn't the item being edited...
             }
         }

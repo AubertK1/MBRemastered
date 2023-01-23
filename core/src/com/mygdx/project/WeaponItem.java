@@ -131,7 +131,7 @@ public class WeaponItem extends Item2{
                 System.out.println("Delete Button " + (ID +1));
 
                 int currSpot = getSpot();
-                shuffleItemsUp(currSpot);
+//                shuffleItemsUp(currSpot);
 
                 for (int i = components.size()-1; i >= 0; i--) {
                     delete(components.get(i));
@@ -246,15 +246,6 @@ public class WeaponItem extends Item2{
         editMode = true;
     }
 
-    public void setNextAvaSpot(int spot){
-        nextAvaSpot = spot;
-    }
-    public void setSpot(int spot){
-        this.spot = spot;
-    }
-    public int getNextAvaSpot(){
-        return nextAvaSpot;
-    }
     public ArrayList<Item2> getItems() {
         return allItems;
     }

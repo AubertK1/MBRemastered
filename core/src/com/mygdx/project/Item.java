@@ -1105,15 +1105,14 @@ public class Item extends Minipanel{
     public void render(SpriteBatch batch) {
         batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
 
-        if(itemType == 1) batch.draw(texture, position.x, (position.y-((position.height+5)* wSpot)), position.width, position.height);
-        if(itemType == 2) batch.draw(texture, position.x, (position.y-((position.height+5)* sSpot)), position.width, position.height);
+        if(itemType == 1) batch.draw(texture, getX(), getY(), getWidth(), getHeight());
+        if(itemType == 2) batch.draw(texture, getX(), getY(), getWidth(), getHeight());
 
         for (int c = 0; c < components.size(); c++) {
 
             if(components.get(c).supposedToBeVisible) {
                 //sets the soft visibility of the component to true
                 components.get(c).setSoftVisible(true);
-//                components.get(c).getComponent().act(1/60f);
 
                 components.get(c).draw(components.get(c).aFloat);
             }

@@ -20,6 +20,7 @@ public class Item2 extends Minipanel{
     //if the panel is in edit mode
     protected boolean editMode = false;
 
+    protected ItemPanel parentIP;
     protected int spot;
     protected int ID;
 
@@ -28,6 +29,30 @@ public class Item2 extends Minipanel{
     public Item2() {
         super("assets\\Panels\\ItemPanel4.png", new Rectangle(125, 790, 460, 40));
         skin = Main.uiSkin;
+    }
+
+    /**
+     * moves the item and its components to this item's corresponding spot
+     */
+    protected void reformat() {
+        float oldY, yGap;
+        oldY = getY();
+        //updates the item's position
+        setPosition(getX(),getY()-((getHeight()+ITEMGAP) * spot));
+
+        yGap = getY() - oldY;
+        //updates the item's components' positions
+        for (MBComponent component : components) {
+            component.setPosition(component.getX(), component.getY() + yGap);
+        }
+        //updates the item's minipanels' positions
+        for (Panel minipanel: minipanels) {
+            minipanel.setPosition(minipanel.getX(), minipanel.getY() + yGap);
+            //updates the item's minipanels' components' positions
+            for (MBComponent MPComp: minipanel.components) {
+                MPComp.setPosition(MPComp.getX(), MPComp.getY() + yGap);
+            }
+        }
     }
 
     /**
@@ -83,9 +108,12 @@ public class Item2 extends Minipanel{
 
         editMode = false;
     }
-    /**
+/*
+    */
+/**
      * shuffles all the items one spot up
-     */
+     *//*
+
     public void shuffleItemsUp(){
         //reduces the next available spot value by one so that new items get added under the lowest item always
         setNextAvaSpot(getNextAvaSpot() - 1);
@@ -116,10 +144,11 @@ public class Item2 extends Minipanel{
         }
     }
 
-    /**
+    */
+/**
      * shuffles all the items under the start spot up one spot
-     * @param startSpot the highest spot you don't want to raise
-     */
+     *//*
+
     public void shuffleItemsUp(int startSpot){
         //reduces the next available spot value by one so that new items get added under the lowest item always
         setNextAvaSpot(getNextAvaSpot() - 1);
@@ -152,6 +181,7 @@ public class Item2 extends Minipanel{
         }
     }
 
+*/
     public String shortenString(String str, float length){
         GlyphLayout layout = new GlyphLayout();
         String shortenedString;
@@ -176,15 +206,17 @@ public class Item2 extends Minipanel{
         return str;
     }
 
-    public void setNextAvaSpot(int spot){
-
-    }
     public void setSpot(int spot){
-
+        this.spot = spot;
     }
+    public void setID(int ID){
+        this.ID = ID;
+    }
+/*
     public int getNextAvaSpot(){
         return -1;
     }
+*/
     public ArrayList<Item2> getItems(){
         return null;
     }
@@ -200,17 +232,38 @@ public class Item2 extends Minipanel{
     public Item2 getItemBySpot(int spot){
         return null;
     }
-    /**
-     * @return returns this item's y value
-     */
-    public float getY(){
-        return (position.y-((position.height+5) * spot));
+    public void setParentIP(ItemPanel IP){
+        parentIP = IP;
     }
-
+    public ItemPanel getParentIP(){
+        return parentIP;
+    }
     /**
      * @return returns if the panel is in edit mode
      */
     public boolean getEditMode(){
         return editMode;
+    }
+
+    /**
+     * renders this item and any minipanels it may hold
+     * @param batch the batch...
+     */
+    public void render(SpriteBatch batch) {
+        batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
+
+        batch.draw(texture, getX(), getY(), getWidth(), getHeight());
+
+        for (MBComponent component : components) {
+            if (component.supposedToBeVisible) {
+                //sets the soft visibility of the component to true
+                component.setSoftVisible(true);
+
+                component.draw(component.aFloat);
+            }
+        }
+        for (Panel minipanel : minipanels) {
+            minipanel.render(batch);
+        }
     }
 }

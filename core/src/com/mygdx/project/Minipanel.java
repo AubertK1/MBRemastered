@@ -16,7 +16,7 @@ public class Minipanel extends Panel{
     public void render (SpriteBatch batch) {
         //screen size is 1920x1000 so adjust accordingly
         //draws this panel
-        batch.draw(texture, position.x, position.y, position.width, position.height);
+        batch.draw(texture, getX(), getY(), getWidth(), getHeight());
         //loops through this panel's list of minipanels
         for (Panel minipanel : minipanels) {
             //if the minipanel's spot value is less than 0 then it doesn't render it (because it doesn't call render)

@@ -15,7 +15,7 @@ public class Tipbox extends Minipanel{
 
         if (getParentPanel().editMode && getParentPanel().supposedToBeVisible) {
 
-            batch.draw(texture, position.x, position.y, position.width, position.height);
+            batch.draw(texture, getX(), getY(), getWidth(), getHeight());
             //loops through the minipanel's list of components
             for (int c = 0; c < components.size(); c++) {
                 //sets the soft visibility of the component to true

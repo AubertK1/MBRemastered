@@ -53,6 +53,8 @@ public class Panel {
         texture = new Texture(fileLocation);
         //sets the location and size
         this.position = position;
+        setPosition(position.x, position.y);
+        setSize(position.width, position.height);
 //        panelID = panelNum;
 //        panelNum++;
     }
@@ -189,7 +191,9 @@ public class Panel {
     public void setPosition(float x, float y){
         position.setPosition(x, y);
     }
-    public void setSize(float width, float height){position.setSize(width, height);}
+    public void setSize(float width, float height){
+        position.setSize(width, height);
+    }
     /**
      * @return returns the panel this panel belongs to
      */
@@ -280,7 +284,7 @@ public class Panel {
         //makes sure the panel's opacity is unchanged by the components' opacity changes
         batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
         //draws this panel
-        batch.draw(texture, position.x, position.y, position.width, position.height);
+        batch.draw(texture, getX(), getY(), getWidth(), getHeight());
         //loops through this panel's list of minipanels
         for (int i = 0; i < minipanels.size(); i++) {
 
