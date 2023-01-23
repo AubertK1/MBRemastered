@@ -30,7 +30,9 @@ public class Item2 extends Minipanel{
         super("assets\\Panels\\ItemPanel4.png", new Rectangle(125, 790, 460, 40));
         skin = Main.uiSkin;
     }
+    public void initialize(){
 
+    }
     /**
      * moves the item and its components to this item's corresponding spot
      */
@@ -254,16 +256,21 @@ public class Item2 extends Minipanel{
 
         batch.draw(texture, getX(), getY(), getWidth(), getHeight());
 
-        for (MBComponent component : components) {
-            if (component.supposedToBeVisible) {
-                //sets the soft visibility of the component to true
-                component.setSoftVisible(true);
-
-                component.draw(component.aFloat);
+        for (MBComponent component: components) {
+            if(component.supposedToBeVisible) {
+                component.getComponent().draw(batch, component.aFloat);
+                if(component.components.size() > 0){
+                    for (MBComponent componentComp: component.components) {
+                        componentComp.getComponent().draw(batch, componentComp.aFloat);
+                    }
+                }
             }
         }
+        //loops through this panel's list of minipanels
         for (Panel minipanel : minipanels) {
-            minipanel.render(batch);
+            if(minipanel.supposedToBeVisible){
+                minipanel.render(batch);
+            }
         }
     }
 }

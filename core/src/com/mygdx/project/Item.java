@@ -540,7 +540,7 @@ public class Item extends Minipanel{
         itemButtonEdit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Edit Button " + (itemButtonEdit.getItem().sID +1));
+                System.out.println("S Edit Button " + (itemButtonEdit.getItem().sID +1));
                 if(!editMode) {
                     edit();
                     editMode = true;
@@ -1108,17 +1108,21 @@ public class Item extends Minipanel{
         if(itemType == 1) batch.draw(texture, getX(), getY(), getWidth(), getHeight());
         if(itemType == 2) batch.draw(texture, getX(), getY(), getWidth(), getHeight());
 
-        for (int c = 0; c < components.size(); c++) {
-
-            if(components.get(c).supposedToBeVisible) {
-                //sets the soft visibility of the component to true
-                components.get(c).setSoftVisible(true);
-
-                components.get(c).draw(components.get(c).aFloat);
+        for (MBComponent component: components) {
+            if(component.supposedToBeVisible) {
+                component.getComponent().draw(batch, component.aFloat);
+                if(component.components.size() > 0){
+                    for (MBComponent componentComp: component.components) {
+                        componentComp.getComponent().draw(batch, componentComp.aFloat);
+                    }
+                }
             }
         }
-        for (int i = 0; i < tipboxes.size(); i++) {
-            tipboxes.get(i).render(batch);
+        //loops through this panel's list of minipanels
+        for (Panel minipanel : minipanels) {
+            if(minipanel.supposedToBeVisible){
+                minipanel.render(batch);
+            }
         }
     }
 }

@@ -187,6 +187,12 @@ public class Panel {
 
     public void setSoftVisible(boolean visible){
         supposedToBeVisible = visible;
+        for (MBComponent comp: components) {
+            comp.setSoftVisible(visible);
+        }
+        for (Panel mp: minipanels) {
+            if(mp.components.size() > 0) mp.setSoftVisible(visible);
+        }
     }
     public void setPosition(float x, float y){
         position.setPosition(x, y);
@@ -285,22 +291,15 @@ public class Panel {
         batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
         //draws this panel
         batch.draw(texture, getX(), getY(), getWidth(), getHeight());
-        //loops through this panel's list of minipanels
-        for (int i = 0; i < minipanels.size(); i++) {
-
-            minipanels.get(i).render(batch);
-            //loops through the minipanel's list of components
-
-
+        for (MBComponent component: components) {
+            if(component.supposedToBeVisible) {
+                component.getComponent().draw(batch, component.aFloat);
+            }
         }
-        //loops through any components added directly to the panel
-        for (int c = 0; c < components.size(); c++) {
-            if(components.get(c).supposedToBeVisible) {
-                //sets the soft visibility of the component to true
-                components.get(c).setSoftVisible(true);
-//                components.get(c).getComponent().act(Gdx.graphics.getDeltaTime());
-                //draws the component
-                components.get(c).draw(components.get(c).aFloat);
+        //loops through this panel's list of minipanels
+        for (Panel minipanel : minipanels) {
+            if(minipanel.supposedToBeVisible){
+                minipanel.render(batch);
             }
         }
     }

@@ -7,13 +7,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import java.util.ArrayList;
 
 public class WeaponItem extends Item2{
-    private static int totalItems = 0;
-    private static ArrayList<Item2> allItems = new ArrayList<>();
-    private static int nextAvaSpot = 0;
-
     public WeaponItem() {
         super();
+    }
 
+    public void initialize(){
+
+/*
         this.spot = nextAvaSpot;
         ID = totalItems;
 
@@ -22,6 +22,7 @@ public class WeaponItem extends Item2{
         totalItems++;
         //increasing the next available spot by one
         nextAvaSpot++;
+*/
 
         //region labels
         //creating the labels
@@ -149,7 +150,7 @@ public class WeaponItem extends Item2{
 
                 int nextSpot = spot + 1;
                 //if it's not at the bottom...
-                if (nextSpot < nextAvaSpot) {
+                if (nextSpot < parentIP.getNextAvaSpot()) {
                     Item2 nextItem = getItemBySpot(nextSpot);
 
                     //loops through this item's components' position and decreases the Y value by the item's height plus the gap between items (moving it down)
@@ -220,8 +221,8 @@ public class WeaponItem extends Item2{
      */
     public void edit(){
         //to have only one item edited at a time
-        if(allItems != null) {
-            for (Item2 item2: allItems) {
+        if(parentIP.getItems() != null) {
+            for (Item2 item2: parentIP.getItems()) {
                 if(item2 != this) item2.saveEdit(); //if this isn't the item being edited...
             }
         }
@@ -246,14 +247,11 @@ public class WeaponItem extends Item2{
         editMode = true;
     }
 
-    public ArrayList<Item2> getItems() {
-        return allItems;
-    }
     public int getSpot(){
         return spot;
     }
     public Item2 getItemBySpot(int spot){
-        for (Item2 item : allItems) {
+        for (Item2 item : parentIP.getItems()) {
             if (item.getSpot() == spot) {
                 return item;
             }

@@ -110,7 +110,12 @@ public class Main extends ApplicationAdapter {
 				new Rectangle(120, 560, 470, 300));
 		genStatsPanel.add(listPanel);
 
-		//creating item tab buttons
+		final ItemPanel weaponsPanel = new ItemPanel("", new Rectangle(listPanel.getX()+5, listPanel.getY() + 5, listPanel.getWidth() - 10, listPanel.getHeight()-30));
+		final ItemPanel spellsPanel = new ItemPanel("", new Rectangle(listPanel.getX()+5, listPanel.getY() + 5, listPanel.getWidth() - 10, listPanel.getHeight()-30));
+		listPanel.add(weaponsPanel);
+		listPanel.add(spellsPanel);
+
+		//region item tab buttons
 		final MBButton weaponsButton = new MBButton("Weapons", uiSkin);
 		((TextButton)weaponsButton.getButton()).getLabel().setFontScale(.92f, .9f);
 		weaponsButton.setPosition(listPanel.getX()+5, listPanel.getY()+ listPanel.getHeight()-20);
@@ -129,21 +134,8 @@ public class Main extends ApplicationAdapter {
 			public void changed(ChangeEvent event, Actor actor) {
 				if(itemTab == 2){
 					itemTab = 1;
-					for (Item item: listPanel.sItems) {
-						item.setSoftVisible(false);
-					}
-					for (Item item: listPanel.wItems) {
-						if(item.getSpot() >= 0 && item.getSpot() <= 5) {
-							item.setSoftVisible(true);
-							if (item.editMode && item.supposedToBeVisible) {
-								item.saveEdit();
-								item.edit();
-							}
-						}
-					}
-					for (Tipbox tipbox: tipboxes) {
-						tipbox.setSoftVisible(true);
-					}
+					weaponsPanel.setSoftVisible(true);
+					spellsPanel.setSoftVisible(false);
 				}
 			}
 		});
@@ -153,27 +145,31 @@ public class Main extends ApplicationAdapter {
 			public void changed(ChangeEvent event, Actor actor) {
 				if(itemTab == 1){
 					itemTab = 2;
-					for (Item item: listPanel.sItems) {
-						if(item.getSpot() >= 0 && item.getSpot() <= 5) {
-							item.setSoftVisible(true);
-							if (item.editMode && item.supposedToBeVisible) {
-								item.saveEdit();
-								item.edit();
-							}
-						}
-					}
-					for (Item item: listPanel.wItems) {
-						item.setSoftVisible(false);
-					}
-					for (Tipbox tipbox: tipboxes) {
-						if (tipbox.getParentPanel().editMode && tipbox.getParentPanel().supposedToBeVisible) {
-							tipbox.setSoftVisible(true);
-						}
-					}
+					spellsPanel.setSoftVisible(true);
+					weaponsPanel.setSoftVisible(false);
 				}
 			}
 		});
+		//endregion
 
+		//making the first WEAPON item and assigning it to the first spot
+		Item2 weaponItem1 = new WeaponItem();
+		//making the first SPELL item and assigning it to the first spot
+		Item2 spellItem1 = new SpellItem();
+
+		weaponsPanel.add(weaponItem1);
+		spellsPanel.add(spellItem1);
+
+		if(itemTab == 1){
+			weaponsPanel.setSoftVisible(true);
+			spellsPanel.setSoftVisible(false);
+		}
+		if(itemTab == 2){
+			weaponsPanel.setSoftVisible(false);
+			spellsPanel.setSoftVisible(true);
+		}
+
+		//region item shift buttons
 		//creating item shift buttons and setting their sizes
 		MBButton addButton = new MBButton(uiSkin);
 		//XPosition = (ListPanelXPos + ListPanelWidth - GapBetweenBorderAndButton - DownButtonWidth - GapBetweenButtons - UpButtonWidth - GapBetweenButtons - AddButtonWidth)
@@ -192,38 +188,13 @@ public class Main extends ApplicationAdapter {
 		listPanel.add(addButton);
 		listPanel.add(upButton);
 		listPanel.add(downButton);
-		//making the first WEAPON item and assigning it to the first spot
-		final Item item1 = new Item(1, 0);
-		//making the first SPELL item and assigning it to the first spot
-		final Item itemS1 = new Item(2, 0);
-		listPanel.add(item1);
-		listPanel.add(itemS1);
-		if(itemTab == 1){
-			for (Item item: listPanel.sItems) {
-				item.setSoftVisible(false);
-			}
-			for (Tipbox tipbox: tipboxes) {
-				tipbox.setSoftVisible(false);
-			}
-		}
-		if(itemTab == 2){
-			for (Item item: listPanel.wItems) {
-				item.setSoftVisible(false);
-			}
-			for (Tipbox tipbox: tipboxes) {
-				tipbox.setSoftVisible(true);
-			}
-		}
 
 		//adds a new item
 		addButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 				if(itemTab == 1) {
-					Item item2 = new Item(1, Panel.nextAvaWSpot);
-					listPanel.add(item2);
-					item2.edit();
-                    if(item2.getSpot() > 5) item2.setSoftVisible(false);
+					weaponsPanel.add(new WeaponItem());
 				}
 				else if(itemTab == 2) {
 					Item item2 = new Item(2, Panel.nextAvaSSpot);
@@ -277,6 +248,7 @@ public class Main extends ApplicationAdapter {
 				}
             }
         });
+		//endregion
 		//endregion
 /*
 		//region listpanel
@@ -792,7 +764,9 @@ public class Main extends ApplicationAdapter {
 
 		//drawing the components after so that they are on the top
 		for (Tipbox tipbox: tipboxes) {
-			tipbox.render(batch);
+			if(tipbox.supposedToBeVisible) {
+				tipbox.render(batch);
+			}
 		}
 		for (MBSelectBox selectBox: scrollpanes) {
 			if(selectBox.dropdown.isActive) selectBox.draw(selectBox.aFloat);

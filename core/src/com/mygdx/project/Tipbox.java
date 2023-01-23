@@ -9,11 +9,12 @@ public class Tipbox extends Minipanel{
     }
 
 
+/*
     @Override
     public void render(SpriteBatch batch) {
         batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
 
-        if (getParentPanel().editMode && getParentPanel().supposedToBeVisible) {
+        if (getParentPanel().supposedToBeVisible) {
 
             batch.draw(texture, getX(), getY(), getWidth(), getHeight());
             //loops through the minipanel's list of components
@@ -34,6 +35,7 @@ public class Tipbox extends Minipanel{
             }
         }
     }
+*/
     public MBTextArea getTextArea(){
         for (MBComponent textarea: components) {
             if(textarea instanceof MBTextArea) return (MBTextArea) textarea;

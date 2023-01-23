@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.Align;
 import java.util.ArrayList;
 
 public class SpellItem extends Item2{
-    private final Tipbox spellDesc;
+    private Tipbox spellDesc;
 
     int usesIndexInNames = -1;
     private MBButton usesButton;
@@ -22,6 +22,8 @@ public class SpellItem extends Item2{
 
     public SpellItem() {
         super();
+    }
+    public void initialize(){
 
 /*
         allItems.add(this);
@@ -238,7 +240,7 @@ public class SpellItem extends Item2{
         editButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Edit Button " + (getID() +1));
+                System.out.println("S Edit Button " + (getID() +1));
 
                 if(!editMode) {
                     edit();
@@ -443,6 +445,7 @@ public class SpellItem extends Item2{
 
         //starting the item in edit mode so the user can immediately edit the item text
         edit();
+
     }
 
     public void edit() {

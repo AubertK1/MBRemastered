@@ -25,9 +25,17 @@ public class ItemPanel extends Minipanel{
         item.parentPanel = this;
         item.setParentIP(this);
         item.setSpot(nextAvaSpot);
+        nextAvaSpot++;
         item.setID(totalItems);
+        totalItems++;
 
         allItems.add(item);
+        minipanels.add(item);
+
+        item.initialize();
+        item.reformat();
+
+        if(item.getSpot() > MAXSPOT) item.setSoftVisible(false);
     }
 
     /**
@@ -173,7 +181,7 @@ public class ItemPanel extends Minipanel{
         batch.draw(texture, getX(), getY(), getWidth(), getHeight());
 
         for (Item2 item : allItems) {
-            item.render(batch);
+            if(item.supposedToBeVisible) item.render(batch);
         }
     }
 }
