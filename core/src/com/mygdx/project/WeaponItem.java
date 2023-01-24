@@ -5,9 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import java.util.ArrayList;
-
-public class WeaponItem extends Item2{
+public class WeaponItem extends Item {
     public WeaponItem() {
         super();
     }
@@ -16,18 +14,6 @@ public class WeaponItem extends Item2{
     }
 
     public void initialize(){
-
-/*
-        this.spot = nextAvaSpot;
-        ID = totalItems;
-
-        allItems.add(this);
-        //increasing the total number of items by one (this item's ID was already set when it was created (code in panel class))
-        totalItems++;
-        //increasing the next available spot by one
-        nextAvaSpot++;
-*/
-
         //region labels
         //creating the labels
         MBLabel nameLabel,diceLabel,modLabel,typeLabel;
@@ -136,12 +122,13 @@ public class WeaponItem extends Item2{
                 System.out.println("Delete Button " + (ID +1));
 
                 int currSpot = getSpot();
-//                shuffleItemsUp(currSpot);
 
                 for (int i = components.size()-1; i >= 0; i--) {
                     delete(components.get(i));
                 }
-                parentPanel.delete(WeaponItem.this);
+                parentIP.delete(WeaponItem.this);
+
+                parentIP.shuffleItemsUp(currSpot);
             }
         });
 
@@ -156,7 +143,7 @@ public class WeaponItem extends Item2{
                 int nextSpot = spot + 1;
                 //if it's not at the bottom...
                 if (nextSpot < parentIP.getNextAvaSpot()) {
-                    Item2 nextItem = getItemBySpot(nextSpot);
+                    Item nextItem = getItemBySpot(nextSpot);
 
                     setSpot(nextSpot);
                     nextItem.setSpot(currSpot);
@@ -170,7 +157,7 @@ public class WeaponItem extends Item2{
                         edit();
                     }
                     //moves the textfields of the item being swapped if it is in edit mode
-                    if(nextItem.getEditMode()){
+                    if(nextItem.isInEditMode()){
                         nextItem.saveEdit();
                         nextItem.edit();
                     }
@@ -188,7 +175,7 @@ public class WeaponItem extends Item2{
                 int prevSpot = spot - 1;
                 //if it's not at the top...
                 if(prevSpot >= 0) {
-                    Item2 prevItem = getItemBySpot(prevSpot);
+                    Item prevItem = getItemBySpot(prevSpot);
 
                     setSpot(prevSpot);
                     prevItem.setSpot(currSpot);
@@ -202,7 +189,7 @@ public class WeaponItem extends Item2{
                         edit();
                     }
                     //moves the textfields of the item being swapped if it is in edit mode
-                    if(prevItem.getEditMode()){
+                    if(prevItem.isInEditMode()){
                         prevItem.saveEdit();
                         prevItem.edit();
                     }
@@ -221,8 +208,8 @@ public class WeaponItem extends Item2{
     public void edit(){
         //to have only one item edited at a time
         if(parentIP.getItems() != null) {
-            for (Item2 item2: parentIP.getItems()) {
-                if(item2 != this) item2.saveEdit(); //if this isn't the item being edited...
+            for (Item item : parentIP.getItems()) {
+                if(item != this) item.saveEdit(); //if this isn't the item being edited...
             }
         }
 

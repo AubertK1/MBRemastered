@@ -17,42 +17,22 @@ public class Panel {
     //the image that the panel is based off of
     Texture texture;
     //all values associated with how to draw it are stored here
-    //fixme change rectangle into seperate variables so I can just input numbers when calling the fuctions
-    Rectangle position;
+    float x, y, width, height;
     //stores the panel's components in this list
     ArrayList<MBComponent> components = new ArrayList<>();
     //stores the panel's minipanels
     ArrayList<Panel> minipanels = new ArrayList<>();
-    //stores the panel's items
-    ArrayList<Item> wItems = new ArrayList<>();
-    ArrayList<Item> sItems = new ArrayList<>();
-//    static int panelNum = 0;
-//    int panelID;
     //the parent panel of the minipanel
     protected Panel parentPanel = null;
-    //spot of the items relative to the top of the panel
-    int wSpot;
-    int sSpot;
-    //the total amount of panels created. the same through all panels
-    static int totalWID = 0;
-    static int totalSID = 0;
-    //next available spot
-    static int nextAvaWSpot = 0;
-    static int nextAvaSSpot = 0;
-    //ID of the panel
-    int wID = totalWID;
-    int sID = totalSID;
-    //if the panel is in edit mode
-    boolean editMode;
+    //controls whether this is rendered or not
     boolean supposedToBeVisible = true;
-
+    //the alpha value this is rendered with
     float aFloat = 1f;
 
     public Panel(String fileLocation, Rectangle position){
         //sets the image of the panel
         texture = new Texture(fileLocation);
         //sets the location and size
-        this.position = position;
         setPosition(position.x, position.y);
         setSize(position.width, position.height);
 //        panelID = panelNum;
@@ -102,17 +82,8 @@ public class Panel {
         minipanels.add(minipanel);
         //sets the minipanel's parent to this panel
         minipanel.parentPanel = this;
-        //if the minipanel is an item...
-        if(minipanel instanceof Item){
-            //adds the item to this panel's associated items list too
-            if(((Item) minipanel).getItemType() == 1) {
-                wItems.add((Item) minipanel);
-            }
-            else if (((Item) minipanel).getItemType() == 2){
-                sItems.add((Item) minipanel);
-            }
-        }
-        else if(minipanel instanceof Tipbox){
+
+        if(minipanel instanceof Tipbox){
             Main.tipboxes.add((Tipbox) minipanel);
         }
     }
@@ -137,7 +108,9 @@ public class Panel {
      * @param component
      */
     public void delete(MBComponent component){
+        component.setVisible(false);
         //removes component from the stage
+        Main.stage.getRoot().removeActor(component);
         Main.stage.getActors().get(component.getCompID()).addAction(Actions.removeActor());
         //removes component from the all components list
         Main.allComps.remove(component);
@@ -162,15 +135,12 @@ public class Panel {
      */
     public void delete(Panel panel){
         //DO NOT CALL THIS IF YOU PLAN ON ADDING THE PANEL BACK LATER
+        panel.setSoftVisible(false);
         //removes component from the components list
         minipanels.remove(panel);
         //disposes of the texture
         panel.texture.dispose();
 
-        if(panel instanceof Item){
-            if(Main.itemTab == 1) wItems.remove(panel);
-            else if(Main.itemTab == 2) sItems.remove(panel);
-        }
         if(panel instanceof Tipbox){
             Main.tipboxes.remove(panel);
         }
@@ -195,10 +165,12 @@ public class Panel {
         }
     }
     public void setPosition(float x, float y){
-        position.setPosition(x, y);
+        this.x = x;
+        this.y = y;
     }
     public void setSize(float width, float height){
-        position.setSize(width, height);
+        this.width = width;
+        this.height = height;
     }
     /**
      * @return returns the panel this panel belongs to
@@ -211,25 +183,25 @@ public class Panel {
      * @return returns the x value of this panel
      */
     public float getX(){
-        return position.x;
+        return x;
     }
     /**
      * @return returns the y value of this panel
      */
     public float getY(){
-        return position.y;
+        return y;
     }
     /**
      * @return returns the width of this panel
      */
     public float getWidth(){
-        return position.width;
+        return width;
     }
     /**
      * @return returns the height of this panel
      */
     public float getHeight(){
-        return position.height;
+        return height;
     }
 
     /**
@@ -245,30 +217,7 @@ public class Panel {
         }
         return null;
     }
-    public Item getItemBySpot2(int spot){
-        if(Main.itemTab == 1) {
-            for (Item minipanel : wItems) {
-                if (minipanel.getSpot() == spot) {
-                    return minipanel;
-                }
-            }
-        }
-        else if(Main.itemTab == 2) {
-            for (Item minipanel : sItems) {
-                if (minipanel.getSpot() == spot) {
-                    return minipanel;
-                }
-            }
-        }
-        return null;
-    }
 
-    /**
-     * @return returns if the panel is in edit mode
-     */
-    public boolean getEditMode(){
-        return editMode;
-    }
 
     /**
      * future potentially needed functions

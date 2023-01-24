@@ -22,7 +22,6 @@ public class MBComponent extends Actor {
     MBComponent parentActor;
     Skin skin = Main.uiSkin;
     float aFloat = 1;
-    Item item;
     boolean hasWindow = false;
     //setting the component's ID in the list
     int compID = Main.allComps.size();
@@ -94,12 +93,6 @@ public class MBComponent extends Actor {
     public Object getMBParent() {
         if(parentPanel != null) return parentPanel;
         else return parentActor;
-    }
-    /**
-     * @return returns the item this component belongs to
-     */
-    public Item getItem() {
-        return item;
     }
     /**
      * sets the position of this component

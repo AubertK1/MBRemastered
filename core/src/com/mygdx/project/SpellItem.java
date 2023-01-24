@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
 
-public class SpellItem extends Item2{
+public class SpellItem extends Item {
     private Tipbox spellDesc;
 
     int usesIndexInNames = -1;
@@ -27,16 +27,6 @@ public class SpellItem extends Item2{
         super(position);
     }
     public void initialize(){
-
-/*
-        allItems.add(this);
-        //increasing the total number of items by one (this item's ID was already set when it was created (code in panel class))
-        totalItems++;
-        //increasing the next available spot by one
-        nextAvaSpot++;
-*/
-
-        //fixme Look over this code and make sure its optimal
         //region labels
         MBLabel nameLabel, descLabel, usesLabel;
 
@@ -263,12 +253,13 @@ public class SpellItem extends Item2{
                 System.out.println("Delete Button " + (getID() +1));
 
                 int currSpot = getSpot();
-                parentIP.shuffleItemsUp(currSpot);
 
                 for (int i = components.size()-1; i >= 0; i--) {
                     delete(components.get(i));
                 }
                 parentIP.delete(SpellItem.this);
+
+                parentIP.shuffleItemsUp(currSpot);
             }
         });
 
@@ -283,7 +274,7 @@ public class SpellItem extends Item2{
                 int nextSpot = getSpot() + 1;
                 //if it's not at the bottom...
                 if (nextSpot < parentIP.getNextAvaSpot()) {
-                    Item2 nextItem = parentIP.getItemBySpot(nextSpot);
+                    Item nextItem = parentIP.getItemBySpot(nextSpot);
 
                     setSpot(nextSpot);
                     nextItem.setSpot(currSpot);
@@ -297,7 +288,7 @@ public class SpellItem extends Item2{
                         edit();
                     }
                     //moves the textfields of the item being swapped if it is in edit mode
-                    if(nextItem.getEditMode()){
+                    if(nextItem.isInEditMode()){
                         nextItem.saveEdit();
                         nextItem.edit();
                     }
@@ -315,7 +306,7 @@ public class SpellItem extends Item2{
                 int prevSpot = getSpot() - 1;
                 //if it's not at the top...
                 if(prevSpot >= 0) {
-                    Item2 prevItem = getItemBySpot(prevSpot);
+                    Item prevItem = getItemBySpot(prevSpot);
 
                     setSpot(prevSpot);
                     prevItem.setSpot(currSpot);
@@ -329,7 +320,7 @@ public class SpellItem extends Item2{
                         edit();
                     }
                     //moves the textfields of the item being swapped if it is in edit mode
-                    if(prevItem.getEditMode()){
+                    if(prevItem.isInEditMode()){
                         prevItem.saveEdit();
                         prevItem.edit();
                     }
@@ -426,8 +417,8 @@ public class SpellItem extends Item2{
     public void edit() {
         //to have only one item edited at a time
         if(parentIP.getItems() != null) {
-            for (Item2 item2: parentIP.getItems()) {
-                if(item2 != this) item2.saveEdit(); //if this isn't the item being edited...
+            for (Item item : parentIP.getItems()) {
+                if(item != this) item.saveEdit(); //if this isn't the item being edited...
             }
         }
 
@@ -456,7 +447,6 @@ public class SpellItem extends Item2{
                 labels.get(i).getLabel().setText("");
                 textFields.get(i).setPosition(labels.get(i).getX(), getY() + 5);
                 textFields.get(i).setSize(labels.get(i).getWidth(), 30);
-//                add(textFields.get(i));
                 textFields.get(i).setVisible(true);
             }
         }
@@ -531,8 +521,16 @@ public class SpellItem extends Item2{
         if (usesButton != null) return usesButton;
         return null;
     }
+    public void shortRest(){
+        ((TextButton)usesButton.getButton()).setText(String.valueOf(srMax));
+        uses = srMax;
+    }
+    public void longRest(){
+        ((TextButton)usesButton.getButton()).setText(String.valueOf(lrMax));
+        uses = lrMax;
+    }
 
-    public ArrayList<Item2> getItems(){
+    public ArrayList<Item> getItems(){
         return null;
     }
 }
