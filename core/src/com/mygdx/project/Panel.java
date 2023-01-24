@@ -26,6 +26,8 @@ public class Panel {
     protected Panel parentPanel = null;
     //controls whether this is rendered or not
     boolean supposedToBeVisible = true;
+
+    protected boolean focused = false;
     //the alpha value this is rendered with
     float aFloat = 1f;
 
@@ -218,6 +220,12 @@ public class Panel {
         return null;
     }
 
+    public boolean isFocused() {
+        return focused;
+    }
+    public void setFocused(boolean focused) {
+        this.focused = focused;
+    }
 
     /**
      * future potentially needed functions
@@ -235,6 +243,8 @@ public class Panel {
      * @param batch the batch...
      */
     public void render (SpriteBatch batch) {
+        if(focused && !Main.focusedPanels.contains(this)) Main.focusedPanels.add(this);
+        else Main.focusedPanels.remove(this);
         //screen size is 1920x1000 so adjust accordingly
         //makes sure the panel's opacity is unchanged by the components' opacity changes
         batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
@@ -252,6 +262,7 @@ public class Panel {
             }
         }
     }
+
     public void dispose(){
         for (Panel minipanel : minipanels) {
             minipanel.dispose();

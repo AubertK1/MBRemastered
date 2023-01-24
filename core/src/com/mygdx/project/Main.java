@@ -4,16 +4,14 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import com.badlogic.gdx.math.Rectangle;
 
@@ -33,26 +31,34 @@ public class Main extends ApplicationAdapter {
 	static Skin uiSkin;
 
 	public static MBContextMenu contextMenu;
+	public Texture grayscreen;
 	//creating main panels
 	Panel sidePanel, topPanel, genStatsPanel, reminderPanel, toolbarPanel, masterboardPanel;
+
+	ArrayList<Panel> mainPanels = new ArrayList<>();
+	static ArrayList<Panel> focusedPanels = new ArrayList<>();
 	static MBBoard masterBoard;
 	//list with all the MBComponents
 	static ArrayList<MBComponent> allComps = new ArrayList<>();
 
+	boolean inFocusMode = false;
 	static String player;
 	//so these can be drawn last
     static ArrayList<Tipbox> tipboxes = new ArrayList<>();
     static ArrayList<MBWindow> windows = new ArrayList<>();
     static ArrayList<MBSelectBox> scrollpanes = new ArrayList<>();
+
 	//weapons or spell items for the itempanel
 	static int itemTab = 1;
 
+	//region used for the Upload Image button
 	//these are initialized from the start so that when they're used time isn't wasted while loading them
-	static String path;
+	static String fileChooserPath;
 	static final JFileChooser chooser = new JFileChooser();
 	static final FileNameExtensionFilter filter = new FileNameExtensionFilter(
 			"JPG, PNG & GIF Images", "jpg", "gif", "png");
 	static final JFrame f = new JFrame();
+	//endregion
 
 	@Override
 	public void create () {
@@ -73,11 +79,18 @@ public class Main extends ApplicationAdapter {
 				new Rectangle(2, 2, 1916, 138));
 		masterboardPanel = new Panel("assets\\Panels\\MasterboardPanel4.png",
 				new Rectangle(900, 150, 1018, 850));
+		mainPanels.add(sidePanel);
+		mainPanels.add(topPanel);
+		mainPanels.add(genStatsPanel);
+		mainPanels.add(reminderPanel);
+		mainPanels.add(toolbarPanel);
+		mainPanels.add(masterboardPanel);
 		//setting up skin for the UI of the app
 		uiSkin = new Skin (Gdx.files.internal(
 				"assets\\skins\\uiskin.json"));
 
 		contextMenu = new MBContextMenu();
+		grayscreen = new Texture("assets\\gray.png");
 
 		sidePanel.setSoftVisible(true);
 		topPanel.setSoftVisible(true);
@@ -86,6 +99,8 @@ public class Main extends ApplicationAdapter {
 		toolbarPanel.setSoftVisible(true);
 		reminderPanel.setSoftVisible(true);
 		masterboardPanel.setSoftVisible(true);
+
+		genStatsPanel.setFocused(true);
 
 		//region Reminders
 		//creating a textarea
@@ -380,7 +395,6 @@ public class Main extends ApplicationAdapter {
 
 		topPanel.add(playerNameLabel);
 		topPanel.add(dropdown);
-
 		//endregion
 
 		//region MasterBoard
@@ -392,8 +406,27 @@ public class Main extends ApplicationAdapter {
 		//endregion
 
 		//region Tool Bar
+		final MBButton focusButton = new MBButton("FOCUS", uiSkin);
+		focusButton.setPosition(toolbarPanel.getX() + 10, toolbarPanel.getY() + 10);
+		focusButton.setSize(toolbarPanel.getHeight()-20, toolbarPanel.getHeight()-20);
+		focusButton.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println("FOCUSED");
+
+				if(!inFocusMode){
+					inFocusMode = true;
+				}
+				else{
+					inFocusMode = false;
+				}
+
+				return false;
+			}
+		});
+
 		MBButton selectButton = new MBButton("Select", uiSkin);
-		selectButton.setPosition(toolbarPanel.getX() + 10, toolbarPanel.getY() +10);
+		selectButton.setPosition(focusButton.getX() + focusButton.getWidth() + 10, toolbarPanel.getY() + 10);
+//		selectButton.setPosition(toolbarPanel.getX() + 10, toolbarPanel.getY() + 10);
 		selectButton.setSize(200, toolbarPanel.getHeight()-20);
 		selectButton.addListener(new ChangeListener() {
 			@Override
@@ -490,6 +523,7 @@ public class Main extends ApplicationAdapter {
 		colorPicker.setSize(0, toolbarPanel.getHeight() - 10);
 		colorPicker.setPosition((toolbarPanel.getX() + toolbarPanel.getWidth()) - (colorPicker.getWidth() + 5), toolbarPanel.getY()+5);
 
+		toolbarPanel.add(focusButton);
 		toolbarPanel.add(selectButton);
 		toolbarPanel.add(drawButton);
 		toolbarPanel.add(eraseButton);
@@ -499,7 +533,8 @@ public class Main extends ApplicationAdapter {
 		toolbarPanel.add(colorPicker);
 		//endregion
 
-		//honestly don't know what this does, but it's essential
+		//region listeners
+		//the screen listeners
 		InputMultiplexer multiplexer = new InputMultiplexer();
 		InputProcessor screenProcessor = new InputProcessor() {
 			@Override
@@ -549,6 +584,7 @@ public class Main extends ApplicationAdapter {
 		multiplexer.addProcessor(stage);
 		multiplexer.addProcessor(screenProcessor);
 		Gdx.input.setInputProcessor(multiplexer);
+		//endregion
 	}
 
 	@Override
@@ -558,26 +594,33 @@ public class Main extends ApplicationAdapter {
 		//drawing the panels
 		batch.begin();
 
-		sidePanel.render(batch);
-		topPanel.render(batch);
-		genStatsPanel.render(batch);
-		reminderPanel.render(batch);
-		toolbarPanel.render(batch);
-		masterboardPanel.render(batch);
-
+		//rendering everything
+		for (Panel panel : mainPanels) {
+			panel.render(batch);
+		}
 
 		//drawing the components after so that they are on the top
-		for (Tipbox tipbox: tipboxes) {
-			if(tipbox.supposedToBeVisible) {
+		for (Tipbox tipbox : tipboxes) {
+			if (tipbox.supposedToBeVisible) {
 				tipbox.render(batch);
 			}
 		}
-		for (MBSelectBox selectBox: scrollpanes) {
-			if(selectBox.dropdown.isActive) selectBox.draw(selectBox.aFloat);
+		for (MBSelectBox selectBox : scrollpanes) {
+			if (selectBox.dropdown.isActive) selectBox.draw(selectBox.aFloat);
 		}
-		for (MBWindow window: windows) {
+		for (MBWindow window : windows) {
 			window.draw(window.aFloat);
 		}
+
+		if(inFocusMode){
+			batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, .85f);
+			batch.draw(grayscreen, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+			for (int i = 0; i < focusedPanels.size(); i++) {
+				focusedPanels.get(i).render(batch);
+			}
+		}
+
 		if(contextMenu.isActive()) contextMenu.draw(contextMenu.aFloat);
 		else contextMenu.setPosition(-100, -100); //when it's not being rendered move it offscreen, so it isn't blocking anything's listener
 
@@ -630,7 +673,7 @@ public class Main extends ApplicationAdapter {
 					//saves the selected file as a file
 					File file = chooser.getSelectedFile();
 					//saves the file location as a string
-					path = file.toString();
+					fileChooserPath = file.toString();
 				}
 				//re-enabling input
 				Gdx.input.setInputProcessor(processor);
@@ -639,8 +682,8 @@ public class Main extends ApplicationAdapter {
 	}
 	static public void fileChooseHandle(final Panel genStatsPanel, final MBButton imageButton){
 		//to make sure this is only ran whenever the user selects a file
-		if(path != null) {
-			Texture tex2 = new Texture(path);
+		if(fileChooserPath != null) {
+			Texture tex2 = new Texture(fileChooserPath);
 			//deletes the imageButton from the stage so that when it's added back it doesn't cause any complications in terms of the CompID
 			genStatsPanel.delete(imageButton);
 			//turns the imageButton into an ImageButton
@@ -712,7 +755,7 @@ public class Main extends ApplicationAdapter {
             imageButton.add(deleteButton);
             imageButton.add(reselectButton);
 			//so that it's not called again
-			path = null;
+			fileChooserPath = null;
 		}
 	}
 }

@@ -28,6 +28,8 @@ public class MBComponent extends Actor {
     Stage stage = Main.stage;
     //whether this component is supposed to be visible if it were allowed to be (ie the Item textfields when not in edit mode are allowed to be visible but not supposed to be visible)
     boolean supposedToBeVisible = true;
+
+    protected boolean focused = false;
     public MBComponent() {
     }
 
@@ -125,6 +127,13 @@ public class MBComponent extends Actor {
     public void setSoftVisible(boolean visible){
         getComponent().setVisible(visible);
     }
+    public boolean isFocused() {
+        return focused;
+    }
+    public void setFocused(boolean focused) {
+        this.focused = focused;
+    }
+
     /**
      * @return returns the x value of this component
      */
