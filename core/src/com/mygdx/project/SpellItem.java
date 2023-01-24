@@ -23,6 +23,9 @@ public class SpellItem extends Item2{
     public SpellItem() {
         super();
     }
+    public SpellItem(Rectangle position) {
+        super(position);
+    }
     public void initialize(){
 
 /*
@@ -38,7 +41,7 @@ public class SpellItem extends Item2{
         MBLabel nameLabel, descLabel, usesLabel;
 
         //setting the labels' texts and positions and sizes
-        nameLabel = new MBLabel("Spell  "+ ID, skin);
+        nameLabel = new MBLabel("Spell  "+ (ID+1), skin);
         nameLabel.setPosition(this.getX()+5, this.getY()+5);
         nameLabel.setSize(119, nameLabel.getHeight());
         labelTexts.add(nameLabel.getLabel().getText().toString());
@@ -276,26 +279,17 @@ public class SpellItem extends Item2{
                 //filler just for my entertainment
                 System.out.println("Down Button " + (getID() + 1));
 
+                int currSpot = spot;
                 int nextSpot = getSpot() + 1;
                 //if it's not at the bottom...
                 if (nextSpot < parentIP.getNextAvaSpot()) {
                     Item2 nextItem = parentIP.getItemBySpot(nextSpot);
 
-                    //loops through this item's components' position and decreases the Y value by the item's height plus the gap between items (moving it down)
-                    for (MBComponent component : components) {
-                        component.setPosition(component.getX(), component.getY() - (getHeight() + ITEMGAP));
-                    }
-                    //loops through the next item's components' position and increases the Y value by the item's height plus the gap between items (moving it up)
-                    for (MBComponent component : nextItem.components) {
-                        component.setPosition(component.getX(), component.getY() + (getHeight() + ITEMGAP));
-                    }
+                    setSpot(nextSpot);
+                    nextItem.setSpot(currSpot);
 
-                    //decreases this item's tipbox's Y value by the item's height plus the gap between items (moving it down)
-                    spellDesc.setPosition(spellDesc.getX(), spellDesc.getY() - (getHeight() + ITEMGAP));
-
-                    //increases the next item's tipbox's Y value by the item's height plus the gap between items (moving it up)
-                    if(nextItem instanceof SpellItem) ((SpellItem) nextItem).getTipbox().setPosition(((SpellItem) nextItem).getTipbox().getX(),
-                            ((SpellItem) nextItem).getTipbox().getY() + (getHeight() + ITEMGAP));
+                    reformat();
+                    nextItem.reformat();
 
                     //moves the textfields with this item if in edit mode
                     if(editMode){
@@ -323,25 +317,6 @@ public class SpellItem extends Item2{
                 if(prevSpot >= 0) {
                     Item2 prevItem = getItemBySpot(prevSpot);
 
-/*
-                    //reassigns the spots to different variables
-                    //loops through this item's components' position and decreases the Y value by the item's height plus the gap between items (moving it up)
-                    for (MBComponent component : components) {
-                        component.setPosition(component.getX(), component.getY() + (getHeight() + ITEMGAP));
-                    }
-                    //loops through the previous item's components' position and decreases the Y value by the item's height plus the gap between items (moving it down)
-                    for (MBComponent component : prevItem.components) {
-                        component.setPosition(component.getX(), component.getY() - (getHeight() + ITEMGAP));
-                    }
-
-                    //increases this item's tipbox's Y value by the item's height plus the gap between items (moving it up)
-                    spellDesc.setPosition(spellDesc.getX(), spellDesc.getY() - (getHeight() + ITEMGAP));
-
-                    //decreases the previous item's tipbox's Y value by the item's height plus the gap between items (moving it down)
-                    if(prevItem instanceof SpellItem) ((SpellItem) prevItem).getTipbox().setPosition(((SpellItem) prevItem).getTipbox().getX(),
-                            ((SpellItem) prevItem).getTipbox().getY() + (getHeight() + ITEMGAP));
-*/
-                    //fixme TEST IF THIS WORKS
                     setSpot(prevSpot);
                     prevItem.setSpot(currSpot);
 

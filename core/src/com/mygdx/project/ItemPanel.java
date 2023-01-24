@@ -2,6 +2,7 @@ package com.mygdx.project;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 
@@ -9,6 +10,8 @@ public class ItemPanel extends Minipanel{
     private int totalItems = 0;
     private ArrayList<Item2> allItems = new ArrayList<>();
     private int nextAvaSpot = 0;
+
+    private Rectangle spot0Model;
     private int MINSPOT = 0;
     private int MAXSPOT = 5;
 
@@ -16,6 +19,7 @@ public class ItemPanel extends Minipanel{
 
     public ItemPanel(String fileLocation, Rectangle position) {
         super("assets\\Panels\\ListPanel.png", position);
+        spot0Model = new Rectangle(getX(), getHeight()+getY() - 40, 460, 40);
     }
     /**
      * adds the minipanel to its panel
@@ -32,6 +36,15 @@ public class ItemPanel extends Minipanel{
         allItems.add(item);
         minipanels.add(item);
 
+        if(getItems().size() == 1){
+            if(item.hasCustomLayout()){
+                spot0Model.set(position);
+            }
+            else {
+                item.position.set(spot0Model);
+            }
+        }
+
         item.initialize();
         item.reformat();
 
@@ -42,6 +55,7 @@ public class ItemPanel extends Minipanel{
      * shuffles all the items one spot up
      */
     public void shuffleItemsUp(){
+        if(getItems().get(getItems().size()-1).getSpot() == 0) return; //do not continue if the last item is at the top spot
         //reduces the next available spot value by one so that new items get added under the lowest item always
         nextAvaSpot--;
         //loops through all the items
@@ -49,16 +63,7 @@ public class ItemPanel extends Minipanel{
             item.setSpot(item.getSpot() - 1);
 
             item.reformat();
-/*
-            //loops through the item's components' position and increases the Y value by the item's height plus the gap between items (moving it up)
-            for (int i = 0; i < item.components.size(); i++) {
-                item.components.get(i).setPosition(item.components.get(i).getX(), item.components.get(i).getY() + (item.getHeight()+ITEMGAP));
-            }
-            for (int i = 0; i < item.minipanels.size(); i++) {
-                item.minipanels.get(i).setPosition(item.minipanels.get(i).getX(), item.minipanels.get(i).getY() + (item.getHeight()+ITEMGAP));
-                item.minipanels.get(i).components.get(i).setPosition(item.minipanels.get(i).components.get(i).getX(), item.minipanels.get(i).components.get(i).getY() + (getHeight()+5));
-            }
-*/
+
             //moves the textfields with the item if in edit mode
             if (item.editMode) {
                 item.saveEdit();
@@ -88,17 +93,8 @@ public class ItemPanel extends Minipanel{
                 item.setSpot(item.getSpot() - 1);
 
                 item.reformat();
-/*
-                //loops through the item's components' position and increases the Y value by the item's height plus the gap between items (moving it up)
-                for (int i = 0; i < item.components.size(); i++) {
-                    item.components.get(i).setPosition(item.components.get(i).getX(), item.components.get(i).getY() + (item.getHeight()+ITEMGAP));
-                }
-                for (int i = 0; i < item.minipanels.size(); i++) {
-                    item.minipanels.get(i).setPosition(item.minipanels.get(i).getX(), item.minipanels.get(i).getY() + (item.getHeight()+ITEMGAP));
-                    item.minipanels.get(i).components.get(i).setPosition(item.minipanels.get(i).components.get(i).getX(), item.minipanels.get(i).components.get(i).getY() + (getHeight()+5));
-                }
-*/
-                //moves the textfields with the item if in edit mode
+
+               //moves the textfields with the item if in edit mode
                 if (item.editMode) {
                     item.saveEdit();
                     item.edit();
@@ -119,6 +115,8 @@ public class ItemPanel extends Minipanel{
      * shuffles all the items down
      */
     public void shuffleItemsDown(){
+        if(getItems().get(0).getSpot() == 0) return; //do not continue if the first item is at the top spot
+
         //increases the next available spot value by one so that new items get added under the lowest item always
         nextAvaSpot++;
         //loops through all the items
@@ -126,16 +124,7 @@ public class ItemPanel extends Minipanel{
             item.setSpot(item.getSpot() + 1);
 
             item.reformat();
-/*
-            //loops through the item's components' position and reduces the Y value by the item's height plus the gap between items (moving it down)
-            for (int i = 0; i < item.components.size(); i++) {
-                item.components.get(i).setPosition(item.components.get(i).getX(), item.components.get(i).getY() - (item.getHeight()+5));
-            }
-            for (int i = 0; i < item.minipanels.size(); i++) {
-                item.minipanels.get(i).setPosition(item.minipanels.get(i).getX(), item.minipanels.get(i).getY() - (item.getHeight()+5));
-                item.minipanels.get(i).components.get(i).setPosition(item.minipanels.get(i).components.get(i).getX(), item.minipanels.get(i).components.get(i).getY() - (getHeight()+5));
-            }
-*/
+
             //moves the textfields with the item if in edit mode
             if(item.editMode){
                 item.saveEdit();
@@ -170,7 +159,9 @@ public class ItemPanel extends Minipanel{
     public int getNextAvaSpot(){
         return nextAvaSpot;
     }
-
+    public Rectangle getSpot0Model(){
+        return spot0Model;
+    }
     /**
      * renders all the items in this panel
      * @param batch the batch...

@@ -197,10 +197,7 @@ public class Main extends ApplicationAdapter {
 					weaponsPanel.add(new WeaponItem());
 				}
 				else if(itemTab == 2) {
-					Item item2 = new Item(2, Panel.nextAvaSSpot);
-					listPanel.add(item2);
-					item2.edit();
-					if(item2.getSpot() > 5) item2.setSoftVisible(false);
+					spellsPanel.add(new SpellItem());
                 }
             }
         });
@@ -208,21 +205,11 @@ public class Main extends ApplicationAdapter {
 		upButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-				if(itemTab == 1 && (listPanel.wItems.size() > 0)) {
-					for (int i = 0; i < listPanel.wItems.get(0).getParentPanel().minipanels.size(); i++) {
-						if (listPanel.wItems.get(0).getParentPanel().minipanels.get(i).wSpot > 0) {
-							listPanel.wItems.get(0).shuffleItemsUp();
-							break;
-						}
-					}
+				if(itemTab == 1) {
+					weaponsPanel.shuffleItemsUp();
 				}
-				else if(itemTab == 2 && (listPanel.sItems.size() > 0)) {
-					for (int i = 0; i < listPanel.sItems.get(0).getParentPanel().minipanels.size(); i++) {
-						if (listPanel.sItems.get(0).getParentPanel().minipanels.get(i).sSpot > 0) {
-							listPanel.sItems.get(0).shuffleItemsUp();
-							break;
-						}
-					}
+				else if(itemTab == 2) {
+					spellsPanel.shuffleItemsUp();
 				}
             }
         });
@@ -230,21 +217,11 @@ public class Main extends ApplicationAdapter {
 		downButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-				if(itemTab == 1 && (listPanel.wItems.size() > 0)) {
-					for (int i = 0; i < listPanel.wItems.get(0).getParentPanel().minipanels.size(); i++) {
-						if (listPanel.wItems.get(0).getParentPanel().minipanels.get(i).wSpot < 0) {
-							listPanel.wItems.get(0).shuffleItemsDown();
-							break;
-						}
-					}
+				if(itemTab == 1) {
+					weaponsPanel.shuffleItemsDown();
 				}
-				if(itemTab == 2 && (listPanel.sItems.size() > 0)) {
-					for (int i = 0; i < listPanel.sItems.get(0).getParentPanel().minipanels.size(); i++) {
-						if (listPanel.sItems.get(0).getParentPanel().minipanels.get(i).sSpot < 0) {
-							listPanel.sItems.get(0).shuffleItemsDown();
-							break;
-						}
-					}
+				else if(itemTab == 2) {
+					spellsPanel.shuffleItemsDown();
 				}
             }
         });

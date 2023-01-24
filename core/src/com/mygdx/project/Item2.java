@@ -19,6 +19,7 @@ public class Item2 extends Minipanel{
 
     //if the panel is in edit mode
     protected boolean editMode = false;
+    protected boolean customLayout = true;
 
     protected ItemPanel parentIP;
     protected int spot;
@@ -27,7 +28,11 @@ public class Item2 extends Minipanel{
     protected final float ITEMGAP = 5;
 
     public Item2() {
-        super("assets\\Panels\\ItemPanel4.png", new Rectangle(125, 790, 460, 40));
+        this(new Rectangle(125, 790, 460, 40));
+        customLayout = false;
+    }
+    public Item2(Rectangle position) {
+        super("assets\\Panels\\ItemPanel4.png", position);
         skin = Main.uiSkin;
     }
     public void initialize(){
@@ -40,7 +45,8 @@ public class Item2 extends Minipanel{
         float oldY, yGap;
         oldY = getY();
         //updates the item's position
-        setPosition(getX(),getY()-((getHeight()+ITEMGAP) * spot));
+        setPosition(parentIP.getSpot0Model().getX(),parentIP.getSpot0Model().getY()-((parentIP.getSpot0Model().getHeight()+ITEMGAP) * spot));
+        setSize(parentIP.getSpot0Model().width, parentIP.getSpot0Model().height);
 
         yGap = getY() - oldY;
         //updates the item's components' positions
@@ -232,6 +238,11 @@ public class Item2 extends Minipanel{
         return ID;
     }
     public Item2 getItemBySpot(int spot){
+        for (Item2 item : parentIP.getItems()) {
+            if (item.getSpot() == spot) {
+                return item;
+            }
+        }
         return null;
     }
     public void setParentIP(ItemPanel IP){
@@ -245,6 +256,10 @@ public class Item2 extends Minipanel{
      */
     public boolean getEditMode(){
         return editMode;
+    }
+
+    public boolean hasCustomLayout() {
+        return customLayout;
     }
 
     /**

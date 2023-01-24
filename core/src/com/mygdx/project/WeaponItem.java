@@ -1,5 +1,6 @@
 package com.mygdx.project;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -9,6 +10,9 @@ import java.util.ArrayList;
 public class WeaponItem extends Item2{
     public WeaponItem() {
         super();
+    }
+    public WeaponItem(Rectangle position) {
+        super(position);
     }
 
     public void initialize(){
@@ -28,7 +32,7 @@ public class WeaponItem extends Item2{
         //creating the labels
         MBLabel nameLabel,diceLabel,modLabel,typeLabel;
         //setting the labels' texts and positions and sizes
-        nameLabel = new MBLabel("Weapon "+ ID, skin);
+        nameLabel = new MBLabel("Weapon "+ (ID+1), skin);
         nameLabel.setPosition(this.getX()+5, this.getY()+5);
         nameLabel.setSize(119, nameLabel.getHeight());
         labelTexts.add(nameLabel.getLabel().getText().toString());
@@ -148,19 +152,17 @@ public class WeaponItem extends Item2{
                 //filler just for my entertainment
                 System.out.println("Down Button " + (ID + 1));
 
+                int currSpot = spot;
                 int nextSpot = spot + 1;
                 //if it's not at the bottom...
                 if (nextSpot < parentIP.getNextAvaSpot()) {
                     Item2 nextItem = getItemBySpot(nextSpot);
 
-                    //loops through this item's components' position and decreases the Y value by the item's height plus the gap between items (moving it down)
-                    for (MBComponent component : components) {
-                        component.setPosition(component.getX(), component.getY() - (getHeight() + ITEMGAP));
-                    }
-                    //loops through the next item's components' position and increases the Y value by the item's height plus the gap between items (moving it up)
-                    for (MBComponent component : nextItem.components) {
-                        component.setPosition(component.getX(), component.getY() + (getHeight() + ITEMGAP));
-                    }
+                    setSpot(nextSpot);
+                    nextItem.setSpot(currSpot);
+
+                    reformat();
+                    nextItem.reformat();
 
                     //moves the textfields with this item if in edit mode
                     if(editMode){
@@ -182,20 +184,17 @@ public class WeaponItem extends Item2{
                 //filler just for my entertainment
                 System.out.println("Up Button "+ (ID + 1));
 
+                int currSpot = spot;
                 int prevSpot = spot - 1;
                 //if it's not at the top...
                 if(prevSpot >= 0) {
                     Item2 prevItem = getItemBySpot(prevSpot);
 
-                    //reassigns the spots to different variables
-                    //loops through this item's components' position and decreases the Y value by the item's height plus the gap between items (moving it up)
-                    for (MBComponent component : components) {
-                        component.setPosition(component.getX(), component.getY() + (getHeight() + ITEMGAP));
-                    }
-                    //loops through the previous item's components' position and decreases the Y value by the item's height plus the gap between items (moving it down)
-                    for (MBComponent component : prevItem.components) {
-                        component.setPosition(component.getX(), component.getY() - (getHeight() + ITEMGAP));
-                    }
+                    setSpot(prevSpot);
+                    prevItem.setSpot(currSpot);
+
+                    reformat();
+                    prevItem.reformat();
 
                     //moves the textfields with this item if in edit mode
                     if(editMode){
@@ -249,13 +248,5 @@ public class WeaponItem extends Item2{
 
     public int getSpot(){
         return spot;
-    }
-    public Item2 getItemBySpot(int spot){
-        for (Item2 item : parentIP.getItems()) {
-            if (item.getSpot() == spot) {
-                return item;
-            }
-        }
-        return null;
     }
 }
