@@ -40,7 +40,7 @@
   },
   TextButtonStyle: {
     default: { parent: default, font: default-font, fontColor: darkgray, disabledFontColor: gray },
-    toggle: { parent: default, checked: default-round-down, downFontColor: red }
+    toggle: { parent: default, checked: default-round-down, downFontColor: darkgray }
   },
   ScrollPaneStyle: {
     default: { vScroll: default-scroll, hScrollKnob: default-round-large, background: default-rect, hScroll: default-scroll, vScrollKnob: default-round-large }

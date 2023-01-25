@@ -37,11 +37,14 @@ public class Main extends ApplicationAdapter {
 
 	ArrayList<Panel> mainPanels = new ArrayList<>();
 	static ArrayList<Panel> focusedPanels = new ArrayList<>();
+	static ArrayList<MBComponent> focusedComps = new ArrayList<>();
+	static ArrayList<Outline> focusedOutlines = new ArrayList<>();
+
 	static MBBoard masterBoard;
 	//list with all the MBComponents
 	static ArrayList<MBComponent> allComps = new ArrayList<>();
 
-	boolean inFocusMode = false;
+	static boolean inFocusMode = false;
 	static String player;
 	//so these can be drawn last
     static ArrayList<Tipbox> tipboxes = new ArrayList<>();
@@ -90,7 +93,7 @@ public class Main extends ApplicationAdapter {
 				"assets\\skins\\uiskin.json"));
 
 		contextMenu = new MBContextMenu();
-		grayscreen = new Texture("assets\\gray.png");
+		grayscreen = new Texture("assets\\gradient2.png");
 
 		sidePanel.setSoftVisible(true);
 		topPanel.setSoftVisible(true);
@@ -99,8 +102,6 @@ public class Main extends ApplicationAdapter {
 		toolbarPanel.setSoftVisible(true);
 		reminderPanel.setSoftVisible(true);
 		masterboardPanel.setSoftVisible(true);
-
-		genStatsPanel.setFocused(true);
 
 		//region Reminders
 		//creating a textarea
@@ -115,7 +116,6 @@ public class Main extends ApplicationAdapter {
 		//adding to the Reminders panel as its components
 		reminderPanel.add(reminderTextArea);
 		reminderPanel.add(reminderLabel);
-//		reminderTextArea.setBorder(batch);
 		//endregion
 
 		//region General Stats
@@ -131,6 +131,8 @@ public class Main extends ApplicationAdapter {
 				new Rectangle(listPanel.getX()+5, listPanel.getY() + 5, listPanel.getWidth() - 10, listPanel.getHeight()-34));
 		listPanel.add(weaponsPanel);
 		listPanel.add(spellsPanel);
+		weaponsPanel.setFocused(true);
+		spellsPanel.setFocused(true);
 
 		//making the first WEAPON item and assigning it to the first spot
 		Item weaponItem1 = new WeaponItem();
@@ -151,12 +153,12 @@ public class Main extends ApplicationAdapter {
 		//endregion
 
 		//region item tab buttons
-		final MBButton weaponsButton = new MBButton("Weapons", uiSkin);
+		final MBButton weaponsButton = new MBButton("Weapons", uiSkin, "toggle");
 		((TextButton)weaponsButton.getButton()).getLabel().setFontScale(.92f, .9f);
 		weaponsButton.setPosition(listPanel.getX()+5, listPanel.getY()+ listPanel.getHeight()-20);
 		weaponsButton.setSize(80, 15);
 
-		final MBButton spellsButton = new MBButton("Spells", uiSkin);
+		final MBButton spellsButton = new MBButton("Spells", uiSkin, "toggle");
 		((TextButton)spellsButton.getButton()).getLabel().setFontScale(1f, .9f);
 		spellsButton.setPosition(weaponsButton.getX()+ weaponsButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
 		spellsButton.setSize(80, 15);
@@ -164,27 +166,52 @@ public class Main extends ApplicationAdapter {
 		listPanel.add(weaponsButton);
 		listPanel.add(spellsButton);
 
-		weaponsButton.addListener(new ChangeListener() {
+		if(itemTab == 1){
+			weaponsButton.getButton().setChecked(true);
+			weaponsButton.getButton().setTouchable(Touchable.disabled);
+			spellsButton.getButton().setChecked(false);
+		}
+		else{
+			spellsButton.getButton().setChecked(true);
+			spellsButton.getButton().setTouchable(Touchable.disabled);
+			weaponsButton.getButton().setChecked(false);
+		}
+
+		weaponsButton.addListener(new InputListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if(itemTab == 2){
 					itemTab = 1;
 					weaponsPanel.setSoftVisible(true);
 					spellsPanel.setSoftVisible(false);
+					weaponsButton.getButton().setTouchable(Touchable.disabled);
+					spellsButton.getButton().setTouchable(Touchable.enabled);
 				}
+				spellsButton.getButton().setChecked(false);
+
+				return false;
 			}
 		});
 
-		spellsButton.addListener(new ChangeListener() {
+		spellsButton.addListener(new InputListener() {
+
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if(itemTab == 1){
 					itemTab = 2;
 					spellsPanel.setSoftVisible(true);
 					weaponsPanel.setSoftVisible(false);
+					weaponsButton.getButton().setTouchable(Touchable.enabled);
+					spellsButton.getButton().setTouchable(Touchable.disabled);
 				}
+				weaponsButton.getButton().setChecked(false);
+
+				return false;
 			}
 		});
+
+		weaponsButton.setFocused(true);
+		spellsButton.setFocused(true);
 		//endregion
 
 		//region item shift buttons
@@ -361,6 +388,15 @@ public class Main extends ApplicationAdapter {
 
 		genStatsPanel.add(shortRestPanel);
 		genStatsPanel.add(longRestPanel);
+
+		strPanel.setFocused(true);
+		dexPanel.setFocused(true);
+		conPanel.setFocused(true);
+		intPanel.setFocused(true);
+		wisPanel.setFocused(true);
+		chaPanel.setFocused(true);
+//		shortRestPanel.setFocused(true);
+//		longRestPanel.setFocused(true);
 		//endregion
 
 		//region imagebutton
@@ -375,6 +411,7 @@ public class Main extends ApplicationAdapter {
 		imageButton.setupSelectImageTextButton();
 		genStatsPanel.add(imageButton);
 
+		imageButton.setFocused(true);
 		//endregion
 		//endregion
 
@@ -395,6 +432,9 @@ public class Main extends ApplicationAdapter {
 
 		topPanel.add(playerNameLabel);
 		topPanel.add(dropdown);
+
+		playerNameLabel.setFocused(true);
+		dropdown.setFocused(true);
 		//endregion
 
 		//region MasterBoard
@@ -613,16 +653,43 @@ public class Main extends ApplicationAdapter {
 		}
 
 		if(inFocusMode){
-			batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, .85f);
+			batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, .65f);
 			batch.draw(grayscreen, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-			for (int i = 0; i < focusedPanels.size(); i++) {
-				focusedPanels.get(i).render(batch);
+			for (Panel focusedPanel : focusedPanels) {
+				focusedPanel.render(batch);
+			}
+			for (MBComponent focusedComp: focusedComps) {
+				focusedComp.draw(focusedComp.aFloat);
+			}
+			//loops through each outline and draws its texture
+			for (Outline outline: focusedOutlines) {
+				outline.drawContent(batch);
+			}
+			//loops through each outline and draws its outline last so that it's always on top
+			for (Outline outline: focusedOutlines) {
+				outline.drawOutline(batch, 1);
+			}
+
+			//drawing these components after so that they are on the top
+			for (Tipbox tipbox : tipboxes) {
+				if (tipbox.supposedToBeVisible) {
+					tipbox.render(batch);
+				}
+			}
+			for (MBSelectBox selectBox : scrollpanes) {
+				if (selectBox.dropdown.isActive  && selectBox.isFocused()) selectBox.draw(selectBox.aFloat);
+			}
+			for (MBWindow window : windows) {
+				window.draw(window.aFloat);
 			}
 		}
 
 		if(contextMenu.isActive()) contextMenu.draw(contextMenu.aFloat);
-		else contextMenu.setPosition(-100, -100); //when it's not being rendered move it offscreen, so it isn't blocking anything's listener
+		else{
+			contextMenu.setPosition(-100, -100); //when it's not being rendered move it offscreen, so it isn't blocking anything's listener
+			contextMenu.setSize(contextMenu.getWidth(), 1);
+		}
 
 		batch.end();
 
@@ -757,5 +824,9 @@ public class Main extends ApplicationAdapter {
 			//so that it's not called again
 			fileChooserPath = null;
 		}
+	}
+
+	public static boolean isInFocusMode() {
+		return inFocusMode;
 	}
 }

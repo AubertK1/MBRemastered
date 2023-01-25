@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Null;
 
 import java.util.ArrayList;
 
@@ -16,7 +17,7 @@ import static com.mygdx.project.Main.batch;
  * Essentially making my own version of JComponents where I can group the different components
  * together and edit any methods I need
  */
-public class MBComponent extends Actor {
+public class MBComponent{
     ArrayList<MBComponent> components = new ArrayList<>();
     Panel parentPanel;
     MBComponent parentActor;
@@ -29,6 +30,7 @@ public class MBComponent extends Actor {
     //whether this component is supposed to be visible if it were allowed to be (ie the Item textfields when not in edit mode are allowed to be visible but not supposed to be visible)
     boolean supposedToBeVisible = true;
 
+    private @Null String name;
     protected boolean focused = false;
     public MBComponent() {
     }
@@ -61,7 +63,7 @@ public class MBComponent extends Actor {
     }
     public void remove(MBComponent component) {
         //removes component from the stage (don't think this does anything tbh)
-        component.remove();
+        component.getComponent().remove();
         //removes component from the components list
         components.remove(component);
         if(component instanceof MBWindow){
@@ -133,7 +135,12 @@ public class MBComponent extends Actor {
     public void setFocused(boolean focused) {
         this.focused = focused;
     }
-
+    public void setName (@Null String name) {
+        this.name = name;
+    }
+    public @Null String getName () {
+        return name;
+    }
     /**
      * @return returns the x value of this component
      */
@@ -166,6 +173,11 @@ public class MBComponent extends Actor {
         return null;
     }
     public void draw(float alpha){
+        if(focused){
+            if(!Main.focusedComps.contains(this)) Main.focusedComps.add(this);
+        }
+        else Main.focusedComps.remove(this);
+
         batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
 
         Main.allComps = reaarrangeList();

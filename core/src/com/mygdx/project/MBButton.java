@@ -74,6 +74,7 @@ public class MBButton extends MBComponent{
         //re-initializes the button
         button.setPosition(pos.x, pos.y);
         button.setSize(pos.width, pos.height);
+        setVisible(true);
         //changes the image of the button to the new image
         skin.get(style, ImageButton.ImageButtonStyle.class).imageUp = new TextureRegionDrawable(new TextureRegion(texture));
     }
@@ -97,6 +98,7 @@ public class MBButton extends MBComponent{
         //re-initializes the button
         button.setPosition(pos.x, pos.y);
         button.setSize(pos.width, pos.height);
+        setVisible(true);
     }
     public void setupSelectImageTextButton(){
         aFloat = .5f;
@@ -169,7 +171,6 @@ public class MBButton extends MBComponent{
             }
         });
     }
-    @Override
     public boolean addListener(EventListener listener) {
         return button.addListener(listener);
     }

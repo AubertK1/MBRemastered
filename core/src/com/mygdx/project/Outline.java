@@ -18,6 +18,8 @@ public class Outline extends Widget {
     protected float boardHeight;
     protected float boardWidth;
 
+    private boolean focused;
+
     protected int BORDERSIZE = 4;
     protected int LEFTBOUND = 0;
     protected int RIGHTBOUND = 0;
@@ -161,6 +163,13 @@ public class Outline extends Widget {
     static void wipe(){
         lastx = -1;
         lasty = -1;
+    }
+
+    public void setFocused(boolean focused){
+        this.focused = focused;
+    }
+    public boolean isFocused() {
+        return focused;
     }
 
     public void setOffsetX(float offsetX) {

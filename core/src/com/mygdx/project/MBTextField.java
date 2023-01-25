@@ -25,4 +25,10 @@ public class MBTextField extends MBComponent{
     public TextField getTextField(){
         return textField;
     }
+    public String getText(){
+        return textField.getText();
+    }
+    public void setText(String text){
+        textField.setText(text);
+    }
 }

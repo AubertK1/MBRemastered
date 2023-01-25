@@ -334,6 +334,11 @@ public class SpellItem extends Item {
         //creating textfields and setting their texts to their corresponding label's text
         for (int i = 0; i < labelTexts.size(); i++) {
             textFields.add(new MBTextField(labelTexts.get(i), skin));
+            if(labels.get(i).getName() != null && labels.get(i).getName().equals("tf")){ //banishing the spell desc label's real textfield
+                textFields.get(i).setVisible(false);
+                textFields.get(i).setPosition(-1, -1);
+                textFields.get(i).setSize(0,0);
+            }
             add(textFields.get(i));
             //detecting when enter is pressed on each MBTextField so that enter can exit out of edit mode
             textFields.get(i).setKeyListener(new TextField.TextFieldListener() {
@@ -439,7 +444,7 @@ public class SpellItem extends Item {
         //loops through this item's textfields list and updates their positions, re-adds them to the list, and sets their hard visibility to true
         for (int i = 0; i < textFields.size(); i++) {
             if(labels.get(i).getName() != null && labels.get(i).getName().equals("tf")){
-                spellDesc.getTextArea().getTextArea().setText(labelTexts.get(i));
+                spellDesc.getTextArea().setText(labelTexts.get(i));
                 labels.get(i).getLabel().setText("");
             }
             else {
@@ -479,7 +484,7 @@ public class SpellItem extends Item {
         for (int i = 0; i < textFields.size(); i++) {
             if(labels.get(i).getName() != null && labels.get(i).getName().equals("tf")) {
                 if (minipanels.get(0) instanceof Tipbox) {
-                    labelTexts.set(i, textFields.get(i).getTextField().getText()); //updating the label list's text
+                    labelTexts.set(i, ((Tipbox)minipanels.get(0)).getTextArea().getText()); //updating the label list's text
 
                     labels.get(i).getLabel().setText(shortenString(labelTexts.get(i), labels.get(i).getWidth())); //updating the label's text
                 }

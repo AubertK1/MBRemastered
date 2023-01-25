@@ -195,10 +195,13 @@ public class ItemPanel extends Minipanel{
     public Rectangle getSpot0Model(){
         return spot0Model;
     }
-    /**
+/*
+    */
+/**
      * renders all the items in this panel
      * @param batch the batch...
-     */
+     *//*
+
     public void render(SpriteBatch batch) {
         batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
 
@@ -208,4 +211,5 @@ public class ItemPanel extends Minipanel{
             if(item.supposedToBeVisible) item.render(batch);
         }
     }
+*/
 }

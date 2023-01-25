@@ -24,16 +24,4 @@ public class MBSelectBox extends MBComponent{
     public Actor getComponent(){
         return dropdown;
     }
-    public void draw(float alpha){
-        batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
-
-        Main.allComps = reaarrangeList();
-        Panel.resetCompIDs();
-
-        getComponent().draw(Main.batch, alpha);
-        for (MBComponent innerComp: components) {
-            innerComp.draw(innerComp.aFloat);
-        }
-    }
-
 }

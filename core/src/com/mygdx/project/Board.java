@@ -32,6 +32,9 @@ public class Board extends Widget {
     public Pixmap pixmapBoard;
 
     private Outline selectedOutline;
+    ArrayList<Outline> outlines = new ArrayList<>();
+
+    ArrayList<Outline> focusedOutlines = new ArrayList<>();
 
     private Color backgroundColor;
     private Color drawingColor;
@@ -45,13 +48,7 @@ public class Board extends Widget {
     private boolean drawMode = false;
     private boolean eraseMode = false;
 
-    private int lastx = -1;
-    private int lasty = -1;
-
     boolean drawCursor;
-
-    ArrayList<Outline> outlines = new ArrayList<>();
-
 
     public Board (Skin skin) {
         this(skin.get(BoardStyle.class));
@@ -111,7 +108,7 @@ public class Board extends Widget {
                 }
                 else if (button == Input.Buttons.RIGHT && selectMode){
                     if (selectedOutline != null) {
-                        Main.contextMenu.setItems("Bring Forward", "Bring Backward", "Bring to Front", "Bring to Back", "Edit", "Delete");
+                        Main.contextMenu.setItems("Bring Forward", "Bring Backward", "Bring to Front", "Bring to Back", "Edit", "Delete", "Focus");
                         Main.contextMenu.addListener(new ClickListener() {
                             public void clicked(InputEvent event, float x, float y) {
                                 String word = Main.contextMenu.getSelected();
@@ -134,6 +131,9 @@ public class Board extends Widget {
                                     case "Delete":
                                         selectedOutline.delete();
                                         selectedOutline = null;
+                                        break;
+                                    case "Focus":
+                                        selectedOutline.setFocused(!selectedOutline.isFocused());
                                         break;
                                 }
                             }
@@ -174,8 +174,6 @@ public class Board extends Widget {
 
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 if (pointer != 0 || button != 0) return;
-                lastx = -1;
-                lasty = -1;
                 Outline.wipe();
 
                 if(selectMode){
@@ -251,6 +249,10 @@ public class Board extends Widget {
         //loops through each outline and draws its outline last so that it's always on top
         for (Outline outline: outlines) {
             outline.drawOutline(batch, 1);
+            if(outline.isFocused()){
+                if(!Main.focusedOutlines.contains(outline)) Main.focusedOutlines.add(outline);
+            }
+            else Main.focusedOutlines.remove(outline);
         }
 
         //fixme best version of a keylistener I could think of

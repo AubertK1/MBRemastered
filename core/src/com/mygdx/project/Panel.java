@@ -112,7 +112,7 @@ public class Panel {
     public void delete(MBComponent component){
         component.setVisible(false);
         //removes component from the stage
-        Main.stage.getRoot().removeActor(component);
+        Main.stage.getRoot().removeActor(component.getComponent());
         Main.stage.getActors().get(component.getCompID()).addAction(Actions.removeActor());
         //removes component from the all components list
         Main.allComps.remove(component);
@@ -243,7 +243,9 @@ public class Panel {
      * @param batch the batch...
      */
     public void render (SpriteBatch batch) {
-        if(focused && !Main.focusedPanels.contains(this)) Main.focusedPanels.add(this);
+        if(focused){
+            if(!Main.focusedPanels.contains(this)) Main.focusedPanels.add(this);
+        }
         else Main.focusedPanels.remove(this);
         //screen size is 1920x1000 so adjust accordingly
         //makes sure the panel's opacity is unchanged by the components' opacity changes
@@ -252,7 +254,7 @@ public class Panel {
         batch.draw(texture, getX(), getY(), getWidth(), getHeight());
         for (MBComponent component: components) {
             if(component.supposedToBeVisible) {
-                component.getComponent().draw(batch, component.aFloat);
+                component.draw(component.aFloat);
             }
         }
         //loops through this panel's list of minipanels
