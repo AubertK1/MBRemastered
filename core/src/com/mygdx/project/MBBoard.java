@@ -13,7 +13,7 @@ public class MBBoard extends MBComponent{
         board = new Board(skin);
     }
 
-    public Actor getComponent(){
+    public Actor getActor(){
         return board;
     }
 

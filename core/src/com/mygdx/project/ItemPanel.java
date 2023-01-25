@@ -51,6 +51,15 @@ public class ItemPanel extends Minipanel{
         if(item.getSpot() > MAXSPOT) item.setSoftVisible(false);
     }
 
+    public void delete(Item item){
+        int itemSpot = item.getSpot();
+
+        delete((Panel) item);
+
+        allItems.remove(item);
+        shuffleItemsUp(itemSpot);
+    }
+
     /**
      * shuffles all the items one spot up
      */

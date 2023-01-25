@@ -18,7 +18,7 @@ public class MBTextField extends MBComponent{
         textField.setTextFieldListener(listener);
     }
 
-    public Actor getComponent(){
+    public Actor getActor(){
         return textField;
     }
 

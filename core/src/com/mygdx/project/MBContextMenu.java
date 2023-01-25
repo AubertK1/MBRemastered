@@ -1,7 +1,6 @@
 package com.mygdx.project;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Null;
@@ -14,7 +13,7 @@ public class MBContextMenu extends MBComponent{
         contextMenu.setWidth(200);
 
         Main.allComps.add(this);
-        Main.stage.addActor(this.getComponent());
+        Main.stage.addActor(this.getActor());
     }
 
     public void buildDefaultMenu(){
@@ -54,7 +53,7 @@ public class MBContextMenu extends MBComponent{
     public boolean isActive(){
         return contextMenu.doShow;
     }
-    public Actor getComponent(){
+    public Actor getActor(){
         return contextMenu;
     }
 }

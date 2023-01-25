@@ -25,7 +25,7 @@ public class MBTextArea extends MBComponent{
         textArea = new TextArea(text, skin);
     }
 
-    public Actor getComponent(){
+    public Actor getActor(){
         return textArea;
     }
     public TextArea getTextArea(){

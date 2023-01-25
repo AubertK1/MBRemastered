@@ -1,10 +1,7 @@
 package com.mygdx.project;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Null;
@@ -50,9 +47,9 @@ public class MBComponent{
         //sets the component's parent to this panel
         component.parentActor = this;
         //makes sure the component is an actor
-        if(component.getComponent() != null) {
+        if(component.getActor() != null) {
             //adds component to the stage so it can be drawn
-            Main.stage.addActor(component.getComponent());
+            Main.stage.addActor(component.getActor());
         }
         if(component instanceof MBWindow){
             Main.windows.add((MBWindow) component);
@@ -62,8 +59,8 @@ public class MBComponent{
         }
     }
     public void remove(MBComponent component) {
-        //removes component from the stage (don't think this does anything tbh)
-        component.getComponent().remove();
+        //removes actor from the stage (don't think this does anything tbh)
+        component.getActor().remove();
         //removes component from the components list
         components.remove(component);
         if(component instanceof MBWindow){
@@ -73,8 +70,9 @@ public class MBComponent{
     }
 
     public void delete(MBComponent component){
-        //removes component from the stage
-        Main.stage.getActors().get(component.getCompID()).addAction(Actions.removeActor());
+        //removes actor from the stage
+        component.getActor().remove();
+//        Main.stage.getActors().get(component.getCompID()).addAction(Actions.removeActor());
         //removes component from the all components list
         Main.allComps.remove(component);
         //removes component from the item's components list
@@ -104,7 +102,7 @@ public class MBComponent{
      * @param y y value of this component
      */
     public void setPosition(float x, float y){
-        getComponent().setPosition(x, y);
+        getActor().setPosition(x, y);
     }
     /**
      * sets the size of this component
@@ -112,14 +110,14 @@ public class MBComponent{
      * @param height height of this component
      */
     public void setSize(float width, float height){
-        getComponent().setSize(width, height);
+        getActor().setSize(width, height);
     }
     /**
      * changes ths component's visibility and whether it's supposed to be visible
      * @param visible its visibility
      */
     public void setVisible(boolean visible){
-        getComponent().setVisible(visible);
+        getActor().setVisible(visible);
         this.supposedToBeVisible = visible;
     }
     /**
@@ -127,7 +125,7 @@ public class MBComponent{
      * @param visible its visibility
      */
     public void setSoftVisible(boolean visible){
-        getComponent().setVisible(visible);
+        getActor().setVisible(visible);
     }
     public boolean isFocused() {
         return focused;
@@ -145,31 +143,31 @@ public class MBComponent{
      * @return returns the x value of this component
      */
     public float getX(){
-        return getComponent().getX();
+        return getActor().getX();
     }
     /**
      * @return returns the y value of this component
      */
     public float getY(){
-        return getComponent().getY();
+        return getActor().getY();
     }
     /**
      * @return returns the width of this component
      */
     public float getWidth(){
-        return getComponent().getWidth();
+        return getActor().getWidth();
     }
     /**
      * @return returns the height of this component
      */
     public float getHeight(){
-        return getComponent().getHeight();
+        return getActor().getHeight();
     }
     /**
      * gets the component regardless of what type of component it is (textfield, label, etc.)
      * @return returns the component
      */
-    public Actor getComponent(){
+    public Actor getActor(){
         return null;
     }
     public void draw(float alpha){
@@ -183,7 +181,7 @@ public class MBComponent{
         Main.allComps = reaarrangeList();
         Panel.resetCompIDs();
 
-        getComponent().draw(batch, alpha);
+        getActor().draw(batch, alpha);
         for (MBComponent innerComp: components) {
             innerComp.draw(innerComp.aFloat);
         }
@@ -198,7 +196,7 @@ public class MBComponent{
             actor = actors.get(i);
             for (int j = 0; j < Main.allComps.size(); j++) { //find its corresponding component in allComps
                 comp = Main.allComps.get(j);
-                if(actor == comp.getComponent()) newList.add(comp);
+                if(actor == comp.getActor()) newList.add(comp);
             }
         }
         return newList;

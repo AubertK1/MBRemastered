@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 import java.util.ArrayList;
 
@@ -60,9 +59,9 @@ public class Panel {
         //sets the component's parent to this panel
         component.parentPanel = this;
         //makes sure the component is an actor
-        if(component.getComponent() != null) {
+        if(component.getActor() != null) {
             //adds component to the stage so it can be drawn
-            Main.stage.addActor(component.getComponent());
+            Main.stage.addActor(component.getActor());
             //so that the compID aligns with the component's position on the list
 //            component.compID = Main.allComps.size();
         }
@@ -107,13 +106,18 @@ public class Panel {
 
     /**
      * permanently removes component from everything
-     * @param component
+     * @param component the component you want to remove
      */
     public void delete(MBComponent component){
+        //deletes all of the component's components
+        for (MBComponent childComp : component.components) {
+            delete(childComp);
+        }
+
         component.setVisible(false);
         //removes component from the stage
-        Main.stage.getRoot().removeActor(component.getComponent());
-        Main.stage.getActors().get(component.getCompID()).addAction(Actions.removeActor());
+        component.getActor().remove();
+//        Main.stage.getActors().get(component.getCompID()).addAction(Actions.removeActor());
         //removes component from the all components list
         Main.allComps.remove(component);
         //removes component from the item's components list
@@ -137,6 +141,14 @@ public class Panel {
      */
     public void delete(Panel panel){
         //DO NOT CALL THIS IF YOU PLAN ON ADDING THE PANEL BACK LATER
+        //deletes all of the panel's components and minipanels
+        for (MBComponent component : panel.components) {
+            delete(component);
+        }
+        for (Panel minipanel: panel.minipanels) {
+            delete(minipanel);
+        }
+        //then goes through and deletes the panel
         panel.setSoftVisible(false);
         //removes component from the components list
         minipanels.remove(panel);

@@ -69,7 +69,7 @@ public class MBWindow extends MBComponent{
         window.getTitleTable().add(closeButton).size(20, 15).padRight(5.5f).padTop(0).padBottom(0);
     }
 
-    public Actor getComponent(){
+    public Actor getActor(){
         return window;
     }
     public Actor getImage(){

@@ -653,7 +653,7 @@ public class Main extends ApplicationAdapter {
 		}
 
 		if(inFocusMode){
-			batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, .65f);
+			batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, .75f);
 			batch.draw(grayscreen, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 			for (Panel focusedPanel : focusedPanels) {

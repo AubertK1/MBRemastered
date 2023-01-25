@@ -21,7 +21,7 @@ public class MBSelectBox extends MBComponent{
     public void setItems(String... items){
         dropdown.setItems(items);
     }
-    public Actor getComponent(){
+    public Actor getActor(){
         return dropdown;
     }
 }

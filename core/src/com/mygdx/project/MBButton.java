@@ -138,9 +138,9 @@ public class MBButton extends MBComponent{
                     window.setPosition((float)Gdx.graphics.getWidth()/2 - window.getWidth()/2, (float)Gdx.graphics.getHeight()/2 - window.getHeight()/2);
                     window.setVisible(true);
                     //makes it so that the user can interact with the app while the window is up (if true it will be the only thing you can interact with)
-                    ((Window)window.getComponent()).setModal(false);
+                    ((Window)window.getActor()).setModal(false);
                     //allows the user to drag it
-                    ((Window)window.getComponent()).setMovable(true);
+                    ((Window)window.getActor()).setMovable(true);
                     add(window);
                 }
                 else{
@@ -174,7 +174,7 @@ public class MBButton extends MBComponent{
     public boolean addListener(EventListener listener) {
         return button.addListener(listener);
     }
-    public Actor getComponent(){
+    public Actor getActor(){
         return button;
     }
     public Button getButton(){

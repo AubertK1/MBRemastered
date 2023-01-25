@@ -23,7 +23,7 @@ public class MBLabel extends MBComponent{
         label.setAlignment(Align.center);
     }
 
-    public Actor getComponent(){
+    public Actor getActor(){
         return label;
     }
 

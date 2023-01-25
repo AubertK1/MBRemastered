@@ -9,7 +9,7 @@ public class MBColorPicker extends MBComponent{
         CP = new ColorPicker();
     }
 
-    public Actor getComponent(){
+    public Actor getActor(){
         return CP;
     }
 }

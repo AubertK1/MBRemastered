@@ -36,7 +36,7 @@ public class SpellItem extends Item {
         nameLabel.setSize(119, nameLabel.getHeight());
         labelTexts.add(nameLabel.getLabel().getText().toString());
 
-        descLabel = new MBLabel("Item Description...", skin);
+        descLabel = new MBLabel("Spell Description...", skin);
         descLabel.setPosition(nameLabel.getX()+ nameLabel.getWidth()+2, nameLabel.getY());
         descLabel.setSize(257, nameLabel.getHeight());
         descLabel.setName("tf"); //setting the name so I can identify it later
@@ -252,14 +252,7 @@ public class SpellItem extends Item {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Delete Button " + (getID() +1));
 
-                int currSpot = getSpot();
-
-                for (int i = components.size()-1; i >= 0; i--) {
-                    delete(components.get(i));
-                }
-                parentIP.delete(SpellItem.this);
-
-                parentIP.shuffleItemsUp(currSpot);
+                deleteThisItem();
             }
         });
 

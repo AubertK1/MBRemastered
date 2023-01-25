@@ -121,14 +121,7 @@ public class WeaponItem extends Item {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Delete Button " + (ID +1));
 
-                int currSpot = getSpot();
-
-                for (int i = components.size()-1; i >= 0; i--) {
-                    delete(components.get(i));
-                }
-                parentIP.delete(WeaponItem.this);
-
-                parentIP.shuffleItemsUp(currSpot);
+                deleteThisItem();
             }
         });
 

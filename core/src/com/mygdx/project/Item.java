@@ -56,6 +56,9 @@ public class Item extends Minipanel{
         //updates the item's components' positions
         for (MBComponent component : components) {
             component.setPosition(component.getX(), component.getY() + yGap);
+            for (MBComponent MBComp: component.components) {
+                MBComp.setPosition(MBComp.getX(), MBComp.getY() + yGap);
+            }
         }
         //updates the item's minipanels' positions
         for (Panel minipanel: minipanels) {
@@ -188,6 +191,9 @@ public class Item extends Minipanel{
         return customLayout;
     }
 
+    public void deleteThisItem(){
+        parentIP.delete(Item.this);
+    }
     /**
      * renders this item and any minipanels it may hold
      * @param batch the batch...
@@ -199,10 +205,10 @@ public class Item extends Minipanel{
 
         for (MBComponent component: components) {
             if(component.supposedToBeVisible) {
-                component.getComponent().draw(batch, component.aFloat);
+                component.getActor().draw(batch, component.aFloat);
                 if(component.components.size() > 0){
                     for (MBComponent componentComp: component.components) {
-                        componentComp.getComponent().draw(batch, componentComp.aFloat);
+                        componentComp.getActor().draw(batch, componentComp.aFloat);
                     }
                 }
             }
