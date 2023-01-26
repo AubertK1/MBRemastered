@@ -756,7 +756,7 @@ public class Main extends ApplicationAdapter {
 			//turns the imageButton into an ImageButton
 			imageButton.toImageButton(tex2);
 			imageButton.setupSelectImageImageButton();
-			//adds the imageButton to the stage so it's listener works
+			//adds the imageButton to the stage, so it's listener works
 			genStatsPanel.add(imageButton);
 
 			final MBButton reselectButton;
