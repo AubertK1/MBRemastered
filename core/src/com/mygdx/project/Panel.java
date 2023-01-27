@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.math.Rectangle;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -12,9 +13,11 @@ import java.util.ArrayList;
  * in how they interact with the components they hold.
  */
 
-public class Panel {
+public class Panel implements Renderable{
     //the image that the panel is based off of
     Texture texture;
+    //the batch for the render function
+    SpriteBatch batch = Main.batch;
     //all values associated with how to draw it are stored here
     float x, y, width, height;
     //stores the panel's components in this list
@@ -40,30 +43,30 @@ public class Panel {
 //        panelNum++;
     }
 
+    public void add( MBComponent component){
+        add(component, 0);
+    }
     /**
      * adds the component to its panel
      * @param component the component you want to add
      */
-    public void add(MBComponent component){
-        //adds this component to the list of all components
-        boolean notAdded = true;
-        for (MBComponent comp: Main.allComps) {
-            if (component == comp) {
-                notAdded = false;
-                break;
-            }
-        }
-        if (notAdded) Main.allComps.add(component);
+    public void add( MBComponent component, int layer){
+//        if(component.getActor() != null) return;
+        //adds this component to the list of all components if it's not already in it
+        if(!Main.allComps.contains(component)) Main.allComps.add(component);
         //adds the component given to this panel
         components.add(component);
         //sets the component's parent to this panel
         component.parentPanel = this;
-        //makes sure the component is an actor
-        if(component.getActor() != null) {
-            //adds component to the stage so it can be drawn
-            Main.stage.addActor(component.getActor());
-            //so that the compID aligns with the component's position on the list
-//            component.compID = Main.allComps.size();
+        //adds component to the stage so it can be drawn
+        Main.stage.addActor(component.getActor());
+
+        if(Main.layers.containsKey(layer)){
+            Main.layers.get(layer).add(component);
+        }
+        else{
+            Main.layers.put(layer, new ArrayList<Renderable>());
+            Main.layers.get(layer).add(component);
         }
         if(component instanceof MBWindow){
             Main.windows.add((MBWindow) component);
@@ -71,39 +74,33 @@ public class Panel {
         if(component instanceof MBSelectBox){
             Main.scrollpanes.add((MBSelectBox) component);
         }
-//        resetCompIDs();
     }
 
+    public void add( Minipanel minipanel) {
+        add(minipanel, 0);
+    }
     /**
      * adds the minipanel to its panel
      * @param minipanel the minipanel you want to add
      */
-    public void add(Minipanel minipanel){
+    public void add( Minipanel minipanel, int layer){
         //adds the minipanel given to this panel
         minipanels.add(minipanel);
         //sets the minipanel's parent to this panel
         minipanel.parentPanel = this;
 
+        if(Main.layers.containsKey(layer)){
+            Main.layers.get(layer).add(minipanel);
+        }
+        else{
+            Main.layers.put(layer, new ArrayList<Renderable>());
+            Main.layers.get(layer).add(minipanel);
+        }
+
         if(minipanel instanceof Tipbox){
             Main.tipboxes.add((Tipbox) minipanel);
         }
     }
-    /**
-     * removes the component from the lists but it can be added back whenever
-     * @param component the component you want to remove
-     */
-    public void remove(MBComponent component) {
-        //removes component from the components list
-        components.remove(component);
-        if(component instanceof MBWindow){
-            Main.windows.remove((MBWindow) component);
-        }
-        if(component instanceof MBSelectBox){
-            Main.scrollpanes.remove((MBSelectBox) component);
-        }
-
-    }
-
     /**
      * permanently removes component from everything
      * @param component the component you want to remove
@@ -124,6 +121,15 @@ public class Panel {
         components.remove(component);
         //disposes of the MBComponent
         component.dispose();
+
+        for (int layer = 1; layer < Main.layers.size(); layer++) {
+            for (int renderable = 0; renderable < Main.layers.get(layer).size(); renderable++) {
+                if(component == Main.layers.get(layer).get(renderable)) {
+                    Main.layers.get(layer).remove(component);
+                }
+            }
+        }
+
         if(component instanceof MBWindow){
             Main.windows.remove((MBWindow) component);
         }
@@ -249,12 +255,14 @@ public class Panel {
     }
     public void saveEdit(){
     }
+    public boolean isSupposedToBeVisible() {
+        return supposedToBeVisible;
+    }
 
     /**
      * renders all the panels
-     * @param batch the batch...
      */
-    public void render (SpriteBatch batch) {
+    public void render () {
         if(focused){
             if(!Main.focusedPanels.contains(this)) Main.focusedPanels.add(this);
         }
@@ -266,13 +274,13 @@ public class Panel {
         batch.draw(texture, getX(), getY(), getWidth(), getHeight());
         for (MBComponent component: components) {
             if(component.supposedToBeVisible) {
-                component.draw(component.aFloat);
+                component.render();
             }
         }
         //loops through this panel's list of minipanels
         for (Panel minipanel : minipanels) {
             if(minipanel.supposedToBeVisible){
-                minipanel.render(batch);
+                minipanel.render();
             }
         }
     }

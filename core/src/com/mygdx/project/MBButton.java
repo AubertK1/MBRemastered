@@ -141,7 +141,7 @@ public class MBButton extends MBComponent{
                     ((Window)window.getActor()).setModal(false);
                     //allows the user to drag it
                     ((Window)window.getActor()).setMovable(true);
-                    add(window);
+                    add(window, 3);
                 }
                 else{
 

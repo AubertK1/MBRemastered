@@ -20,6 +20,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class Main extends ApplicationAdapter {
@@ -50,6 +51,8 @@ public class Main extends ApplicationAdapter {
     static ArrayList<Tipbox> tipboxes = new ArrayList<>();
     static ArrayList<MBWindow> windows = new ArrayList<>();
     static ArrayList<MBSelectBox> scrollpanes = new ArrayList<>();
+
+	static HashMap<Integer, ArrayList<Renderable>> layers = new HashMap<>();
 
 	//weapons or spell items for the itempanel
 	static int itemTab = 1;
@@ -431,7 +434,7 @@ public class Main extends ApplicationAdapter {
 		playerNameLabel.setPosition(topPanel.getX() + 10, topPanel.getY() + (topPanel.getHeight()/2) - (playerNameLabel.getHeight()/2));
 
 		topPanel.add(playerNameLabel);
-		topPanel.add(dropdown);
+		topPanel.add(dropdown, 1);
 
 		playerNameLabel.setFocused(true);
 		dropdown.setFocused(true);
@@ -449,8 +452,9 @@ public class Main extends ApplicationAdapter {
 		final MBButton focusButton = new MBButton("FOCUS", uiSkin);
 		focusButton.setPosition(toolbarPanel.getX() + 10, toolbarPanel.getY() + 10);
 		focusButton.setSize(toolbarPanel.getHeight()-20, toolbarPanel.getHeight()-20);
-		focusButton.addListener(new InputListener(){
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+		focusButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
 				System.out.println("FOCUSED");
 
 				if(!inFocusMode){
@@ -459,8 +463,6 @@ public class Main extends ApplicationAdapter {
 				else{
 					inFocusMode = false;
 				}
-
-				return false;
 			}
 		});
 
@@ -567,9 +569,9 @@ public class Main extends ApplicationAdapter {
 		toolbarPanel.add(selectButton);
 		toolbarPanel.add(drawButton);
 		toolbarPanel.add(eraseButton);
-		toolbarPanel.add(sizesBox);
-		toolbarPanel.add(softnessBox);
-		toolbarPanel.add(colorBox);
+		toolbarPanel.add(sizesBox, 2);
+		toolbarPanel.add(softnessBox, 2);
+		toolbarPanel.add(colorBox, 2);
 		toolbarPanel.add(colorPicker);
 		//endregion
 
@@ -636,20 +638,30 @@ public class Main extends ApplicationAdapter {
 
 		//rendering everything
 		for (Panel panel : mainPanels) {
-			panel.render(batch);
+			panel.render();
 		}
 
 		//drawing the components after so that they are on the top
+/*
 		for (Tipbox tipbox : tipboxes) {
 			if (tipbox.supposedToBeVisible) {
-				tipbox.render(batch);
+				tipbox.render();
 			}
 		}
 		for (MBSelectBox selectBox : scrollpanes) {
-			if (selectBox.dropdown.isActive) selectBox.draw(selectBox.aFloat);
+			if (selectBox.dropdown.isActive) selectBox.render();
 		}
 		for (MBWindow window : windows) {
-			window.draw(window.aFloat);
+			window.render();
+		}
+*/
+
+		for (int layer = 1; layer < layers.size(); layer++) {
+			for (int renderable = 0; renderable < layers.get(layer).size(); renderable++) {
+				if(layers.get(layer).get(renderable).isSupposedToBeVisible()) {
+					layers.get(layer).get(renderable).render();
+				}
+			}
 		}
 
 		if(inFocusMode){
@@ -657,10 +669,10 @@ public class Main extends ApplicationAdapter {
 			batch.draw(grayscreen, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 			for (Panel focusedPanel : focusedPanels) {
-				focusedPanel.render(batch);
+				focusedPanel.render();
 			}
 			for (MBComponent focusedComp: focusedComps) {
-				focusedComp.draw(focusedComp.aFloat);
+				focusedComp.render();
 			}
 			//loops through each outline and draws its texture
 			for (Outline outline: focusedOutlines) {
@@ -674,18 +686,18 @@ public class Main extends ApplicationAdapter {
 			//drawing these components after so that they are on the top
 			for (Tipbox tipbox : tipboxes) {
 				if (tipbox.supposedToBeVisible) {
-					tipbox.render(batch);
+					tipbox.render();
 				}
 			}
 			for (MBSelectBox selectBox : scrollpanes) {
-				if (selectBox.dropdown.isActive  && selectBox.isFocused()) selectBox.draw(selectBox.aFloat);
+				if (selectBox.dropdown.isActive  && selectBox.isFocused()) selectBox.render();
 			}
 			for (MBWindow window : windows) {
-				window.draw(window.aFloat);
+				window.render();
 			}
 		}
 
-		if(contextMenu.isActive()) contextMenu.draw(contextMenu.aFloat);
+		if(contextMenu.isActive()) contextMenu.render();
 		else{
 			contextMenu.setPosition(-100, -100); //when it's not being rendered move it offscreen, so it isn't blocking anything's listener
 			contextMenu.setSize(contextMenu.getWidth(), 1);

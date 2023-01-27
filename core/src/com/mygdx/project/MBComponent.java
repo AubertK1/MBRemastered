@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Null;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -14,7 +15,7 @@ import static com.mygdx.project.Main.batch;
  * Essentially making my own version of JComponents where I can group the different components
  * together and edit any methods I need
  */
-public class MBComponent{
+public class MBComponent implements Renderable{
     ArrayList<MBComponent> components = new ArrayList<>();
     Panel parentPanel;
     MBComponent parentActor;
@@ -32,24 +33,30 @@ public class MBComponent{
     public MBComponent() {
     }
 
-    public void add(MBComponent component){
-        //adds this component to the list of all components
-        boolean notAdded = true;
-        for (MBComponent comp: Main.allComps) {
-            if (component == comp) {
-                notAdded = false;
-                break;
-            }
-        }
-        if (notAdded) Main.allComps.add(component);
+    public void add( MBComponent component){
+        add(component, 0);
+    }
+    /**
+     * adds the component to this component
+     * @param component the component you want to add
+     */
+    public void add( MBComponent component, int layer){
+//        if(component.getActor() != null) return;
+        //adds this component to the list of all components if it's not already in it
+        if(!Main.allComps.contains(component)) Main.allComps.add(component);
         //adds the component given to this panel
         components.add(component);
         //sets the component's parent to this panel
         component.parentActor = this;
-        //makes sure the component is an actor
-        if(component.getActor() != null) {
-            //adds component to the stage so it can be drawn
-            Main.stage.addActor(component.getActor());
+        //adds component to the stage so it can be drawn
+        Main.stage.addActor(component.getActor());
+
+        if(Main.layers.containsKey(layer)){
+            Main.layers.get(layer).add(component);
+        }
+        else{
+            Main.layers.put(layer, new ArrayList<Renderable>());
+            Main.layers.get(layer).add(component);
         }
         if(component instanceof MBWindow){
             Main.windows.add((MBWindow) component);
@@ -58,17 +65,6 @@ public class MBComponent{
             Main.scrollpanes.add((MBSelectBox) component);
         }
     }
-    public void remove(MBComponent component) {
-        //removes actor from the stage (don't think this does anything tbh)
-        component.getActor().remove();
-        //removes component from the components list
-        components.remove(component);
-        if(component instanceof MBWindow){
-            Main.windows.remove((MBWindow) component);
-        }
-
-    }
-
     public void delete(MBComponent component){
         //removes actor from the stage
         component.getActor().remove();
@@ -77,6 +73,15 @@ public class MBComponent{
         Main.allComps.remove(component);
         //removes component from the item's components list
         components.remove(component);
+
+        for (int layer = 1; layer < Main.layers.size(); layer++) {
+            for (int renderable = 0; renderable < Main.layers.get(layer).size(); renderable++) {
+                if(component == Main.layers.get(layer).get(renderable)) {
+                    Main.layers.get(layer).remove(component);
+                }
+            }
+        }
+
         if(component instanceof MBWindow){
             Main.windows.remove((MBWindow) component);
         }
@@ -163,6 +168,11 @@ public class MBComponent{
     public float getHeight(){
         return getActor().getHeight();
     }
+
+    public boolean isSupposedToBeVisible() {
+        return supposedToBeVisible;
+    }
+
     /**
      * gets the component regardless of what type of component it is (textfield, label, etc.)
      * @return returns the component
@@ -170,7 +180,7 @@ public class MBComponent{
     public Actor getActor(){
         return null;
     }
-    public void draw(float alpha){
+    public void render(){
         if(focused){
             if(!Main.focusedComps.contains(this)) Main.focusedComps.add(this);
         }
@@ -181,9 +191,9 @@ public class MBComponent{
         Main.allComps = reaarrangeList();
         Panel.resetCompIDs();
 
-        getActor().draw(batch, alpha);
+        getActor().draw(batch, aFloat);
         for (MBComponent innerComp: components) {
-            innerComp.draw(innerComp.aFloat);
+            innerComp.render();
         }
     }
     public ArrayList<MBComponent> reaarrangeList(){

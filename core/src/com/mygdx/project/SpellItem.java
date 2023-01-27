@@ -404,7 +404,7 @@ public class SpellItem extends Item {
         spellDesc.add(damageType);
         spellDesc.add(damageTypeTF);
 
-        add(spellDesc);
+        add(spellDesc, 1);
         //endregion
 
         //starting the item in edit mode so the user can immediately edit the item text

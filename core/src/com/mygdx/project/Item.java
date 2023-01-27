@@ -196,9 +196,8 @@ public class Item extends Minipanel{
     }
     /**
      * renders this item and any minipanels it may hold
-     * @param batch the batch...
      */
-    public void render(SpriteBatch batch) {
+    public void render() {
         batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
 
         batch.draw(texture, getX(), getY(), getWidth(), getHeight());
@@ -217,7 +216,7 @@ public class Item extends Minipanel{
         for (Panel minipanel : minipanels) {
             if(minipanel.supposedToBeVisible){
                 if(!editMode) minipanel.setSoftVisible(false);
-                else minipanel.render(batch);
+                else minipanel.render();
             }
         }
     }
