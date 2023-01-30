@@ -28,6 +28,7 @@ public class Panel implements Renderable{
     protected Panel parentPanel = null;
     //controls whether this is rendered or not
     boolean supposedToBeVisible = true;
+    private int layer = -1;
 
     protected boolean focused = false;
     //the alpha value this is rendered with
@@ -50,7 +51,7 @@ public class Panel implements Renderable{
      * adds the component to its panel
      * @param component the component you want to add
      */
-    public void add( MBComponent component, int layer){
+    public void add(MBComponent component, int layer){
 //        if(component.getActor() != null) return;
         //adds this component to the list of all components if it's not already in it
         if(!Main.allComps.contains(component)) Main.allComps.add(component);
@@ -61,13 +62,8 @@ public class Panel implements Renderable{
         //adds component to the stage so it can be drawn
         Main.stage.addActor(component.getActor());
 
-        if(Main.layers.containsKey(layer)){
-            Main.layers.get(layer).add(component);
-        }
-        else{
-            Main.layers.put(layer, new ArrayList<Renderable>());
-            Main.layers.get(layer).add(component);
-        }
+        component.setLayer(layer);
+
         if(component instanceof MBWindow){
             Main.windows.add((MBWindow) component);
         }
@@ -89,13 +85,7 @@ public class Panel implements Renderable{
         //sets the minipanel's parent to this panel
         minipanel.parentPanel = this;
 
-        if(Main.layers.containsKey(layer)){
-            Main.layers.get(layer).add(minipanel);
-        }
-        else{
-            Main.layers.put(layer, new ArrayList<Renderable>());
-            Main.layers.get(layer).add(minipanel);
-        }
+        minipanel.setLayer(layer);
 
         if(minipanel instanceof Tipbox){
             Main.tipboxes.add((Tipbox) minipanel);
@@ -122,13 +112,7 @@ public class Panel implements Renderable{
         //disposes of the MBComponent
         component.dispose();
 
-        for (int layer = 1; layer < Main.layers.size(); layer++) {
-            for (int renderable = 0; renderable < Main.layers.get(layer).size(); renderable++) {
-                if(component == Main.layers.get(layer).get(renderable)) {
-                    Main.layers.get(layer).remove(component);
-                }
-            }
-        }
+        component.setLayer(-1);
 
         if(component instanceof MBWindow){
             Main.windows.remove((MBWindow) component);
@@ -161,6 +145,8 @@ public class Panel implements Renderable{
         //disposes of the texture
         panel.texture.dispose();
 
+        panel.setLayer(-1);
+
         if(panel instanceof Tipbox){
             Main.tipboxes.remove(panel);
         }
@@ -192,6 +178,33 @@ public class Panel implements Renderable{
         this.width = width;
         this.height = height;
     }
+    public void setLayer(int layer){
+        if(this.layer != -1) {
+            int oldLayer = getLayer();
+
+            for (int renderable = 0; renderable < Main.layers.get(oldLayer).size(); renderable++) { //find the panel in the old layer
+                if (this == Main.layers.get(oldLayer).get(renderable)) {
+                    Main.layers.get(oldLayer).remove(this); //remove the panel from the old layer
+                }
+            }
+        }
+
+        if(layer == -1) ;
+        else if(Main.layers.containsKey(layer)){
+            Main.layers.get(layer).add(this); //add the panel to its new later
+        }
+        else{
+            Main.layers.put(layer, new ArrayList<Renderable>()); //creates a new layer
+            Main.layers.get(layer).add(this); //add the panel to the new later
+        }
+
+        this.layer = layer;
+    }
+
+    public int getLayer(){
+        return layer;
+    }
+
     /**
      * @return returns the panel this panel belongs to
      */

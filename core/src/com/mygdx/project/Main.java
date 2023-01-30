@@ -728,6 +728,18 @@ public class Main extends ApplicationAdapter {
 		chooser.setEnabled(false);
 		f.dispose();
 	}
+
+	public void focus(){
+		for (int layer = 0; layer < layers.size(); layer++) {
+			for (int renderable = 0; renderable < layers.get(layer).size(); renderable++) {
+				if(layers.get(layer).get(renderable).isSupposedToBeVisible()) {
+					layers.get(layer).get(renderable).setLayer(layers.get(layer).get(renderable).getLayer() + layers.size() + 1);
+				}
+			}
+		}
+	}
+
+	//region File Chooser
 	static public void fileChooseChanged(){
 		new Thread(new Runnable() {
 			@Override
@@ -837,6 +849,7 @@ public class Main extends ApplicationAdapter {
 			fileChooserPath = null;
 		}
 	}
+	//endregion
 
 	public static boolean isInFocusMode() {
 		return inFocusMode;

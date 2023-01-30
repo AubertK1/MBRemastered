@@ -27,7 +27,7 @@ public class MBComponent implements Renderable{
     Stage stage = Main.stage;
     //whether this component is supposed to be visible if it were allowed to be (ie the Item textfields when not in edit mode are allowed to be visible but not supposed to be visible)
     boolean supposedToBeVisible = true;
-
+    private int layer = -1;
     private @Null String name;
     protected boolean focused = false;
     public MBComponent() {
@@ -51,13 +51,8 @@ public class MBComponent implements Renderable{
         //adds component to the stage so it can be drawn
         Main.stage.addActor(component.getActor());
 
-        if(Main.layers.containsKey(layer)){
-            Main.layers.get(layer).add(component);
-        }
-        else{
-            Main.layers.put(layer, new ArrayList<Renderable>());
-            Main.layers.get(layer).add(component);
-        }
+        component.setLayer(layer);
+
         if(component instanceof MBWindow){
             Main.windows.add((MBWindow) component);
         }
@@ -74,13 +69,7 @@ public class MBComponent implements Renderable{
         //removes component from the item's components list
         components.remove(component);
 
-        for (int layer = 1; layer < Main.layers.size(); layer++) {
-            for (int renderable = 0; renderable < Main.layers.get(layer).size(); renderable++) {
-                if(component == Main.layers.get(layer).get(renderable)) {
-                    Main.layers.get(layer).remove(component);
-                }
-            }
-        }
+        component.setLayer(-1);
 
         if(component instanceof MBWindow){
             Main.windows.remove((MBWindow) component);
@@ -138,6 +127,32 @@ public class MBComponent implements Renderable{
     public void setFocused(boolean focused) {
         this.focused = focused;
     }
+    public void setLayer(int layer){
+        int oldLayer = getLayer();
+
+        if(this.layer != -1) {
+            for (int renderable = 0; renderable < Main.layers.get(oldLayer).size(); renderable++) { //find the panel in the old layer
+                if (this == Main.layers.get(oldLayer).get(renderable)) {
+                    Main.layers.get(oldLayer).remove(this); //remove the panel from the old layer
+                }
+            }
+        }
+        if(layer == -1) ;
+        else if(Main.layers.containsKey(layer)){
+            Main.layers.get(layer).add(this); //add the panel to its new later
+        }
+        else{
+            Main.layers.put(layer, new ArrayList<Renderable>()); //creates a new layer
+            Main.layers.get(layer).add(this); //add the panel to the new later
+        }
+
+        this.layer = layer;
+    }
+
+    public int getLayer(){
+        return layer;
+    }
+
     public void setName (@Null String name) {
         this.name = name;
     }

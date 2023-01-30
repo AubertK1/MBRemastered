@@ -6,4 +6,8 @@ public interface Renderable {
     void render();
 
     boolean isSupposedToBeVisible();
+
+    void setLayer(int layer);
+
+    int getLayer();
 }
