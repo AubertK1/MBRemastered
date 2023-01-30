@@ -130,15 +130,16 @@ public class MBComponent implements Renderable{
     public void setLayer(int layer){
         int oldLayer = getLayer();
 
-        if(this.layer != -1) {
+        if(oldLayer != -1) {
             for (int renderable = 0; renderable < Main.layers.get(oldLayer).size(); renderable++) { //find the panel in the old layer
                 if (this == Main.layers.get(oldLayer).get(renderable)) {
                     Main.layers.get(oldLayer).remove(this); //remove the panel from the old layer
                 }
             }
         }
-        if(layer == -1) ;
-        else if(Main.layers.containsKey(layer)){
+
+        if(layer == -1) ; //don't add this to a list, so it doesn't get rendered
+        else if(Main.layers.containsKey(layer)){ //if the layer already exists
             Main.layers.get(layer).add(this); //add the panel to its new later
         }
         else{

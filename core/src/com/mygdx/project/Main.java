@@ -40,12 +40,13 @@ public class Main extends ApplicationAdapter {
 	static ArrayList<Panel> focusedPanels = new ArrayList<>();
 	static ArrayList<MBComponent> focusedComps = new ArrayList<>();
 	static ArrayList<Outline> focusedOutlines = new ArrayList<>();
+	static boolean inFocusMode = false;
+	int focusedLayers = 0;
 
 	static MBBoard masterBoard;
 	//list with all the MBComponents
 	static ArrayList<MBComponent> allComps = new ArrayList<>();
 
-	static boolean inFocusMode = false;
 	static String player;
 	//so these can be drawn last
     static ArrayList<Tipbox> tipboxes = new ArrayList<>();
@@ -458,9 +459,11 @@ public class Main extends ApplicationAdapter {
 				System.out.println("FOCUSED");
 
 				if(!inFocusMode){
+					focus();
 					inFocusMode = true;
 				}
 				else{
+					unfocus();
 					inFocusMode = false;
 				}
 			}
@@ -656,7 +659,7 @@ public class Main extends ApplicationAdapter {
 		}
 */
 
-		for (int layer = 1; layer < layers.size(); layer++) {
+		for (int layer = 1; layer < layers.size() - focusedLayers; layer++) {
 			for (int renderable = 0; renderable < layers.get(layer).size(); renderable++) {
 				if(layers.get(layer).get(renderable).isSupposedToBeVisible()) {
 					layers.get(layer).get(renderable).render();
@@ -668,6 +671,7 @@ public class Main extends ApplicationAdapter {
 			batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, .75f);
 			batch.draw(grayscreen, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+/*
 			for (Panel focusedPanel : focusedPanels) {
 				focusedPanel.render();
 			}
@@ -682,6 +686,16 @@ public class Main extends ApplicationAdapter {
 			for (Outline outline: focusedOutlines) {
 				outline.drawOutline(batch, 1);
 			}
+*/
+
+			for (int layer = focusedLayers+1; layer < layers.size(); layer++) {
+				for (int renderable = 0; renderable < layers.get(layer).size(); renderable++) {
+					if(layers.get(layer).get(renderable).isSupposedToBeVisible()) {
+						layers.get(layer).get(renderable).render();
+					}
+				}
+			}
+/*
 
 			//drawing these components after so that they are on the top
 			for (Tipbox tipbox : tipboxes) {
@@ -695,6 +709,7 @@ public class Main extends ApplicationAdapter {
 			for (MBWindow window : windows) {
 				window.render();
 			}
+*/
 		}
 
 		if(contextMenu.isActive()) contextMenu.render();
@@ -730,13 +745,36 @@ public class Main extends ApplicationAdapter {
 	}
 
 	public void focus(){
+		//adding a new layer for every potential layer we may have
+		int nonfocusedLayers = layers.size();
+		for (int i = 0; i < nonfocusedLayers + 1; i++) {
+			layers.put(nonfocusedLayers + i, new ArrayList<Renderable>());
+			focusedLayers = i + 1;
+		}
+
+		//setting every focused renderables' layer to its corresponding focusedLayer
 		for (int layer = 0; layer < layers.size(); layer++) {
-			for (int renderable = 0; renderable < layers.get(layer).size(); renderable++) {
-				if(layers.get(layer).get(renderable).isSupposedToBeVisible()) {
-					layers.get(layer).get(renderable).setLayer(layers.get(layer).get(renderable).getLayer() + layers.size() + 1);
+			ArrayList<Renderable> currentLayer = layers.get(layer); //so that it's not updating the layers.layer's size/indexes while looping through it
+//			currentLayer.addAll(layers.get(layer));
+			for (int renderable = 0; renderable < currentLayer.size(); renderable++) {
+				if(currentLayer.get(renderable).isFocused()) {
+					currentLayer.get(renderable).setLayer(currentLayer.get(renderable).getLayer() + focusedLayers);
+					renderable--;
 				}
 			}
 		}
+	}
+	public void unfocus(){
+		//setting every focused renderables' layer back to its original layer
+		for (int layer = focusedLayers; layer > -1; layer--) {
+			for (int renderable = 0; renderable < layers.get(layer).size(); renderable++) {
+				layers.get(layer).get(renderable).setLayer(layers.get(layer).get(renderable).getLayer() - focusedLayers);
+
+				if(layers.get(layer).size() == 0) layers.remove(layer); //deletes the layer when its empty
+			}
+		}
+
+		focusedLayers = 0;
 	}
 
 	//region File Chooser

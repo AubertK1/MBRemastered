@@ -10,4 +10,6 @@ public interface Renderable {
     void setLayer(int layer);
 
     int getLayer();
+
+    boolean isFocused();
 }
