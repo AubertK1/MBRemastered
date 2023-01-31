@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 public class Tipbox extends Minipanel{
     public Tipbox(Rectangle position) {
         super("assets\\Panels\\TipBox4.png", position);
+        setFocused(true);
     }
 
 

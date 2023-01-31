@@ -2,6 +2,7 @@ package com.mygdx.project;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
@@ -10,9 +11,11 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Outline extends Widget {
+public class Outline extends Widget implements Renderable{
     protected Board parentBoard;
     protected boolean selected = false;
+    //the batch for the render function
+    SpriteBatch batch = Main.batch;
 
     protected float offsetX, offsetY;
     protected float boardHeight;
@@ -30,6 +33,10 @@ public class Outline extends Widget {
     protected Rectangle bounds = new Rectangle();
     protected boolean drawable = true;
 
+    //controls whether this is rendered or not
+    boolean supposedToBeVisible = true;
+    private int layer = -1;
+
     static protected int lastx = -1, lasty = -1;
 
     public Outline(Board board) {
@@ -39,6 +46,8 @@ public class Outline extends Widget {
         boardWidth = parentBoard.getWidth();
         offsetX = parentBoard.getOffsetX();
         offsetY = parentBoard.getOffsetY();
+
+        setLayer(1);
     }
 
     public void update() {
@@ -66,6 +75,12 @@ public class Outline extends Widget {
         if (outline != null) {
             outline.draw(batch, x, y, width, height);
         }
+    }
+
+    @Override
+    public void render() {
+        drawContent(batch);
+        drawOutline(batch, 1);
     }
 
     protected Rectangle findBounds() {
@@ -167,7 +182,48 @@ public class Outline extends Widget {
 
     public void setFocused(boolean focused){
         this.focused = focused;
+
+        if(Main.isInFocusMode()) Main.focus();
     }
+
+    public void setSoftVisible(boolean visible) {
+        supposedToBeVisible = visible;
+    }
+
+    @Override
+    public boolean isSupposedToBeVisible() {
+        return supposedToBeVisible;
+    }
+
+    @Override
+    public void setLayer(int layer) {
+        int oldLayer = getLayer();
+
+        if(oldLayer != -1) {
+            for (int renderable = 0; renderable < Main.layers.get(oldLayer).size(); renderable++) { //find the panel in the old layer
+                if (this == Main.layers.get(oldLayer).get(renderable)) {
+                    Main.layers.get(oldLayer).remove(this); //remove the panel from the old layer
+                }
+            }
+        }
+
+        if(layer == -1); //don't add this to a list, so it doesn't get rendered
+        else if(Main.layers.containsKey(layer)){ //if the layer already exists
+            Main.layers.get(layer).add(this); //add the panel to its new later
+        }
+        else{
+            Main.layers.put(layer, new ArrayList<Renderable>()); //creates a new layer
+            Main.layers.get(layer).add(this); //add the panel to the new later
+        }
+
+        this.layer = layer;
+    }
+
+    @Override
+    public int getLayer(){
+        return layer;
+    }
+
     public boolean isFocused() {
         return focused;
     }

@@ -32,7 +32,7 @@ public class Main extends ApplicationAdapter {
 	static Skin uiSkin;
 
 	public static MBContextMenu contextMenu;
-	public Texture grayscreen;
+	public static Panel grayPanel;
 	//creating main panels
 	Panel sidePanel, topPanel, genStatsPanel, reminderPanel, toolbarPanel, masterboardPanel;
 
@@ -41,7 +41,7 @@ public class Main extends ApplicationAdapter {
 	static ArrayList<MBComponent> focusedComps = new ArrayList<>();
 	static ArrayList<Outline> focusedOutlines = new ArrayList<>();
 	static boolean inFocusMode = false;
-	int focusedLayers = 0;
+	static int focusedLayers = 0;
 
 	static MBBoard masterBoard;
 	//list with all the MBComponents
@@ -49,9 +49,6 @@ public class Main extends ApplicationAdapter {
 
 	static String player;
 	//so these can be drawn last
-    static ArrayList<Tipbox> tipboxes = new ArrayList<>();
-    static ArrayList<MBWindow> windows = new ArrayList<>();
-    static ArrayList<MBSelectBox> scrollpanes = new ArrayList<>();
 
 	static HashMap<Integer, ArrayList<Renderable>> layers = new HashMap<>();
 
@@ -97,7 +94,8 @@ public class Main extends ApplicationAdapter {
 				"assets\\skins\\uiskin.json"));
 
 		contextMenu = new MBContextMenu();
-		grayscreen = new Texture("assets\\gradient2.png");
+		grayPanel = new Panel("assets\\gradient2.png", new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+		grayPanel.aFloat = .75f;
 
 		sidePanel.setSoftVisible(true);
 		topPanel.setSoftVisible(true);
@@ -639,27 +637,12 @@ public class Main extends ApplicationAdapter {
 		//drawing the panels
 		batch.begin();
 
-		//rendering everything
+		//rendering everything in layer 1 here so they're rendered in order
 		for (Panel panel : mainPanels) {
 			panel.render();
 		}
 
-		//drawing the components after so that they are on the top
-/*
-		for (Tipbox tipbox : tipboxes) {
-			if (tipbox.supposedToBeVisible) {
-				tipbox.render();
-			}
-		}
-		for (MBSelectBox selectBox : scrollpanes) {
-			if (selectBox.dropdown.isActive) selectBox.render();
-		}
-		for (MBWindow window : windows) {
-			window.render();
-		}
-*/
-
-		for (int layer = 1; layer < layers.size() - focusedLayers; layer++) {
+		for (int layer = 1; layer < layers.size(); layer++) {
 			for (int renderable = 0; renderable < layers.get(layer).size(); renderable++) {
 				if(layers.get(layer).get(renderable).isSupposedToBeVisible()) {
 					layers.get(layer).get(renderable).render();
@@ -667,50 +650,6 @@ public class Main extends ApplicationAdapter {
 			}
 		}
 
-		if(inFocusMode){
-			batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, .75f);
-			batch.draw(grayscreen, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-/*
-			for (Panel focusedPanel : focusedPanels) {
-				focusedPanel.render();
-			}
-			for (MBComponent focusedComp: focusedComps) {
-				focusedComp.render();
-			}
-			//loops through each outline and draws its texture
-			for (Outline outline: focusedOutlines) {
-				outline.drawContent(batch);
-			}
-			//loops through each outline and draws its outline last so that it's always on top
-			for (Outline outline: focusedOutlines) {
-				outline.drawOutline(batch, 1);
-			}
-*/
-
-			for (int layer = focusedLayers+1; layer < layers.size(); layer++) {
-				for (int renderable = 0; renderable < layers.get(layer).size(); renderable++) {
-					if(layers.get(layer).get(renderable).isSupposedToBeVisible()) {
-						layers.get(layer).get(renderable).render();
-					}
-				}
-			}
-/*
-
-			//drawing these components after so that they are on the top
-			for (Tipbox tipbox : tipboxes) {
-				if (tipbox.supposedToBeVisible) {
-					tipbox.render();
-				}
-			}
-			for (MBSelectBox selectBox : scrollpanes) {
-				if (selectBox.dropdown.isActive  && selectBox.isFocused()) selectBox.render();
-			}
-			for (MBWindow window : windows) {
-				window.render();
-			}
-*/
-		}
 
 		if(contextMenu.isActive()) contextMenu.render();
 		else{
@@ -744,7 +683,7 @@ public class Main extends ApplicationAdapter {
 		f.dispose();
 	}
 
-	public void focus(){
+	static public void focus(){
 		//adding a new layer for every potential layer we may have
 		int nonfocusedLayers = layers.size();
 		for (int i = 0; i < nonfocusedLayers + 1; i++) {
@@ -753,25 +692,28 @@ public class Main extends ApplicationAdapter {
 		}
 
 		//setting every focused renderables' layer to its corresponding focusedLayer
-		for (int layer = 0; layer < layers.size(); layer++) {
-			ArrayList<Renderable> currentLayer = layers.get(layer); //so that it's not updating the layers.layer's size/indexes while looping through it
-//			currentLayer.addAll(layers.get(layer));
-			for (int renderable = 0; renderable < currentLayer.size(); renderable++) {
-				if(currentLayer.get(renderable).isFocused()) {
-					currentLayer.get(renderable).setLayer(currentLayer.get(renderable).getLayer() + focusedLayers);
-					renderable--;
+		for (int layer = 0; layer < nonfocusedLayers; layer++) {
+			//so that it's not updating the layers.layer's size/indexes while looping through it
+			ArrayList<Renderable> currentLayer = new ArrayList<>(layers.get(layer));
+			for (Renderable renderable : currentLayer) {
+				if (renderable.isFocused()) {
+					renderable.setLayer(renderable.getLayer() + focusedLayers);
 				}
 			}
 		}
+
+		grayPanel.setLayer(nonfocusedLayers);
 	}
 	public void unfocus(){
 		//setting every focused renderables' layer back to its original layer
-		for (int layer = focusedLayers; layer > -1; layer--) {
-			for (int renderable = 0; renderable < layers.get(layer).size(); renderable++) {
-				layers.get(layer).get(renderable).setLayer(layers.get(layer).get(renderable).getLayer() - focusedLayers);
-
-				if(layers.get(layer).size() == 0) layers.remove(layer); //deletes the layer when its empty
+		int nonfocusedLayers = layers.size()-focusedLayers;
+		for (int layer = layers.size() - 1; layer >= nonfocusedLayers; layer--) {
+			//so that it's not updating the layers.layer's size/indexes while looping through it
+			ArrayList<Renderable> currentLayer = new ArrayList<>(layers.get(layer));
+			for (Renderable value : currentLayer) {
+				value.setLayer(value.getLayer() - focusedLayers);
 			}
+			if(layers.get(layer).size() == 0) layers.remove(layer); //deletes the layer when its empty
 		}
 
 		focusedLayers = 0;

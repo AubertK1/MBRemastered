@@ -63,13 +63,6 @@ public class Panel implements Renderable{
         Main.stage.addActor(component.getActor());
 
         component.setLayer(layer);
-
-        if(component instanceof MBWindow){
-            Main.windows.add((MBWindow) component);
-        }
-        if(component instanceof MBSelectBox){
-            Main.scrollpanes.add((MBSelectBox) component);
-        }
     }
 
     public void add( Minipanel minipanel) {
@@ -86,10 +79,6 @@ public class Panel implements Renderable{
         minipanel.parentPanel = this;
 
         minipanel.setLayer(layer);
-
-        if(minipanel instanceof Tipbox){
-            Main.tipboxes.add((Tipbox) minipanel);
-        }
     }
     /**
      * permanently removes component from everything
@@ -113,14 +102,6 @@ public class Panel implements Renderable{
         component.dispose();
 
         component.setLayer(-1);
-
-        if(component instanceof MBWindow){
-            Main.windows.remove((MBWindow) component);
-        }
-        if(component instanceof MBSelectBox){
-            Main.scrollpanes.remove((MBSelectBox) component);
-        }
-
         //reassigns the remaining components' IDs
 //        resetCompIDs();
     }
@@ -146,10 +127,6 @@ public class Panel implements Renderable{
         panel.texture.dispose();
 
         panel.setLayer(-1);
-
-        if(panel instanceof Tipbox){
-            Main.tipboxes.remove(panel);
-        }
     }
 
     /**
@@ -179,9 +156,9 @@ public class Panel implements Renderable{
         this.height = height;
     }
     public void setLayer(int layer){
-        if(this.layer != -1) {
-            int oldLayer = getLayer();
+        int oldLayer = getLayer();
 
+        if(oldLayer != -1) {
             for (int renderable = 0; renderable < Main.layers.get(oldLayer).size(); renderable++) { //find the panel in the old layer
                 if (this == Main.layers.get(oldLayer).get(renderable)) {
                     Main.layers.get(oldLayer).remove(this); //remove the panel from the old layer
@@ -189,8 +166,8 @@ public class Panel implements Renderable{
             }
         }
 
-        if(layer == -1) ;
-        else if(Main.layers.containsKey(layer)){
+        if(layer == -1); //don't add this to a list, so it doesn't get rendered
+        else if(Main.layers.containsKey(layer)){ //if the layer already exists
             Main.layers.get(layer).add(this); //add the panel to its new later
         }
         else{

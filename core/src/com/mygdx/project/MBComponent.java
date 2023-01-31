@@ -52,13 +52,6 @@ public class MBComponent implements Renderable{
         Main.stage.addActor(component.getActor());
 
         component.setLayer(layer);
-
-        if(component instanceof MBWindow){
-            Main.windows.add((MBWindow) component);
-        }
-        if(component instanceof MBSelectBox){
-            Main.scrollpanes.add((MBSelectBox) component);
-        }
     }
     public void delete(MBComponent component){
         //removes actor from the stage
@@ -70,14 +63,6 @@ public class MBComponent implements Renderable{
         components.remove(component);
 
         component.setLayer(-1);
-
-        if(component instanceof MBWindow){
-            Main.windows.remove((MBWindow) component);
-        }
-        if(component instanceof MBSelectBox){
-            Main.scrollpanes.remove((MBSelectBox) component);
-        }
-
         //reassigns the remaining components' IDs
         Panel.resetCompIDs();
     }
@@ -138,7 +123,7 @@ public class MBComponent implements Renderable{
             }
         }
 
-        if(layer == -1) ; //don't add this to a list, so it doesn't get rendered
+        if(layer == -1); //don't add this to a list, so it doesn't get rendered
         else if(Main.layers.containsKey(layer)){ //if the layer already exists
             Main.layers.get(layer).add(this); //add the panel to its new later
         }
