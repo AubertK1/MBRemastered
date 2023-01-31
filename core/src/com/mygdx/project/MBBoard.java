@@ -13,6 +13,11 @@ public class MBBoard extends MBComponent{
         board = new Board(skin);
     }
 
+    @Override
+    public void setScreen(Screen screen){
+        super.setScreen(screen);
+        board.setScreen(screen);
+    }
     public Actor getActor(){
         return board;
     }

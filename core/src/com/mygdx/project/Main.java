@@ -29,7 +29,7 @@ public class Main extends ApplicationAdapter {
 	//used to draw the MBComponents
 	static Stage stage;
 	//the skin for the components
-	static Skin uiSkin;
+	static Skin skin;
 
 	public static MBContextMenu contextMenu;
 	public static Panel grayPanel;
@@ -64,12 +64,22 @@ public class Main extends ApplicationAdapter {
 	static final JFrame f = new JFrame();
 	//endregion
 
+	Screen selectedScreen;
+	ArrayList<Screen> screens = new ArrayList<>();
+
 	@Override
 	public void create () {
 //        player = "PLAYER 1";
-		//setting up batch and stage
+		//setting up batch, stage, and skin
 		batch = new SpriteBatch();
 		stage = new Stage();
+		skin = new Skin (Gdx.files.internal("assets\\skins\\uiskin.json"));
+
+		Screen pScreen = new Screen();
+		selectedScreen = pScreen;
+		screens.add(pScreen);
+/*
+
 		//setting up panels
 		sidePanel = new Panel("assets\\Panels\\SidecardPanel.png",
 				new Rectangle(2, 150, 98, 850));
@@ -89,9 +99,6 @@ public class Main extends ApplicationAdapter {
 		mainPanels.add(reminderPanel);
 		mainPanels.add(toolbarPanel);
 		mainPanels.add(masterboardPanel);
-		//setting up skin for the UI of the app
-		uiSkin = new Skin (Gdx.files.internal(
-				"assets\\skins\\uiskin.json"));
 
 		contextMenu = new MBContextMenu();
 		grayPanel = new Panel("assets\\gradient2.png", new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
@@ -108,11 +115,11 @@ public class Main extends ApplicationAdapter {
 		//region Reminders
 		//creating a textarea
 		MBTextArea reminderTextArea;
-		reminderTextArea = new MBTextArea("", uiSkin);
+		reminderTextArea = new MBTextArea("", skin);
 		reminderTextArea.getTextArea().setSize(760,330);
 		reminderTextArea.getTextArea().setPosition(120,160);
 		//creating a label
-		MBLabel reminderLabel = new MBLabel("REMINDERS", uiSkin);
+		MBLabel reminderLabel = new MBLabel("REMINDERS", skin);
 		reminderLabel.setSize(760, 40);
 		reminderLabel.setPosition(120, 490);
 		//adding to the Reminders panel as its components
@@ -155,12 +162,12 @@ public class Main extends ApplicationAdapter {
 		//endregion
 
 		//region item tab buttons
-		final MBButton weaponsButton = new MBButton("Weapons", uiSkin, "toggle");
+		final MBButton weaponsButton = new MBButton("Weapons", skin, "toggle");
 		((TextButton)weaponsButton.getButton()).getLabel().setFontScale(.92f, .9f);
 		weaponsButton.setPosition(listPanel.getX()+5, listPanel.getY()+ listPanel.getHeight()-20);
 		weaponsButton.setSize(80, 15);
 
-		final MBButton spellsButton = new MBButton("Spells", uiSkin, "toggle");
+		final MBButton spellsButton = new MBButton("Spells", skin, "toggle");
 		((TextButton)spellsButton.getButton()).getLabel().setFontScale(1f, .9f);
 		spellsButton.setPosition(weaponsButton.getX()+ weaponsButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
 		spellsButton.setSize(80, 15);
@@ -218,17 +225,17 @@ public class Main extends ApplicationAdapter {
 
 		//region item shift buttons
 		//creating item shift buttons and setting their sizes
-		MBButton addButton = new MBButton(uiSkin);
+		MBButton addButton = new MBButton(skin);
 		//XPosition = (ListPanelXPos + ListPanelWidth - GapBetweenBorderAndButton - DownButtonWidth - GapBetweenButtons - UpButtonWidth - GapBetweenButtons - AddButtonWidth)
 		//which ends up being XPosition = (120 + 470 - 5 - 40 - 2 - 40 - 2 - 40) = 461
 		addButton.setPosition(461, listPanel.getY()+ listPanel.getHeight()-20);
 		addButton.setSize(40, 15);
 
-		final MBButton upButton = new MBButton(uiSkin);
+		final MBButton upButton = new MBButton(skin);
 		upButton.setPosition(addButton.getX()+ addButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
 		upButton.setSize(40, 15);
 
-		final MBButton downButton = new MBButton(uiSkin);
+		final MBButton downButton = new MBButton(skin);
 		downButton.setPosition(upButton.getX()+ upButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
 		downButton.setSize(40, 15);
 		//adding item buttons to the list panel
@@ -293,42 +300,42 @@ public class Main extends ApplicationAdapter {
 		chaPanel = new Minipanel("assets\\Panels\\minipanel2.png",
 				new Rectangle(wisPanel.getX()+wisPanel.getWidth()+10, strPanel.getY(), 50, 60));
 		//creating the labels to put in the stats' minipanels
-		MBLabel strL = new MBLabel("STR", uiSkin);
+		MBLabel strL = new MBLabel("STR", skin);
 		//setting position equal to its minipanel's left border + half the minipanel's width - half the label's width
 		strL.setPosition(strPanel.getX() + (strPanel.getWidth()/2) - (strL.getWidth()/2), 903);
-		MBLabel dexL = new MBLabel("DEX", uiSkin);
+		MBLabel dexL = new MBLabel("DEX", skin);
 		dexL.setPosition(dexPanel.getX() + (dexPanel.getWidth()/2) - (dexL.getWidth()/2), 903);
-		MBLabel conL = new MBLabel("CON", uiSkin);
+		MBLabel conL = new MBLabel("CON", skin);
 		conL.setPosition(conPanel.getX() + (conPanel.getWidth()/2) - (conL.getWidth()/2), 903);
-		MBLabel intL = new MBLabel("INT", uiSkin);
+		MBLabel intL = new MBLabel("INT", skin);
 		intL.setPosition(intPanel.getX() + (intPanel.getWidth()/2) - (intL.getWidth()/2), 903);
-		MBLabel wisL = new MBLabel("WIS", uiSkin);
+		MBLabel wisL = new MBLabel("WIS", skin);
 		wisL.setPosition(wisPanel.getX() + (wisPanel.getWidth()/2) - (wisL.getWidth()/2), 903);
-		MBLabel chaL = new MBLabel("CHA", uiSkin);
+		MBLabel chaL = new MBLabel("CHA", skin);
 		chaL.setPosition(chaPanel.getX() + (chaPanel.getWidth()/2) - (chaL.getWidth()/2), 903);
 		//creating the textfields to put in the stats' minipanels
-		MBTextField strTF = new MBTextField("", uiSkin);
+		MBTextField strTF = new MBTextField("", skin);
 		//size and positions set by eyeballing until it looked nice
 		strTF.setSize(42, 35);
 		strTF.setPosition(124, 873);
 		strTF.getTextField().setAlignment(Align.center);
-		MBTextField dexTF = new MBTextField("", uiSkin);
+		MBTextField dexTF = new MBTextField("", skin);
 		dexTF.setSize(42, 35);
 		dexTF.setPosition(184, 873);
 		dexTF.getTextField().setAlignment(Align.center);
-		MBTextField conTF = new MBTextField("", uiSkin);
+		MBTextField conTF = new MBTextField("", skin);
 		conTF.setSize(42, 35);
 		conTF.setPosition(244, 873);
 		conTF.getTextField().setAlignment(Align.center);
-		MBTextField intTF = new MBTextField("", uiSkin);
+		MBTextField intTF = new MBTextField("", skin);
 		intTF.setSize(42, 35);
 		intTF.setPosition(304, 873);
 		intTF.getTextField().setAlignment(Align.center);
-		MBTextField wisTF = new MBTextField("", uiSkin);
+		MBTextField wisTF = new MBTextField("", skin);
 		wisTF.setSize(42, 35);
 		wisTF.setPosition(364, 873);
 		wisTF.getTextField().setAlignment(Align.center);
-		MBTextField chaTF = new MBTextField("", uiSkin);
+		MBTextField chaTF = new MBTextField("", skin);
 		chaTF.setSize(42, 35);
 		chaTF.setPosition(424, 873);
 		chaTF.getTextField().setAlignment(Align.center);
@@ -359,7 +366,7 @@ public class Main extends ApplicationAdapter {
 		Minipanel longRestPanel = new Minipanel("assets\\Panels\\minipanel2.png",
 				new Rectangle(shortRestPanel.getX()+shortRestPanel.getWidth()+10, strPanel.getY(), 50, 60));
 
-		MBButton srButton = new MBButton("Short \n Rest", uiSkin);
+		MBButton srButton = new MBButton("Short \n Rest", skin);
 		srButton.setSize(50, 60);
 		srButton.setPosition(chaPanel.getX()+wisPanel.getWidth()+10, strPanel.getY());
 		srButton.addListener(new ChangeListener() {
@@ -372,7 +379,7 @@ public class Main extends ApplicationAdapter {
 		});
 //		((TextButton)srButton.button).getLabel().setColor(new Color(0x8a8a8aff));
 
-		MBButton lrButton = new MBButton("Long \n Rest", uiSkin);
+		MBButton lrButton = new MBButton("Long \n Rest", skin);
 		lrButton.setSize(50, 60);
 		lrButton.setPosition(shortRestPanel.getX()+shortRestPanel.getWidth()+10, strPanel.getY());
 		lrButton.addListener(new ChangeListener() {
@@ -403,7 +410,7 @@ public class Main extends ApplicationAdapter {
 
 		//region imagebutton
 		//creating the imageButton as a text button
-		final MBButton imageButton = new MBButton(uiSkin);
+		final MBButton imageButton = new MBButton(skin);
 		imageButton.setPosition(595, 560);
 		imageButton.setSize(290, 370);
 		//setting the default opacity
@@ -429,7 +436,7 @@ public class Main extends ApplicationAdapter {
 			}
 		});
 
-		MBLabel playerNameLabel = new MBLabel(player, uiSkin);
+		MBLabel playerNameLabel = new MBLabel(player, skin);
 		playerNameLabel.setPosition(topPanel.getX() + 10, topPanel.getY() + (topPanel.getHeight()/2) - (playerNameLabel.getHeight()/2));
 
 		topPanel.add(playerNameLabel);
@@ -448,7 +455,7 @@ public class Main extends ApplicationAdapter {
 		//endregion
 
 		//region Tool Bar
-		final MBButton focusButton = new MBButton("FOCUS", uiSkin);
+		final MBButton focusButton = new MBButton("FOCUS", skin);
 		focusButton.setPosition(toolbarPanel.getX() + 10, toolbarPanel.getY() + 10);
 		focusButton.setSize(toolbarPanel.getHeight()-20, toolbarPanel.getHeight()-20);
 		focusButton.addListener(new ChangeListener() {
@@ -467,7 +474,7 @@ public class Main extends ApplicationAdapter {
 			}
 		});
 
-		MBButton selectButton = new MBButton("Select", uiSkin);
+		MBButton selectButton = new MBButton("Select", skin);
 		selectButton.setPosition(focusButton.getX() + focusButton.getWidth() + 10, toolbarPanel.getY() + 10);
 //		selectButton.setPosition(toolbarPanel.getX() + 10, toolbarPanel.getY() + 10);
 		selectButton.setSize(200, toolbarPanel.getHeight()-20);
@@ -480,7 +487,7 @@ public class Main extends ApplicationAdapter {
 			}
 		});
 
-		MBButton drawButton = new MBButton("Draw", uiSkin);
+		MBButton drawButton = new MBButton("Draw", skin);
 		drawButton.setPosition(selectButton.getX() + selectButton.getWidth() + 5, selectButton.getY());
 		drawButton.setSize(selectButton.getWidth(), selectButton.getHeight());
 		drawButton.addListener(new ChangeListener() {
@@ -492,7 +499,7 @@ public class Main extends ApplicationAdapter {
 			}
 		});
 
-		MBButton eraseButton = new MBButton("Erase", uiSkin);
+		MBButton eraseButton = new MBButton("Erase", skin);
 		eraseButton.setPosition(drawButton.getX() + drawButton.getWidth() + 5, selectButton.getY());
 		eraseButton.setSize(selectButton.getWidth(), selectButton.getHeight());
 		eraseButton.addListener(new ChangeListener() {
@@ -575,6 +582,7 @@ public class Main extends ApplicationAdapter {
 		toolbarPanel.add(colorBox, 2);
 		toolbarPanel.add(colorPicker);
 		//endregion
+*/
 
 		//region listeners
 		//the screen listeners
@@ -637,6 +645,7 @@ public class Main extends ApplicationAdapter {
 		//drawing the panels
 		batch.begin();
 
+/*
 		//rendering everything in layer 1 here so they're rendered in order
 		for (Panel panel : mainPanels) {
 			panel.render();
@@ -650,6 +659,8 @@ public class Main extends ApplicationAdapter {
 			}
 		}
 
+*/
+		selectedScreen.render();
 
 		if(contextMenu.isActive()) contextMenu.render();
 		else{
@@ -661,28 +672,36 @@ public class Main extends ApplicationAdapter {
 
 //		stage.draw();
 		stage.act();
+/*
 
 		//fixme might be inefficient but it does the job
 		if(!player.contentEquals(((MBLabel)topPanel.components.get(0)).getLabel().getText())){
 			((MBLabel)topPanel.components.get(0)).getLabel().setText(player);
 		}
+*/
 	}
 
 	@Override
 	public void dispose () {
 		batch.dispose();
+/*
 		sidePanel.dispose();
 		topPanel.dispose();
 		genStatsPanel.dispose();
 		reminderPanel.dispose();
 		toolbarPanel.dispose();
 		masterboardPanel.dispose();
-		uiSkin.dispose();
+*/
+		for (Screen screen: screens) {
+			screen.dispose();
+		}
+		skin.dispose();
 		stage.dispose();
 		chooser.setEnabled(false);
 		f.dispose();
 	}
 
+/*
 	static public void focus(){
 		//adding a new layer for every potential layer we may have
 		int nonfocusedLayers = layers.size();
@@ -764,13 +783,13 @@ public class Main extends ApplicationAdapter {
 			genStatsPanel.add(imageButton);
 
 			final MBButton reselectButton;
-			reselectButton = new MBButton(uiSkin);
+			reselectButton = new MBButton(skin);
 			reselectButton.setPosition(imageButton.getX()+10, imageButton.getY()+10);
 			reselectButton.setSize(40, 40);
 			reselectButton.aFloat = .75f;
 
             final MBButton deleteButton;
-            deleteButton = new MBButton(uiSkin);
+            deleteButton = new MBButton(skin);
             deleteButton.setPosition(imageButton.getX()+60, imageButton.getY()+10);
             deleteButton.setSize(40, 40);
             deleteButton.aFloat = .75f;
@@ -834,4 +853,5 @@ public class Main extends ApplicationAdapter {
 	public static boolean isInFocusMode() {
 		return inFocusMode;
 	}
+*/
 }

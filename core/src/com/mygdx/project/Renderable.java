@@ -12,4 +12,6 @@ public interface Renderable {
     int getLayer();
 
     boolean isFocused();
+
+    void dispose();
 }

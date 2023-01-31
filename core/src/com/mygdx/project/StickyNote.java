@@ -385,7 +385,7 @@ public class StickyNote extends Outline {
     }
 
     public void setFontSize(int size){
-        StickyNoteStyle newStyle = new StickyNoteStyle(Main.uiSkin.get(StickyNoteStyle.class));
+        StickyNoteStyle newStyle = new StickyNoteStyle(Main.skin.get(StickyNoteStyle.class));
         params.size = size;
         font = generator.generateFont(params);
         newStyle.textfield.font = font;

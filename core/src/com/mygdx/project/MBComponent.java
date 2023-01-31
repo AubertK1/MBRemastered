@@ -5,7 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Null;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -18,12 +17,13 @@ import static com.mygdx.project.Main.batch;
 public class MBComponent implements Renderable{
     ArrayList<MBComponent> components = new ArrayList<>();
     Panel parentPanel;
+    Screen screen;
     MBComponent parentActor;
-    Skin skin = Main.uiSkin;
+    Skin skin = Main.skin;
     float aFloat = 1;
     boolean hasWindow = false;
     //setting the component's ID in the list
-    int compID = Main.allComps.size();
+    int compID;
     Stage stage = Main.stage;
     //whether this component is supposed to be visible if it were allowed to be (ie the Item textfields when not in edit mode are allowed to be visible but not supposed to be visible)
     boolean supposedToBeVisible = true;
@@ -33,23 +33,23 @@ public class MBComponent implements Renderable{
     public MBComponent() {
     }
 
-    public void add( MBComponent component){
+    public void add(MBComponent component){
         add(component, 0);
     }
     /**
      * adds the component to this component
      * @param component the component you want to add
      */
-    public void add( MBComponent component, int layer){
+    public void add(MBComponent component, int layer){
 //        if(component.getActor() != null) return;
         //adds this component to the list of all components if it's not already in it
-        if(!Main.allComps.contains(component)) Main.allComps.add(component);
+        if(!getScreen().allComps.contains(component)) getScreen().allComps.add(component);
         //adds the component given to this panel
         components.add(component);
         //sets the component's parent to this panel
         component.parentActor = this;
         //adds component to the stage so it can be drawn
-        Main.stage.addActor(component.getActor());
+        getScreen().stage.addActor(component.getActor());
 
         component.setLayer(layer);
     }
@@ -58,13 +58,13 @@ public class MBComponent implements Renderable{
         component.getActor().remove();
 //        Main.stage.getActors().get(component.getCompID()).addAction(Actions.removeActor());
         //removes component from the all components list
-        Main.allComps.remove(component);
+        getScreen().allComps.remove(component);
         //removes component from the item's components list
         components.remove(component);
 
         component.setLayer(-1);
         //reassigns the remaining components' IDs
-        Panel.resetCompIDs();
+        getScreen().resetCompIDs();
     }
 
 
@@ -74,6 +74,14 @@ public class MBComponent implements Renderable{
     public Object getMBParent() {
         if(parentPanel != null) return parentPanel;
         else return parentActor;
+    }
+    public void setScreen(Screen screen) {
+        this.screen = screen;
+        compID = screen.allComps.size();
+    }
+
+    public Screen getScreen() {
+        return screen;
     }
     /**
      * sets the position of this component
@@ -116,20 +124,20 @@ public class MBComponent implements Renderable{
         int oldLayer = getLayer();
 
         if(oldLayer != -1) {
-            for (int renderable = 0; renderable < Main.layers.get(oldLayer).size(); renderable++) { //find the panel in the old layer
-                if (this == Main.layers.get(oldLayer).get(renderable)) {
-                    Main.layers.get(oldLayer).remove(this); //remove the panel from the old layer
+            for (int renderable = 0; renderable < getScreen().layers.get(oldLayer).size(); renderable++) { //find the panel in the old layer
+                if (this == getScreen().layers.get(oldLayer).get(renderable)) {
+                    getScreen().layers.get(oldLayer).remove(this); //remove the panel from the old layer
                 }
             }
         }
 
         if(layer == -1); //don't add this to a list, so it doesn't get rendered
-        else if(Main.layers.containsKey(layer)){ //if the layer already exists
-            Main.layers.get(layer).add(this); //add the panel to its new later
+        else if(getScreen().layers.containsKey(layer)){ //if the layer already exists
+            getScreen().layers.get(layer).add(this); //add the panel to its new later
         }
         else{
-            Main.layers.put(layer, new ArrayList<Renderable>()); //creates a new layer
-            Main.layers.get(layer).add(this); //add the panel to the new later
+            getScreen().layers.put(layer, new ArrayList<Renderable>()); //creates a new layer
+            getScreen().layers.get(layer).add(this); //add the panel to the new later
         }
 
         this.layer = layer;
@@ -182,15 +190,10 @@ public class MBComponent implements Renderable{
         return null;
     }
     public void render(){
-        if(focused){
-            if(!Main.focusedComps.contains(this)) Main.focusedComps.add(this);
-        }
-        else Main.focusedComps.remove(this);
-
         batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
 
-        Main.allComps = reaarrangeList();
-        Panel.resetCompIDs();
+        getScreen().allComps = reaarrangeList();
+        getScreen().resetCompIDs();
 
         getActor().draw(batch, aFloat);
         for (MBComponent innerComp: components) {
@@ -205,8 +208,8 @@ public class MBComponent implements Renderable{
 
         for (int i = 0; i < actors.size; i++) { //loop through the stage's actors
             actor = actors.get(i);
-            for (int j = 0; j < Main.allComps.size(); j++) { //find its corresponding component in allComps
-                comp = Main.allComps.get(j);
+            for (int j = 0; j < getScreen().allComps.size(); j++) { //find its corresponding component in allComps
+                comp = getScreen().allComps.get(j);
                 if(actor == comp.getActor()) newList.add(comp);
             }
         }

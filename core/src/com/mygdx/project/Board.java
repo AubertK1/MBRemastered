@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 public class Board extends Widget {
     BoardStyle style;
+    Screen screen;
     private InputListener inputListener;
     private ClickListener clickListener;
     private float offsetX = 0, offsetY = 0;
@@ -98,7 +99,8 @@ public class Board extends Widget {
                 if(button == Input.Buttons.LEFT) {
                         //if the user isn't drawing on an outline, make a new one
                         if ((selectedOutline == null || selectedOutline instanceof StickyNote) && drawMode) {
-                            Outline newO = new Doodle(Board.this, Main.uiSkin);
+                            Outline newO = new Doodle(Board.this, Main.skin);
+                            newO.setScreen(getScreen());
                             selectedOutline = newO;
                             outlines.add(newO);
                         }
@@ -150,14 +152,16 @@ public class Board extends Widget {
                                         enterDrawMode();
                                         break;
                                     case "Create New Sticky Note":
-                                        Outline newS = new StickyNote(Board.this, Main.uiSkin, (int) Main.contextMenu.getX(),
+                                        Outline newS = new StickyNote(Board.this, Main.skin, (int) Main.contextMenu.getX(),
                                                 (int) (Main.contextMenu.getY()+Main.contextMenu.getHeight()));
+                                        newS.setScreen(getScreen());
                                         selectedOutline = newS;
                                         outlines.add(newS);
                                         break;
                                     case "Create New Text Box":
-                                        Outline newT = new TextBox(Board.this, Main.uiSkin, (int) Main.contextMenu.getX(),
+                                        Outline newT = new TextBox(Board.this, Main.skin, (int) Main.contextMenu.getX(),
                                                 (int) (Main.contextMenu.getY()+Main.contextMenu.getHeight()));
+                                        newT.setScreen(getScreen());
                                         selectedOutline = newT;
                                         outlines.add(newT);
                                         break;
@@ -249,10 +253,6 @@ public class Board extends Widget {
         //loops through each outline and draws its outline last so that it's always on top
         for (Outline outline: outlines) {
             outline.drawOutline(batch, 1);
-            if(outline.isFocused()){
-                if(!Main.focusedOutlines.contains(outline)) Main.focusedOutlines.add(outline);
-            }
-            else Main.focusedOutlines.remove(outline);
         }
 
         //fixme best version of a keylistener I could think of
@@ -411,6 +411,13 @@ public class Board extends Widget {
 
         o.setSelect(true);
 
+    }
+    public void setScreen(Screen screen) {
+        this.screen = screen;
+    }
+
+    public Screen getScreen() {
+        return screen;
     }
 
     public void enterDrawMode() {

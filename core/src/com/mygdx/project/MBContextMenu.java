@@ -12,8 +12,10 @@ public class MBContextMenu extends MBComponent{
         contextMenu = new ContextMenu<>(skin);
         contextMenu.setWidth(200);
 
-        Main.allComps.add(this);
+/*
+        getScreen().allComps.add(this);
         Main.stage.addActor(this.getActor());
+*/
     }
 
     public void buildDefaultMenu(){

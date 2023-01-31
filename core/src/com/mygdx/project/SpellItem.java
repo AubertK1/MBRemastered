@@ -182,14 +182,14 @@ public class SpellItem extends Item {
         usesButton.add(plusButton);
 
         final MBButton srButton = new MBButton("Short Rest", skin);
-        srButton.getButton().setStyle(Main.uiSkin.get("toggle", TextButton.TextButtonStyle.class));
+        srButton.getButton().setStyle(Main.skin.get("toggle", TextButton.TextButtonStyle.class));
         srButton.getButton().setChecked(true);
         srButton.setSize(50, editButton.getHeight());
         srButton.setPosition(usesButton.getX()-srButton.getWidth()-2, delButton.getY());
         ((TextButton)srButton.getButton()).getLabel().setFontScale(.6f,.7f);
 
         final MBButton lrButton = new MBButton("Long Rest", skin);
-        lrButton.getButton().setStyle(Main.uiSkin.get("toggle", TextButton.TextButtonStyle.class));
+        lrButton.getButton().setStyle(Main.skin.get("toggle", TextButton.TextButtonStyle.class));
         lrButton.getButton().setChecked(false);
         lrButton.setSize(50, delButton.getHeight());
         lrButton.setPosition(srButton.getX(), editButton.getY());

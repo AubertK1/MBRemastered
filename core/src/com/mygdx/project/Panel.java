@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.math.Rectangle;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -26,6 +25,7 @@ public class Panel implements Renderable{
     ArrayList<Panel> minipanels = new ArrayList<>();
     //the parent panel of the minipanel
     protected Panel parentPanel = null;
+    protected Screen screen = null;
     //controls whether this is rendered or not
     boolean supposedToBeVisible = true;
     private int layer = -1;
@@ -54,29 +54,32 @@ public class Panel implements Renderable{
     public void add(MBComponent component, int layer){
 //        if(component.getActor() != null) return;
         //adds this component to the list of all components if it's not already in it
-        if(!Main.allComps.contains(component)) Main.allComps.add(component);
+        if(!getScreen().allComps.contains(component)) getScreen().allComps.add(component);
         //adds the component given to this panel
         components.add(component);
         //sets the component's parent to this panel
         component.parentPanel = this;
+        component.setScreen(screen);
+
         //adds component to the stage so it can be drawn
-        Main.stage.addActor(component.getActor());
+        getScreen().stage.addActor(component.getActor());
 
         component.setLayer(layer);
     }
 
-    public void add( Minipanel minipanel) {
+    public void add(Minipanel minipanel) {
         add(minipanel, 0);
     }
     /**
      * adds the minipanel to its panel
      * @param minipanel the minipanel you want to add
      */
-    public void add( Minipanel minipanel, int layer){
+    public void add(Minipanel minipanel, int layer){
         //adds the minipanel given to this panel
         minipanels.add(minipanel);
         //sets the minipanel's parent to this panel
         minipanel.parentPanel = this;
+        minipanel.setScreen(screen);
 
         minipanel.setLayer(layer);
     }
@@ -95,7 +98,7 @@ public class Panel implements Renderable{
         component.getActor().remove();
 //        Main.stage.getActors().get(component.getCompID()).addAction(Actions.removeActor());
         //removes component from the all components list
-        Main.allComps.remove(component);
+        getScreen().allComps.remove(component);
         //removes component from the item's components list
         components.remove(component);
         //disposes of the MBComponent
@@ -132,11 +135,13 @@ public class Panel implements Renderable{
     /**
      * reassigns the compID variable for all the components
      */
+/*
     static public void resetCompIDs(){
         for (int i = 0; i < Main.allComps.size(); i++) {
             Main.allComps.get(i).compID = i;
         }
     }
+*/
 
     public void setSoftVisible(boolean visible){
         supposedToBeVisible = visible;
@@ -159,20 +164,20 @@ public class Panel implements Renderable{
         int oldLayer = getLayer();
 
         if(oldLayer != -1) {
-            for (int renderable = 0; renderable < Main.layers.get(oldLayer).size(); renderable++) { //find the panel in the old layer
-                if (this == Main.layers.get(oldLayer).get(renderable)) {
-                    Main.layers.get(oldLayer).remove(this); //remove the panel from the old layer
+            for (int renderable = 0; renderable < getScreen().layers.get(oldLayer).size(); renderable++) { //find the panel in the old layer
+                if (this == getScreen().layers.get(oldLayer).get(renderable)) {
+                    getScreen().layers.get(oldLayer).remove(this); //remove the panel from the old layer
                 }
             }
         }
 
         if(layer == -1); //don't add this to a list, so it doesn't get rendered
-        else if(Main.layers.containsKey(layer)){ //if the layer already exists
-            Main.layers.get(layer).add(this); //add the panel to its new later
+        else if(getScreen().layers.containsKey(layer)){ //if the layer already exists
+            getScreen().layers.get(layer).add(this); //add the panel to its new later
         }
         else{
-            Main.layers.put(layer, new ArrayList<Renderable>()); //creates a new layer
-            Main.layers.get(layer).add(this); //add the panel to the new later
+            getScreen().layers.put(layer, new ArrayList<Renderable>()); //creates a new layer
+            getScreen().layers.get(layer).add(this); //add the panel to the new later
         }
 
         this.layer = layer;
@@ -187,6 +192,14 @@ public class Panel implements Renderable{
      */
     public Panel getParentPanel() {
         return parentPanel;
+    }
+
+    public void setScreen(Screen screen) {
+        this.screen = screen;
+    }
+
+    public Screen getScreen() {
+        return screen;
     }
 
     /**
@@ -253,10 +266,6 @@ public class Panel implements Renderable{
      * renders all the panels
      */
     public void render () {
-        if(focused){
-            if(!Main.focusedPanels.contains(this)) Main.focusedPanels.add(this);
-        }
-        else Main.focusedPanels.remove(this);
         //screen size is 1920x1000 so adjust accordingly
         //makes sure the panel's opacity is unchanged by the components' opacity changes
         batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);

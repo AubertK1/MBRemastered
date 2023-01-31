@@ -13,6 +13,7 @@ import java.util.Collections;
 
 public class Outline extends Widget implements Renderable{
     protected Board parentBoard;
+    protected Screen screen;
     protected boolean selected = false;
     //the batch for the render function
     SpriteBatch batch = Main.batch;
@@ -183,7 +184,7 @@ public class Outline extends Widget implements Renderable{
     public void setFocused(boolean focused){
         this.focused = focused;
 
-        if(Main.isInFocusMode()) Main.focus();
+        if(getScreen().isInFocusMode()) getScreen().focus();
     }
 
     public void setSoftVisible(boolean visible) {
@@ -200,20 +201,20 @@ public class Outline extends Widget implements Renderable{
         int oldLayer = getLayer();
 
         if(oldLayer != -1) {
-            for (int renderable = 0; renderable < Main.layers.get(oldLayer).size(); renderable++) { //find the panel in the old layer
-                if (this == Main.layers.get(oldLayer).get(renderable)) {
-                    Main.layers.get(oldLayer).remove(this); //remove the panel from the old layer
+            for (int renderable = 0; renderable < getScreen().layers.get(oldLayer).size(); renderable++) { //find the panel in the old layer
+                if (this == getScreen().layers.get(oldLayer).get(renderable)) {
+                    getScreen().layers.get(oldLayer).remove(this); //remove the panel from the old layer
                 }
             }
         }
 
         if(layer == -1); //don't add this to a list, so it doesn't get rendered
-        else if(Main.layers.containsKey(layer)){ //if the layer already exists
-            Main.layers.get(layer).add(this); //add the panel to its new later
+        else if(getScreen().layers.containsKey(layer)){ //if the layer already exists
+            getScreen().layers.get(layer).add(this); //add the panel to its new later
         }
         else{
-            Main.layers.put(layer, new ArrayList<Renderable>()); //creates a new layer
-            Main.layers.get(layer).add(this); //add the panel to the new later
+            getScreen().layers.put(layer, new ArrayList<Renderable>()); //creates a new layer
+            getScreen().layers.get(layer).add(this); //add the panel to the new later
         }
 
         this.layer = layer;
@@ -226,6 +227,14 @@ public class Outline extends Widget implements Renderable{
 
     public boolean isFocused() {
         return focused;
+    }
+
+    public void setScreen(Screen screen) {
+        this.screen = screen;
+    }
+
+    public Screen getScreen() {
+        return screen;
     }
 
     public void setOffsetX(float offsetX) {

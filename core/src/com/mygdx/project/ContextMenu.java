@@ -7,7 +7,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -51,7 +50,7 @@ public class ContextMenu<T> extends ScrollPane {
         setOverscroll(false, false);
         setFadeScrollBars(false);
         setScrollingDisabled(true, false);
-        listStyle = Main.uiSkin.get("contextmenu", List.ListStyle.class);
+        listStyle = Main.skin.get("contextmenu", List.ListStyle.class);
 
         list = newList();
         list.setTouchable(Touchable.disabled);

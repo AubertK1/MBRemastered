@@ -1,7 +1,6 @@
 package com.mygdx.project;
 
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -33,7 +32,7 @@ public class Item extends Minipanel{
     }
     public Item(Rectangle position) {
         super("assets\\Panels\\ItemPanel4.png", position);
-        skin = Main.uiSkin;
+        skin = Main.skin;
     }
 
     /**
