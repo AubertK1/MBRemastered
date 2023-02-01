@@ -35,9 +35,6 @@ public class Screen implements Renderable{
     Panel sidePanel, topPanel, genStatsPanel, reminderPanel, toolbarPanel, masterboardPanel;
 
     ArrayList<Panel> mainPanels = new ArrayList<>();
-    ArrayList<Panel> focusedPanels = new ArrayList<>();
-    ArrayList<MBComponent> focusedComps = new ArrayList<>();
-    ArrayList<Outline> focusedOutlines = new ArrayList<>();
     boolean inFocusMode = false;
     int focusedLayers = 0;
 
@@ -55,15 +52,6 @@ public class Screen implements Renderable{
 
     //controls whether this is rendered or not
     boolean supposedToBeVisible = true;
-
-    //region used for the Upload Image button
-    //these are initialized from the start so that when they're used time isn't wasted while loading them
-    static String fileChooserPath;
-    static final JFileChooser chooser = new JFileChooser();
-    static final FileNameExtensionFilter filter = new FileNameExtensionFilter(
-            "JPG, PNG & GIF Images", "jpg", "gif", "png");
-    static final JFrame f = new JFrame();
-    //endregion
 
     public Screen() {
         //        player = "PLAYER 1";
@@ -91,8 +79,7 @@ public class Screen implements Renderable{
         mainPanels.add(masterboardPanel);
 
         //setting up skin for the UI of the app
-        skin = new Skin (Gdx.files.internal(
-                "assets\\skins\\uiskin.json"));
+        skin = Main.skin;
 
         grayPanel = new Panel("assets\\gradient2.png", new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), this);
         grayPanel.aFloat = .75f;
@@ -622,22 +609,22 @@ public class Screen implements Renderable{
                 Gdx.input.setInputProcessor(null);
 
                 //makes only .jpg .png or .gif files able to be selected
-                chooser.setFileFilter(filter);
-                chooser.setDialogTitle("Select Image");
+                Main.chooser.setFileFilter(Main.filter);
+                Main.chooser.setDialogTitle("Select Image");
                 //initializing the frame
-                f.setVisible(true);
-                f.toFront();
-                f.setAlwaysOnTop(true);
-                f.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
-                f.setVisible(false);
+                Main.f.setVisible(true);
+                Main.f.toFront();
+                Main.f.setAlwaysOnTop(true);
+                Main.f.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
+                Main.f.setVisible(false);
                 //if the file is selected...
-                int res = chooser.showSaveDialog(f);
-                f.dispose();
+                int res = Main.chooser.showSaveDialog(Main.f);
+                Main.f.dispose();
                 if (res == JFileChooser.APPROVE_OPTION) {
                     //saves the selected file as a file
-                    File file = chooser.getSelectedFile();
+                    File file = Main.chooser.getSelectedFile();
                     //saves the file location as a string
-                    fileChooserPath = file.toString();
+                    Main.fileChooserPath = file.toString();
                 }
                 //re-enabling input
                 Gdx.input.setInputProcessor(processor);
@@ -646,8 +633,8 @@ public class Screen implements Renderable{
     }
     public void fileChooseHandle(final Panel genStatsPanel, final MBButton imageButton){
         //to make sure this is only ran whenever the user selects a file
-        if(fileChooserPath != null) {
-            Texture tex2 = new Texture(fileChooserPath);
+        if(Main.fileChooserPath != null) {
+            Texture tex2 = new Texture(Main.fileChooserPath);
             //deletes the imageButton from the stage so that when it's added back it doesn't cause any complications in terms of the CompID
             genStatsPanel.delete(imageButton);
             //turns the imageButton into an ImageButton
@@ -719,14 +706,14 @@ public class Screen implements Renderable{
             imageButton.add(deleteButton);
             imageButton.add(reselectButton);
             //so that it's not called again
-            fileChooserPath = null;
+            Main.fileChooserPath = null;
         }
     }
     //endregion
 
     @Override
     public void render() {
-        //rendering everything in layer 1 here so they're rendered in order
+        //rendering everything in layer 0 here, so they're rendered in order
         for (Panel panel : mainPanels) {
             panel.render();
         }
@@ -785,9 +772,6 @@ public class Screen implements Renderable{
         reminderPanel.dispose();
         toolbarPanel.dispose();
         masterboardPanel.dispose();
-        this.dispose();
         stage.dispose();
-        chooser.setEnabled(false);
-        f.dispose();
     }
 }

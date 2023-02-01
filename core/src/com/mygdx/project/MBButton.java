@@ -104,7 +104,7 @@ public class MBButton extends MBComponent{
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //allows the user to choose the file they want to display
-                getScreen().fileChooseChanged();
+                screen.fileChooseChanged();
             }
             @Override
             public boolean handle (Event event) {
@@ -114,7 +114,7 @@ public class MBButton extends MBComponent{
                 }
                 else aFloat = 1f;
                 //renders the file (in handle because it's always called, so it will be called as soon as the file is chosen)
-                getScreen().fileChooseHandle(MBButton.this.parentPanel, MBButton.this);
+                screen.fileChooseHandle(MBButton.this.parentPanel, MBButton.this);
                 if (!(event instanceof ChangeEvent)) return false;
                 changed((ChangeEvent)event, event.getTarget());
                 return false;
@@ -161,7 +161,7 @@ public class MBButton extends MBComponent{
                 }
                 button.setDisabled(hasWindow);
                 //renders the file (in handle because it's always called, so it will be called as soon as the file is chosen)
-                getScreen().fileChooseHandle(MBButton.this.parentPanel, MBButton.this);
+                screen.fileChooseHandle(MBButton.this.parentPanel, MBButton.this);
                 if (!(event instanceof ChangeEvent)) return false;
                 changed((ChangeEvent)event, event.getTarget());
                 return false;
