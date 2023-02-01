@@ -27,7 +27,7 @@ public class Screen implements Renderable{
     //used to draw the MBComponents
     Stage stage;
     //the skin for the components
-    Skin uiSkin;
+    Skin skin;
 
     public MBContextMenu contextMenu;
     public Panel grayPanel;
@@ -68,21 +68,21 @@ public class Screen implements Renderable{
     public Screen() {
         //        player = "PLAYER 1";
         //setting up batch and stage
-        batch = new SpriteBatch();
-        stage = new Stage();
+        batch = Main.batch;
+        stage = Main.stage;
         //setting up panels
         sidePanel = new Panel("assets\\Panels\\SidecardPanel.png",
-                new Rectangle(2, 150, 98, 850));
+                new Rectangle(2, 150, 98, 850), this);
         topPanel = new Panel("assets\\Panels\\TopbarPanel.png",
-                new Rectangle(110, 950, 780, 50));
+                new Rectangle(110, 950, 780, 50), this);
         genStatsPanel = new Panel("assets\\Panels\\GenstatsPanel.png",
-                new Rectangle(110, 550, 780, 390));
+                new Rectangle(110, 550, 780, 390), this);
         reminderPanel = new Panel("assets\\Panels\\ReminderPanel.png",
-                new Rectangle(110, 150, 780, 390));
+                new Rectangle(110, 150, 780, 390), this);
         toolbarPanel = new Panel("assets\\Panels\\ToolbarPanel.png",
-                new Rectangle(2, 2, 1916, 138));
+                new Rectangle(2, 2, 1916, 138), this);
         masterboardPanel = new Panel("assets\\Panels\\MasterboardPanel4.png",
-                new Rectangle(900, 150, 1018, 850));
+                new Rectangle(900, 150, 1018, 850), this);
         mainPanels.add(sidePanel);
         mainPanels.add(topPanel);
         mainPanels.add(genStatsPanel);
@@ -90,15 +90,11 @@ public class Screen implements Renderable{
         mainPanels.add(toolbarPanel);
         mainPanels.add(masterboardPanel);
 
-        for (Panel mainPanel: mainPanels) {
-            mainPanel.setScreen(this);
-        }
         //setting up skin for the UI of the app
-        uiSkin = new Skin (Gdx.files.internal(
+        skin = new Skin (Gdx.files.internal(
                 "assets\\skins\\uiskin.json"));
 
-        contextMenu = new MBContextMenu();
-        grayPanel = new Panel("assets\\gradient2.png", new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        grayPanel = new Panel("assets\\gradient2.png", new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), this);
         grayPanel.aFloat = .75f;
 
         sidePanel.setSoftVisible(true);
@@ -112,11 +108,11 @@ public class Screen implements Renderable{
         //region Reminders
         //creating a textarea
         MBTextArea reminderTextArea;
-        reminderTextArea = new MBTextArea("", uiSkin);
+        reminderTextArea = new MBTextArea("", this);
         reminderTextArea.getTextArea().setSize(760,330);
         reminderTextArea.getTextArea().setPosition(120,160);
         //creating a label
-        MBLabel reminderLabel = new MBLabel("REMINDERS", uiSkin);
+        MBLabel reminderLabel = new MBLabel("REMINDERS", this);
         reminderLabel.setSize(760, 40);
         reminderLabel.setPosition(120, 490);
         //adding to the Reminders panel as its components
@@ -128,22 +124,23 @@ public class Screen implements Renderable{
         //region listpanel
         //creating a list panel to hold all the items and adding it to the genstats panel
         final Minipanel listPanel = new Minipanel("assets\\Panels\\ListPanel.png",
-                new Rectangle(120, 560, 470, 300));
+                new Rectangle(120, 560, 470, 300), this);
+        genStatsPanel.add(listPanel);
 
         //region item panels
         final ItemPanel weaponsPanel = new ItemPanel("assets\\clear.png",
-                new Rectangle(listPanel.getX()+5, listPanel.getY() + 5, listPanel.getWidth() - 10, listPanel.getHeight()-34));
+                new Rectangle(listPanel.getX()+5, listPanel.getY() + 5, listPanel.getWidth() - 10, listPanel.getHeight()-34), this);
         final ItemPanel spellsPanel = new ItemPanel("assets\\clear.png",
-                new Rectangle(listPanel.getX()+5, listPanel.getY() + 5, listPanel.getWidth() - 10, listPanel.getHeight()-34));
+                new Rectangle(listPanel.getX()+5, listPanel.getY() + 5, listPanel.getWidth() - 10, listPanel.getHeight()-34), this);
         listPanel.add(weaponsPanel);
         listPanel.add(spellsPanel);
         weaponsPanel.setFocused(true);
         spellsPanel.setFocused(true);
 
         //making the first WEAPON item and assigning it to the first spot
-        Item weaponItem1 = new WeaponItem();
+        Item weaponItem1 = new WeaponItem(this);
         //making the first SPELL item and assigning it to the first spot
-        Item spellItem1 = new SpellItem();
+        Item spellItem1 = new SpellItem(this);
 
         weaponsPanel.add(weaponItem1);
         spellsPanel.add(spellItem1);
@@ -159,12 +156,12 @@ public class Screen implements Renderable{
         //endregion
 
         //region item tab buttons
-        final MBButton weaponsButton = new MBButton("Weapons", uiSkin, "toggle");
+        final MBButton weaponsButton = new MBButton("Weapons", this, "toggle");
         ((TextButton)weaponsButton.getButton()).getLabel().setFontScale(.92f, .9f);
         weaponsButton.setPosition(listPanel.getX()+5, listPanel.getY()+ listPanel.getHeight()-20);
         weaponsButton.setSize(80, 15);
 
-        final MBButton spellsButton = new MBButton("Spells", uiSkin, "toggle");
+        final MBButton spellsButton = new MBButton("Spells", this, "toggle");
         ((TextButton)spellsButton.getButton()).getLabel().setFontScale(1f, .9f);
         spellsButton.setPosition(weaponsButton.getX()+ weaponsButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
         spellsButton.setSize(80, 15);
@@ -222,17 +219,17 @@ public class Screen implements Renderable{
 
         //region item shift buttons
         //creating item shift buttons and setting their sizes
-        MBButton addButton = new MBButton(uiSkin);
+        MBButton addButton = new MBButton(this);
         //XPosition = (ListPanelXPos + ListPanelWidth - GapBetweenBorderAndButton - DownButtonWidth - GapBetweenButtons - UpButtonWidth - GapBetweenButtons - AddButtonWidth)
         //which ends up being XPosition = (120 + 470 - 5 - 40 - 2 - 40 - 2 - 40) = 461
         addButton.setPosition(461, listPanel.getY()+ listPanel.getHeight()-20);
         addButton.setSize(40, 15);
 
-        final MBButton upButton = new MBButton(uiSkin);
+        final MBButton upButton = new MBButton(this);
         upButton.setPosition(addButton.getX()+ addButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
         upButton.setSize(40, 15);
 
-        final MBButton downButton = new MBButton(uiSkin);
+        final MBButton downButton = new MBButton(this);
         downButton.setPosition(upButton.getX()+ upButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
         downButton.setSize(40, 15);
         //adding item buttons to the list panel
@@ -245,10 +242,10 @@ public class Screen implements Renderable{
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if(itemTab == 1) {
-                    weaponsPanel.add(new WeaponItem());
+                    weaponsPanel.add(new WeaponItem(Screen.this));
                 }
                 else if(itemTab == 2) {
-                    spellsPanel.add(new SpellItem());
+                    spellsPanel.add(new SpellItem(Screen.this));
                 }
             }
         });
@@ -277,62 +274,60 @@ public class Screen implements Renderable{
             }
         });
         //endregion
-
-        genStatsPanel.add(listPanel);
         //endregion
 
         //region stats
         //creating all the stats panels to hold the player stats
         final Minipanel strPanel, dexPanel, conPanel, intPanel, wisPanel, chaPanel;
         strPanel = new Minipanel("assets\\Panels\\minipanel2.png",
-                new Rectangle(120, 870, 50, 60));
+                new Rectangle(120, 870, 50, 60), this);
         dexPanel = new Minipanel("assets\\Panels\\minipanel2.png",
-                new Rectangle(strPanel.getX()+strPanel.getWidth()+10, strPanel.getY(), 50, 60));
+                new Rectangle(strPanel.getX()+strPanel.getWidth()+10, strPanel.getY(), 50, 60), this);
         conPanel = new Minipanel("assets\\Panels\\minipanel2.png",
-                new Rectangle(dexPanel.getX()+dexPanel.getWidth()+10, strPanel.getY(), 50, 60));
+                new Rectangle(dexPanel.getX()+dexPanel.getWidth()+10, strPanel.getY(), 50, 60), this);
         intPanel = new Minipanel("assets\\Panels\\minipanel2.png",
-                new Rectangle(conPanel.getX()+conPanel.getWidth()+10, strPanel.getY(), 50, 60));
+                new Rectangle(conPanel.getX()+conPanel.getWidth()+10, strPanel.getY(), 50, 60), this);
         wisPanel = new Minipanel("assets\\Panels\\minipanel2.png",
-                new Rectangle(intPanel.getX()+intPanel.getWidth()+10, strPanel.getY(), 50, 60));
+                new Rectangle(intPanel.getX()+intPanel.getWidth()+10, strPanel.getY(), 50, 60), this);
         chaPanel = new Minipanel("assets\\Panels\\minipanel2.png",
-                new Rectangle(wisPanel.getX()+wisPanel.getWidth()+10, strPanel.getY(), 50, 60));
+                new Rectangle(wisPanel.getX()+wisPanel.getWidth()+10, strPanel.getY(), 50, 60), this);
         //creating the labels to put in the stats' minipanels
-        MBLabel strL = new MBLabel("STR", uiSkin);
+        MBLabel strL = new MBLabel("STR", this);
         //setting position equal to its minipanel's left border + half the minipanel's width - half the label's width
         strL.setPosition(strPanel.getX() + (strPanel.getWidth()/2) - (strL.getWidth()/2), 903);
-        MBLabel dexL = new MBLabel("DEX", uiSkin);
+        MBLabel dexL = new MBLabel("DEX", this);
         dexL.setPosition(dexPanel.getX() + (dexPanel.getWidth()/2) - (dexL.getWidth()/2), 903);
-        MBLabel conL = new MBLabel("CON", uiSkin);
+        MBLabel conL = new MBLabel("CON", this);
         conL.setPosition(conPanel.getX() + (conPanel.getWidth()/2) - (conL.getWidth()/2), 903);
-        MBLabel intL = new MBLabel("INT", uiSkin);
+        MBLabel intL = new MBLabel("INT", this);
         intL.setPosition(intPanel.getX() + (intPanel.getWidth()/2) - (intL.getWidth()/2), 903);
-        MBLabel wisL = new MBLabel("WIS", uiSkin);
+        MBLabel wisL = new MBLabel("WIS", this);
         wisL.setPosition(wisPanel.getX() + (wisPanel.getWidth()/2) - (wisL.getWidth()/2), 903);
-        MBLabel chaL = new MBLabel("CHA", uiSkin);
+        MBLabel chaL = new MBLabel("CHA", this);
         chaL.setPosition(chaPanel.getX() + (chaPanel.getWidth()/2) - (chaL.getWidth()/2), 903);
         //creating the textfields to put in the stats' minipanels
-        MBTextField strTF = new MBTextField("", uiSkin);
+        MBTextField strTF = new MBTextField("", this);
         //size and positions set by eyeballing until it looked nice
         strTF.setSize(42, 35);
         strTF.setPosition(124, 873);
         strTF.getTextField().setAlignment(Align.center);
-        MBTextField dexTF = new MBTextField("", uiSkin);
+        MBTextField dexTF = new MBTextField("", this);
         dexTF.setSize(42, 35);
         dexTF.setPosition(184, 873);
         dexTF.getTextField().setAlignment(Align.center);
-        MBTextField conTF = new MBTextField("", uiSkin);
+        MBTextField conTF = new MBTextField("", this);
         conTF.setSize(42, 35);
         conTF.setPosition(244, 873);
         conTF.getTextField().setAlignment(Align.center);
-        MBTextField intTF = new MBTextField("", uiSkin);
+        MBTextField intTF = new MBTextField("", this);
         intTF.setSize(42, 35);
         intTF.setPosition(304, 873);
         intTF.getTextField().setAlignment(Align.center);
-        MBTextField wisTF = new MBTextField("", uiSkin);
+        MBTextField wisTF = new MBTextField("", this);
         wisTF.setSize(42, 35);
         wisTF.setPosition(364, 873);
         wisTF.getTextField().setAlignment(Align.center);
-        MBTextField chaTF = new MBTextField("", uiSkin);
+        MBTextField chaTF = new MBTextField("", this);
         chaTF.setSize(42, 35);
         chaTF.setPosition(424, 873);
         chaTF.getTextField().setAlignment(Align.center);
@@ -359,11 +354,11 @@ public class Screen implements Renderable{
 
         //Short Rest and Long Rest buttons
         Minipanel shortRestPanel = new Minipanel("assets\\Panels\\minipanel2.png",
-                new Rectangle(chaPanel.getX()+wisPanel.getWidth()+10, strPanel.getY(), 50, 60));
+                new Rectangle(chaPanel.getX()+wisPanel.getWidth()+10, strPanel.getY(), 50, 60), this);
         Minipanel longRestPanel = new Minipanel("assets\\Panels\\minipanel2.png",
-                new Rectangle(shortRestPanel.getX()+shortRestPanel.getWidth()+10, strPanel.getY(), 50, 60));
+                new Rectangle(shortRestPanel.getX()+shortRestPanel.getWidth()+10, strPanel.getY(), 50, 60), this);
 
-        MBButton srButton = new MBButton("Short \n Rest", uiSkin);
+        MBButton srButton = new MBButton("Short \n Rest", this);
         srButton.setSize(50, 60);
         srButton.setPosition(chaPanel.getX()+wisPanel.getWidth()+10, strPanel.getY());
         srButton.addListener(new ChangeListener() {
@@ -376,7 +371,7 @@ public class Screen implements Renderable{
         });
 //		((TextButton)srButton.button).getLabel().setColor(new Color(0x8a8a8aff));
 
-        MBButton lrButton = new MBButton("Long \n Rest", uiSkin);
+        MBButton lrButton = new MBButton("Long \n Rest", this);
         lrButton.setSize(50, 60);
         lrButton.setPosition(shortRestPanel.getX()+shortRestPanel.getWidth()+10, strPanel.getY());
         lrButton.addListener(new ChangeListener() {
@@ -407,7 +402,7 @@ public class Screen implements Renderable{
 
         //region imagebutton
         //creating the imageButton as a text button
-        final MBButton imageButton = new MBButton(uiSkin);
+        final MBButton imageButton = new MBButton(this);
         imageButton.setPosition(595, 560);
         imageButton.setSize(290, 370);
         //setting the default opacity
@@ -422,7 +417,7 @@ public class Screen implements Renderable{
         //endregion
 
         //region Top Bar
-        final MBSelectBox dropdown = new MBSelectBox();
+        final MBSelectBox dropdown = new MBSelectBox(this);
         dropdown.setSize(300, 40);
         dropdown.setPosition(topPanel.getX()+ topPanel.getWidth()-305, topPanel.getY()+5);
         dropdown.setItems("PLAYER 1", "player2", "etc...", "OPTION 4", "rando opt");
@@ -433,7 +428,7 @@ public class Screen implements Renderable{
             }
         });
 
-        MBLabel playerNameLabel = new MBLabel(player, uiSkin);
+        MBLabel playerNameLabel = new MBLabel(player, this);
         playerNameLabel.setPosition(topPanel.getX() + 10, topPanel.getY() + (topPanel.getHeight()/2) - (playerNameLabel.getHeight()/2));
 
         topPanel.add(playerNameLabel);
@@ -444,7 +439,7 @@ public class Screen implements Renderable{
         //endregion
 
         //region MasterBoard
-        masterBoard = new MBBoard();
+        masterBoard = new MBBoard(this);
         masterBoard.setPosition(masterboardPanel.getX()+1, masterboardPanel.getY()+1);
         masterBoard.setSize(masterboardPanel.getWidth()-2, masterboardPanel.getHeight()-2);
         masterboardPanel.add(masterBoard);
@@ -452,7 +447,7 @@ public class Screen implements Renderable{
         //endregion
 
         //region Tool Bar
-        final MBButton focusButton = new MBButton("FOCUS", uiSkin);
+        final MBButton focusButton = new MBButton("FOCUS", this);
         focusButton.setPosition(toolbarPanel.getX() + 10, toolbarPanel.getY() + 10);
         focusButton.setSize(toolbarPanel.getHeight()-20, toolbarPanel.getHeight()-20);
         focusButton.addListener(new ChangeListener() {
@@ -471,7 +466,7 @@ public class Screen implements Renderable{
             }
         });
 
-        MBButton selectButton = new MBButton("Select", uiSkin);
+        MBButton selectButton = new MBButton("Select", this);
         selectButton.setPosition(focusButton.getX() + focusButton.getWidth() + 10, toolbarPanel.getY() + 10);
 //		selectButton.setPosition(toolbarPanel.getX() + 10, toolbarPanel.getY() + 10);
         selectButton.setSize(200, toolbarPanel.getHeight()-20);
@@ -484,7 +479,7 @@ public class Screen implements Renderable{
             }
         });
 
-        MBButton drawButton = new MBButton("Draw", uiSkin);
+        MBButton drawButton = new MBButton("Draw", this);
         drawButton.setPosition(selectButton.getX() + selectButton.getWidth() + 5, selectButton.getY());
         drawButton.setSize(selectButton.getWidth(), selectButton.getHeight());
         drawButton.addListener(new ChangeListener() {
@@ -496,7 +491,7 @@ public class Screen implements Renderable{
             }
         });
 
-        MBButton eraseButton = new MBButton("Erase", uiSkin);
+        MBButton eraseButton = new MBButton("Erase", this);
         eraseButton.setPosition(drawButton.getX() + drawButton.getWidth() + 5, selectButton.getY());
         eraseButton.setSize(selectButton.getWidth(), selectButton.getHeight());
         eraseButton.addListener(new ChangeListener() {
@@ -508,7 +503,7 @@ public class Screen implements Renderable{
             }
         });
 
-        final MBSelectBox sizesBox = new MBSelectBox();
+        final MBSelectBox sizesBox = new MBSelectBox(this);
         sizesBox.setPosition(eraseButton.getX() + eraseButton.getWidth() + 5, selectButton.getY());
         sizesBox.setSize(100, eraseButton.getHeight()/3 - 1);
         sizesBox.setItems("1", "3", "5", "11", "23", "45");
@@ -520,7 +515,7 @@ public class Screen implements Renderable{
             }
         });
 
-        final MBSelectBox softnessBox = new MBSelectBox();
+        final MBSelectBox softnessBox = new MBSelectBox(this);
         softnessBox.setPosition(sizesBox.getX(), sizesBox.getY() + sizesBox.getHeight() + 2);
         softnessBox.setSize(100, eraseButton.getHeight()/3 - 1);
         softnessBox.setItems("soft", "hard");
@@ -530,7 +525,7 @@ public class Screen implements Renderable{
             }
         });
 
-        final MBSelectBox colorBox = new MBSelectBox();
+        final MBSelectBox colorBox = new MBSelectBox(this);
         colorBox.setPosition(sizesBox.getX(), softnessBox.getY() + softnessBox.getHeight() + 2);
         colorBox.setSize(100, eraseButton.getHeight()/3 - 1);
         colorBox.setItems("BLACK", "WHITE", "RED", "YELLOW", "GREEN", "BLUE");
@@ -566,7 +561,7 @@ public class Screen implements Renderable{
             }
         });
 
-        MBColorPicker colorPicker = new MBColorPicker();
+        MBColorPicker colorPicker = new MBColorPicker(this);
         colorPicker.setSize(0, toolbarPanel.getHeight() - 10);
         colorPicker.setPosition((toolbarPanel.getX() + toolbarPanel.getWidth()) - (colorPicker.getWidth() + 5), toolbarPanel.getY()+5);
 
@@ -589,7 +584,7 @@ public class Screen implements Renderable{
             focusedLayers = i + 1;
         }
 
-        //setting every focused renderables' layer to its corresponding focusedLayer
+        //setting every focused (and that hasn't been brought forward yet) renderables' layer to its corresponding focusedLayer
         for (int layer = 0; layer < nonfocusedLayers; layer++) {
             //so that it's not updating the layers.layer's size/indexes while looping through it
             ArrayList<Renderable> currentLayer = new ArrayList<>(layers.get(layer));
@@ -662,13 +657,13 @@ public class Screen implements Renderable{
             genStatsPanel.add(imageButton);
 
             final MBButton reselectButton;
-            reselectButton = new MBButton(uiSkin);
+            reselectButton = new MBButton(this);
             reselectButton.setPosition(imageButton.getX()+10, imageButton.getY()+10);
             reselectButton.setSize(40, 40);
             reselectButton.aFloat = .75f;
 
             final MBButton deleteButton;
-            deleteButton = new MBButton(uiSkin);
+            deleteButton = new MBButton(this);
             deleteButton.setPosition(imageButton.getX()+60, imageButton.getY()+10);
             deleteButton.setSize(40, 40);
             deleteButton.aFloat = .75f;
@@ -790,7 +785,7 @@ public class Screen implements Renderable{
         reminderPanel.dispose();
         toolbarPanel.dispose();
         masterboardPanel.dispose();
-        uiSkin.dispose();
+        this.dispose();
         stage.dispose();
         chooser.setEnabled(false);
         f.dispose();

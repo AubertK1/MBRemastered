@@ -118,7 +118,7 @@ public class ContextMenu<T> extends ScrollPane {
 
     public void showAt (Stage stage, int x, int y) {
         if (items.size == 0) return;
-        if (getStage() == null) return;
+        if (stage == null) return;
 //        if (list.isTouchable()) return;
 
         doShow = true;

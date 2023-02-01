@@ -5,10 +5,13 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Null;
 
+import static com.mygdx.project.Main.batch;
+
 public class MBContextMenu extends MBComponent{
     ContextMenu<String> contextMenu;
 
     public MBContextMenu() {
+        super(null);
         contextMenu = new ContextMenu<>(skin);
         contextMenu.setWidth(200);
 
@@ -16,6 +19,19 @@ public class MBContextMenu extends MBComponent{
         getScreen().allComps.add(this);
         Main.stage.addActor(this.getActor());
 */
+    }
+
+    public void render(){
+        batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
+
+        getActor().draw(batch, aFloat);
+        for (MBComponent innerComp: components) {
+            innerComp.render();
+        }
+    }
+
+    public void setScreen(Screen screen) {
+        this.screen = screen;
     }
 
     public void buildDefaultMenu(){

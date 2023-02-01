@@ -64,7 +64,9 @@ public class Main extends ApplicationAdapter {
 	static final JFrame f = new JFrame();
 	//endregion
 
-	Screen selectedScreen;
+	static InputMultiplexer multiplexer = new InputMultiplexer();
+
+	static Screen selectedScreen;
 	ArrayList<Screen> screens = new ArrayList<>();
 
 	@Override
@@ -75,8 +77,10 @@ public class Main extends ApplicationAdapter {
 		stage = new Stage();
 		skin = new Skin (Gdx.files.internal("assets\\skins\\uiskin.json"));
 
+
 		Screen pScreen = new Screen();
 		selectedScreen = pScreen;
+		contextMenu = new MBContextMenu();
 		screens.add(pScreen);
 /*
 
@@ -586,7 +590,7 @@ public class Main extends ApplicationAdapter {
 
 		//region listeners
 		//the screen listeners
-		InputMultiplexer multiplexer = new InputMultiplexer();
+//		InputMultiplexer multiplexer = new InputMultiplexer();
 		InputProcessor screenProcessor = new InputProcessor() {
 			@Override
 			public boolean keyDown(int keycode) {

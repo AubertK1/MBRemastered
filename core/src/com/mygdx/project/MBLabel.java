@@ -11,11 +11,8 @@ public class MBLabel extends MBComponent{
     //making the label
     private final Label label;
 
-    public MBLabel(String text, Skin skin) {
-        //setting the label
-        label = new Label(text, skin);
-    }
-    public MBLabel(String text) {
+    public MBLabel(String text, Screen screen) {
+        super(screen);
         //setting the label
         label = new Label(text, skin);
     }

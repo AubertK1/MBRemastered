@@ -30,7 +30,8 @@ public class MBComponent implements Renderable{
     private int layer = -1;
     private @Null String name;
     protected boolean focused = false;
-    public MBComponent() {
+    public MBComponent(Screen screen) {
+        setScreen(screen);
     }
 
     public void add(MBComponent component){
@@ -78,6 +79,10 @@ public class MBComponent implements Renderable{
     public void setScreen(Screen screen) {
         this.screen = screen;
         compID = screen.allComps.size();
+
+        for (MBComponent component: components) {
+            component.setScreen(screen);
+        }
     }
 
     public Screen getScreen() {

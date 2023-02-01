@@ -21,7 +21,8 @@ public class MBWindow extends MBComponent{
     /**
      * Default constructor.
      */
-    public MBWindow(Texture texture, Skin skin, MBComponent parent) {
+    public MBWindow(Texture texture, Screen screen, MBComponent parent) {
+        super(screen);
         parentActor = parent;
         parentActor.hasWindow = true;
         focused = true;

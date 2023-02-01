@@ -16,11 +16,8 @@ public class MBTextArea extends MBComponent{
     //making the text area
     private final TextArea textArea;
 
-    public MBTextArea(String text, Skin skin) {
-        //setting the text area
-        textArea = new TextArea(text, skin);
-    }
-    public MBTextArea(String text) {
+    public MBTextArea(String text, Screen screen) {
+        super(screen);
         //setting the text area
         textArea = new TextArea(text, skin);
     }

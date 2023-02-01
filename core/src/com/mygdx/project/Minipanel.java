@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Rectangle;
  * This class currently has no other use than to be a label for the non-main panels
  */
 public class Minipanel extends Panel{
-    public Minipanel(String fileLocation, Rectangle position) {
-        super(fileLocation, position);
+    public Minipanel(String fileLocation, Rectangle position, Screen screen) {
+        super(fileLocation, position, screen);
     }
 }

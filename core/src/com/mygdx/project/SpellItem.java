@@ -20,29 +20,29 @@ public class SpellItem extends Item {
     public int lrMax = 0;
     ArrayList<MBButton> restButtons = new ArrayList<>();
 
-    public SpellItem() {
-        super();
+    public SpellItem(Screen screen) {
+        super(screen);
     }
-    public SpellItem(Rectangle position) {
-        super(position);
+    public SpellItem(Rectangle position, Screen screen) {
+        super(position, screen);
     }
     public void initialize(){
         //region labels
         MBLabel nameLabel, descLabel, usesLabel;
 
         //setting the labels' texts and positions and sizes
-        nameLabel = new MBLabel("Spell  "+ (ID+1), skin);
+        nameLabel = new MBLabel("Spell  "+ (ID+1), screen);
         nameLabel.setPosition(this.getX()+5, this.getY()+5);
         nameLabel.setSize(119, nameLabel.getHeight());
         labelTexts.add(nameLabel.getLabel().getText().toString());
 
-        descLabel = new MBLabel("Spell Description...", skin);
+        descLabel = new MBLabel("Spell Description...", screen);
         descLabel.setPosition(nameLabel.getX()+ nameLabel.getWidth()+2, nameLabel.getY());
         descLabel.setSize(257, nameLabel.getHeight());
         descLabel.setName("tf"); //setting the name so I can identify it later
         labelTexts.add(descLabel.getLabel().getText().toString());
 
-        usesLabel = new MBLabel(String.valueOf(uses), skin);
+        usesLabel = new MBLabel(String.valueOf(uses), screen);
         usesLabel.setPosition(descLabel.getX()+ descLabel.getWidth()+2, nameLabel.getY());
         usesLabel.setSize(22, nameLabel.getHeight());
         labelTexts.add(usesLabel.getLabel().getText().toString());
@@ -59,13 +59,13 @@ public class SpellItem extends Item {
 
         //region buttons
         //creating buttons and setting their positions and sizes
-        final MBButton usesButton = new MBButton(String.valueOf(uses), skin),
-                minusButton = new MBButton(skin, "down-button"),
-                plusButton = new MBButton(skin, "up-button"),
-                editButton = new MBButton(skin, "edit-toggle"),
-                delButton = new MBButton(skin, "delete-button"),
-                downButton = new MBButton(skin, "down-button"),
-                upButton = new MBButton(skin, "up-button");
+        final MBButton usesButton = new MBButton(String.valueOf(uses), screen),
+                minusButton = new MBButton(screen, "down-button"),
+                plusButton = new MBButton(screen, "up-button"),
+                editButton = new MBButton(screen, "edit-toggle"),
+                delButton = new MBButton(screen, "delete-button"),
+                downButton = new MBButton(screen, "down-button"),
+                upButton = new MBButton(screen, "up-button");
 
         usesButton.setName("usesbutton"); //setting the name so I can identify it later
         usesButton.setPosition(usesLabel.getX(), usesLabel.getY());
@@ -181,14 +181,14 @@ public class SpellItem extends Item {
         usesButton.add(minusButton);
         usesButton.add(plusButton);
 
-        final MBButton srButton = new MBButton("Short Rest", skin);
+        final MBButton srButton = new MBButton("Short Rest", screen);
         srButton.getButton().setStyle(Main.skin.get("toggle", TextButton.TextButtonStyle.class));
         srButton.getButton().setChecked(true);
         srButton.setSize(50, editButton.getHeight());
         srButton.setPosition(usesButton.getX()-srButton.getWidth()-2, delButton.getY());
         ((TextButton)srButton.getButton()).getLabel().setFontScale(.6f,.7f);
 
-        final MBButton lrButton = new MBButton("Long Rest", skin);
+        final MBButton lrButton = new MBButton("Long Rest", screen);
         lrButton.getButton().setStyle(Main.skin.get("toggle", TextButton.TextButtonStyle.class));
         lrButton.getButton().setChecked(false);
         lrButton.setSize(50, delButton.getHeight());
@@ -326,7 +326,7 @@ public class SpellItem extends Item {
         //region textfields
         //creating textfields and setting their texts to their corresponding label's text
         for (int i = 0; i < labelTexts.size(); i++) {
-            textFields.add(new MBTextField(labelTexts.get(i), skin));
+            textFields.add(new MBTextField(labelTexts.get(i), screen));
             if(labels.get(i).getName() != null && labels.get(i).getName().equals("tf")){ //banishing the spell desc label's real textfield
                 textFields.get(i).setVisible(false);
                 textFields.get(i).setPosition(-1, -1);
@@ -348,20 +348,20 @@ public class SpellItem extends Item {
         //endregion
 
         //region tipbox components
-        spellDesc = new Tipbox(new Rectangle(115, descLabel.getY()+ (descLabel.getHeight()/2)-300, 770, 300));
-        MBTextArea spellDescTF = new MBTextArea("");
+        spellDesc = new Tipbox(new Rectangle(115, descLabel.getY()+ (descLabel.getHeight()/2)-300, 770, 300), screen);
+        MBTextArea spellDescTF = new MBTextArea("", screen);
         spellDescTF.setPosition(spellDesc.getX()+10, spellDesc.getY()+10+35);
         spellDescTF.setSize(750, 225);
 
-        MBLabel spellLevel = new MBLabel("Level: "),
-                castTime = new MBLabel("Casting Time: "),
-                duration = new MBLabel("Duration: "),
-                range = new MBLabel("Range: "), damageType = new MBLabel("Damage Type: ");
-        MBTextField spellLevelTF = new MBTextField("0"),
-                castTimeTF = new MBTextField("Action"),
-                durationTF = new MBTextField("Instant"),
-                rangeTF = new MBTextField("5 ft"),
-                damageTypeTF = new MBTextField("Fire");
+        MBLabel spellLevel = new MBLabel("Level: ", screen),
+                castTime = new MBLabel("Casting Time: ", screen),
+                duration = new MBLabel("Duration: ", screen),
+                range = new MBLabel("Range: ", screen), damageType = new MBLabel("Damage Type: ", screen);
+        MBTextField spellLevelTF = new MBTextField("0", screen),
+                castTimeTF = new MBTextField("Action", screen),
+                durationTF = new MBTextField("Instant", screen),
+                rangeTF = new MBTextField("5 ft", screen),
+                damageTypeTF = new MBTextField("Fire", screen);
 
         spellLevel.setPosition(spellDesc.getX()+10, spellDesc.getY()+10);
 

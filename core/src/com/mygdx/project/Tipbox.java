@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 public class Tipbox extends Minipanel{
-    public Tipbox(Rectangle position) {
-        super("assets\\Panels\\TipBox4.png", position);
+    public Tipbox(Rectangle position, Screen screen) {
+        super("assets\\Panels\\TipBox4.png", position, screen);
         setFocused(true);
     }
 

@@ -9,14 +9,18 @@ import com.badlogic.gdx.utils.Null;
 public class MBBoard extends MBComponent{
     Board board;
 
-    public MBBoard(){
+    public MBBoard(Screen screen){
+        super(screen);
         board = new Board(skin);
+        board.setScreen(screen);
     }
 
     @Override
     public void setScreen(Screen screen){
         super.setScreen(screen);
-        board.setScreen(screen);
+    }
+    public Board getBoard(){
+        return board;
     }
     public Actor getActor(){
         return board;

@@ -18,39 +18,36 @@ public class MBButton extends MBComponent{
 
     /**
      * Regular plain button
-     * @param skin
      */
-    public MBButton(Skin skin) {
+    public MBButton(Screen screen) {
+        super(screen);
         button = new Button(skin);
     }
 
     /**
      * ImageButton with an image from a preset style
-     * @param skin
      * @param styleName
      */
-    public MBButton(Skin skin, String styleName) {
-        this.skin = skin;
-        button = new ImageButton(this.skin, styleName);
+    public MBButton(Screen screen, String styleName) {
+        super(screen);
+        button = new ImageButton(skin, styleName);
         style = styleName;
     }
 
     /**
      * TextButton
      * @param text
-     * @param skin
      */
-    public MBButton(String text, Skin skin) {
-        this.skin = skin;
-        button = new TextButton(text, this.skin);
+    public MBButton(String text, Screen screen) {
+        super(screen);
+        button = new TextButton(text, skin);
     }
     /**
      * TextButton with a special style
      * @param text
-     * @param skin
      */
-    public MBButton(String text, Skin skin, String style) {
-        this.skin = skin;
+    public MBButton(String text, Screen screen, String style) {
+        super(screen);
         this.style = style;
         button = new TextButton(text, this.skin, style);
     }
@@ -133,7 +130,7 @@ public class MBButton extends MBComponent{
             public void changed(ChangeEvent event, Actor actor) {
                 if(!hasWindow) {
                     System.out.println("yo");
-                    MBWindow window = new MBWindow(texture, skin, MBButton.this);
+                    MBWindow window = new MBWindow(texture, screen, MBButton.this);
                     window.setSize(window.image.getWidth(), window.image.getHeight());
                     window.setPosition((float)Gdx.graphics.getWidth()/2 - window.getWidth()/2, (float)Gdx.graphics.getHeight()/2 - window.getHeight()/2);
                     window.setVisible(true);

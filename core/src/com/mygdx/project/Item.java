@@ -26,12 +26,12 @@ public class Item extends Minipanel{
 
     protected final float ITEMGAP = 5;
 
-    public Item() {
-        this(new Rectangle(125, 790, 460, 40));
+    public Item(Screen screen) {
+        this(new Rectangle(125, 790, 460, 40), screen);
         customLayout = false;
     }
-    public Item(Rectangle position) {
-        super("assets\\Panels\\ItemPanel4.png", position);
+    public Item(Rectangle position, Screen screen) {
+        super("assets\\Panels\\ItemPanel4.png", position, screen);
         skin = Main.skin;
     }
 

@@ -7,10 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 public class MBTextField extends MBComponent{
     private final TextField textField;
 
-    public MBTextField(String text, Skin skin) {
-        textField = new TextField(text, skin);
-    }
-    public MBTextField(String text) {
+    public MBTextField(String text, Screen screen) {
+        super(screen);
         textField = new TextField(text, skin);
     }
 

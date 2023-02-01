@@ -31,8 +31,8 @@ public class ColorPicker extends Widget {
                 if(newColor != null) {
                     System.out.println(newColor);
                     //fixme
-//                    Main.masterBoard.board.setDrawingColor(newColor);
-//                    Main.masterBoard.board.setCurrentColor(newColor);
+                    Main.selectedScreen.masterBoard.getBoard().setDrawingColor(newColor);
+                    Main.selectedScreen.masterBoard.getBoard().setCurrentColor(newColor);
                 }
                 return true;
             }

@@ -48,6 +48,7 @@ public class Outline extends Widget implements Renderable{
         offsetX = parentBoard.getOffsetX();
         offsetY = parentBoard.getOffsetY();
 
+        setScreen(board.getScreen());
         setLayer(1);
     }
 
@@ -184,7 +185,7 @@ public class Outline extends Widget implements Renderable{
     public void setFocused(boolean focused){
         this.focused = focused;
 
-        if(getScreen().isInFocusMode()) getScreen().focus();
+        if(screen.isInFocusMode()) screen.focus();
     }
 
     public void setSoftVisible(boolean visible) {
@@ -202,19 +203,19 @@ public class Outline extends Widget implements Renderable{
 
         if(oldLayer != -1) {
             for (int renderable = 0; renderable < getScreen().layers.get(oldLayer).size(); renderable++) { //find the panel in the old layer
-                if (this == getScreen().layers.get(oldLayer).get(renderable)) {
-                    getScreen().layers.get(oldLayer).remove(this); //remove the panel from the old layer
+                if (this == screen.layers.get(oldLayer).get(renderable)) {
+                    screen.layers.get(oldLayer).remove(this); //remove the panel from the old layer
                 }
             }
         }
 
         if(layer == -1); //don't add this to a list, so it doesn't get rendered
-        else if(getScreen().layers.containsKey(layer)){ //if the layer already exists
-            getScreen().layers.get(layer).add(this); //add the panel to its new later
+        else if(screen.layers.containsKey(layer)){ //if the layer already exists
+            screen.layers.get(layer).add(this); //add the panel to its new later
         }
         else{
-            getScreen().layers.put(layer, new ArrayList<Renderable>()); //creates a new layer
-            getScreen().layers.get(layer).add(this); //add the panel to the new later
+            screen.layers.put(layer, new ArrayList<Renderable>()); //creates a new layer
+            screen.layers.get(layer).add(this); //add the panel to the new later
         }
 
         this.layer = layer;

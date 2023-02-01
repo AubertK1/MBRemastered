@@ -11,7 +11,8 @@ public class MBSelectBox extends MBComponent{
     final SelectBoxWrapper<String> dropdown;
     private int inactiveLayer = 2;
 
-    public MBSelectBox() {
+    public MBSelectBox(Screen screen) {
+        super(screen);
         dropdown = new SelectBoxWrapper<>(skin);
         dropdown.setScrollingDisabled(true);
     }

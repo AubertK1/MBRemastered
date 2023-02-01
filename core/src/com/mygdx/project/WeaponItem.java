@@ -6,11 +6,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class WeaponItem extends Item {
-    public WeaponItem() {
-        super();
+    public WeaponItem(Screen screen) {
+        super(screen);
     }
-    public WeaponItem(Rectangle position) {
-        super(position);
+    public WeaponItem(Rectangle position, Screen screen) {
+        super(position, screen);
     }
 
     public void initialize(){
@@ -18,22 +18,22 @@ public class WeaponItem extends Item {
         //creating the labels
         MBLabel nameLabel,diceLabel,modLabel,typeLabel;
         //setting the labels' texts and positions and sizes
-        nameLabel = new MBLabel("Weapon "+ (ID+1), skin);
+        nameLabel = new MBLabel("Weapon "+ (ID+1), screen);
         nameLabel.setPosition(this.getX()+5, this.getY()+5);
         nameLabel.setSize(119, nameLabel.getHeight());
         labelTexts.add(nameLabel.getLabel().getText().toString());
 
-        diceLabel = new MBLabel("HitDie", skin);
+        diceLabel = new MBLabel("HitDie", screen);
         diceLabel.setPosition(nameLabel.getX()+ nameLabel.getWidth()+2, nameLabel.getY());
         diceLabel.setSize(75, nameLabel.getHeight());
         labelTexts.add(diceLabel.getLabel().getText().toString());
 
-        modLabel = new MBLabel("ATKMod", skin);
+        modLabel = new MBLabel("ATKMod", screen);
         modLabel.setPosition(diceLabel.getX()+ diceLabel.getWidth()+2, nameLabel.getY());
         modLabel.setSize(85, nameLabel.getHeight());
         labelTexts.add( modLabel.getLabel().getText().toString());
 
-        typeLabel = new MBLabel("Damage/Type", skin);
+        typeLabel = new MBLabel("Damage/Type", screen);
         typeLabel.setPosition(modLabel.getX()+ modLabel.getWidth()+2, nameLabel.getY());
         typeLabel.setSize(115, nameLabel.getHeight());
         labelTexts.add( typeLabel.getLabel().getText().toString());
@@ -52,22 +52,22 @@ public class WeaponItem extends Item {
 
         //region buttons
         //creating buttons and setting their positions and sizes
-        final MBButton editButton = new MBButton(skin, "edit-toggle");
+        final MBButton editButton = new MBButton(screen, "edit-toggle");
         editButton.getButton().setChecked(true);
         editButton.setName("editbutton");
         editButton.getButton().setName("editbutton");
         editButton.setPosition(typeLabel.getX()+typeLabel.getWidth()+10, nameLabel.getY()-1);
         editButton.setSize(20, 15);
 
-        final MBButton delButton = new MBButton(skin, "delete-button");
+        final MBButton delButton = new MBButton(screen, "delete-button");
         delButton.setPosition(editButton.getX(), editButton.getY()+editButton.getHeight()+2);
         delButton.setSize(20, 15);
 
-        final MBButton downButton = new MBButton(skin, "down-button");
+        final MBButton downButton = new MBButton(screen, "down-button");
         downButton.setPosition(editButton.getX()+editButton.getWidth()+2, editButton.getY());
         downButton.setSize(20, 15);
 
-        final MBButton upButton = new MBButton(skin, "up-button");
+        final MBButton upButton = new MBButton(screen, "up-button");
         upButton.setPosition(downButton.getX(), downButton.getY()+downButton.getHeight()+2);
         upButton.setSize(20, 15);
 
@@ -80,7 +80,7 @@ public class WeaponItem extends Item {
         //region textfields
         //creating textfields and setting their texts to their corresponding label's text
         for (int i = 0; i < labelTexts.size(); i++) {
-            textFields.add(new MBTextField(labelTexts.get(i), skin));
+            textFields.add(new MBTextField(labelTexts.get(i), screen));
             add(textFields.get(i));
             //detecting when enter is pressed on each MBTextField so that enter can exit out of edit mode
             textFields.get(i).setKeyListener(new TextField.TextFieldListener() {

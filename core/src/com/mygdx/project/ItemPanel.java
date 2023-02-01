@@ -16,8 +16,8 @@ public class ItemPanel extends Minipanel{
 
     private float ITEMGAP = 5;
 
-    public ItemPanel(String fileLocation, Rectangle position) {
-        super(fileLocation, position);
+    public ItemPanel(String fileLocation, Rectangle position, Screen screen) {
+        super(fileLocation, position, screen);
         spot0Model = new Rectangle(getX(), getHeight()+getY() - 40, 460, 40);
     }
     /**

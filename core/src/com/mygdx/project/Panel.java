@@ -34,7 +34,8 @@ public class Panel implements Renderable{
     //the alpha value this is rendered with
     float aFloat = 1f;
 
-    public Panel(String fileLocation, Rectangle position){
+    public Panel(String fileLocation, Rectangle position, Screen screen){
+        setScreen(screen);
         //sets the image of the panel
         texture = new Texture(fileLocation);
         //sets the location and size
@@ -54,7 +55,7 @@ public class Panel implements Renderable{
     public void add(MBComponent component, int layer){
 //        if(component.getActor() != null) return;
         //adds this component to the list of all components if it's not already in it
-        if(!getScreen().allComps.contains(component)) getScreen().allComps.add(component);
+        if(!screen.allComps.contains(component)) screen.allComps.add(component);
         //adds the component given to this panel
         components.add(component);
         //sets the component's parent to this panel
@@ -196,6 +197,13 @@ public class Panel implements Renderable{
 
     public void setScreen(Screen screen) {
         this.screen = screen;
+
+        for (Panel minipanel: minipanels) {
+            minipanel.setScreen(screen);
+        }
+        for (MBComponent component: components) {
+            component.setScreen(screen);
+        }
     }
 
     public Screen getScreen() {
