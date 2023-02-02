@@ -49,7 +49,7 @@ public class Outline extends Widget implements Renderable{
         offsetY = parentBoard.getOffsetY();
 
         setScreen(board.getScreen());
-        setLayer(1);
+        setLayer(0);
     }
 
     public void update() {

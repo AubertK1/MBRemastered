@@ -2,10 +2,6 @@ package com.mygdx.project;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
-import static com.mygdx.project.Main.batch;
 
 public class MBSelectBox extends MBComponent{
     final SelectBoxWrapper<String> dropdown;
@@ -17,6 +13,14 @@ public class MBSelectBox extends MBComponent{
         dropdown.setScrollingDisabled(true);
     }
 
+    @Override
+    public void setLayer(int layer) {
+        super.setLayer(layer);
+        inactiveLayer = layer;
+    }
+    private void setLayerSoft(int layer){
+        super.setLayer(layer);
+    }
     public boolean addScrollPaneListener(EventListener listener){
         return dropdown.scrollPane.list.addListener(listener);
     }
@@ -33,13 +37,10 @@ public class MBSelectBox extends MBComponent{
 
     @Override
     public void render() {
-        if(this.dropdown.getItems().get(0).equals("soft"))
-            System.out.print("");
         if(!isActive()){
             if(getLayer() != inactiveLayer) setLayer(inactiveLayer);
-            inactiveLayer = getLayer();
         }
-        else setLayer(inactiveLayer + 1);
+        else setLayerSoft(inactiveLayer + 1);
         super.render();
     }
 }

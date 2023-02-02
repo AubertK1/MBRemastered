@@ -35,9 +35,6 @@ public class Main extends ApplicationAdapter {
 	public static Panel grayPanel;
 
 	static String player;
-	//so these can be drawn last
-
-	static HashMap<Integer, ArrayList<Renderable>> layers = new HashMap<>();
 
 	//region used for the Upload Image button
 	//these are initialized from the start so that when they're used time isn't wasted while loading them
@@ -48,6 +45,7 @@ public class Main extends ApplicationAdapter {
 	static final JFrame f = new JFrame();
 	//endregion
 
+	static MainScreen mainScreen;
 	static Screen selectedScreen;
 	ArrayList<Screen> screens = new ArrayList<>();
 
@@ -59,9 +57,9 @@ public class Main extends ApplicationAdapter {
 		stage = new Stage();
 		skin = new Skin (Gdx.files.internal("assets\\skins\\uiskin.json"));
 
-
-		Screen pScreen = new Screen();
+		PlayerScreen pScreen = new PlayerScreen();
 		selectedScreen = pScreen;
+		mainScreen = new MainScreen();
 		contextMenu = new MBContextMenu();
 		screens.add(pScreen);
 
@@ -126,6 +124,7 @@ public class Main extends ApplicationAdapter {
 		//drawing the panels
 		batch.begin();
 
+		mainScreen.render();
 		//renders the current screen
 		selectedScreen.render();
 
@@ -151,5 +150,9 @@ public class Main extends ApplicationAdapter {
 		stage.dispose();
 		chooser.setEnabled(false);
 		f.dispose();
+	}
+
+	public static Screen getMainScreen(){
+		return mainScreen;
 	}
 }
