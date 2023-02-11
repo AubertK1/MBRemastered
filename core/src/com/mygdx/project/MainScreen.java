@@ -1,5 +1,6 @@
 package com.mygdx.project;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -7,13 +8,25 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class MainScreen extends Screen{
 
     //creating main panels
     Panel sidePanel, toolbarPanel;
 
+    Screen selectedScreen = null;
+    HashMap<Integer, ArrayList<Renderable>> screenLayers = new HashMap<>();
+    ArrayList<Panel> screenPanels = new ArrayList<>();
+
     public MainScreen() {
         super();
+
+        selectScreen(Main.selectedScreen);
+        grayPanel = new Panel("assets\\gradient2.png", new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), this);
+        grayPanel.aFloat = .75f;
+
         sidePanel = new Panel("assets\\Panels\\SidecardPanel.png",
                 new Rectangle(2, 150, 98, 850), this);
         toolbarPanel = new Panel("assets\\Panels\\ToolbarPanel.png",
@@ -153,5 +166,95 @@ public class MainScreen extends Screen{
         toolbarPanel.add(colorBox, 1);
         toolbarPanel.add(colorPicker);
         //endregion
+    }
+
+    public void focus(){
+        //adding a new layer for every potential layer we may have
+        int nonfocusedLayers = layers.size();
+        for (int i = 0; i < nonfocusedLayers + 1; i++) {
+            layers.put(nonfocusedLayers + i, new ArrayList<Renderable>());
+            focusedLayers = i + 1;
+        }
+
+        //setting every focused (and that hasn't been brought forward yet) renderables' layer to its corresponding focusedLayer
+        for (int layer = 0; layer < nonfocusedLayers; layer++) {
+            //so that it's not updating the layers.layer's size/indexes while looping through it
+            ArrayList<Renderable> currentLayer = new ArrayList<>(layers.get(layer));
+            for (Renderable renderable : currentLayer) {
+                if (renderable.isFocused()) {
+                    renderable.setLayer(renderable.getLayer() + focusedLayers);
+                }
+            }
+        }
+        //removing nonfocused renderables from the focused layers
+        for (int layer = layers.size() - 1; layer >= nonfocusedLayers; layer--) {
+            //so that it's not updating the layers.layer's size/indexes while looping through it
+            ArrayList<Renderable> currentLayer = new ArrayList<>(layers.get(layer));
+            for (Renderable renderable : currentLayer) {
+                if (!renderable.isFocused()) {
+                    renderable.setLayer(renderable.getLayer() - focusedLayers);
+                }
+            }
+        }
+
+        grayPanel.setLayer(nonfocusedLayers);
+    }
+    public void unfocus(){
+        //setting every focused renderables' layer back to its original layer
+        int nonfocusedLayers = layers.size()-focusedLayers;
+        for (int layer = layers.size() - 1; layer >= nonfocusedLayers; layer--) {
+            //so that it's not updating the layers.layer's size/indexes while looping through it
+            ArrayList<Renderable> currentLayer = new ArrayList<>(layers.get(layer));
+            for (Renderable renderable : currentLayer) {
+                renderable.setLayer(renderable.getLayer() - focusedLayers);
+            }
+            if(layers.get(layer).size() == 0) layers.remove(layer); //deletes the layer when its empty
+        }
+
+        focusedLayers = 0;
+    }
+
+    public void update(){
+        screenLayers.clear();
+        screenLayers.putAll(selectedScreen.getLayers());
+
+
+        for (int layer = 0; layer < screenLayers.size(); layer++) {
+            if(layers.containsKey(layer)){
+                layers.get(layer).removeAll(screenLayers.get(layer));
+
+                layers.get(layer).addAll(screenLayers.get(layer));
+            }
+            else{
+                addLayer(layer);
+                layers.get(layer).addAll(screenLayers.get(layer));
+            }
+        }
+    }
+
+    public void selectScreen(Screen screen){
+        selectedScreen = screen;
+
+        screenPanels.clear();
+        screenPanels.addAll(screen.getMainPanels());
+    }
+    @Override
+    public void render() {
+        update();
+        //rendering everything in layer 0 here, so they're rendered in order
+        for (Panel panel : mainPanels) {
+            panel.render();
+        }
+        for (Panel screenPanel: screenPanels) {
+            screenPanel.render();
+        }
+
+        for (int layer = 1; layer < layers.size(); layer++) {
+            for (int renderable = 0; renderable < layers.get(layer).size(); renderable++) {
+                if(layers.get(layer).get(renderable).isSupposedToBeVisible()) {
+                    layers.get(layer).get(renderable).render();
+                }
+            }
+        }
     }
 }

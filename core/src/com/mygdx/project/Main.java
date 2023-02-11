@@ -124,9 +124,9 @@ public class Main extends ApplicationAdapter {
 		//drawing the panels
 		batch.begin();
 
+		//renders the current screen inside the mainScreen render function
 		mainScreen.render();
-		//renders the current screen
-		selectedScreen.render();
+//		selectedScreen.render();
 
 		if(contextMenu.isActive()) contextMenu.render();
 		else{

@@ -141,7 +141,7 @@ public class MBComponent implements Renderable{
             getScreen().layers.get(layer).add(this); //add the panel to its new later
         }
         else{
-            getScreen().layers.put(layer, new ArrayList<Renderable>()); //creates a new layer
+            getScreen().addLayer(layer);
             getScreen().layers.get(layer).add(this); //add the panel to the new later
         }
 

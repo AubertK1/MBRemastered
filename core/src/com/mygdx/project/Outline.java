@@ -95,6 +95,7 @@ public class Outline extends Widget implements Renderable{
 
     }
     public void drag(int x, int y){
+
     }
     public void resize(int x, int y){
 
@@ -214,7 +215,7 @@ public class Outline extends Widget implements Renderable{
             screen.layers.get(layer).add(this); //add the panel to its new later
         }
         else{
-            screen.layers.put(layer, new ArrayList<Renderable>()); //creates a new layer
+            getScreen().addLayer(layer);
             screen.layers.get(layer).add(this); //add the panel to the new later
         }
 

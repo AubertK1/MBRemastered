@@ -257,6 +257,9 @@ public class Doodle extends Outline {
         }
     }
 
+    public void resize(int x, int y){
+        drag(x, y);
+    }
     public void drag(int x, int y){
         float x2 = x + offsetX;
         float y2 = y + offsetY;

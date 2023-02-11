@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
 public class PlayerScreen extends Screen{
+
     public PlayerScreen() {
         super();
         //setting up panels
@@ -315,7 +316,7 @@ public class PlayerScreen extends Screen{
                 }
             }
         });
-        //		((TextButton)lrButton.button).getLabel().setColor(new Color(0x8a8a8aff));
+//      ((TextButton)lrButton.button).getLabel().setColor(new Color(0x8a8a8aff));
 
         shortRestPanel.add(srButton);
         longRestPanel.add(lrButton);

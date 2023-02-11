@@ -133,17 +133,6 @@ public class Panel implements Renderable{
         panel.setLayer(-1);
     }
 
-    /**
-     * reassigns the compID variable for all the components
-     */
-/*
-    static public void resetCompIDs(){
-        for (int i = 0; i < Main.allComps.size(); i++) {
-            Main.allComps.get(i).compID = i;
-        }
-    }
-*/
-
     public void setSoftVisible(boolean visible){
         supposedToBeVisible = visible;
         for (MBComponent comp: components) {
@@ -177,7 +166,7 @@ public class Panel implements Renderable{
             getScreen().layers.get(layer).add(this); //add the panel to its new later
         }
         else{
-            getScreen().layers.put(layer, new ArrayList<Renderable>()); //creates a new layer
+            getScreen().addLayer(layer);
             getScreen().layers.get(layer).add(this); //add the panel to the new later
         }
 
