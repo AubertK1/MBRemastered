@@ -42,11 +42,11 @@ public class PlayerScreen extends Screen{
         //creating a textarea
         MBTextArea reminderTextArea;
         reminderTextArea = new MBTextArea("", this);
-        reminderTextArea.getTextArea().setSize(760,330);
+        reminderTextArea.getTextArea().setSize(470,330);
         reminderTextArea.getTextArea().setPosition(120,160);
         //creating a label
         MBLabel reminderLabel = new MBLabel("REMINDERS", this);
-        reminderLabel.setSize(760, 40);
+        reminderLabel.setSize(470, 40);
         reminderLabel.setPosition(120, 490);
         //adding to the Reminders panel as its components
         reminderPanel.add(reminderTextArea);

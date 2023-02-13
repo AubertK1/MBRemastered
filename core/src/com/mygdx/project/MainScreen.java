@@ -67,8 +67,8 @@ public class MainScreen extends Screen{
         selectButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (!Main.selectedScreen.masterBoard.board.isInSelectMode()){
-                    Main.selectedScreen.masterBoard.board.enterSelectMode();
+                if (!selectedScreen.masterBoard.board.isInSelectMode()){
+                    selectedScreen.masterBoard.board.enterSelectMode();
                 }
             }
         });
@@ -79,8 +79,8 @@ public class MainScreen extends Screen{
         drawButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (!Main.selectedScreen.masterBoard.board.isInDrawMode()){
-                    Main.selectedScreen.masterBoard.board.enterDrawMode();
+                if (!selectedScreen.masterBoard.board.isInDrawMode()){
+                    selectedScreen.masterBoard.board.enterDrawMode();
                 }
             }
         });
@@ -91,8 +91,8 @@ public class MainScreen extends Screen{
         eraseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (!Main.selectedScreen.masterBoard.board.isInEraseMode()){
-                    Main.selectedScreen.masterBoard.board.enterEraseMode();
+                if (!selectedScreen.masterBoard.board.isInEraseMode()){
+                    selectedScreen.masterBoard.board.enterEraseMode();
                 }
             }
         });
@@ -101,11 +101,11 @@ public class MainScreen extends Screen{
         sizesBox.setPosition(eraseButton.getX() + eraseButton.getWidth() + 5, selectButton.getY());
         sizesBox.setSize(100, eraseButton.getHeight()/3 - 1);
         sizesBox.setItems("1", "3", "5", "11", "23", "45");
-        sizesBox.dropdown.setSelected(String.valueOf(Main.selectedScreen.masterBoard.board.getCurrentBrush().brush.length));
+        sizesBox.dropdown.setSelected(String.valueOf(selectedScreen.masterBoard.board.getCurrentBrush().brush.length));
         sizesBox.addScrollPaneListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
                 int newSize = Integer.parseInt(sizesBox.dropdown.getSelected());
-                Main.selectedScreen.masterBoard.board.setBrush(newSize, Main.selectedScreen.masterBoard.board.isBrushSoft());
+                selectedScreen.masterBoard.board.setBrush(newSize, selectedScreen.masterBoard.board.isBrushSoft());
             }
         });
 
@@ -115,7 +115,7 @@ public class MainScreen extends Screen{
         softnessBox.setItems("soft", "hard");
         softnessBox.addScrollPaneListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
-                Main.selectedScreen.masterBoard.board.setBrushSoft(softnessBox.dropdown.getSelected().equals("soft"));
+                selectedScreen.masterBoard.board.setBrushSoft(softnessBox.dropdown.getSelected().equals("soft"));
             }
         });
 
@@ -128,28 +128,28 @@ public class MainScreen extends Screen{
                 String color = colorBox.dropdown.getSelected();
                 switch (color){
                     case "BLACK":
-                        Main.selectedScreen.masterBoard.board.setCurrentColor(Color.BLACK);
-                        Main.selectedScreen.masterBoard.board.setDrawingColor(Color.BLACK);
+                        selectedScreen.masterBoard.board.setCurrentColor(Color.BLACK);
+                        selectedScreen.masterBoard.board.setDrawingColor(Color.BLACK);
                         break;
                     case "WHITE":
-                        Main.selectedScreen.masterBoard.board.setCurrentColor(Color.WHITE);
-                        Main.selectedScreen.masterBoard.board.setDrawingColor(Color.WHITE);
+                        selectedScreen.masterBoard.board.setCurrentColor(Color.WHITE);
+                        selectedScreen.masterBoard.board.setDrawingColor(Color.WHITE);
                         break;
                     case "RED":
-                        Main.selectedScreen.masterBoard.board.setCurrentColor(Color.RED);
-                        Main.selectedScreen.masterBoard.board.setDrawingColor(Color.RED);
+                        selectedScreen.masterBoard.board.setCurrentColor(Color.RED);
+                        selectedScreen.masterBoard.board.setDrawingColor(Color.RED);
                         break;
                     case "YELLOW":
-                        Main.selectedScreen.masterBoard.board.setCurrentColor(Color.YELLOW);
-                        Main.selectedScreen.masterBoard.board.setDrawingColor(Color.YELLOW);
+                        selectedScreen.masterBoard.board.setCurrentColor(Color.YELLOW);
+                        selectedScreen.masterBoard.board.setDrawingColor(Color.YELLOW);
                         break;
                     case "GREEN":
-                        Main.selectedScreen.masterBoard.board.setCurrentColor(Color.GREEN);
-                        Main.selectedScreen.masterBoard.board.setDrawingColor(Color.GREEN);
+                        selectedScreen.masterBoard.board.setCurrentColor(Color.GREEN);
+                        selectedScreen.masterBoard.board.setDrawingColor(Color.GREEN);
                         break;
                     case "BLUE":
-                        Main.selectedScreen.masterBoard.board.setCurrentColor(Color.BLUE);
-                        Main.selectedScreen.masterBoard.board.setDrawingColor(Color.BLUE);
+                        selectedScreen.masterBoard.board.setCurrentColor(Color.BLUE);
+                        selectedScreen.masterBoard.board.setDrawingColor(Color.BLUE);
                         break;
                 }
             }
@@ -237,10 +237,9 @@ public class MainScreen extends Screen{
     }
 
     public void addScreen(){
-        Screen newS = new PlayerScreen("New Screen " + (screens.size() + 1));
+        Screen newS = new PlayerScreen("New Screen " + (screens.size()));
 
         screens.add(newS);
-//        newS.setName("New Screen " + screens.size());
 
         setSelectedScreen(newS);
 
