@@ -16,6 +16,8 @@ public class MainScreen extends Screen{
     //creating main panels
     Panel sidePanel, toolbarPanel;
 
+    ArrayList<Screen> screens = new ArrayList<>();
+
     Screen selectedScreen = null;
     HashMap<Integer, ArrayList<Renderable>> screenLayers = new HashMap<>();
     ArrayList<Panel> screenPanels = new ArrayList<>();
@@ -23,7 +25,7 @@ public class MainScreen extends Screen{
     public MainScreen() {
         super();
 
-        selectScreen(Main.selectedScreen);
+        setSelectedScreen(Main.selectedScreen);
         grayPanel = new Panel("assets\\gradient2.png", new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), this);
         grayPanel.aFloat = .75f;
 
@@ -220,24 +222,61 @@ public class MainScreen extends Screen{
 
 
         for (int layer = 0; layer < screenLayers.size(); layer++) {
-            if(layers.containsKey(layer)){
+            if(layers.containsKey(layer)){ //if the layer exists
+                //empties out the selected screen's layer's renderables from the layer's list
                 layers.get(layer).removeAll(screenLayers.get(layer));
-
+                //re-adds the renderables in their updated order
                 layers.get(layer).addAll(screenLayers.get(layer));
             }
             else{
+                //makes a new layer for the renderables
                 addLayer(layer);
+                //adds the renderables in their updated order
                 layers.get(layer).addAll(screenLayers.get(layer));
             }
         }
     }
 
-    public void selectScreen(Screen screen){
+    public void addScreen(){
+        Screen newS = new PlayerScreen("New Screen " + (screens.size() + 1));
+
+        screens.add(newS);
+//        newS.setName("New Screen " + screens.size());
+
+        setSelectedScreen(newS);
+
+        screens.get(0).screenDropdown.insertItemA(newS.getName());
+        for (Screen screen: screens) {
+            screen.screenDropdown = screens.get(0).screenDropdown;
+            screen.screenDropdown.dropdown.setSelected(newS.getName());
+        }
+    }
+
+    public Screen getScreenByName(String name){
+        for (Screen screen: screens) {
+            if(screen.getName().equals(name)) return screen;
+        }
+
+        return null;
+    }
+
+    public void setSelectedScreen(Screen screen){
         selectedScreen = screen;
 
         screenPanels.clear();
         screenPanels.addAll(screen.getMainPanels());
+
+        update();
     }
+
+    public Screen getSelectedScreen(){
+        return selectedScreen;
+    }
+
+    public static void changeScreen(boolean b){
+
+    }
+
     @Override
     public void render() {
         update();
@@ -256,5 +295,13 @@ public class MainScreen extends Screen{
                 }
             }
         }
+    }
+
+    @Override
+    public void dispose() {
+        for (Screen screen: screens) {
+            screen.dispose();
+        }
+        super.dispose();
     }
 }

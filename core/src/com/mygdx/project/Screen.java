@@ -35,7 +35,9 @@ public class Screen implements Renderable{
     //list with all the MBComponents
     ArrayList<MBComponent> allComps = new ArrayList<>();
 
-    String player;
+    String name;
+    MBSelectBox screenDropdown;
+
     //so these can be drawn last
 
     HashMap<Integer, ArrayList<Renderable>> layers = new HashMap<>();
@@ -52,6 +54,14 @@ public class Screen implements Renderable{
         batch = Main.batch;
         stage = Main.stage;
         skin = Main.skin;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public String getName(){
+       return name;
     }
 
     public void focus(){

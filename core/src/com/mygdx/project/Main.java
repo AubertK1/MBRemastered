@@ -47,21 +47,20 @@ public class Main extends ApplicationAdapter {
 
 	static MainScreen mainScreen;
 	static Screen selectedScreen;
-	ArrayList<Screen> screens = new ArrayList<>();
 
 	@Override
 	public void create () {
-//        player = "PLAYER 1";
 		//setting up batch, stage, and skin
 		batch = new SpriteBatch();
 		stage = new Stage();
 		skin = new Skin (Gdx.files.internal("assets\\skins\\uiskin.json"));
 
-		PlayerScreen pScreen = new PlayerScreen();
+		PlayerScreen pScreen = new PlayerScreen("PLAYER 1");
 		selectedScreen = pScreen;
 		mainScreen = new MainScreen();
+		mainScreen.screens.add(pScreen);
+
 		contextMenu = new MBContextMenu();
-		screens.add(pScreen);
 
 		//region listeners
 		//the screen listeners
@@ -143,16 +142,14 @@ public class Main extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		for (Screen screen: screens) {
-			screen.dispose();
-		}
+		mainScreen.dispose();
 		skin.dispose();
 		stage.dispose();
 		chooser.setEnabled(false);
 		f.dispose();
 	}
 
-	public static Screen getMainScreen(){
+	public static MainScreen getMainScreen(){
 		return mainScreen;
 	}
 }

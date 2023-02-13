@@ -1,7 +1,6 @@
 package com.mygdx.project;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -14,7 +13,7 @@ import com.badlogic.gdx.utils.Align;
 
 public class PlayerScreen extends Screen{
 
-    public PlayerScreen() {
+    public PlayerScreen(String player) {
         super();
         //setting up panels
         topPanel = new Panel("assets\\Panels\\TopbarPanel.png",
@@ -351,25 +350,37 @@ public class PlayerScreen extends Screen{
         //endregion
 
         //region Top Bar
-        final MBSelectBox dropdown = new MBSelectBox(this);
-        dropdown.setSize(300, 40);
-        dropdown.setPosition(topPanel.getX()+ topPanel.getWidth()-305, topPanel.getY()+5);
-        dropdown.setItems("PLAYER 1", "player2", "etc...", "OPTION 4", "rando opt");
-        player = dropdown.dropdown.getSelected();
-        dropdown.addScrollPaneListener(new ClickListener() {
+        screenDropdown = new MBSelectBox(this);
+        screenDropdown.setSize(300, 40);
+        screenDropdown.setPosition(topPanel.getX()+ topPanel.getWidth()-305, topPanel.getY()+5);
+        screenDropdown.setItems("PLAYER 1", "<ADD SCREEN>");
+
+        screenDropdown.addScrollPaneListener(new ClickListener() {
             public void clicked (InputEvent event, float x, float y) {
-                player = dropdown.dropdown.getSelected();
+            if(screenDropdown.dropdown.getSelected().equals("<ADD SCREEN>")){
+                Main.getMainScreen().addScreen();
+            }
+            else Main.getMainScreen().setSelectedScreen(Main.getMainScreen().getScreenByName(screenDropdown.dropdown.getSelected()));
+
+//            Main.getMainScreen().getSelectedScreen().screenDropdown.dropdown.setSelected(screenDropdown.dropdown.getSelected());
+/*
+                Main.changeScreen();
+                Main.getMainScreen().getSelectedScreen().nameDropdown.dropdown.setSelected(nameDropdown.dropdown.getSelected());
+                Main.getMainScreen().getSelectedScreen().name = Main.getMainScreen().getSelectedScreen().nameDropdown.dropdown.getSelected();
+*/
             }
         });
 
-        MBLabel playerNameLabel = new MBLabel(player, this);
+        setName(player);
+
+        MBLabel playerNameLabel = new MBLabel(name, this);
         playerNameLabel.setPosition(topPanel.getX() + 10, topPanel.getY() + (topPanel.getHeight()/2) - (playerNameLabel.getHeight()/2));
 
         topPanel.add(playerNameLabel);
-        topPanel.add(dropdown, 1);
+        topPanel.add(screenDropdown, 1);
 
         playerNameLabel.setFocused(true);
-        dropdown.setFocused(true);
+        screenDropdown.setFocused(true);
         //endregion
 
         //region MasterBoard
@@ -379,136 +390,5 @@ public class PlayerScreen extends Screen{
         masterboardPanel.add(masterBoard);
 
         //endregion
-
-/*
-        //region Tool Bar
-        final MBButton focusButton = new MBButton("FOCUS", this);
-        focusButton.setPosition(toolbarPanel.getX() + 10, toolbarPanel.getY() + 10);
-        focusButton.setSize(toolbarPanel.getHeight()-20, toolbarPanel.getHeight()-20);
-        focusButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("FOCUSED");
-
-                if(!inFocusMode){
-                    focus();
-                    inFocusMode = true;
-                }
-                else{
-                    unfocus();
-                    inFocusMode = false;
-                }
-            }
-        });
-
-        MBButton selectButton = new MBButton("Select", this);
-        selectButton.setPosition(focusButton.getX() + focusButton.getWidth() + 10, toolbarPanel.getY() + 10);
-//		selectButton.setPosition(toolbarPanel.getX() + 10, toolbarPanel.getY() + 10);
-        selectButton.setSize(200, toolbarPanel.getHeight()-20);
-        selectButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if (!masterBoard.board.isInSelectMode()){
-                    masterBoard.board.enterSelectMode();
-                }
-            }
-        });
-
-        MBButton drawButton = new MBButton("Draw", this);
-        drawButton.setPosition(selectButton.getX() + selectButton.getWidth() + 5, selectButton.getY());
-        drawButton.setSize(selectButton.getWidth(), selectButton.getHeight());
-        drawButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if (!masterBoard.board.isInDrawMode()){
-                    masterBoard.board.enterDrawMode();
-                }
-            }
-        });
-
-        MBButton eraseButton = new MBButton("Erase", this);
-        eraseButton.setPosition(drawButton.getX() + drawButton.getWidth() + 5, selectButton.getY());
-        eraseButton.setSize(selectButton.getWidth(), selectButton.getHeight());
-        eraseButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if (!masterBoard.board.isInEraseMode()){
-                    masterBoard.board.enterEraseMode();
-                }
-            }
-        });
-
-        final MBSelectBox sizesBox = new MBSelectBox(this);
-        sizesBox.setPosition(eraseButton.getX() + eraseButton.getWidth() + 5, selectButton.getY());
-        sizesBox.setSize(100, eraseButton.getHeight()/3 - 1);
-        sizesBox.setItems("1", "3", "5", "11", "23", "45");
-        sizesBox.dropdown.setSelected(String.valueOf(masterBoard.board.getCurrentBrush().brush.length));
-        sizesBox.addScrollPaneListener(new ClickListener(){
-            public void clicked (InputEvent event, float x, float y) {
-                int newSize = Integer.parseInt(sizesBox.dropdown.getSelected());
-                masterBoard.board.setBrush(newSize, masterBoard.board.isBrushSoft());
-            }
-        });
-
-        final MBSelectBox softnessBox = new MBSelectBox(this);
-        softnessBox.setPosition(sizesBox.getX(), sizesBox.getY() + sizesBox.getHeight() + 2);
-        softnessBox.setSize(100, eraseButton.getHeight()/3 - 1);
-        softnessBox.setItems("soft", "hard");
-        softnessBox.addScrollPaneListener(new ClickListener(){
-            public void clicked (InputEvent event, float x, float y) {
-                masterBoard.board.setBrushSoft(softnessBox.dropdown.getSelected().equals("soft"));
-            }
-        });
-
-        final MBSelectBox colorBox = new MBSelectBox(this);
-        colorBox.setPosition(sizesBox.getX(), softnessBox.getY() + softnessBox.getHeight() + 2);
-        colorBox.setSize(100, eraseButton.getHeight()/3 - 1);
-        colorBox.setItems("BLACK", "WHITE", "RED", "YELLOW", "GREEN", "BLUE");
-        colorBox.addScrollPaneListener(new ClickListener(){
-            public void clicked (InputEvent event, float x, float y) {
-                String color = colorBox.dropdown.getSelected();
-                switch (color){
-                    case "BLACK":
-                        masterBoard.board.setCurrentColor(Color.BLACK);
-                        masterBoard.board.setDrawingColor(Color.BLACK);
-                        break;
-                    case "WHITE":
-                        masterBoard.board.setCurrentColor(Color.WHITE);
-                        masterBoard.board.setDrawingColor(Color.WHITE);
-                        break;
-                    case "RED":
-                        masterBoard.board.setCurrentColor(Color.RED);
-                        masterBoard.board.setDrawingColor(Color.RED);
-                        break;
-                    case "YELLOW":
-                        masterBoard.board.setCurrentColor(Color.YELLOW);
-                        masterBoard.board.setDrawingColor(Color.YELLOW);
-                        break;
-                    case "GREEN":
-                        masterBoard.board.setCurrentColor(Color.GREEN);
-                        masterBoard.board.setDrawingColor(Color.GREEN);
-                        break;
-                    case "BLUE":
-                        masterBoard.board.setCurrentColor(Color.BLUE);
-                        masterBoard.board.setDrawingColor(Color.BLUE);
-                        break;
-                }
-            }
-        });
-
-        MBColorPicker colorPicker = new MBColorPicker(this);
-        colorPicker.setSize(0, toolbarPanel.getHeight() - 10);
-        colorPicker.setPosition((toolbarPanel.getX() + toolbarPanel.getWidth()) - (colorPicker.getWidth() + 5), toolbarPanel.getY()+5);
-
-        toolbarPanel.add(focusButton);
-        toolbarPanel.add(selectButton);
-        toolbarPanel.add(drawButton);
-        toolbarPanel.add(eraseButton);
-        toolbarPanel.add(sizesBox, 2);
-        toolbarPanel.add(softnessBox, 2);
-        toolbarPanel.add(colorBox, 2);
-        toolbarPanel.add(colorPicker);
-        //endregion
-*/
     }
 }
