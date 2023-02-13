@@ -30,10 +30,16 @@ public class MBSelectBox extends MBComponent{
     public void setItems(String... items){
         dropdown.setItems(items);
     }
+    public void setItems(Array<String> items){
+        dropdown.setItems(items);
+    }
     public void addItem(String item){
         Array<String> items = dropdown.getItems();
         items.add(item);
         dropdown.setItems(items);
+    }
+    public Array<String> getItems(){
+        return dropdown.getItems();
     }
     public void insertItemA(String item){
         Array<String> items = dropdown.getItems();

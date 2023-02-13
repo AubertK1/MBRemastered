@@ -55,19 +55,39 @@ public class MBComponent implements Renderable{
         component.setLayer(layer);
     }
     public void delete(MBComponent component){
+        //deletes all the component's components
+        for (MBComponent childComp : component.components) {
+            delete(childComp);
+        }
+
+        component.setVisible(false);
+
         //removes actor from the stage
         component.getActor().remove();
-//        Main.stage.getActors().get(component.getCompID()).addAction(Actions.removeActor());
         //removes component from the all components list
         getScreen().allComps.remove(component);
         //removes component from the item's components list
         components.remove(component);
 
         component.setLayer(-1);
+
+        component.dispose();
         //reassigns the remaining components' IDs
         getScreen().resetCompIDs();
     }
 
+    public void remove(){
+        for (MBComponent childComp: components) {
+            childComp.remove();
+        }
+        getActor().remove();
+    }
+    public void reAdd(){
+        getScreen().stage.addActor(getActor());
+        for (MBComponent childComp: components) {
+            childComp.reAdd();
+        }
+    }
 
     public int getCompID(){
         return compID;

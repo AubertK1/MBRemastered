@@ -220,7 +220,6 @@ public class MainScreen extends Screen{
         screenLayers.clear();
         screenLayers.putAll(selectedScreen.getLayers());
 
-
         for (int layer = 0; layer < screenLayers.size(); layer++) {
             if(layers.containsKey(layer)){ //if the layer exists
                 //empties out the selected screen's layer's renderables from the layer's list
@@ -247,7 +246,7 @@ public class MainScreen extends Screen{
 
         screens.get(0).screenDropdown.insertItemA(newS.getName());
         for (Screen screen: screens) {
-            screen.screenDropdown = screens.get(0).screenDropdown;
+            screen.screenDropdown.setItems(screens.get(0).screenDropdown.getItems());
             screen.screenDropdown.dropdown.setSelected(newS.getName());
         }
     }
@@ -261,10 +260,20 @@ public class MainScreen extends Screen{
     }
 
     public void setSelectedScreen(Screen screen){
+        //removes the old screen's actors from the stage
+        for (Panel panel: screenPanels) {
+            panel.removeComps();
+        }
+
         selectedScreen = screen;
 
         screenPanels.clear();
         screenPanels.addAll(screen.getMainPanels());
+
+        //adds the new screen's actors to the stage
+        for (Panel panel: screenPanels) {
+            panel.reAddComps();
+        }
 
         update();
     }

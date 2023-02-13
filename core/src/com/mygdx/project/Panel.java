@@ -89,7 +89,7 @@ public class Panel implements Renderable{
      * @param component the component you want to remove
      */
     public void delete(MBComponent component){
-        //deletes all of the component's components
+        //deletes all the component's components
         for (MBComponent childComp : component.components) {
             delete(childComp);
         }
@@ -131,6 +131,25 @@ public class Panel implements Renderable{
         panel.texture.dispose();
 
         panel.setLayer(-1);
+    }
+
+    public void removeComps(){
+        for (MBComponent comp: components) {
+            comp.remove();
+        }
+        for (Panel minipanel: minipanels) {
+            minipanel.removeComps();
+        }
+        getScreen().resetCompIDs();
+    }
+    public void reAddComps(){
+        for (MBComponent comp: components) {
+            comp.reAdd();
+        }
+        for (Panel minipanel: minipanels) {
+            minipanel.reAddComps();
+        }
+        getScreen().resetCompIDs();
     }
 
     public void setSoftVisible(boolean visible){

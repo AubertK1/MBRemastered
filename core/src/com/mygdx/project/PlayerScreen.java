@@ -361,13 +361,6 @@ public class PlayerScreen extends Screen{
                 Main.getMainScreen().addScreen();
             }
             else Main.getMainScreen().setSelectedScreen(Main.getMainScreen().getScreenByName(screenDropdown.dropdown.getSelected()));
-
-//            Main.getMainScreen().getSelectedScreen().screenDropdown.dropdown.setSelected(screenDropdown.dropdown.getSelected());
-/*
-                Main.changeScreen();
-                Main.getMainScreen().getSelectedScreen().nameDropdown.dropdown.setSelected(nameDropdown.dropdown.getSelected());
-                Main.getMainScreen().getSelectedScreen().name = Main.getMainScreen().getSelectedScreen().nameDropdown.dropdown.getSelected();
-*/
             }
         });
 
