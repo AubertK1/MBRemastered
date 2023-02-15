@@ -2,18 +2,16 @@ package com.mygdx.project;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
 public class PlayerScreen extends Screen{
 
-    public PlayerScreen(String player) {
+    public PlayerScreen(final String player) {
         super();
         //setting up panels
         topPanel = new Panel("assets\\Panels\\TopbarPanel.png",
@@ -32,23 +30,44 @@ public class PlayerScreen extends Screen{
         grayPanel = new Panel("assets\\gradient2.png", new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), this);
         grayPanel.aFloat = .75f;
 
-        topPanel.setSoftVisible(true);
-        genStatsPanel.setSoftVisible(true);
-
-        reminderPanel.setSoftVisible(true);
-        masterboardPanel.setSoftVisible(true);
 
         //region Reminders
-        //creating a textarea
-        MBTextArea reminderTextArea;
-        reminderTextArea = new MBTextArea("", this);
-        reminderTextArea.getTextArea().setSize(470,330);
-        reminderTextArea.getTextArea().setPosition(120,160);
         //creating a label
         MBLabel reminderLabel = new MBLabel("REMINDERS", this);
         reminderLabel.setSize(470, 40);
         reminderLabel.setPosition(120, 490);
+
+        //creating a textarea
+        MBTextArea reminderTextArea;
+        reminderTextArea = new MBTextArea("", this);
+        reminderTextArea.setSize(470,330);
+        reminderTextArea.setPosition(120,160);
+
+        //region extra stats
+        Minipanel statsPanel = new Minipanel("assets\\Panels\\StatsPanel.png",
+                new Rectangle(reminderTextArea.getX() + reminderTextArea.getWidth() + 5, reminderTextArea.getY(),
+                        reminderPanel.getWidth() - (reminderTextArea.getWidth() + 20), reminderPanel.getHeight() - 20), this);
+
+        //region stat panels
+        ItemPanel skillsPanel = new ItemPanel("assets\\clear.png",
+                new Rectangle(statsPanel.getX() + 5, statsPanel.getY() + 5, statsPanel.getWidth() - 10, reminderTextArea.getHeight()), this);
+        ItemPanel throwsPanel = new ItemPanel("assets\\clear.png",
+                new Rectangle(statsPanel.getX() + 5, statsPanel.getY() + 5, statsPanel.getWidth() - 10, reminderTextArea.getHeight()), this);
+        statsPanel.add(skillsPanel);
+        statsPanel.add(throwsPanel);
+        skillsPanel.setFocused(true);
+        throwsPanel.setFocused(true);
+
+        Item skill1 = new SkillItem(new Rectangle(skillsPanel.getX(), skillsPanel.getY() + skillsPanel.getHeight() - 45, skillsPanel.getWidth(), 40), this);
+        Item skill2 = new SkillItem(this);
+
+        skillsPanel.add(skill1);
+        skillsPanel.add(skill2);
+        //endregion
+        //endregion
+
         //adding to the Reminders panel as its components
+        reminderPanel.add(statsPanel);
         reminderPanel.add(reminderTextArea);
         reminderPanel.add(reminderLabel);
         //endregion
@@ -56,9 +75,8 @@ public class PlayerScreen extends Screen{
         //region General Stats
         //region listpanel
         //creating a list panel to hold all the items and adding it to the genstats panel
-        final Minipanel listPanel = new Minipanel("assets\\Panels\\ListPanel.png",
+        Minipanel listPanel = new Minipanel("assets\\Panels\\ListPanel.png",
                 new Rectangle(120, 560, 470, 300), this);
-        genStatsPanel.add(listPanel);
 
         //region item panels
         final ItemPanel weaponsPanel = new ItemPanel("assets\\clear.png",
@@ -207,6 +225,8 @@ public class PlayerScreen extends Screen{
             }
         });
         //endregion
+
+        genStatsPanel.add(listPanel);
         //endregion
 
         //region stats
@@ -353,11 +373,11 @@ public class PlayerScreen extends Screen{
         screenDropdown = new MBSelectBox(this);
         screenDropdown.setSize(300, 40);
         screenDropdown.setPosition(topPanel.getX()+ topPanel.getWidth()-305, topPanel.getY()+5);
-        screenDropdown.setItems("PLAYER 1", "<ADD SCREEN>");
+        screenDropdown.setItems("PLAYER 1", "<ADD PLAYER>");
 
         screenDropdown.addScrollPaneListener(new ClickListener() {
             public void clicked (InputEvent event, float x, float y) {
-            if(screenDropdown.dropdown.getSelected().equals("<ADD SCREEN>")){
+            if(screenDropdown.dropdown.getSelected().equals("<ADD PLAYER>")){
                 Main.getMainScreen().addScreen();
             }
             else Main.getMainScreen().setSelectedScreen(Main.getMainScreen().getScreenByName(screenDropdown.dropdown.getSelected()));
@@ -366,10 +386,67 @@ public class PlayerScreen extends Screen{
 
         setName(player);
 
-        MBLabel playerNameLabel = new MBLabel(name, this);
+        final MBLabel playerNameLabel = new MBLabel(name, this);
         playerNameLabel.setPosition(topPanel.getX() + 10, topPanel.getY() + (topPanel.getHeight()/2) - (playerNameLabel.getHeight()/2));
 
+        final MBButton playerNameButton = new MBButton(name, this);
+        playerNameButton.setSize(playerNameLabel.getWidth() + 40, playerNameLabel.getHeight() + 10);
+        playerNameButton.setPosition(playerNameLabel.getX() - 5, playerNameLabel.getY() - 5);
+        ((TextButton)playerNameButton.getButton()).getLabel().setAlignment(Align.left);
+        playerNameButton.aFloat = 0;
+
+        final MBTextField playerNameTF = new MBTextField(name, this);
+        playerNameTF.setSize(playerNameButton.getWidth(), playerNameButton.getHeight());
+        playerNameTF.setPosition(playerNameButton.getX(), playerNameButton.getY());
+        playerNameTF.setVisible(false);
+
+        final boolean[] changingName = new boolean[]{false};
+        playerNameTF.setKeyListener(new TextField.TextFieldListener() {
+            @Override
+            public void keyTyped(TextField textField, char c) {
+                if(c == '\n'){
+                    System.out.println("hey again");
+
+                    String newName = playerNameTF.getText();
+
+                    setName(newName);
+                    ((TextButton)playerNameButton.getButton()).setText(newName);
+                    playerNameLabel.setText(newName);
+
+                    Main.getMainScreen().syncScreens();
+
+                    playerNameTF.setVisible(false);
+                    changingName[0] = false;
+                }
+            }
+        });
+
+        playerNameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                if(!changingName[0]) {
+                    System.out.println("Got me");
+                    playerNameTF.setText(getName());
+                    playerNameTF.setVisible(true);
+                    changingName[0] = true;
+                }
+            }
+            @Override
+            public boolean handle (Event event) {
+                //if the mouse is hovered over the button...
+                if(playerNameButton.getButton().isOver()){
+                    playerNameButton.aFloat = 1;
+                }
+                else playerNameButton.aFloat = 0;
+                if (!(event instanceof ChangeEvent)) return false;
+                changed((ChangeEvent)event, event.getTarget());
+                return false;
+            }
+        });
+
         topPanel.add(playerNameLabel);
+        topPanel.add(playerNameButton);
+        topPanel.add(playerNameTF);
         topPanel.add(screenDropdown, 1);
 
         playerNameLabel.setFocused(true);

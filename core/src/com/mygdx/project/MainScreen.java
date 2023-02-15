@@ -37,9 +37,6 @@ public class MainScreen extends Screen{
         mainPanels.add(sidePanel);
         mainPanels.add(toolbarPanel);
 
-        sidePanel.setSoftVisible(true);
-        toolbarPanel.setSoftVisible(true);
-
         //region Tool Bar
         final MBButton focusButton = new MBButton("FOCUS", this);
         focusButton.setPosition(toolbarPanel.getX() + 10, toolbarPanel.getY() + 10);
@@ -237,17 +234,13 @@ public class MainScreen extends Screen{
     }
 
     public void addScreen(){
-        Screen newS = new PlayerScreen("New Screen " + (screens.size()));
+        Screen newS = new PlayerScreen("New Player " + (screens.size()));
 
         screens.add(newS);
 
-        setSelectedScreen(newS);
-
         screens.get(0).screenDropdown.insertItemA(newS.getName());
-        for (Screen screen: screens) {
-            screen.screenDropdown.setItems(screens.get(0).screenDropdown.getItems());
-            screen.screenDropdown.dropdown.setSelected(newS.getName());
-        }
+
+        setSelectedScreen(newS);
     }
 
     public Screen getScreenByName(String name){
@@ -274,14 +267,33 @@ public class MainScreen extends Screen{
             panel.reAddComps();
         }
 
+        //making sure all the screens' are synced
+        if(screens.size() > 0) {
+            screens.get(0).screenDropdown.dropdown.setSelected(screen.getName());
+            syncScreens();
+        }
+
         update();
+    }
+
+    public void syncScreens(){
+        for (Screen screen0: screens) {
+            //updates the amount of items in each dropdown
+            screen0.screenDropdown.setItems(screens.get(0).screenDropdown.getItems());
+            //makes sure the items in every dropdown has the correct name
+            for (int i = 0; i < screens.size(); i++) {
+                screen0.screenDropdown.getItems().set(i, screens.get(i).getName());
+            }
+            //sets the current screen to each dropdown's selected screen
+            screen0.screenDropdown.dropdown.setSelected(selectedScreen.getName());
+        }
     }
 
     public Screen getSelectedScreen(){
         return selectedScreen;
     }
 
-    public static void changeScreen(boolean b){
+    public static void changeScreen(){
 
     }
 

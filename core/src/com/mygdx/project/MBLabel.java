@@ -20,6 +20,10 @@ public class MBLabel extends MBComponent{
         label.setAlignment(Align.center);
     }
 
+    public void setText(String text){
+        label.setText(text);
+    }
+
     public Actor getActor(){
         return label;
     }

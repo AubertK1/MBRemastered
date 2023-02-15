@@ -322,7 +322,6 @@ public class SpellItem extends Item {
         });
         //endregion
 
-
         //region textfields
         //creating textfields and setting their texts to their corresponding label's text
         for (int i = 0; i < labelTexts.size(); i++) {
