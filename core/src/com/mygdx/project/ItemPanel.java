@@ -11,10 +11,11 @@ public class ItemPanel extends Minipanel{
 
     private final Rectangle spot0Model;
     private final int MINSPOT = 0;
-    private int maxRows = 5;
+    private int maxSpot = 5;
+    private int columns = 1;
+    private int rows = maxSpot;
 
     private float ITEMGAP = 5;
-    private int columns = 1;
 
     public ItemPanel(String fileLocation, Rectangle position, Screen screen) {
         super(fileLocation, position, screen);
@@ -48,7 +49,7 @@ public class ItemPanel extends Minipanel{
         item.initialize();
         item.reformat();
 
-        if(item.getSpot() > maxRows) item.setSoftVisible(false);
+        if(item.getSpot() > maxSpot) item.setSoftVisible(false);
     }
 
     public void delete(Item item){
@@ -80,10 +81,10 @@ public class ItemPanel extends Minipanel{
             }
 
             //only show the items in spots 0-5
-            if(item.getSpot() < MINSPOT || item.getSpot() > maxRows){
+            if(item.getSpot() < MINSPOT || item.getSpot() > maxSpot){
                 item.setSoftVisible(false);
             }
-            else if(item.getSpot() >= MINSPOT && item.getSpot() <= maxRows){
+            else if(item.getSpot() >= MINSPOT && item.getSpot() <= maxSpot){
                 item.setSoftVisible(true);
             }
         }
@@ -110,10 +111,10 @@ public class ItemPanel extends Minipanel{
                 }
 
                 //only show the items in spots 0-5
-                if(item.getSpot() < MINSPOT || item.getSpot() > maxRows){
+                if(item.getSpot() < MINSPOT || item.getSpot() > maxSpot){
                     item.setSoftVisible(false);
                 }
-                else if(item.getSpot() >= MINSPOT && item.getSpot() <= maxRows){
+                else if(item.getSpot() >= MINSPOT && item.getSpot() <= maxSpot){
                     item.setSoftVisible(true);
                 }
             }
@@ -141,10 +142,10 @@ public class ItemPanel extends Minipanel{
             }
 
             //only show the items in spots 0-5
-            if(item.getSpot() < MINSPOT || item.getSpot() > maxRows){
+            if(item.getSpot() < MINSPOT || item.getSpot() > maxSpot){
                 item.setSoftVisible(false);
             }
-            else if(item.getSpot() >= MINSPOT && item.getSpot() <= maxRows){
+            else if(item.getSpot() >= MINSPOT && item.getSpot() <= maxSpot){
                 item.setSoftVisible(true);
             }
         }
@@ -153,8 +154,12 @@ public class ItemPanel extends Minipanel{
     public void setColumns(int columns) {
         this.columns = columns;
     }
-    public void setMaxRows(int maxRows) {
-        this.maxRows = maxRows;
+    public void setRows(int rows) {
+        this.rows = rows;
+        if(rows > maxSpot) maxSpot = rows;
+    }
+    public void setMaxSpot(int maxSpot) {
+        this.maxSpot = maxSpot;
     }
     public void setItemGap(float ITEMGAP) {
         this.ITEMGAP = ITEMGAP;
@@ -162,11 +167,14 @@ public class ItemPanel extends Minipanel{
     public int getColumns() {
         return columns;
     }
+    public int getRows() {
+        return rows;
+    }
     public float getItemGap() {
         return ITEMGAP;
     }
-    public int getMaxRows() {
-        return maxRows;
+    public int getMaxSpot() {
+        return maxSpot;
     }
     public Item getItemBySpot(int spot){
         for (Item item : allItems) {

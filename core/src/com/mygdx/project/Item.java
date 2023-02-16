@@ -30,8 +30,16 @@ public class Item extends Minipanel{
         this(new Rectangle(125, 790, 460, 40), screen);
         customLayout = false;
     }
+    public Item(String fileLocation, Screen screen) {
+        this(fileLocation, new Rectangle(125, 790, 460, 40), screen);
+        skin = Main.skin;
+    }
     public Item(Rectangle position, Screen screen) {
-        super("assets\\Panels\\ItemPanel4.png", position, screen);
+        this("assets\\Panels\\ItemPanel4.png", position, screen);
+        skin = Main.skin;
+    }
+    public Item(String fileLocation, Rectangle position, Screen screen) {
+        super(fileLocation, position, screen);
         skin = Main.skin;
     }
 
@@ -73,8 +81,8 @@ public class Item extends Minipanel{
     }
 
     public void reposition(){
-        int row = spot % (getParentIP().getMaxRows() + 1);
-        int column = (spot / (getParentIP().getMaxRows() + 1));
+        int row = spot % getParentIP().getRows();
+        int column = (spot / getParentIP().getRows());
         setPosition(parentIP.getSpot0Model().getX() +((parentIP.getSpot0Model().getWidth()+parentIP.getItemGap()) * column),
                 parentIP.getSpot0Model().getY()-((parentIP.getSpot0Model().getHeight()+parentIP.getItemGap()) * row));
     }
@@ -206,6 +214,8 @@ public class Item extends Minipanel{
      * renders this item and any minipanels it may hold
      */
     public void render() {
+        if(spot < 0 || spot > parentIP.getMaxSpot()) return; //if out of bounds, don't render
+
         batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
 
         batch.draw(texture, getX(), getY(), getWidth(), getHeight());

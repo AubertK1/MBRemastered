@@ -42,9 +42,6 @@ public class Screen implements Renderable{
 
     HashMap<Integer, ArrayList<Renderable>> layers = new HashMap<>();
 
-    //weapons or spell items for the itempanel
-    int itemTab = 1;
-
     //controls whether this is rendered or not
     boolean supposedToBeVisible = true;
 
