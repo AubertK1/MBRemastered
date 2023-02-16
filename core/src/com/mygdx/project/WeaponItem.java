@@ -1,6 +1,7 @@
 package com.mygdx.project;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -80,17 +81,14 @@ public class WeaponItem extends Item {
         //region textfields
         //creating textfields and setting their texts to their corresponding label's text
         for (int i = 0; i < labelTexts.size(); i++) {
-            textFields.add(new MBTextField(labelTexts.get(i), screen));
+            textFields.add(new MBTextField(labelTexts.get(i), screen, false, true));
             add(textFields.get(i));
             //detecting when enter is pressed on each MBTextField so that enter can exit out of edit mode
-            textFields.get(i).setKeyListener(new TextField.TextFieldListener() {
+            textFields.get(i).setClosingAction(new Action() {
                 @Override
-                public void keyTyped(TextField textField, char c) {
-                    if(c == '\n'){
-                        System.out.println("hey");
-                        saveEdit();
-                        editMode = false;
-                    }
+                public boolean act(float v) {
+                    saveEdit();
+                    return false;
                 }
             });
         }

@@ -42,6 +42,10 @@
     default: { parent: default, font: default-font, fontColor: darkgray, disabledFontColor: gray },
     toggle: { parent: default, checked: default-round-down, downFontColor: darkgray }
   },
+  TextButtonStyle: {
+    tab: { parent: default, down: tab-down, up: tab-up, over: tab-down, font: default-font, fontColor: darkgray, disabledFontColor: gray },
+    tab-toggle: { parent: tab, checked: tab-down, downFontColor: darkgray }
+  },
   ScrollPaneStyle: {
     default: { vScroll: default-scroll, hScrollKnob: default-round-large, background: default-rect, hScroll: default-scroll, vScrollKnob: default-round-large }
   },

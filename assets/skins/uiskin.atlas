@@ -1,5 +1,5 @@
 
-uiskin21.png
+uiskin28.png
 size: 256,128
 format: RGBA8888
 filter: Linear,Linear
@@ -265,6 +265,24 @@ tree-plus
   xy: 155, 35
   size: 14, 14
   orig: 14, 14
+  offset: 0, 0
+  index: -1
+tab-down
+  rotate: false
+  xy: 133, 26
+  size: 11, 8
+  split: 5, 5, 5, 1
+  pad: 1, 1, 1, 1
+  orig: 11, 8
+  offset: 0, 0
+  index: -1
+tab-up
+  rotate: false
+  xy: 145, 26
+  size: 11, 8
+  split: 4, 4, 3, 1
+  pad: 1, 1, 1, 1
+  orig: 11, 8
   offset: 0, 0
   index: -1
 clear

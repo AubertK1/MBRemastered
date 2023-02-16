@@ -1,10 +1,7 @@
 package com.mygdx.project;
 
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Align;
 
 public class MBLabel extends MBComponent{
@@ -20,7 +17,7 @@ public class MBLabel extends MBComponent{
         label.setAlignment(Align.center);
     }
 
-    public void setText(String text){
+   public void setText(String text){
         label.setText(text);
     }
 

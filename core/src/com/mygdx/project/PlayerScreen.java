@@ -102,14 +102,14 @@ public class PlayerScreen extends Screen{
         //endregion
 
         //region stats tab buttons
-        final MBButton skillsButton = new MBButton("Skills", this, "toggle");
+        final MBButton skillsButton = new MBButton("Skills", this, "tab-toggle");
         ((TextButton)skillsButton.getButton()).getLabel().setFontScale(.92f, .9f);
         skillsButton.setPosition(statsPanel.getX()+5, statsPanel.getY()+ statsPanel.getHeight()-20);
         skillsButton.setSize(80, 15);
 
-        final MBButton savesButton = new MBButton("Saves", this, "toggle");
+        final MBButton savesButton = new MBButton("Saves", this, "tab-toggle");
         ((TextButton)savesButton.getButton()).getLabel().setFontScale(1f, .9f);
-        savesButton.setPosition(skillsButton.getX()+ skillsButton.getWidth()+2, statsPanel.getY()+ statsPanel.getHeight()-20);
+        savesButton.setPosition(skillsButton.getX()+ skillsButton.getWidth() + 2, statsPanel.getY()+ statsPanel.getHeight()-20);
         savesButton.setSize(80, 15);
 
         statsPanel.add(skillsButton);
@@ -206,12 +206,12 @@ public class PlayerScreen extends Screen{
         //endregion
 
         //region item tab buttons
-        final MBButton weaponsButton = new MBButton("Weapons", this, "toggle");
+        final MBButton weaponsButton = new MBButton("Weapons", this, "tab-toggle");
         ((TextButton)weaponsButton.getButton()).getLabel().setFontScale(.92f, .9f);
         weaponsButton.setPosition(listPanel.getX()+5, listPanel.getY()+ listPanel.getHeight()-20);
         weaponsButton.setSize(80, 15);
 
-        final MBButton spellsButton = new MBButton("Spells", this, "toggle");
+        final MBButton spellsButton = new MBButton("Spells", this, "tab-toggle");
         ((TextButton)spellsButton.getButton()).getLabel().setFontScale(1f, .9f);
         spellsButton.setPosition(weaponsButton.getX()+ weaponsButton.getWidth()+2, listPanel.getY()+ listPanel.getHeight()-20);
         spellsButton.setSize(80, 15);
@@ -494,29 +494,26 @@ public class PlayerScreen extends Screen{
         ((TextButton)playerNameButton.getButton()).getLabel().setAlignment(Align.left);
         playerNameButton.aFloat = 0;
 
-        final MBTextField playerNameTF = new MBTextField(name, this);
+        final MBTextField playerNameTF = new MBTextField(name, this, true, true);
         playerNameTF.setSize(playerNameButton.getWidth(), playerNameButton.getHeight());
         playerNameTF.setPosition(playerNameButton.getX(), playerNameButton.getY());
         playerNameTF.setVisible(false);
 
         final boolean[] changingName = new boolean[]{false};
-        playerNameTF.setKeyListener(new TextField.TextFieldListener() {
+        playerNameTF.setClosingAction(new Action() {
             @Override
-            public void keyTyped(TextField textField, char c) {
-                if(c == '\n'){
-                    System.out.println("hey again");
+            public boolean act(float v) {
+                String newName = playerNameTF.getText();
 
-                    String newName = playerNameTF.getText();
+                setName(newName);
+                ((TextButton)playerNameButton.getButton()).setText(newName);
+                playerNameLabel.setText(newName);
 
-                    setName(newName);
-                    ((TextButton)playerNameButton.getButton()).setText(newName);
-                    playerNameLabel.setText(newName);
+                Main.getMainScreen().syncScreens();
 
-                    Main.getMainScreen().syncScreens();
-
-                    playerNameTF.setVisible(false);
-                    changingName[0] = false;
-                }
+                playerNameTF.setVisible(false);
+                changingName[0] = false;
+                return false;
             }
         });
 
@@ -524,7 +521,6 @@ public class PlayerScreen extends Screen{
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 if(!changingName[0]) {
-                    System.out.println("Got me");
                     playerNameTF.setText(getName());
                     playerNameTF.setVisible(true);
                     changingName[0] = true;

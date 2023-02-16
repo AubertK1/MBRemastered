@@ -1,6 +1,7 @@
 package com.mygdx.project;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -325,7 +326,7 @@ public class SpellItem extends Item {
         //region textfields
         //creating textfields and setting their texts to their corresponding label's text
         for (int i = 0; i < labelTexts.size(); i++) {
-            textFields.add(new MBTextField(labelTexts.get(i), screen));
+            textFields.add(new MBTextField(labelTexts.get(i), screen, false, true));
             if(labels.get(i).getName() != null && labels.get(i).getName().equals("tf")){ //banishing the spell desc label's real textfield
                 textFields.get(i).setVisible(false);
                 textFields.get(i).setPosition(-1, -1);
@@ -333,14 +334,11 @@ public class SpellItem extends Item {
             }
             add(textFields.get(i));
             //detecting when enter is pressed on each MBTextField so that enter can exit out of edit mode
-            textFields.get(i).setKeyListener(new TextField.TextFieldListener() {
+            textFields.get(i).setClosingAction(new Action() {
                 @Override
-                public void keyTyped(TextField textField, char c) {
-                    if(c == '\n'){
-                        System.out.println("hey");
-                        saveEdit();
-                        editMode = false;
-                    }
+                public boolean act(float v) {
+                    saveEdit();
+                    return false;
                 }
             });
         }
