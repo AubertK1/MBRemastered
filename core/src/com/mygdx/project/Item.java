@@ -45,30 +45,39 @@ public class Item extends Minipanel{
      * sets the item and its components to this item's corresponding spot
      */
     protected void reformat() {
-        float oldY, yGap;
+        float oldY, yGap, oldX, xGap;
         oldY = getY();
+        oldX = getX();
         //updates the item's position
-        setPosition(parentIP.getSpot0Model().getX(),parentIP.getSpot0Model().getY()-((parentIP.getSpot0Model().getHeight()+parentIP.getItemGap()) * spot));
+//        setPosition(parentIP.getSpot0Model().getX(),parentIP.getSpot0Model().getY()-((parentIP.getSpot0Model().getHeight()+parentIP.getItemGap()) * spot));
+        reposition();
         setSize(parentIP.getSpot0Model().width, parentIP.getSpot0Model().height);
 
         yGap = getY() - oldY;
+        xGap = getX() - oldX;
         //updates the item's components' positions
         for (MBComponent component : components) {
-            component.setPosition(component.getX(), component.getY() + yGap);
+            component.setPosition(component.getX() + xGap, component.getY() + yGap);
             for (MBComponent MBComp: component.components) {
-                MBComp.setPosition(MBComp.getX(), MBComp.getY() + yGap);
+                MBComp.setPosition(MBComp.getX() + xGap, MBComp.getY() + yGap);
             }
         }
         //updates the item's minipanels' positions
         for (Panel minipanel: minipanels) {
-            minipanel.setPosition(minipanel.getX(), minipanel.getY() + yGap);
+            minipanel.setPosition(minipanel.getX() + xGap, minipanel.getY() + yGap);
             //updates the item's minipanels' components' positions
             for (MBComponent MPComp: minipanel.components) {
-                MPComp.setPosition(MPComp.getX(), MPComp.getY() + yGap);
+                MPComp.setPosition(MPComp.getX() + xGap, MPComp.getY() + yGap);
             }
         }
     }
 
+    public void reposition(){
+        int row = spot % (getParentIP().getMaxRows() + 1);
+        int column = (spot / (getParentIP().getMaxRows() + 1));
+        setPosition(parentIP.getSpot0Model().getX() +((parentIP.getSpot0Model().getWidth()+parentIP.getItemGap()) * column),
+                parentIP.getSpot0Model().getY()-((parentIP.getSpot0Model().getHeight()+parentIP.getItemGap()) * row));
+    }
     /**
      * makes the textfields appear above the labels
      */
@@ -203,12 +212,7 @@ public class Item extends Minipanel{
 
         for (MBComponent component: components) {
             if(component.supposedToBeVisible) {
-                component.getActor().draw(batch, component.aFloat);
-                if(component.components.size() > 0){
-                    for (MBComponent componentComp: component.components) {
-                        componentComp.getActor().draw(batch, componentComp.aFloat);
-                    }
-                }
+                component.render();
             }
         }
         //loops through this panel's list of minipanels

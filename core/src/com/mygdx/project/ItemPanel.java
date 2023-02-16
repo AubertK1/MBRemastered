@@ -1,6 +1,5 @@
 package com.mygdx.project;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.ArrayList;
@@ -12,9 +11,10 @@ public class ItemPanel extends Minipanel{
 
     private final Rectangle spot0Model;
     private final int MINSPOT = 0;
-    private int MAXSPOT = 5;
+    private int maxRows = 5;
 
     private float ITEMGAP = 5;
+    private int columns = 1;
 
     public ItemPanel(String fileLocation, Rectangle position, Screen screen) {
         super(fileLocation, position, screen);
@@ -48,7 +48,7 @@ public class ItemPanel extends Minipanel{
         item.initialize();
         item.reformat();
 
-        if(item.getSpot() > MAXSPOT) item.setSoftVisible(false);
+        if(item.getSpot() > maxRows) item.setSoftVisible(false);
     }
 
     public void delete(Item item){
@@ -80,10 +80,10 @@ public class ItemPanel extends Minipanel{
             }
 
             //only show the items in spots 0-5
-            if(item.getSpot() < MINSPOT || item.getSpot() > MAXSPOT){
+            if(item.getSpot() < MINSPOT || item.getSpot() > maxRows){
                 item.setSoftVisible(false);
             }
-            else if(item.getSpot() >= MINSPOT && item.getSpot() <= MAXSPOT){
+            else if(item.getSpot() >= MINSPOT && item.getSpot() <= maxRows){
                 item.setSoftVisible(true);
             }
         }
@@ -110,10 +110,10 @@ public class ItemPanel extends Minipanel{
                 }
 
                 //only show the items in spots 0-5
-                if(item.getSpot() < MINSPOT || item.getSpot() > MAXSPOT){
+                if(item.getSpot() < MINSPOT || item.getSpot() > maxRows){
                     item.setSoftVisible(false);
                 }
-                else if(item.getSpot() >= MINSPOT && item.getSpot() <= MAXSPOT){
+                else if(item.getSpot() >= MINSPOT && item.getSpot() <= maxRows){
                     item.setSoftVisible(true);
                 }
             }
@@ -141,25 +141,32 @@ public class ItemPanel extends Minipanel{
             }
 
             //only show the items in spots 0-5
-            if(item.getSpot() < MINSPOT || item.getSpot() > MAXSPOT){
+            if(item.getSpot() < MINSPOT || item.getSpot() > maxRows){
                 item.setSoftVisible(false);
             }
-            else if(item.getSpot() >= MINSPOT && item.getSpot() <= MAXSPOT){
+            else if(item.getSpot() >= MINSPOT && item.getSpot() <= maxRows){
                 item.setSoftVisible(true);
             }
         }
     }
-    public void setMaxSpot(int MAXSPOT) {
-        this.MAXSPOT = MAXSPOT;
+
+    public void setColumns(int columns) {
+        this.columns = columns;
+    }
+    public void setMaxRows(int maxRows) {
+        this.maxRows = maxRows;
     }
     public void setItemGap(float ITEMGAP) {
         this.ITEMGAP = ITEMGAP;
     }
+    public int getColumns() {
+        return columns;
+    }
     public float getItemGap() {
         return ITEMGAP;
     }
-    public int getMaxSpot() {
-        return MAXSPOT;
+    public int getMaxRows() {
+        return maxRows;
     }
     public Item getItemBySpot(int spot){
         for (Item item : allItems) {
@@ -204,21 +211,4 @@ public class ItemPanel extends Minipanel{
     public Rectangle getSpot0Model(){
         return spot0Model;
     }
-/*
-    */
-/**
-     * renders all the items in this panel
-     * @param batch the batch...
-     *//*
-
-    public void render(SpriteBatch batch) {
-        batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
-
-        batch.draw(texture, getX(), getY(), getWidth(), getHeight());
-
-        for (Item item : allItems) {
-            if(item.supposedToBeVisible) item.render(batch);
-        }
-    }
-*/
 }
