@@ -55,7 +55,8 @@ public class Panel implements Renderable{
     public void add(MBComponent component, int layer){
 //        if(component.getActor() != null) return;
         //adds this component to the list of all components if it's not already in it
-        if(!screen.allComps.contains(component)) screen.allComps.add(component);
+        screen.allComps.add(component);
+        screen.addRenderable(component);
         //adds the component given to this panel
         components.add(component);
         //sets the component's parent to this panel
@@ -76,6 +77,7 @@ public class Panel implements Renderable{
      * @param minipanel the minipanel you want to add
      */
     public void add(Minipanel minipanel, int layer){
+        screen.addRenderable(minipanel);
         //adds the minipanel given to this panel
         minipanels.add(minipanel);
         //sets the minipanel's parent to this panel
@@ -105,6 +107,7 @@ public class Panel implements Renderable{
         //disposes of the MBComponent
         component.dispose();
 
+        screen.removeRenderable(component);
         component.setLayer(-1);
         //reassigns the remaining components' IDs
 //        resetCompIDs();
@@ -127,6 +130,7 @@ public class Panel implements Renderable{
         panel.setSoftVisible(false);
         //removes component from the components list
         minipanels.remove(panel);
+        screen.removeRenderable(panel);
         //disposes of the texture
         panel.texture.dispose();
 
@@ -262,6 +266,7 @@ public class Panel implements Renderable{
     }
     public void setFocused(boolean focused) {
         this.focused = focused;
+        if(Main.getMainScreen() != null && Main.getMainScreen().isFocused()) Main.getMainScreen().focus();
     }
 
     /**

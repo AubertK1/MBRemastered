@@ -343,6 +343,7 @@ public class Doodle extends Outline {
     }
 
     public void delete(){
+        super.delete();
         ArrayList<Outline> outlines = parentBoard.getOutlines();
         doodleMap.texture.dispose();
         doodleMap.dispose();

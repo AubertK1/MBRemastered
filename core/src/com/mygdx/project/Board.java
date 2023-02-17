@@ -110,7 +110,9 @@ public class Board extends Widget {
                 }
                 else if (button == Input.Buttons.RIGHT && selectMode){
                     if (selectedOutline != null) {
-                        Main.contextMenu.setItems("Bring Forward", "Bring Backward", "Bring to Front", "Bring to Back", "Edit", "Delete", "Focus");
+                        String focus = "Focus";
+                        if(selectedOutline.isFocused()) focus = "Unfocus";
+                        Main.contextMenu.setItems("Bring Forward", "Bring Backward", "Bring to Front", "Bring to Back", "Edit", "Delete", focus);
                         Main.contextMenu.addListener(new ClickListener() {
                             public void clicked(InputEvent event, float x, float y) {
                                 String word = Main.contextMenu.getSelected();
@@ -135,6 +137,7 @@ public class Board extends Widget {
                                         selectedOutline = null;
                                         break;
                                     case "Focus":
+                                    case "Unfocus":
                                         selectedOutline.setFocused(!selectedOutline.isFocused());
                                         break;
                                 }

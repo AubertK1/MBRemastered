@@ -361,6 +361,7 @@ public class StickyNote extends Outline {
     }
 
     public void delete(){
+        super.delete();
         ArrayList<Outline> outlines = parentBoard.getOutlines();
         if(activateTF) textArea.remove();
         clear();

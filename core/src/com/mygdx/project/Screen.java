@@ -34,6 +34,7 @@ public class Screen implements Renderable{
     MBBoard masterBoard;
     //list with all the MBComponents
     ArrayList<MBComponent> allComps = new ArrayList<>();
+    private final ArrayList<Renderable> allRenderables = new ArrayList<>();
 
     String name;
     MBSelectBox screenDropdown;
@@ -213,9 +214,20 @@ public class Screen implements Renderable{
         return supposedToBeVisible;
     }
 
+    public void addRenderable(Renderable r){
+        allRenderables.add(r);
+    }
+    public void removeRenderable(Renderable r){
+        allRenderables.remove(r);
+    }
+
+    public ArrayList<Renderable> getRenderables() {
+        return allRenderables;
+    }
+
     public void addLayer(int layer){
         //adds in any new layers between the highest existing layer and this layer
-        for (int newLayer = layers.size(); newLayer <= layer; newLayer++) {
+        for (int newLayer = 0; newLayer <= layer; newLayer++) {
             if(!layers.containsKey(newLayer)) layers.put(newLayer, new ArrayList<Renderable>()); //creates a new layer
         }
     }
@@ -235,7 +247,7 @@ public class Screen implements Renderable{
 
     @Override
     public boolean isFocused() {
-        return false;
+        return inFocusMode;
     }
     public boolean isInFocusMode() {
         return inFocusMode;

@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
@@ -23,12 +24,14 @@ public class SkillItem extends Item{
 
     public void initialize() {
         final MBLabel nameLabel, modLabel;
+
         nameLabel = new MBLabel(skill, screen);
         nameLabel.setPosition(this.getX()+5, this.getY()+5);
 
         modLabel = new MBLabel(String.valueOf(mod), screen);
         modLabel.setSize(20, getHeight() - 10);
         modLabel.setPosition(getX() + getWidth() - modLabel.getWidth() - 5, getY() + 5);
+        modLabel.getLabel().setAlignment(Align.right);
 
         final MBButton editButton = new MBButton(skill, screen);
         editButton.setPosition(getX(), getY());
@@ -36,19 +39,22 @@ public class SkillItem extends Item{
         ((TextButton)editButton.getButton()).getLabel().setAlignment(Align.left);
         editButton.aFloat = 0;
 
-        final MBTextField bonusMod = new MBTextField("0", screen, true, true);
-        bonusMod.setSize(20, getHeight() - 10);
-        bonusMod.setPosition(getX() + getWidth() - bonusMod.getWidth() - 5, getY() + 5);
-        bonusMod.setVisible(false);
+        final MBTextField modTF = new MBTextField("0", screen, true, true);
+        modTF.setSize(27, getHeight() - 6);
+        modTF.setPosition(getX() + getWidth() - modTF.getWidth() - 3, getY() + 3);
+        modTF.setVisible(false);
 
-        bonusMod.setClosingAction(new Action() {
+        String skillName2 = shortenString(skill, modLabel.getX() - getX());
+        nameLabel.setText(skillName2);
+
+        modTF.setClosingAction(new Action() {
             @Override
             public boolean act(float v) {
-                mod = Integer.parseInt(bonusMod.getText());
+                mod = Integer.parseInt(modTF.getText());
 
                 modLabel.setText(String.valueOf(mod));
 
-                bonusMod.setVisible(false);
+                modTF.setVisible(false);
                 modLabel.setVisible(true);
                 editMode = false;
                 return false;
@@ -59,8 +65,8 @@ public class SkillItem extends Item{
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 if(!editMode) {
-                    bonusMod.setText(String.valueOf(mod));
-                    bonusMod.setVisible(true);
+                    modTF.setText(String.valueOf(mod));
+                    modTF.setVisible(true);
                     modLabel.setVisible(false);
                     editMode = true;
                 }
@@ -79,8 +85,8 @@ public class SkillItem extends Item{
         });
 
         add(nameLabel);
-        add(editButton);
-        add(bonusMod);
         add(modLabel);
+        add(editButton);
+        add(modTF);
     }
 }

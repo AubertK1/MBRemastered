@@ -44,15 +44,14 @@ public class MainScreen extends Screen{
         focusButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("FOCUSED");
 
                 if(!inFocusMode){
+                    System.out.println("FOCUS");
                     focus();
-                    inFocusMode = true;
                 }
                 else{
+                    System.out.println("UNFOCUS");
                     unfocus();
-                    inFocusMode = false;
                 }
             }
         });
@@ -197,6 +196,8 @@ public class MainScreen extends Screen{
         }
 
         grayPanel.setLayer(nonfocusedLayers);
+
+        inFocusMode = true;
     }
     public void unfocus(){
         //setting every focused renderables' layer back to its original layer
@@ -210,7 +211,13 @@ public class MainScreen extends Screen{
             if(layers.get(layer).size() == 0) layers.remove(layer); //deletes the layer when its empty
         }
 
+        for (int screenLayer = screenLayers.size() - 1; screenLayer > 0; screenLayer--) {
+            if(screenLayers.get(screenLayer).size() == 0) screenLayers.remove(screenLayer);
+        }
+
         focusedLayers = 0;
+
+        inFocusMode = false;
     }
 
     public void update(){
@@ -219,8 +226,8 @@ public class MainScreen extends Screen{
 
         for (int layer = 0; layer < screenLayers.size(); layer++) {
             if(layers.containsKey(layer)){ //if the layer exists
-                //empties out the selected screen's layer's renderables from the layer's list
-                layers.get(layer).removeAll(screenLayers.get(layer));
+                //empties out the selected screen's renderables from the layer's list
+                layers.get(layer).removeAll(selectedScreen.getRenderables());
                 //re-adds the renderables in their updated order
                 layers.get(layer).addAll(screenLayers.get(layer));
             }

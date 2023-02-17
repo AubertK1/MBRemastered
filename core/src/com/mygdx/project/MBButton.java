@@ -140,10 +140,6 @@ public class MBButton extends MBComponent{
                     ((Window)window.getActor()).setMovable(true);
                     add(window, 3);
                 }
-                else{
-
-                }
-
             }
             @Override
             public boolean handle (Event event) {

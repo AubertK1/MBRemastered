@@ -44,7 +44,8 @@ public class MBComponent implements Renderable{
     public void add(MBComponent component, int layer){
 //        if(component.getActor() != null) return;
         //adds this component to the list of all components if it's not already in it
-        if(!getScreen().allComps.contains(component)) getScreen().allComps.add(component);
+        getScreen().allComps.add(component);
+        screen.addRenderable(component);
         //adds the component given to this panel
         components.add(component);
         //sets the component's parent to this panel
@@ -55,6 +56,7 @@ public class MBComponent implements Renderable{
         component.setLayer(layer);
     }
     public void delete(MBComponent component){
+        screen.removeRenderable(component);
         //deletes all the component's components
         for (MBComponent childComp : component.components) {
             delete(childComp);
@@ -144,6 +146,7 @@ public class MBComponent implements Renderable{
     }
     public void setFocused(boolean focused) {
         this.focused = focused;
+        if(Main.getMainScreen() != null && Main.getMainScreen().isFocused()) Main.getMainScreen().focus();
     }
     public void setLayer(int layer){
         int oldLayer = getLayer();

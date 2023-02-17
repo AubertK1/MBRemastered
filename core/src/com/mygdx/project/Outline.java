@@ -50,6 +50,7 @@ public class Outline extends Widget implements Renderable{
 
         setScreen(board.getScreen());
         setLayer(0);
+        screen.addRenderable(this);
     }
 
     public void update() {
@@ -121,7 +122,8 @@ public class Outline extends Widget implements Renderable{
         outlines.add(this);
     }
     public void delete(){
-
+        setLayer(-1);
+        screen.removeRenderable(this);
     }
 
     public int onBorder(int x, int y){
@@ -185,8 +187,7 @@ public class Outline extends Widget implements Renderable{
 
     public void setFocused(boolean focused){
         this.focused = focused;
-
-        if(screen.isInFocusMode()) screen.focus();
+        if(Main.getMainScreen() != null && Main.getMainScreen().isFocused()) Main.getMainScreen().focus();
     }
 
     public void setSoftVisible(boolean visible) {
