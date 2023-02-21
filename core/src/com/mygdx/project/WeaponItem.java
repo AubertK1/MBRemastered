@@ -24,12 +24,12 @@ public class WeaponItem extends Item {
         nameLabel.setSize(119, nameLabel.getHeight());
         labelTexts.add(nameLabel.getLabel().getText().toString());
 
-        diceLabel = new MBLabel("HitDie", screen);
+        diceLabel = new MBLabel("Hit Die", screen);
         diceLabel.setPosition(nameLabel.getX()+ nameLabel.getWidth()+2, nameLabel.getY());
         diceLabel.setSize(75, nameLabel.getHeight());
         labelTexts.add(diceLabel.getLabel().getText().toString());
 
-        modLabel = new MBLabel("ATKMod", screen);
+        modLabel = new MBLabel("ATK Mod", screen);
         modLabel.setPosition(diceLabel.getX()+ diceLabel.getWidth()+2, nameLabel.getY());
         modLabel.setSize(85, nameLabel.getHeight());
         labelTexts.add( modLabel.getLabel().getText().toString());

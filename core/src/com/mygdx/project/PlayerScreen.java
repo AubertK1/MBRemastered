@@ -46,127 +46,18 @@ public class PlayerScreen extends Screen{
         reminderTextArea.setSize(375,330);
         reminderTextArea.setPosition(120,160);
 
-        //region skills/saves
-        Minipanel statsPanel = new Minipanel("assets\\Panels\\StatsPanel.png",
-                new Rectangle(reminderTextArea.getX() + reminderTextArea.getWidth() + 5, reminderTextArea.getY(),
-                        290, reminderPanel.getHeight() - 20), this);
-        statsPanel.setPosition(reminderPanel.getX() + reminderPanel.getWidth() - statsPanel.getWidth() - 5, statsPanel.getY());
-//        Minipanel statsPanel = new Minipanel("assets\\Panels\\StatsPanel.png",
-//                new Rectangle(reminderTextArea.getX() + reminderTextArea.getWidth() + 5, reminderTextArea.getY(),
-//                        reminderPanel.getWidth() - (reminderTextArea.getWidth() + 20), reminderPanel.getHeight() - 20), this);
+        //region imagebutton
+        //creating the imageButton as a text button
+        final MBButton imageButton = new MBButton(this);
+        imageButton.setSize(290, 370);
+        imageButton.setPosition(reminderPanel.getX() + reminderPanel.getWidth() - imageButton.getWidth() - 5, reminderTextArea.getY());
+        //setting the default opacity
+        imageButton.aFloat = .5f;
 
-        //region stat panels
-        final ItemPanel skillsPanel = new ItemPanel("assets\\clear.png",
-                new Rectangle(statsPanel.getX() + 5, statsPanel.getY() + 5, statsPanel.getWidth() - 10, reminderTextArea.getHeight() - 5), this);
-        final ItemPanel savesPanel = new ItemPanel("assets\\clear.png",
-                new Rectangle(statsPanel.getX() + 5, statsPanel.getY() + 5, statsPanel.getWidth() - 10, reminderTextArea.getHeight() - 5), this);
-        skillsPanel.setFocused(true);
-        savesPanel.setFocused(true);
-        statsPanel.add(skillsPanel);
-        statsPanel.add(savesPanel);
+        imageButton.toTextButton("ADD IMAGE");
+        imageButton.setupSelectImageTextButton();
 
-        skillsPanel.setMaxSpot(17);
-        skillsPanel.setColumns(2);
-        skillsPanel.setRows(9);
-
-        String[] skills = new String[]{"Acrobatics", "Animal Handling", "Arcana", "Athletics", "Deception", "History",
-                "Insight", "Intimidation", "Investigation", "Medicine", "Nature", "Perception", "Performance", "Persuasion",
-                "Religion", "Sleight of Hand", "Stealth", "Survival"};
-
-        for (int i = 0; i < skills.length; i++) {
-            if(i == 0){ //initializing the fist skill
-                float skillHeight = (skillsPanel.getHeight() - 40) / 9f;
-                skillsPanel.add(new SkillItem(new Rectangle(skillsPanel.getX(), skillsPanel.getY() + skillsPanel.getHeight() - skillHeight, (skillsPanel.getWidth() - 2.5f) / 2f, skillHeight),
-                        this, skills[0]));
-            }
-            else skillsPanel.add(new SkillItem(this, skills[i]));
-        }
-
-        savesPanel.setRows(6);
-
-        String[] saves = new String[]{"Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"};
-
-        for (int i = 0; i < saves.length; i++) {
-            if(i == 0){ //initializing the fist skill
-                float saveHeight = (savesPanel.getHeight() - 25) / 6f;
-                savesPanel.add(new SkillItem(new Rectangle(savesPanel.getX(), savesPanel.getY() + savesPanel.getHeight() - saveHeight, savesPanel.getWidth(), saveHeight),
-                        this, saves[0]));
-            }
-            else savesPanel.add(new SkillItem(this, saves[i]));
-        }
-
-        if(statTab == 1){
-            skillsPanel.setSoftVisible(true);
-            savesPanel.setSoftVisible(false);
-        }
-        if(statTab == 2){
-            skillsPanel.setSoftVisible(false);
-            savesPanel.setSoftVisible(true);
-        }
-        //endregion
-
-        //region stats tab buttons
-        final MBButton skillsButton = new MBButton("Skills", this, "tab-toggle");
-        ((TextButton)skillsButton.getButton()).getLabel().setFontScale(.92f, .9f);
-        skillsButton.setPosition(statsPanel.getX()+5, statsPanel.getY()+ statsPanel.getHeight()-20);
-        skillsButton.setSize(80, 15);
-
-        final MBButton savesButton = new MBButton("Saves", this, "tab-toggle");
-        ((TextButton)savesButton.getButton()).getLabel().setFontScale(1f, .9f);
-        savesButton.setPosition(skillsButton.getX()+ skillsButton.getWidth() + 2, statsPanel.getY()+ statsPanel.getHeight()-20);
-        savesButton.setSize(80, 15);
-
-        statsPanel.add(skillsButton);
-        statsPanel.add(savesButton);
-
-        if(statTab == 1){
-            skillsButton.getButton().setChecked(true);
-            skillsButton.getButton().setTouchable(Touchable.disabled);
-            savesButton.getButton().setChecked(false);
-        }
-        else{
-            savesButton.getButton().setChecked(true);
-            savesButton.getButton().setTouchable(Touchable.disabled);
-            skillsButton.getButton().setChecked(false);
-        }
-
-        skillsButton.addListener(new InputListener() {
-            @Override
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                if(statTab == 2){
-                    statTab = 1;
-                    skillsPanel.setSoftVisible(true);
-                    savesPanel.setSoftVisible(false);
-                    skillsButton.getButton().setTouchable(Touchable.disabled);
-                    savesButton.getButton().setTouchable(Touchable.enabled);
-                }
-                savesButton.getButton().setChecked(false);
-
-                return false;
-            }
-        });
-
-        savesButton.addListener(new InputListener() {
-
-            @Override
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                if(statTab == 1){
-                    statTab = 2;
-                    savesPanel.setSoftVisible(true);
-                    skillsPanel.setSoftVisible(false);
-                    skillsButton.getButton().setTouchable(Touchable.enabled);
-                    savesButton.getButton().setTouchable(Touchable.disabled);
-                }
-                skillsButton.getButton().setChecked(false);
-
-                return false;
-            }
-        });
-
-        skillsButton.setFocused(true);
-        savesButton.setFocused(true);
-
-        //endregion
+        imageButton.setFocused(true);
         //endregion
 
         //region misc.
@@ -240,7 +131,7 @@ public class PlayerScreen extends Screen{
         initPanel.add(initL);
         //endregion
 
-        reminderPanel.add(statsPanel);
+        reminderPanel.add(imageButton);
         reminderPanel.add(reminderTextArea);
         reminderPanel.add(hpPanel);
         reminderPanel.add(tempHPPanel);
@@ -404,8 +295,6 @@ public class PlayerScreen extends Screen{
             }
         });
         //endregion
-
-        genStatsPanel.add(listPanel);
         //endregion
 
         //region stats
@@ -476,13 +365,6 @@ public class PlayerScreen extends Screen{
         wisPanel.add(wisL);
         chaPanel.add(chaTF);
         chaPanel.add(chaL);
-        //adding stats panels to the panel
-        genStatsPanel.add(strPanel);
-        genStatsPanel.add(dexPanel);
-        genStatsPanel.add(conPanel);
-        genStatsPanel.add(intPanel);
-        genStatsPanel.add(wisPanel);
-        genStatsPanel.add(chaPanel);
 
         //Short Rest and Long Rest buttons
         Minipanel shortRestPanel = new Minipanel("assets\\Panels\\minipanel2.png",
@@ -519,33 +401,144 @@ public class PlayerScreen extends Screen{
         shortRestPanel.add(srButton);
         longRestPanel.add(lrButton);
 
-        genStatsPanel.add(shortRestPanel);
-        genStatsPanel.add(longRestPanel);
-
         strPanel.setFocused(true);
         dexPanel.setFocused(true);
         conPanel.setFocused(true);
         intPanel.setFocused(true);
         wisPanel.setFocused(true);
         chaPanel.setFocused(true);
-//		shortRestPanel.setFocused(true);
-//		longRestPanel.setFocused(true);
         //endregion
 
-        //region imagebutton
-        //creating the imageButton as a text button
-        final MBButton imageButton = new MBButton(this);
-        imageButton.setPosition(595, 560);
-        imageButton.setSize(290, 370);
-        //setting the default opacity
-        imageButton.aFloat = .5f;
+        //region skills/saves
+        Minipanel statsPanel = new Minipanel("assets\\Panels\\StatsPanel.png",
+                new Rectangle(595, 560,
+                        290, genStatsPanel.getHeight() - 20), this);
+        statsPanel.setPosition(genStatsPanel.getX() + genStatsPanel.getWidth() - statsPanel.getWidth() - 5, statsPanel.getY());
 
-        imageButton.toTextButton("ADD IMAGE");
-        imageButton.setupSelectImageTextButton();
-        genStatsPanel.add(imageButton);
+        //region stat panels
+        final ItemPanel skillsPanel = new ItemPanel("assets\\clear.png",
+                new Rectangle(statsPanel.getX() + 5, statsPanel.getY() + 5, statsPanel.getWidth() - 10, reminderTextArea.getHeight() - 5), this);
+        final ItemPanel savesPanel = new ItemPanel("assets\\clear.png",
+                new Rectangle(statsPanel.getX() + 5, statsPanel.getY() + 5, statsPanel.getWidth() - 10, reminderTextArea.getHeight() - 5), this);
+        skillsPanel.setFocused(true);
+        savesPanel.setFocused(true);
+        statsPanel.add(skillsPanel);
+        statsPanel.add(savesPanel);
 
-        imageButton.setFocused(true);
+        skillsPanel.setMaxSpot(17);
+        skillsPanel.setColumns(2);
+        skillsPanel.setRows(9);
+
+        String[] skills = new String[]{"Acrobatics", "Animal Handling", "Arcana", "Athletics", "Deception", "History",
+                "Insight", "Intimidation", "Investigation", "Medicine", "Nature", "Perception", "Performance", "Persuasion",
+                "Religion", "Sleight of Hand", "Stealth", "Survival"};
+
+        for (int i = 0; i < skills.length; i++) {
+            if(i == 0){ //initializing the fist skill
+                float skillHeight = (skillsPanel.getHeight() - 40) / 9f;
+                skillsPanel.add(new SkillItem(new Rectangle(skillsPanel.getX(), skillsPanel.getY() + skillsPanel.getHeight() - skillHeight, (skillsPanel.getWidth() - 2.5f) / 2f, skillHeight),
+                        this, skills[0]));
+            }
+            else skillsPanel.add(new SkillItem(this, skills[i]));
+        }
+
+        savesPanel.setRows(6);
+
+        String[] saves = new String[]{"Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"};
+
+        for (int i = 0; i < saves.length; i++) {
+            if(i == 0){ //initializing the fist skill
+                float saveHeight = (savesPanel.getHeight() - 25) / 6f;
+                savesPanel.add(new SkillItem(new Rectangle(savesPanel.getX(), savesPanel.getY() + savesPanel.getHeight() - saveHeight, savesPanel.getWidth(), saveHeight),
+                        this, saves[0]));
+            }
+            else savesPanel.add(new SkillItem(this, saves[i]));
+        }
+
+        if(statTab == 1){
+            skillsPanel.setSoftVisible(true);
+            savesPanel.setSoftVisible(false);
+        }
+        if(statTab == 2){
+            skillsPanel.setSoftVisible(false);
+            savesPanel.setSoftVisible(true);
+        }
         //endregion
+
+        //region stats tab buttons
+        final MBButton skillsButton = new MBButton("Skills", this, "tab-toggle");
+        ((TextButton)skillsButton.getButton()).getLabel().setFontScale(.92f, .9f);
+        skillsButton.setPosition(statsPanel.getX()+5, statsPanel.getY()+ statsPanel.getHeight()-20);
+        skillsButton.setSize(80, 15);
+
+        final MBButton savesButton = new MBButton("Saves", this, "tab-toggle");
+        ((TextButton)savesButton.getButton()).getLabel().setFontScale(1f, .9f);
+        savesButton.setPosition(skillsButton.getX()+ skillsButton.getWidth() + 2, statsPanel.getY()+ statsPanel.getHeight()-20);
+        savesButton.setSize(80, 15);
+
+        statsPanel.add(skillsButton);
+        statsPanel.add(savesButton);
+
+        if(statTab == 1){
+            skillsButton.getButton().setChecked(true);
+            skillsButton.getButton().setTouchable(Touchable.disabled);
+            savesButton.getButton().setChecked(false);
+        }
+        else{
+            savesButton.getButton().setChecked(true);
+            savesButton.getButton().setTouchable(Touchable.disabled);
+            skillsButton.getButton().setChecked(false);
+        }
+
+        skillsButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                if(statTab == 2){
+                    statTab = 1;
+                    skillsPanel.setSoftVisible(true);
+                    savesPanel.setSoftVisible(false);
+                    skillsButton.getButton().setTouchable(Touchable.disabled);
+                    savesButton.getButton().setTouchable(Touchable.enabled);
+                }
+                savesButton.getButton().setChecked(false);
+
+                return false;
+            }
+        });
+
+        savesButton.addListener(new InputListener() {
+
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                if(statTab == 1){
+                    statTab = 2;
+                    savesPanel.setSoftVisible(true);
+                    skillsPanel.setSoftVisible(false);
+                    skillsButton.getButton().setTouchable(Touchable.enabled);
+                    savesButton.getButton().setTouchable(Touchable.disabled);
+                }
+                skillsButton.getButton().setChecked(false);
+
+                return false;
+            }
+        });
+
+        skillsButton.setFocused(true);
+        savesButton.setFocused(true);
+
+        //endregion
+        //endregion
+
+        genStatsPanel.add(listPanel);
+        genStatsPanel.add(strPanel);
+        genStatsPanel.add(dexPanel);
+        genStatsPanel.add(conPanel);
+        genStatsPanel.add(intPanel);
+        genStatsPanel.add(wisPanel);
+        genStatsPanel.add(chaPanel);
+        genStatsPanel.add(shortRestPanel);
+        genStatsPanel.add(longRestPanel);
+        genStatsPanel.add(statsPanel);
         //endregion
 
         //region Top Bar

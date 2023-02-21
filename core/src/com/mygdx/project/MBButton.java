@@ -13,8 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.*;
 
 public class MBButton extends MBComponent{
     private Button button;
-    String style = "default";
-    Texture texture;
+    private String style = "default";
+    private Texture texture;
 
     /**
      * Regular plain button
@@ -130,8 +130,15 @@ public class MBButton extends MBComponent{
             public void changed(ChangeEvent event, Actor actor) {
                 if(!hasWindow) {
                     System.out.println("yo");
-                    MBWindow window = new MBWindow(texture, screen, MBButton.this);
-                    window.setSize(window.image.getWidth(), window.image.getHeight());
+                    MBWindow window;
+                    if(texture == null){
+                        window = new MBWindow(MBButton.this, screen, true);
+                        window.setSize(300, 400);
+                    }
+                    else {
+                        window = new MBWindow(texture, screen, MBButton.this);
+                        window.setSize(window.image.getWidth(), window.image.getHeight());
+                    }
                     window.setPosition((float)Gdx.graphics.getWidth()/2 - window.getWidth()/2, (float)Gdx.graphics.getHeight()/2 - window.getHeight()/2);
                     window.setVisible(true);
                     //makes it so that the user can interact with the app while the window is up (if true it will be the only thing you can interact with)

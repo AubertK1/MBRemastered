@@ -70,6 +70,29 @@ public class MBWindow extends MBComponent{
         window.getTitleTable().add(resizeButton).size(20, 15).padRight(5.5f).padTop(0).padBottom(0);
         window.getTitleTable().add(closeButton).size(20, 15).padRight(5.5f).padTop(0).padBottom(0);
     }
+    public MBWindow(MBComponent parent, Screen screen, boolean dice){
+        super(screen);
+        parentActor = parent;
+        parentActor.hasWindow = true;
+        focused = true;
+
+        window = new Window("DICE", skin);
+
+
+        window.setClip(false);
+        window.setTransform(true);
+        window.setResizable(true);
+        window.setKeepWithinStage(true);
+        final Button closeButton = new ImageButton(skin, "delete-button");
+        closeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                parentActor.hasWindow = false;
+                ((MBComponent)getMBParent()).delete(MBWindow.this);
+            }
+        });
+        window.getTitleTable().add(closeButton).size(20, 15).padRight(5.5f).padTop(0).padBottom(0);
+    }
 
     public Actor getActor(){
         return window;

@@ -151,9 +151,20 @@ public class MainScreen extends Screen{
             }
         });
 
+        MBButton diceButton = new MBButton("DICE", this);
+        diceButton.setPosition(sizesBox.getRightX() + 5, selectButton.getY());
+        diceButton.setSize(selectButton.getWidth() + 10, selectButton.getHeight());
+        diceButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("Spawn DICE");
+            }
+        });
+        diceButton.setupSelectImageImageButton();
+
         MBColorPicker colorPicker = new MBColorPicker(this);
         colorPicker.setSize(0, toolbarPanel.getHeight() - 10);
-        colorPicker.setPosition((toolbarPanel.getX() + toolbarPanel.getWidth()) - (colorPicker.getWidth() + 5), toolbarPanel.getY()+5);
+        colorPicker.setPosition(toolbarPanel.getRightX() - (colorPicker.getWidth() + 5), toolbarPanel.getY()+5);
 
         toolbarPanel.add(focusButton);
         toolbarPanel.add(selectButton);
@@ -162,6 +173,7 @@ public class MainScreen extends Screen{
         toolbarPanel.add(sizesBox, 1);
         toolbarPanel.add(softnessBox, 1);
         toolbarPanel.add(colorBox, 1);
+        toolbarPanel.add(diceButton);
         toolbarPanel.add(colorPicker);
         //endregion
     }
