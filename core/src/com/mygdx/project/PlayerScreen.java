@@ -165,7 +165,6 @@ public class PlayerScreen extends Screen{
         //endregion
         //endregion
 
-        //adding to the Reminders panel as its components
         reminderPanel.add(statsPanel);
         reminderPanel.add(reminderTextArea);
         reminderPanel.add(reminderLabel);
@@ -553,7 +552,6 @@ public class PlayerScreen extends Screen{
         masterBoard.setPosition(masterboardPanel.getX()+1, masterboardPanel.getY()+1);
         masterBoard.setSize(masterboardPanel.getWidth()-2, masterboardPanel.getHeight()-2);
         masterboardPanel.add(masterBoard);
-
         //endregion
     }
 }

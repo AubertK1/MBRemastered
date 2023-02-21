@@ -263,6 +263,12 @@ public class MainScreen extends Screen{
         for (Panel panel: screenPanels) {
             panel.removeComps();
         }
+        for (int layer = 0; layer < screenLayers.size(); layer++) {
+            if (layers.containsKey(layer)) { //if the layer exists
+                //empties out the old screen's renderables from the layer's list
+                layers.get(layer).removeAll(selectedScreen.getRenderables());
+            }
+        }
 
         selectedScreen = screen;
 
@@ -281,6 +287,7 @@ public class MainScreen extends Screen{
         }
 
         update();
+        if(inFocusMode) focus();
     }
 
     public void syncScreens(){
