@@ -37,19 +37,23 @@ public class PlayerScreen extends Screen{
         //region Reminders
         //creating a label
         MBLabel reminderLabel = new MBLabel("REMINDERS", this);
-        reminderLabel.setSize(470, 40);
+        reminderLabel.setSize(375, 40);
         reminderLabel.setPosition(120, 490);
 
         //creating a textarea
         MBTextArea reminderTextArea;
         reminderTextArea = new MBTextArea("", this);
-        reminderTextArea.setSize(470,330);
+        reminderTextArea.setSize(375,330);
         reminderTextArea.setPosition(120,160);
 
-        //region extra stats
+        //region skills/saves
         Minipanel statsPanel = new Minipanel("assets\\Panels\\StatsPanel.png",
                 new Rectangle(reminderTextArea.getX() + reminderTextArea.getWidth() + 5, reminderTextArea.getY(),
-                        reminderPanel.getWidth() - (reminderTextArea.getWidth() + 20), reminderPanel.getHeight() - 20), this);
+                        290, reminderPanel.getHeight() - 20), this);
+        statsPanel.setPosition(reminderPanel.getX() + reminderPanel.getWidth() - statsPanel.getWidth() - 5, statsPanel.getY());
+//        Minipanel statsPanel = new Minipanel("assets\\Panels\\StatsPanel.png",
+//                new Rectangle(reminderTextArea.getX() + reminderTextArea.getWidth() + 5, reminderTextArea.getY(),
+//                        reminderPanel.getWidth() - (reminderTextArea.getWidth() + 20), reminderPanel.getHeight() - 20), this);
 
         //region stat panels
         final ItemPanel skillsPanel = new ItemPanel("assets\\clear.png",
@@ -165,8 +169,85 @@ public class PlayerScreen extends Screen{
         //endregion
         //endregion
 
+        //region misc.
+        final Minipanel hpPanel, tempHPPanel, acPanel, bonusACPanel, speedPanel, initPanel;
+        hpPanel = new Minipanel("assets\\Panels\\minipanel2.png",
+                new Rectangle(reminderTextArea.getRightX() + 5, reminderPanel.getTopY() - 60 - 10, 90, 57), this);
+        tempHPPanel = new Minipanel("assets\\Panels\\minipanel2.png",
+                new Rectangle(hpPanel.getX(), hpPanel.getY() - hpPanel.getHeight() - 5, hpPanel.getWidth(), hpPanel.getHeight()), this);
+        acPanel = new Minipanel("assets\\Panels\\minipanel2.png",
+                new Rectangle(hpPanel.getX(), tempHPPanel.getY() - hpPanel.getHeight() - 5, hpPanel.getWidth(), hpPanel.getHeight()), this);
+        bonusACPanel = new Minipanel("assets\\Panels\\minipanel2.png",
+                new Rectangle(hpPanel.getX(), acPanel.getY() - hpPanel.getHeight() - 5, hpPanel.getWidth(), hpPanel.getHeight()), this);
+        speedPanel = new Minipanel("assets\\Panels\\minipanel2.png",
+                new Rectangle(hpPanel.getX(), bonusACPanel.getY() - hpPanel.getHeight() - 5, hpPanel.getWidth(), hpPanel.getHeight()), this);
+        initPanel = new Minipanel("assets\\Panels\\minipanel2.png",
+                new Rectangle(hpPanel.getX(), speedPanel.getY() - hpPanel.getHeight() - 5, hpPanel.getWidth(), hpPanel.getHeight()), this);
+
+        //creating the labels to put in the stats' minipanels
+        MBLabel hpL = new MBLabel("HP", this);
+        hpL.setPosition(hpPanel.getX() + (hpPanel.getWidth()/2) - (hpL.getWidth()/2), hpPanel.getTopY() - hpL.getHeight());
+        MBLabel tempHPL = new MBLabel("Temp HP", this);
+        tempHPL.setPosition(tempHPPanel.getX() + (tempHPPanel.getWidth()/2) - (tempHPL.getWidth()/2), tempHPPanel.getTopY() - tempHPL.getHeight());
+        MBLabel acL = new MBLabel("AC", this);
+        acL.setPosition(acPanel.getX() + (acPanel.getWidth()/2) - (acL.getWidth()/2), acPanel.getTopY() - acL.getHeight());
+        MBLabel bonusACL = new MBLabel("Bonus AC", this);
+        bonusACL.setPosition(bonusACPanel.getX() + (bonusACPanel.getWidth()/2) - (bonusACL.getWidth()/2), bonusACPanel.getTopY() - bonusACL.getHeight());
+        MBLabel speedL = new MBLabel("Speed", this);
+        speedL.setPosition(speedPanel.getX() + (speedPanel.getWidth()/2) - (speedL.getWidth()/2), speedPanel.getTopY() - speedL.getHeight());
+        MBLabel initL = new MBLabel("Initiative", this);
+        initL.setPosition(initPanel.getX() + (initPanel.getWidth()/2) - (initL.getWidth()/2), initPanel.getTopY() - initL.getHeight());
+
+        //creating the textfields to put in the stats' minipanels
+        MBTextField hpTF = new MBTextField("", this);
+        //size and positions set by eyeballing until it looked nice
+        hpTF.setSize(80, 33);
+        hpTF.setPosition(hpPanel.getX() + 5, hpPanel.getY() + 5);
+        hpTF.getTextField().setAlignment(Align.center);
+        MBTextField tempHPTF = new MBTextField("", this);
+        tempHPTF.setSize(80, hpTF.getHeight());
+        tempHPTF.setPosition(tempHPPanel.getX() + 5, tempHPPanel.getY() + 5);
+        tempHPTF.getTextField().setAlignment(Align.center);
+        MBTextField acTF = new MBTextField("", this);
+        acTF.setSize(80, hpTF.getHeight());
+        acTF.setPosition(acPanel.getX() + 5, acPanel.getY() + 5);
+        acTF.getTextField().setAlignment(Align.center);
+        MBTextField bonusACTF = new MBTextField("", this);
+        bonusACTF.setSize(80, hpTF.getHeight());
+        bonusACTF.setPosition(bonusACPanel.getX() + 5, bonusACPanel.getY() + 5);
+        bonusACTF.getTextField().setAlignment(Align.center);
+        MBTextField speedTF = new MBTextField("", this);
+        speedTF.setSize(80, hpTF.getHeight());
+        speedTF.setPosition(speedPanel.getX() + 5, speedPanel.getY() + 5);
+        speedTF.getTextField().setAlignment(Align.center);
+        MBTextField initTF = new MBTextField("", this);
+        initTF.setSize(80, hpTF.getHeight());
+        initTF.setPosition(initPanel.getX() + 5, initPanel.getY() + 5);
+        initTF.getTextField().setAlignment(Align.center);
+
+        //adding components to their minipanels
+        hpPanel.add(hpTF);
+        hpPanel.add(hpL);
+        tempHPPanel.add(tempHPTF);
+        tempHPPanel.add(tempHPL);
+        acPanel.add(acTF);
+        acPanel.add(acL);
+        bonusACPanel.add(bonusACTF);
+        bonusACPanel.add(bonusACL);
+        speedPanel.add(speedTF);
+        speedPanel.add(speedL);
+        initPanel.add(initTF);
+        initPanel.add(initL);
+        //endregion
+
         reminderPanel.add(statsPanel);
         reminderPanel.add(reminderTextArea);
+        reminderPanel.add(hpPanel);
+        reminderPanel.add(tempHPPanel);
+        reminderPanel.add(acPanel);
+        reminderPanel.add(bonusACPanel);
+        reminderPanel.add(speedPanel);
+        reminderPanel.add(initPanel);
         reminderPanel.add(reminderLabel);
         //endregion
 

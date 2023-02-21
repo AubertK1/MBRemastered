@@ -247,6 +247,13 @@ public class Panel implements Renderable{
         return height;
     }
 
+    public float getRightX(){
+        return getX() + getWidth();
+    }
+    public float getTopY(){
+        return getY() + getHeight();
+    }
+
     /**
      * loops through the minipanels list to find a minipanel whose spot value matches the given spot
      * @param spot the panel's spot

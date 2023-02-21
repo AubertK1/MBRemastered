@@ -206,6 +206,14 @@ public class MBComponent implements Renderable{
         return getActor().getHeight();
     }
 
+    public float getRightX(){
+        return getX() + getWidth();
+    }
+    public float getTopY(){
+        return getY() + getHeight();
+    }
+
+
     public boolean isSupposedToBeVisible() {
         return supposedToBeVisible;
     }
