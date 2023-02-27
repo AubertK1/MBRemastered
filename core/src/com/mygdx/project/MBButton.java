@@ -132,7 +132,7 @@ public class MBButton extends MBComponent{
                     System.out.println("yo");
                     MBWindow window;
                     if(texture == null){
-                        window = new MBWindow(MBButton.this, screen, true);
+                        window = new MBWindow(MBButton.this, Main.getMainScreen(), true);
                         window.setSize(300, 400);
                     }
                     else {

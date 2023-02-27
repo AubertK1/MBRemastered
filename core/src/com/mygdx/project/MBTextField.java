@@ -121,7 +121,9 @@ public class MBTextField extends MBComponent{
     public void setKeyListener(TextField.TextFieldListener listener){
         textField.setTextFieldListener(listener);
     }
-
+    public void setAlignment(int alignment){
+        textField.setAlignment(alignment);
+    }
     public Actor getActor(){
         return textField;
     }
