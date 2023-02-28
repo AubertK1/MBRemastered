@@ -68,6 +68,9 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
     boolean beenClickedYet = false;
     boolean isActive = false;
 
+    public boolean inWindow = false;
+    public Vector2 windowGap = new Vector2(0 , 0);
+
     final ArraySelection<T> selection = new ArraySelection(items) {
         public boolean fireChangeEvent () {
             if (selectedPrefWidth) invalidateHierarchy();
@@ -585,8 +588,14 @@ public class SelectBoxWrapper<T> extends Widget implements Disableable {
 
             //MINE
             if(doShow) {
-                list.visualX = getX();
-                list.visualY = getY();
+                if(!selectBox.inWindow) {
+                    list.visualX = getX();
+                    list.visualY = getY();
+                }
+                else {
+                    list.visualX = selectBox.windowGap.x;
+                    list.visualY = selectBox.windowGap.y;
+                }
 
                 list.draw(Main.batch, parentAlpha);
             }

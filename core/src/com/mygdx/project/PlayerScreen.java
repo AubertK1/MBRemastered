@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -547,7 +546,7 @@ public class PlayerScreen extends Screen{
         screenDropdown.setPosition(topPanel.getX()+ topPanel.getWidth()-305, topPanel.getY()+5);
         screenDropdown.setItems("PLAYER 1", "<ADD PLAYER>");
 
-        screenDropdown.addScrollPaneListener(new ClickListener() {
+        screenDropdown.addListener(new ClickListener() {
             public void clicked (InputEvent event, float x, float y) {
             if(screenDropdown.dropdown.getSelected().equals("<ADD PLAYER>")){
                 Main.getMainScreen().addScreen();

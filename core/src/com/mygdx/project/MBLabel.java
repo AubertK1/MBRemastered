@@ -17,6 +17,9 @@ public class MBLabel extends MBComponent{
         label.setAlignment(Align.center);
     }
 
+    public void setAlignment(int alignment){
+        label.setAlignment(alignment);
+    }
    public void setText(String text){
         label.setText(text);
     }

@@ -98,7 +98,7 @@ public class MainScreen extends Screen{
         sizesBox.setSize(100, eraseButton.getHeight()/3 - 1);
         sizesBox.setItems("1", "3", "5", "11", "23", "45");
         sizesBox.dropdown.setSelected(String.valueOf(selectedScreen.masterBoard.board.getCurrentBrush().brush.length));
-        sizesBox.addScrollPaneListener(new ClickListener(){
+        sizesBox.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
                 int newSize = Integer.parseInt(sizesBox.dropdown.getSelected());
                 selectedScreen.masterBoard.board.setBrush(newSize, selectedScreen.masterBoard.board.isBrushSoft());
@@ -109,7 +109,7 @@ public class MainScreen extends Screen{
         softnessBox.setPosition(sizesBox.getX(), sizesBox.getY() + sizesBox.getHeight() + 2);
         softnessBox.setSize(100, eraseButton.getHeight()/3 - 1);
         softnessBox.setItems("soft", "hard");
-        softnessBox.addScrollPaneListener(new ClickListener(){
+        softnessBox.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
                 selectedScreen.masterBoard.board.setBrushSoft(softnessBox.dropdown.getSelected().equals("soft"));
             }
@@ -119,7 +119,7 @@ public class MainScreen extends Screen{
         colorBox.setPosition(sizesBox.getX(), softnessBox.getY() + softnessBox.getHeight() + 2);
         colorBox.setSize(100, eraseButton.getHeight()/3 - 1);
         colorBox.setItems("BLACK", "WHITE", "RED", "YELLOW", "GREEN", "BLUE");
-        colorBox.addScrollPaneListener(new ClickListener(){
+        colorBox.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
                 String color = colorBox.dropdown.getSelected();
                 switch (color){
