@@ -16,10 +16,10 @@ public class MBTextField extends MBComponent{
     public MBTextField(String text, Screen screen) {
         this(text, screen, false, false);
     }
-    public MBTextField(String text, Screen screen, boolean hideableFromCLick, boolean hideableFromKeys) {
+    public MBTextField(String text, Screen screen, boolean hideableFromClick, boolean hideableFromKeys) {
         super(screen);
         textField = new TextField(text, skin);
-        setHideableFromCLick(hideableFromCLick);
+        setHideableFromClick(hideableFromClick);
         setHideableFromKeys(hideableFromKeys);
 
         closingAction = new Action() {
@@ -37,7 +37,7 @@ public class MBTextField extends MBComponent{
         };
     }
 
-    public void setHideableFromCLick(boolean isHidable){
+    public void setHideableFromClick(boolean isHidable){
         if(isHidable){
             hideFromCLick = new InputListener() {
                 public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -98,11 +98,9 @@ public class MBTextField extends MBComponent{
         super.setSoftVisible(visible);
         if(visible){
             if(hideFromCLick != null) stage.addCaptureListener(hideFromCLick);
-//            if(hideFromKeys != null) stage.addCaptureListener(hideFromKeys);
         }
         else{
             if(hideFromCLick != null) stage.removeCaptureListener(hideFromCLick);
-//            if(hideFromKeys != null) stage.removeCaptureListener(hideFromKeys);
         }
     }
     @Override

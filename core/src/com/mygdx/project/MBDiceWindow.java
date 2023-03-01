@@ -4,11 +4,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+
+import java.util.ArrayList;
 
 public class MBDiceWindow extends MBWindow{
     //region row 1
@@ -17,6 +20,7 @@ public class MBDiceWindow extends MBWindow{
     MBButton d8;
     MBButton d12;
     MBButton d20;
+    MBLabel dCustomL;
     MBTextField dCustom;
     //endregion
     //region row 2
@@ -65,7 +69,9 @@ public class MBDiceWindow extends MBWindow{
         d12 = new MBButton("d12", mainScreen, "toggle");
         d20 = new MBButton("d20", mainScreen, "toggle");
         d20.getButton().setChecked(true);
-        dCustom = new MBTextField("d100", mainScreen);
+        dCustomL = new MBLabel("d:", mainScreen);
+        dCustomL.setAlignment(Align.left);
+        dCustom = new MBTextField("100", mainScreen);
         dCustom.setAlignment(Align.center);
         //endregion
         //region row 2
@@ -140,7 +146,7 @@ public class MBDiceWindow extends MBWindow{
 
         //region dice buttons
         final MBButton[] diceButtons = new MBButton[]{d4, d6, d8, d12, d20};
-        final String[] numOfDices = new String[]{d4Num.getText(), d6Num.getText(), d8Num.getText(), d12Num.getText(), d20Num.getText()};
+        final MBTextField[] numOfDiceTFs = new MBTextField[]{d4Num, d6Num, d8Num, d12Num, d20Num, dCustomNum};
 
         for (int i = 0; i < diceButtons.length; i++) {
             final int finalI = i;
@@ -154,6 +160,8 @@ public class MBDiceWindow extends MBWindow{
                         else if (finalI == 3) rolledDice = 12;
                         else rolledDice = 20;
 
+                        numberOfDice = findNumber(numOfDiceTFs[finalI].getText());
+
                         for (int j = 0; j < diceButtons.length; j++) {
                             //unchecks all the other buttons
                             if (j != finalI) diceButtons[j].getButton().setChecked(false);
@@ -162,8 +170,37 @@ public class MBDiceWindow extends MBWindow{
                     else {
                         for (int j = 0; j < diceButtons.length; j++) {
                             if(diceButtons[j].getButton().isChecked()) break;
-                            else if(j == diceButtons.length - 1) rolledDice = 100;
+                            else if(j == diceButtons.length - 1){
+                                rolledDice = findNumber(dCustom.getText());
+                                numberOfDice = findNumber(dCustomNum.getText());
+                            }
                         }
+                    }
+                }
+            });
+        }
+        //endregion
+
+        //region tf listeners
+        dCustom.setKeyListener(new TextField.TextFieldListener() {
+            @Override
+            public void keyTyped(TextField textField, char c) {
+                for (int i = 0; i < diceButtons.length; i++) {
+                    if(diceButtons[i].getButton().isChecked()) break;
+                    else if(i == diceButtons.length - 1) rolledDice = findNumber(dCustom.getText());
+                }
+            }
+        });
+        for (int i = 0; i < numOfDiceTFs.length; i++) {
+            final int finalI = i;
+            numOfDiceTFs[i].setKeyListener(new TextField.TextFieldListener() {
+                @Override
+                public void keyTyped(TextField textField, char c) {
+                    try {
+                        if (diceButtons[finalI].getButton().isChecked())
+                            numberOfDice = findNumber(numOfDiceTFs[finalI].getText());
+                    } catch (ArrayIndexOutOfBoundsException a){
+                        numberOfDice = findNumber(numOfDiceTFs[finalI].getText());
                     }
                 }
             });
@@ -173,8 +210,19 @@ public class MBDiceWindow extends MBWindow{
         dice.addListener(new ClickListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                System.out.println(dice.roll(20));
-                rollLabel.setText("Result: " + dice.roll(rolledDice));
+//                rollLabel.setText("Result: " + (rolledDice > 0 ? dice.roll(rolledDice) : -1));
+                int totalRoll = 0;
+                ArrayList<Integer> rolls = new ArrayList<>();
+                for (int i = 1; i <= numberOfDice; i++) {
+                    if(rolledDice < 1) {
+                        totalRoll = 0;
+                        break;
+                    }
+                    int roll = dice.roll(rolledDice);
+                    totalRoll += roll;
+                    rolls.add(roll);
+                }
+                rollLabel.setText("Result: " + (totalRoll > 0 ? totalRoll  + "\n" + rolls: -1));
                 return true;
             }
         });
@@ -201,25 +249,26 @@ public class MBDiceWindow extends MBWindow{
         window.add(d8.getActor()).expandX().fill();
         window.add(d12.getActor()).expandX().fill();
         window.add(d20.getActor()).expandX().fill();
-        window.add(dCustom.getActor()).expandX().fill().width(50);
+        window.add(dCustomL.getActor()).expandX().fill().width(15);
+        window.add(dCustom.getActor()).expandX().fill().width(35);
         window.row();
         window.add(d4Num.getActor()).width(49).fill();
         window.add(d6Num.getActor()).width(49).fill();
         window.add(d8Num.getActor()).width(49).fill();
         window.add(d12Num.getActor()).width(49).fill();
         window.add(d20Num.getActor()).width(49).fill();
-        window.add(dCustomNum.getActor()).width(50).fill();
+        window.add(dCustomNum.getActor()).width(50).fill().colspan(2);
         window.row();
         window.add(typeBox.getActor()).width(95).fillX().colspan(2).padTop(30);
         window.add(dice.getActor()).width(90).height(90).expand().colspan(2).padTop(30);
-        window.add(statsBox.getActor()).width(95).fillX().colspan(2).padTop(30);
+        window.add(statsBox.getActor()).width(95).fillX().colspan(3).padTop(30);
         window.row();
-        window.add(rollLabel.getActor()).height(56).fill().colspan(6);
+        window.add(rollLabel.getActor()).height(56).fill().colspan(7);
         window.row();
         window.add(bonusModL.getActor()).fill().colspan(3).padBottom(10);
-        window.add(bonusModTF.getActor()).width(95).left().colspan(3).padBottom(10);
+        window.add(bonusModTF.getActor()).width(95).left().colspan(4).padBottom(10);
         window.row();
-        window.add(playerBox.getActor()).fill().colspan(6).padBottom(4);
+        window.add(playerBox.getActor()).fill().colspan(7).padBottom(4);
 
         //region making sure selectboxes are on top
         Button actorLast = new Button(skin);
@@ -243,28 +292,29 @@ public class MBDiceWindow extends MBWindow{
         window.add(d8.getActor()).expandX().fill();
         window.add(d12.getActor()).expandX().fill();
         window.add(d20.getActor()).expandX().fill();
-        window.add(dCustom.getActor()).expandX().fill().width(50);
+        window.add(dCustomL.getActor()).expandX().fill().width(15);
+        window.add(dCustom.getActor()).expandX().fill().width(35);
         window.row();
         window.add(d4Num.getActor()).width(49).fill();
         window.add(d6Num.getActor()).width(49).fill();
         window.add(d8Num.getActor()).width(49).fill();
         window.add(d12Num.getActor()).width(49).fill();
         window.add(d20Num.getActor()).width(49).fill();
-        window.add(dCustomNum.getActor()).width(50).fill();
+        window.add(dCustomNum.getActor()).width(50).fill().colspan(2);
         window.row();
         window.add(typeBox.getActor()).width(95).fillX().colspan(2).padTop(30);
         window.add(dice.getActor()).width(90).height(90).expand().colspan(2).padTop(30);
-        if(typeIndex == 0) window.add(statsBox.getActor()).width(95).fillX().colspan(2).padTop(30);
-        else if(typeIndex == 1) window.add(skillsBox.getActor()).width(95).fillX().colspan(2).padTop(30);
-        else if(typeIndex == 2) window.add(savesBox.getActor()).width(95).fillX().colspan(2).padTop(30);
-        else if(typeIndex == 3) window.add(atksBox.getActor()).width(95).fillX().colspan(2).padTop(30);
+        if(typeIndex == 0) window.add(statsBox.getActor()).width(95).fillX().colspan(3).padTop(30);
+        else if(typeIndex == 1) window.add(skillsBox.getActor()).width(95).fillX().colspan(3).padTop(30);
+        else if(typeIndex == 2) window.add(savesBox.getActor()).width(95).fillX().colspan(3).padTop(30);
+        else if(typeIndex == 3) window.add(atksBox.getActor()).width(95).fillX().colspan(3).padTop(30);
         window.row();
-        window.add(rollLabel.getActor()).height(56).fill().colspan(6);
+        window.add(rollLabel.getActor()).height(56).fill().colspan(7);
         window.row();
         window.add(bonusModL.getActor()).fill().colspan(3).padBottom(10);
-        window.add(bonusModTF.getActor()).width(95).left().colspan(3).padBottom(10);
+        window.add(bonusModTF.getActor()).width(95).left().colspan(4).padBottom(10);
         window.row();
-        window.add(playerBox.getActor()).fill().colspan(6).padBottom(4);
+        window.add(playerBox.getActor()).fill().colspan(7).padBottom(4);
 
         //region making sure selectboxes are on top
         Button actorLast = new Button(skin);
@@ -285,6 +335,13 @@ public class MBDiceWindow extends MBWindow{
         //endregion
     }
 
+    private int findNumber(String text){
+        try{
+            return Integer.parseInt(text);
+        } catch (NumberFormatException e){
+            return 0;
+        }
+    }
     @Override
     public void render(){
         typeBox.setInWindow(true);
