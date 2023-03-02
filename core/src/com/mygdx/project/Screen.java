@@ -245,6 +245,9 @@ public class Screen implements Renderable{
         return layers;
     }
 
+    public Stats getStat(){
+        return null;
+    }
     @Override
     public boolean isFocused() {
         return inFocusMode;

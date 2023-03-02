@@ -210,7 +210,6 @@ public class MBDiceWindow extends MBWindow{
         dice.addListener(new ClickListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-//                rollLabel.setText("Result: " + (rolledDice > 0 ? dice.roll(rolledDice) : -1));
                 int totalRoll = 0;
                 ArrayList<Integer> rolls = new ArrayList<>();
                 for (int i = 1; i <= numberOfDice; i++) {
@@ -222,7 +221,7 @@ public class MBDiceWindow extends MBWindow{
                     totalRoll += roll;
                     rolls.add(roll);
                 }
-                rollLabel.setText("Result: " + (totalRoll > 0 ? totalRoll  + "\n" + rolls: -1));
+                rollLabel.setText("Result: " + (totalRoll > 0 ? totalRoll  + "\n" + rolls + "\n" + "hi" : -1));
                 return true;
             }
         });
@@ -259,14 +258,14 @@ public class MBDiceWindow extends MBWindow{
         window.add(d20Num.getActor()).width(49).fill();
         window.add(dCustomNum.getActor()).width(50).fill().colspan(2);
         window.row();
-        window.add(typeBox.getActor()).width(95).fillX().colspan(2).padTop(30);
-        window.add(dice.getActor()).width(90).height(90).expand().colspan(2).padTop(30);
-        window.add(statsBox.getActor()).width(95).fillX().colspan(3).padTop(30);
+        window.add(typeBox.getActor()).width(95).fillX().colspan(2).padTop(35);
+        window.add(dice.getActor()).width(90).height(90).expand().colspan(2).padTop(35);
+        window.add(statsBox.getActor()).width(95).fillX().colspan(3).padTop(35);
         window.row();
-        window.add(rollLabel.getActor()).height(56).fill().colspan(7);
+        window.add(rollLabel.getActor()).height(66).fill().colspan(7);
         window.row();
-        window.add(bonusModL.getActor()).fill().colspan(3).padBottom(10);
-        window.add(bonusModTF.getActor()).width(95).left().colspan(4).padBottom(10);
+        window.add(bonusModL.getActor()).fill().colspan(3).padBottom(5);
+        window.add(bonusModTF.getActor()).width(95).left().colspan(4).padBottom(5);
         window.row();
         window.add(playerBox.getActor()).fill().colspan(7).padBottom(4);
 
@@ -302,17 +301,17 @@ public class MBDiceWindow extends MBWindow{
         window.add(d20Num.getActor()).width(49).fill();
         window.add(dCustomNum.getActor()).width(50).fill().colspan(2);
         window.row();
-        window.add(typeBox.getActor()).width(95).fillX().colspan(2).padTop(30);
-        window.add(dice.getActor()).width(90).height(90).expand().colspan(2).padTop(30);
-        if(typeIndex == 0) window.add(statsBox.getActor()).width(95).fillX().colspan(3).padTop(30);
-        else if(typeIndex == 1) window.add(skillsBox.getActor()).width(95).fillX().colspan(3).padTop(30);
-        else if(typeIndex == 2) window.add(savesBox.getActor()).width(95).fillX().colspan(3).padTop(30);
-        else if(typeIndex == 3) window.add(atksBox.getActor()).width(95).fillX().colspan(3).padTop(30);
+        window.add(typeBox.getActor()).width(95).fillX().colspan(2).padTop(35);
+        window.add(dice.getActor()).width(90).height(90).expand().colspan(2).padTop(35);
+        if(typeIndex == 0) window.add(statsBox.getActor()).width(95).fillX().colspan(3).padTop(35);
+        else if(typeIndex == 1) window.add(skillsBox.getActor()).width(95).fillX().colspan(3).padTop(35);
+        else if(typeIndex == 2) window.add(savesBox.getActor()).width(95).fillX().colspan(3).padTop(35);
+        else if(typeIndex == 3) window.add(atksBox.getActor()).width(95).fillX().colspan(3).padTop(35);
         window.row();
-        window.add(rollLabel.getActor()).height(56).fill().colspan(7);
+        window.add(rollLabel.getActor()).height(66).fill().colspan(7);
         window.row();
-        window.add(bonusModL.getActor()).fill().colspan(3).padBottom(10);
-        window.add(bonusModTF.getActor()).width(95).left().colspan(4).padBottom(10);
+        window.add(bonusModL.getActor()).fill().colspan(3).padBottom(5);
+        window.add(bonusModTF.getActor()).width(95).left().colspan(4).padBottom(5);
         window.row();
         window.add(playerBox.getActor()).fill().colspan(7).padBottom(4);
 
@@ -336,11 +335,7 @@ public class MBDiceWindow extends MBWindow{
     }
 
     private int findNumber(String text){
-        try{
-            return Integer.parseInt(text);
-        } catch (NumberFormatException e){
-            return 0;
-        }
+        return Stats.findNumber(text);
     }
     @Override
     public void render(){

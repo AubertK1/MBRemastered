@@ -12,9 +12,11 @@ public class PlayerScreen extends Screen{
     //weapons or spell items for the itempanel
     private int itemTab = 1;
     private int statTab = 1;
+    private final Stats playerStats;
 
-    public PlayerScreen(final String player) {
+    public PlayerScreen(final String playerName) {
         super();
+        playerStats = new Stats();
         //setting up panels
         topPanel = new Panel("assets\\Panels\\TopbarPanel.png",
                 new Rectangle(110, 950, 780, 50), this);
@@ -555,7 +557,7 @@ public class PlayerScreen extends Screen{
             }
         });
 
-        setName(player);
+        setName(playerName);
 
         final MBLabel playerNameLabel = new MBLabel(name, this);
         playerNameLabel.setPosition(topPanel.getX() + 10, topPanel.getY() + (topPanel.getHeight()/2) - (playerNameLabel.getHeight()/2));
@@ -626,5 +628,9 @@ public class PlayerScreen extends Screen{
         masterBoard.setSize(masterboardPanel.getWidth()-2, masterboardPanel.getHeight()-2);
         masterboardPanel.add(masterBoard);
         //endregion
+    }
+
+    public Stats getStat(){
+        return playerStats;
     }
 }
