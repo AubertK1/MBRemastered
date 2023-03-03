@@ -55,7 +55,10 @@ public class MBDiceWindow extends MBWindow{
 
     private int rolledDice = 20;
     private int numberOfDice = 1;
-    public MBDiceWindow(MBComponent parent, MainScreen mainScreen, boolean diceWindow) {
+    String[] selectedList = new String[0];
+    MBSelectBox selectedBox;
+    Screen selectedScreen;
+    public MBDiceWindow(MBComponent parent, final MainScreen mainScreen, boolean diceWindow) {
         super(parent, mainScreen, diceWindow);
         parentActor = parent;
         parentActor.hasWindow = true;
@@ -98,15 +101,22 @@ public class MBDiceWindow extends MBWindow{
                 switch (word) {
                     case "Stat":
                         reformat(0);
+                        selectedList = Stats.basestats;
+                        selectedBox = statsBox;
                         break;
                     case "Skill":
                         reformat(1);
+                        selectedList = Stats.skills;
+                        selectedBox = skillsBox;
                         break;
                     case "Saving Throw":
                         reformat(2);
+                        selectedList = Stats.saves;
+                        selectedBox = savesBox;
                         break;
                     case "Attack":
                         reformat(3);
+                        selectedBox = statsBox;
                         break;
                 }
             }
@@ -115,17 +125,19 @@ public class MBDiceWindow extends MBWindow{
         dice = new MBDice(mainScreen);
 
         statsBox = new MBSelectBox(mainScreen);
-        statsBox.setItems("Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma");
+        statsBox.setItems(Stats.basestats);
         statsBox.setInWindow(true);
         skillsBox = new MBSelectBox(mainScreen);
-        skillsBox.setItems("A", "B", "C");
+        skillsBox.setItems(Stats.skills);
         skillsBox.setInWindow(true);
         savesBox = new MBSelectBox(mainScreen);
-        savesBox.setItems("Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma");
+        savesBox.setItems(Stats.saves);
         savesBox.setInWindow(true);
         atksBox = new MBSelectBox(mainScreen);
         atksBox.setItems("Weapon 1", "Weapon 2");
         atksBox.setInWindow(true);
+
+        selectedBox = statsBox;
         //endregion
         //region row 4
         rollLabel = new MBLabel("Result: ", mainScreen);
@@ -137,6 +149,14 @@ public class MBDiceWindow extends MBWindow{
         players.removeIndex(players.size - 1);
         playerBox.setItems(players);
         playerBox.setInWindow(true);
+        playerBox.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                selectedScreen = mainScreen.getScreenByName(playerBox.getSelected());
+            }
+        });
+
+        selectedScreen = mainScreen.getScreenByName(playerBox.getSelected());
         //endregion
         //region row 6
         bonusModL = new MBLabel("Bonus Modifier: ", mainScreen);
@@ -212,6 +232,7 @@ public class MBDiceWindow extends MBWindow{
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 int totalRoll = 0;
                 ArrayList<Integer> rolls = new ArrayList<>();
+                ArrayList<Integer> mods = new ArrayList<>();
                 for (int i = 1; i <= numberOfDice; i++) {
                     if(rolledDice < 1) {
                         totalRoll = 0;
@@ -221,7 +242,13 @@ public class MBDiceWindow extends MBWindow{
                     totalRoll += roll;
                     rolls.add(roll);
                 }
-                rollLabel.setText("Result: " + (totalRoll > 0 ? totalRoll  + "\n" + rolls + "\n" + "hi" : -1));
+                Stats.Stat stat1 = Stats.statIndexToStat(selectedList, selectedBox.dropdown.getSelectedIndex());
+                int mod1 = selectedScreen.getStats().getStat(stat1);
+                mods.add(mod1);
+                mods.add(Stats.findNumber(bonusModTF.getText()));
+                
+//                mods.add(Stats.findNumber());
+                rollLabel.setText("Result: " + (totalRoll > 0 ? totalRoll  + "\n" + rolls + "\n" + mods : -1));
                 return true;
             }
         });
@@ -337,6 +364,7 @@ public class MBDiceWindow extends MBWindow{
     private int findNumber(String text){
         return Stats.findNumber(text);
     }
+
     @Override
     public void render(){
         typeBox.setInWindow(true);

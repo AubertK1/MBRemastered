@@ -328,28 +328,28 @@ public class PlayerScreen extends Screen{
         MBLabel chaL = new MBLabel("CHA", this);
         chaL.setPosition(chaPanel.getX() + (chaPanel.getWidth()/2) - (chaL.getWidth()/2), 903);
         //creating the textfields to put in the stats' minipanels
-        MBTextField strTF = new MBTextField("", this);
+        MBTextField strTF = new MBTextField("", this, Stats.Stat.STR);
         //size and positions set by eyeballing until it looked nice
         strTF.setSize(42, 35);
         strTF.setPosition(124, 873);
         strTF.getTextField().setAlignment(Align.center);
-        MBTextField dexTF = new MBTextField("", this);
+        MBTextField dexTF = new MBTextField("", this, Stats.Stat.DEX);
         dexTF.setSize(42, 35);
         dexTF.setPosition(184, 873);
         dexTF.getTextField().setAlignment(Align.center);
-        MBTextField conTF = new MBTextField("", this);
+        MBTextField conTF = new MBTextField("", this, Stats.Stat.CON);
         conTF.setSize(42, 35);
         conTF.setPosition(244, 873);
         conTF.getTextField().setAlignment(Align.center);
-        MBTextField intTF = new MBTextField("", this);
+        MBTextField intTF = new MBTextField("", this, Stats.Stat.INT);
         intTF.setSize(42, 35);
         intTF.setPosition(304, 873);
         intTF.getTextField().setAlignment(Align.center);
-        MBTextField wisTF = new MBTextField("", this);
+        MBTextField wisTF = new MBTextField("", this, Stats.Stat.WIS);
         wisTF.setSize(42, 35);
         wisTF.setPosition(364, 873);
         wisTF.getTextField().setAlignment(Align.center);
-        MBTextField chaTF = new MBTextField("", this);
+        MBTextField chaTF = new MBTextField("", this, Stats.Stat.CHA);
         chaTF.setSize(42, 35);
         chaTF.setPosition(424, 873);
         chaTF.getTextField().setAlignment(Align.center);
@@ -430,9 +430,7 @@ public class PlayerScreen extends Screen{
         skillsPanel.setColumns(2);
         skillsPanel.setRows(9);
 
-        String[] skills = new String[]{"Acrobatics", "Animal Handling", "Arcana", "Athletics", "Deception", "History",
-                "Insight", "Intimidation", "Investigation", "Medicine", "Nature", "Perception", "Performance", "Persuasion",
-                "Religion", "Sleight of Hand", "Stealth", "Survival"};
+        String[] skills = Stats.skills;
 
         for (int i = 0; i < skills.length; i++) {
             if(i == 0){ //initializing the fist skill
@@ -630,7 +628,7 @@ public class PlayerScreen extends Screen{
         //endregion
     }
 
-    public Stats getStat(){
+    public Stats getStats(){
         return playerStats;
     }
 }

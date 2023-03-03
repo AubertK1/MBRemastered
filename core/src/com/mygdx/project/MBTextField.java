@@ -14,9 +14,15 @@ public class MBTextField extends MBComponent{
     private Action closingAction;
     private final Action actionReset;
     public MBTextField(String text, Screen screen) {
-        this(text, screen, false, false);
+        this(text, screen, null, false, false);
+    }
+    public MBTextField(String text, Screen screen, Stats.Stat stat) {
+        this(text, screen, stat, false, false);
     }
     public MBTextField(String text, Screen screen, boolean hideableFromClick, boolean hideableFromKeys) {
+        this(text, screen, null, false, false);
+    }
+    public MBTextField(String text, final Screen screen, final Stats.Stat stat, boolean hideableFromClick, boolean hideableFromKeys) {
         super(screen);
         textField = new TextField(text, skin);
         setHideableFromClick(hideableFromClick);
@@ -35,6 +41,15 @@ public class MBTextField extends MBComponent{
                 return false;
             }
         };
+
+        if(stat != null){
+            setKeyListener(new TextField.TextFieldListener() {
+                @Override
+                public void keyTyped(TextField textField, char c) {
+                    screen.getStats().setStat(stat, getText());
+                }
+            });
+        }
     }
 
     public void setHideableFromClick(boolean isHidable){
