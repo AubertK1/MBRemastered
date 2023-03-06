@@ -273,7 +273,7 @@ public class MBDiceWindow extends MBWindow{
         window.setClip(false);
         window.setTransform(true);
         window.setResizable(false);
-        window.setKeepWithinStage(true);
+        window.setKeepWithinStage(false);
         final Button closeButton = new ImageButton(skin, "delete-button");
         closeButton.addListener(new ClickListener() {
             @Override

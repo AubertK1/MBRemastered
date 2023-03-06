@@ -9,7 +9,7 @@ public class Stats {
     public enum Stat {
         STR, DEX, CON, INT, WIS, CHA,
         ACRO, ANIM, ARCA, ATHL, DECE, HIST, INSI, INTI, INVE, MEDI, NATU, PERC, PERF, PERS, RELI, SLEI, STEA, SURV,
-        STRst, DEXst, CONst, INTst, WISst, CHAst,
+        STRst, DEXst, CONst, INTst, WISst, CHAst
     }
     public static final String[] basestats = new String[]{"Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"};
     public static final String[] skills = new String[]{"Acrobatics", "Animal Handling", "Arcana", "Athletics", "Deception", "History",
