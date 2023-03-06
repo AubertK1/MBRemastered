@@ -436,9 +436,9 @@ public class PlayerScreen extends Screen{
             if(i == 0){ //initializing the fist skill
                 float skillHeight = (skillsPanel.getHeight() - 40) / 9f;
                 skillsPanel.add(new SkillItem(new Rectangle(skillsPanel.getX(), skillsPanel.getY() + skillsPanel.getHeight() - skillHeight, (skillsPanel.getWidth() - 2.5f) / 2f, skillHeight),
-                        this, skills[0]));
+                        this, skills[0], Stats.statIndexToStat(Stats.skills, i)));
             }
-            else skillsPanel.add(new SkillItem(this, skills[i]));
+            else skillsPanel.add(new SkillItem(this, skills[i], Stats.statIndexToStat(Stats.skills, i)));
         }
 
         savesPanel.setRows(6);
@@ -449,9 +449,9 @@ public class PlayerScreen extends Screen{
             if(i == 0){ //initializing the fist skill
                 float saveHeight = (savesPanel.getHeight() - 25) / 6f;
                 savesPanel.add(new SkillItem(new Rectangle(savesPanel.getX(), savesPanel.getY() + savesPanel.getHeight() - saveHeight, savesPanel.getWidth(), saveHeight),
-                        this, saves[0]));
+                        this, saves[0], Stats.statIndexToStat(Stats.saves, i)));
             }
-            else savesPanel.add(new SkillItem(this, saves[i]));
+            else savesPanel.add(new SkillItem(this, saves[i], Stats.statIndexToStat(Stats.saves, i)));
         }
 
         if(statTab == 1){

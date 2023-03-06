@@ -12,14 +12,17 @@ import com.badlogic.gdx.utils.Align;
 public class SkillItem extends Item{
     private String skill = "";
     private int mod = 0;
+    private final Stats.Stat stat;
 
-    public SkillItem(Screen screen, String skill) {
+    public SkillItem(Screen screen, String skill, Stats.Stat stat) {
         super("assets\\Panels\\MiniItemPanel.png", screen);
         this.skill = skill;
+        this.stat = stat;
     }
-    public SkillItem(Rectangle position, Screen screen, String skill) {
+    public SkillItem(Rectangle position, Screen screen, String skill, Stats.Stat stat) {
         super("assets\\Panels\\MiniItemPanel.png", position, screen);
         this.skill = skill;
+        this.stat = stat;
     }
 
     public void initialize() {
@@ -39,7 +42,7 @@ public class SkillItem extends Item{
         ((TextButton)editButton.getButton()).getLabel().setAlignment(Align.left);
         editButton.aFloat = 0;
 
-        final MBTextField modTF = new MBTextField("0", screen, true, true);
+        final MBTextField modTF = new MBTextField("0", screen, stat, true, true);
         modTF.setSize(27, getHeight() - 6);
         modTF.setPosition(getX() + getWidth() - modTF.getWidth() - 3, getY() + 3);
         modTF.setVisible(false);

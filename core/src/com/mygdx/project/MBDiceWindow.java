@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MBDiceWindow extends MBWindow{
     //region row 1
@@ -93,7 +94,7 @@ public class MBDiceWindow extends MBWindow{
         //endregion
         //region row 3
         typeBox = new MBSelectBox(mainScreen);
-        typeBox.setItems("Stat", "Skill", "Saving Throw", "Attack");
+        typeBox.setItems("Stat", "Skill", "Saving Throw", "Attack", "None");
         typeBox.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -117,6 +118,10 @@ public class MBDiceWindow extends MBWindow{
                     case "Attack":
                         reformat(3);
                         selectedBox = statsBox;
+                        break;
+                    case "None":
+                        reformat(4);
+                        selectedBox = null;
                         break;
                 }
             }
@@ -231,24 +236,34 @@ public class MBDiceWindow extends MBWindow{
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 int totalRoll = 0;
+                int natRoll = 0;
                 ArrayList<Integer> rolls = new ArrayList<>();
                 ArrayList<Integer> mods = new ArrayList<>();
                 for (int i = 1; i <= numberOfDice; i++) {
                     if(rolledDice < 1) {
                         totalRoll = 0;
+                        natRoll = 0;
                         break;
                     }
                     int roll = dice.roll(rolledDice);
                     totalRoll += roll;
+                    natRoll += roll;
                     rolls.add(roll);
                 }
-                Stats.Stat stat1 = Stats.statIndexToStat(selectedList, selectedBox.dropdown.getSelectedIndex());
-                int mod1 = selectedScreen.getStats().getStat(stat1);
-                mods.add(mod1);
+                if(selectedBox != null) {
+                    Stats.Stat stat1 = Stats.statIndexToStat(selectedList, selectedBox.dropdown.getSelectedIndex());
+                    int mod1 = selectedScreen.getStats().getStat(stat1);
+                    mods.add(mod1);
+                }
                 mods.add(Stats.findNumber(bonusModTF.getText()));
-                
+
+                String[] stringMods = new String[mods.size()];
+                for (int i = 0; i < stringMods.length; i++) {
+                    totalRoll += mods.get(i);
+                    stringMods[i] = mods.get(i) > 0 ? "+" + mods.get(i) : String.valueOf(mods.get(i));
+                }
 //                mods.add(Stats.findNumber());
-                rollLabel.setText("Result: " + (totalRoll > 0 ? totalRoll  + "\n" + rolls + "\n" + mods : -1));
+                rollLabel.setText("Result: " + (natRoll > 0 ? totalRoll  + "\n" + rolls + "\n" + Arrays.toString(stringMods) : -1));
                 return true;
             }
         });
@@ -334,6 +349,7 @@ public class MBDiceWindow extends MBWindow{
         else if(typeIndex == 1) window.add(skillsBox.getActor()).width(95).fillX().colspan(3).padTop(35);
         else if(typeIndex == 2) window.add(savesBox.getActor()).width(95).fillX().colspan(3).padTop(35);
         else if(typeIndex == 3) window.add(atksBox.getActor()).width(95).fillX().colspan(3).padTop(35);
+        else if(typeIndex == 4) ;
         window.row();
         window.add(rollLabel.getActor()).height(66).fill().colspan(7);
         window.row();
