@@ -13,6 +13,7 @@ public class MBTextField extends MBComponent{
     private InputListener hideFromKeys;
     private Action closingAction;
     private final Action actionReset;
+    private Stats.Stat stat;
     public MBTextField(String text, Screen screen) {
         this(text, screen, null, false, false);
     }
@@ -20,7 +21,7 @@ public class MBTextField extends MBComponent{
         this(text, screen, stat, false, false);
     }
     public MBTextField(String text, Screen screen, boolean hideableFromClick, boolean hideableFromKeys) {
-        this(text, screen, null, false, false);
+        this(text, screen, null, hideableFromClick, hideableFromKeys);
     }
     public MBTextField(String text, final Screen screen, final Stats.Stat stat, boolean hideableFromClick, boolean hideableFromKeys) {
         super(screen);
@@ -43,6 +44,7 @@ public class MBTextField extends MBComponent{
         };
 
         if(stat != null){
+            this.stat = stat;
             setKeyListener(new TextField.TextFieldListener() {
                 @Override
                 public void keyTyped(TextField textField, char c) {
@@ -149,5 +151,12 @@ public class MBTextField extends MBComponent{
     }
     public void setText(String text){
         textField.setText(text);
+    }
+
+    public Stats.Stat getStat(){
+        return stat;
+    }
+    public void setStatValue(int value){
+        screen.getStats().setStat(stat, value);
     }
 }

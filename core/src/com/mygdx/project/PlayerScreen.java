@@ -1,6 +1,7 @@
 package com.mygdx.project;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -298,6 +299,7 @@ public class PlayerScreen extends Screen{
         //endregion
         //endregion
 
+        //region stats bar
         //region stats
         //creating all the stats panels to hold the player stats
         final Minipanel strPanel, dexPanel, conPanel, intPanel, wisPanel, chaPanel;
@@ -313,59 +315,83 @@ public class PlayerScreen extends Screen{
                 new Rectangle(intPanel.getX()+intPanel.getWidth()+10, strPanel.getY(), 50, 60), this);
         chaPanel = new Minipanel("assets\\Panels\\minipanel2.png",
                 new Rectangle(wisPanel.getX()+wisPanel.getWidth()+10, strPanel.getY(), 50, 60), this);
-        //creating the labels to put in the stats' minipanels
-        MBLabel strL = new MBLabel("STR", this);
-        //setting position equal to its minipanel's left border + half the minipanel's width - half the label's width
-        strL.setPosition(strPanel.getX() + (strPanel.getWidth()/2) - (strL.getWidth()/2), 903);
-        MBLabel dexL = new MBLabel("DEX", this);
-        dexL.setPosition(dexPanel.getX() + (dexPanel.getWidth()/2) - (dexL.getWidth()/2), 903);
-        MBLabel conL = new MBLabel("CON", this);
-        conL.setPosition(conPanel.getX() + (conPanel.getWidth()/2) - (conL.getWidth()/2), 903);
-        MBLabel intL = new MBLabel("INT", this);
-        intL.setPosition(intPanel.getX() + (intPanel.getWidth()/2) - (intL.getWidth()/2), 903);
-        MBLabel wisL = new MBLabel("WIS", this);
-        wisL.setPosition(wisPanel.getX() + (wisPanel.getWidth()/2) - (wisL.getWidth()/2), 903);
-        MBLabel chaL = new MBLabel("CHA", this);
-        chaL.setPosition(chaPanel.getX() + (chaPanel.getWidth()/2) - (chaL.getWidth()/2), 903);
-        //creating the textfields to put in the stats' minipanels
-        MBTextField strTF = new MBTextField("", this, Stats.Stat.STR);
-        //size and positions set by eyeballing until it looked nice
-        strTF.setSize(42, 35);
-        strTF.setPosition(124, 873);
-        strTF.getTextField().setAlignment(Align.center);
-        MBTextField dexTF = new MBTextField("", this, Stats.Stat.DEX);
-        dexTF.setSize(42, 35);
-        dexTF.setPosition(184, 873);
-        dexTF.getTextField().setAlignment(Align.center);
-        MBTextField conTF = new MBTextField("", this, Stats.Stat.CON);
-        conTF.setSize(42, 35);
-        conTF.setPosition(244, 873);
-        conTF.getTextField().setAlignment(Align.center);
-        MBTextField intTF = new MBTextField("", this, Stats.Stat.INT);
-        intTF.setSize(42, 35);
-        intTF.setPosition(304, 873);
-        intTF.getTextField().setAlignment(Align.center);
-        MBTextField wisTF = new MBTextField("", this, Stats.Stat.WIS);
-        wisTF.setSize(42, 35);
-        wisTF.setPosition(364, 873);
-        wisTF.getTextField().setAlignment(Align.center);
-        MBTextField chaTF = new MBTextField("", this, Stats.Stat.CHA);
-        chaTF.setSize(42, 35);
-        chaTF.setPosition(424, 873);
-        chaTF.getTextField().setAlignment(Align.center);
-        //adding components to their minipanels
-        strPanel.add(strTF);
-        strPanel.add(strL);
-        dexPanel.add(dexTF);
-        dexPanel.add(dexL);
-        conPanel.add(conTF);
-        conPanel.add(conL);
-        intPanel.add(intTF);
-        intPanel.add(intL);
-        wisPanel.add(wisTF);
-        wisPanel.add(wisL);
-        chaPanel.add(chaTF);
-        chaPanel.add(chaL);
+        Minipanel[] statpanels = new Minipanel[]{strPanel, dexPanel, conPanel, intPanel, wisPanel, chaPanel};
+        //setting the layout for the stats panels
+        for (int i = 0; i < statpanels.length; i++) {
+            Minipanel panel = statpanels[i];
+            String[] lblTexts = new String[]{"STR", "DEX", "CON", "INT", "WIS", "CHA"};
+
+            MBLabel lbl = new MBLabel(lblTexts[i], this);
+            lbl.setPosition(panel.getX() + (panel.getWidth()/2) - (lbl.getWidth()/2), 903);
+
+            final MBTextField tf = new MBTextField("10", this, Stats.statIndexToStat(Stats.basestats, i), true, true);
+            tf.setSize(42, 35);
+            tf.setPosition(panel.getX() + 4, panel.getY() + 3);
+            tf.getTextField().setAlignment(Align.center);
+            tf.setVisible(false);
+
+            final MBButton btn = new MBButton(this);
+            btn.setSize(panel.getWidth(), panel.getHeight());
+            btn.setPosition(panel.getX(), panel.getY());
+            btn.aFloat = 0;
+
+            final MBLabel mod = new MBLabel("0", this);
+            mod.setSize(42, 29);
+            mod.setPosition(panel.getX() + 4, panel.getY() + 11);
+            mod.setAlignment(Align.center);
+            mod.getLabel().setFontScale(1.25f);
+
+            final MBLabel num = new MBLabel("10", this);
+            num.setSize(42, 5);
+            num.setPosition(panel.getX() + 4, panel.getY() + 5);
+            num.setAlignment(Align.center);
+            num.getLabel().setFontScale(.75f);
+
+            btn.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent changeEvent, Actor actor) {
+                    tf.setVisible(true);
+                    mod.setVisible(false);
+                    num.setVisible(false);
+                    btn.getButton().setTouchable(Touchable.disabled);
+                }
+                @Override
+                public boolean handle (Event event) {
+                    //if the mouse is hovered over the button...
+                    if(btn.getButton().isOver()){
+                        btn.aFloat = .35f;
+                    }
+                    else btn.aFloat = 0;
+                    if (!(event instanceof ChangeEvent)) return false;
+                    changed((ChangeEvent)event, event.getTarget());
+                    return false;
+                }
+            });
+            tf.setClosingAction(new Action() {
+                @Override
+                public boolean act(float v) {
+                    tf.setVisible(false);
+                    mod.setVisible(true);
+                    num.setVisible(true);
+                    btn.getButton().setTouchable(Touchable.enabled);
+
+                    int rawNum = Stats.findNumber(tf.getText());
+                    float modNumF = (rawNum - 10) / 2f;
+                    int modNum = (int) Math.floor(modNumF);
+                    num.setText(String.valueOf(rawNum));
+                    mod.setText(modNum > 0 ? "+" + modNum : String.valueOf(modNum));
+                    tf.setStatValue(modNum);
+                    return false;
+                }
+            });
+
+            panel.add(tf);
+            panel.add(mod);
+            panel.add(num);
+            panel.add(lbl);
+            panel.add(btn);
+        }
+        //endregion
 
         //Short Rest and Long Rest buttons
         Minipanel shortRestPanel = new Minipanel("assets\\Panels\\minipanel2.png",
@@ -384,7 +410,7 @@ public class PlayerScreen extends Screen{
                 }
             }
         });
-//		((TextButton)srButton.button).getLabel().setColor(new Color(0x8a8a8aff));
+        ((TextButton)srButton.getButton()).getLabel().setColor(new Color(0x8a8a8aff));
 
         MBButton lrButton = new MBButton("Long \n Rest", this);
         lrButton.setSize(50, 60);
@@ -397,7 +423,7 @@ public class PlayerScreen extends Screen{
                 }
             }
         });
-//      ((TextButton)lrButton.button).getLabel().setColor(new Color(0x8a8a8aff));
+        ((TextButton)lrButton.getButton()).getLabel().setColor(new Color(0x8a8a8aff));
 
         shortRestPanel.add(srButton);
         longRestPanel.add(lrButton);
