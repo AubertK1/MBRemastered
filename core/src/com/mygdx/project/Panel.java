@@ -195,7 +195,12 @@ public class Panel implements Renderable{
 
         this.layer = layer;
     }
-
+    public void setOpacity(float opacity){
+        aFloat = opacity;
+    }
+    public float getOpacity(){
+        return aFloat;
+    }
     public int getLayer(){
         return layer;
     }

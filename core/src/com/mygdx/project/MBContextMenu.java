@@ -22,9 +22,9 @@ public class MBContextMenu extends MBComponent{
     }
 
     public void render(){
-        batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
+        batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, getOpacity());
 
-        getActor().draw(batch, aFloat);
+        getActor().draw(batch, getOpacity());
         for (MBComponent innerComp: components) {
             innerComp.render();
         }

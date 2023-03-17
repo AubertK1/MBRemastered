@@ -117,13 +117,13 @@ public class Screen implements Renderable{
             reselectButton = new MBButton(this);
             reselectButton.setPosition(imageButton.getX()+10, imageButton.getY()+10);
             reselectButton.setSize(40, 40);
-            reselectButton.aFloat = .75f;
+            reselectButton.setOpacity(.75f);
 
             final MBButton deleteButton;
             deleteButton = new MBButton(this);
             deleteButton.setPosition(imageButton.getX()+60, imageButton.getY()+10);
             deleteButton.setSize(40, 40);
-            deleteButton.aFloat = .75f;
+            deleteButton.setOpacity(.75f);
 
             reselectButton.addListener(new ChangeListener() {
                 @Override
@@ -134,13 +134,13 @@ public class Screen implements Renderable{
                 @Override
                 public boolean handle (Event event) {
                     if (!reselectButton.getButton().isOver()) {
-                        deleteButton.aFloat = .75f;
-                        reselectButton.aFloat = .75f;
+                        deleteButton.setOpacity(.75f);
+                        reselectButton.setOpacity(.75f);
                     }
                     else {
-                        imageButton.aFloat = 1f;
-                        deleteButton.aFloat = .5f;
-                        reselectButton.aFloat = 1f;
+                        imageButton.setOpacity(1);
+                        deleteButton.setOpacity(.5f);
+                        reselectButton.setOpacity(1);
                     }
                     if (!(event instanceof ChangeEvent)) return false;
                     changed((ChangeEvent)event, event.getTarget());
@@ -159,13 +159,13 @@ public class Screen implements Renderable{
                 @Override
                 public boolean handle (Event event) {
                     if (!deleteButton.getButton().isOver()) {
-                        deleteButton.aFloat = .75f;
-                        reselectButton.aFloat = .75f;
+                        deleteButton.setOpacity(.75f);
+                        reselectButton.setOpacity(.75f);
                     }
                     else {
-                        imageButton.aFloat = 1f;
-                        deleteButton.aFloat = 1f;
-                        reselectButton.aFloat = .5f;
+                        imageButton.setOpacity(1);
+                        deleteButton.setOpacity(1);
+                        reselectButton.setOpacity(.5f);
                     }
                     if (!(event instanceof ChangeEvent)) return false;
                     changed((ChangeEvent)event, event.getTarget());

@@ -26,6 +26,8 @@ public class MBTextField extends MBComponent{
     public MBTextField(String text, final Screen screen, final Stats.Stat stat, boolean hideableFromClick, boolean hideableFromKeys) {
         super(screen);
         textField = new TextField(text, skin);
+        this.stat = stat;
+
         setHideableFromClick(hideableFromClick);
         setHideableFromKeys(hideableFromKeys);
 
@@ -42,16 +44,6 @@ public class MBTextField extends MBComponent{
                 return false;
             }
         };
-
-        if(stat != null){
-            this.stat = stat;
-            setKeyListener(new TextField.TextFieldListener() {
-                @Override
-                public void keyTyped(TextField textField, char c) {
-                    screen.getStats().setStat(stat, getText());
-                }
-            });
-        }
     }
 
     public void setHideableFromClick(boolean isHidable){
@@ -70,28 +62,11 @@ public class MBTextField extends MBComponent{
     }
     public void setHideableFromKeys(boolean isHidable){
         if(isHidable){
-/*
-            hideFromKeys = new InputListener(){
-                public boolean keyDown (InputEvent event, int keycode) {
-                    switch (keycode) {
-                        case Input.Keys.NUMPAD_ENTER:
-                        case Input.Keys.ENTER:
-                        case Input.Keys.ESCAPE:
-                            close();
-                            event.stop();
-                            return true;
-                    }
-                    return false;
-                }
-            };
-*/
             setKeyListener(new TextField.TextFieldListener() {
                 @Override
                 public void keyTyped(TextField textField, char c) {
+                    if(stat != null) screen.getStats().setStat(stat, getText());
                     switch (c) {
-                        case Input.Keys.NUMPAD_ENTER:
-                        case Input.Keys.ENTER:
-                        case Input.Keys.ESCAPE:
                         case '\r':
                         case '\n':
                             close();
@@ -99,7 +74,14 @@ public class MBTextField extends MBComponent{
                 }
             });
         }
-//        else hideFromKeys = null;
+        else if(stat != null){
+            setKeyListener(new TextField.TextFieldListener() {
+                @Override
+                public void keyTyped(TextField textField, char c) {
+                    screen.getStats().setStat(stat, getText());
+                }
+            });
+        }
         else setKeyListener(null);
     }
     private void close(){

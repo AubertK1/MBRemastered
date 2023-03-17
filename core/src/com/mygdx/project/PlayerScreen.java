@@ -33,7 +33,7 @@ public class PlayerScreen extends Screen{
         mainPanels.add(masterboardPanel);
 
         grayPanel = new Panel("assets\\gradient2.png", new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), this);
-        grayPanel.aFloat = .75f;
+        grayPanel.setOpacity(.75f);
 
 
         //region Reminders
@@ -54,7 +54,7 @@ public class PlayerScreen extends Screen{
         imageButton.setSize(290, 370);
         imageButton.setPosition(reminderPanel.getX() + reminderPanel.getWidth() - imageButton.getWidth() - 5, reminderTextArea.getY());
         //setting the default opacity
-        imageButton.aFloat = .5f;
+        imageButton.setOpacity(.5f);
 
         imageButton.toTextButton("ADD IMAGE");
         imageButton.setupSelectImageTextButton();
@@ -333,7 +333,7 @@ public class PlayerScreen extends Screen{
             final MBButton btn = new MBButton(this);
             btn.setSize(panel.getWidth(), panel.getHeight());
             btn.setPosition(panel.getX(), panel.getY());
-            btn.aFloat = 0;
+            btn.setOpacity(0);
 
             final MBLabel mod = new MBLabel("0", this);
             mod.setSize(42, 29);
@@ -359,9 +359,9 @@ public class PlayerScreen extends Screen{
                 public boolean handle (Event event) {
                     //if the mouse is hovered over the button...
                     if(btn.getButton().isOver()){
-                        btn.aFloat = .35f;
+                        btn.setOpacity(.35f);
                     }
-                    else btn.aFloat = 0;
+                    else btn.setOpacity(0);
                     if (!(event instanceof ChangeEvent)) return false;
                     changed((ChangeEvent)event, event.getTarget());
                     return false;
@@ -590,7 +590,7 @@ public class PlayerScreen extends Screen{
         playerNameButton.setSize(playerNameLabel.getWidth() + 40, playerNameLabel.getHeight() + 10);
         playerNameButton.setPosition(playerNameLabel.getX() - 5, playerNameLabel.getY() - 5);
         ((TextButton)playerNameButton.getButton()).getLabel().setAlignment(Align.left);
-        playerNameButton.aFloat = 0;
+        playerNameButton.setOpacity(0);
 
         final MBTextField playerNameTF = new MBTextField(name, this, true, true);
         playerNameTF.setSize(playerNameButton.getWidth(), playerNameButton.getHeight());
@@ -628,9 +628,9 @@ public class PlayerScreen extends Screen{
             public boolean handle (Event event) {
                 //if the mouse is hovered over the button...
                 if(playerNameButton.getButton().isOver()){
-                    playerNameButton.aFloat = 1;
+                    playerNameButton.setOpacity(1);
                 }
-                else playerNameButton.aFloat = 0;
+                else playerNameButton.setOpacity(0);
                 if (!(event instanceof ChangeEvent)) return false;
                 changed((ChangeEvent)event, event.getTarget());
                 return false;

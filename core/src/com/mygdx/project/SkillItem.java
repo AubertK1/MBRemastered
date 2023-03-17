@@ -40,7 +40,7 @@ public class SkillItem extends Item{
         editButton.setPosition(getX(), getY());
         editButton.setSize(getWidth(), getHeight());
         ((TextButton)editButton.getButton()).getLabel().setAlignment(Align.left);
-        editButton.aFloat = 0;
+        editButton.setOpacity(0);
 
         final MBTextField modTF = new MBTextField("0", screen, stat, true, true);
         modTF.setSize(27, getHeight() - 6);
@@ -78,9 +78,9 @@ public class SkillItem extends Item{
             public boolean handle (Event event) {
                 //if the mouse is hovered over the button...
                 if(editButton.getButton().isOver()){
-                    editButton.aFloat = 1;
+                    editButton.setOpacity(1);
                 }
-                else editButton.aFloat = 0;
+                else editButton.setOpacity(0);
                 if (!(event instanceof ChangeEvent)) return false;
                 changed((ChangeEvent)event, event.getTarget());
                 return false;

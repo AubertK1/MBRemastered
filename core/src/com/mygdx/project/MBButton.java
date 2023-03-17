@@ -98,7 +98,7 @@ public class MBButton extends MBComponent{
         setVisible(true);
     }
     public void setupSelectImageTextButton(){
-        aFloat = .5f;
+        setOpacity(.5f);
 
         button.addListener(new ChangeListener() {
             @Override
@@ -110,9 +110,9 @@ public class MBButton extends MBComponent{
             public boolean handle (Event event) {
                 //if the mouse is not hovered over the imageButton...
                 if (!getButton().isOver()) {
-                    aFloat = .5f;
+                    setOpacity(.5f);
                 }
-                else aFloat = 1f;
+                else setOpacity(1f);
                 //renders the file (in handle because it's always called, so it will be called as soon as the file is chosen)
                 screen.fileChooseHandle(MBButton.this.parentPanel, MBButton.this);
                 if (!(event instanceof ChangeEvent)) return false;
@@ -122,7 +122,7 @@ public class MBButton extends MBComponent{
         });
     }
     public void setupSelectImageImageButton(){
-        aFloat = .75f;
+        setOpacity(.75f);
 
         //adds a listener to the button
         button.addListener(new ChangeListener() {
@@ -151,15 +151,15 @@ public class MBButton extends MBComponent{
             @Override
             public boolean handle (Event event) {
                 if (!getButton().isOver()) {
-                    aFloat = .75f;
+                    setOpacity(.75f);
                     for (MBComponent innerButt: components) {
-                        if (!(innerButt instanceof MBWindow)) innerButt.aFloat = 0f;
+                        if (!(innerButt instanceof MBWindow)) innerButt.setOpacity(0);
                     }
                 }
                 else{
-                    aFloat = 1f;
+                    setOpacity(1);
                     for (MBComponent innerButt: components) {
-                        if (!(innerButt instanceof MBWindow)) innerButt.aFloat = .75f;
+                        if (!(innerButt instanceof MBWindow)) innerButt.setOpacity(.75f);
                     }
                 }
                 button.setDisabled(hasWindow);

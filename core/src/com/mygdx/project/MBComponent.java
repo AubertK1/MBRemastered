@@ -20,7 +20,7 @@ public class MBComponent implements Renderable{
     Screen screen;
     MBComponent parentActor;
     Skin skin = Main.skin;
-    float aFloat = 1;
+    private float aFloat = 1;
     boolean hasWindow = false;
     //setting the component's ID in the list
     int compID;
@@ -175,6 +175,12 @@ public class MBComponent implements Renderable{
         return layer;
     }
 
+    public void setOpacity(float opacity){
+        aFloat = opacity;
+    }
+    public float getOpacity(){
+        return aFloat;
+    }
     public void setName (@Null String name) {
         this.name = name;
     }

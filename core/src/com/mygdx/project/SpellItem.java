@@ -76,11 +76,11 @@ public class SpellItem extends Item {
 
         minusButton.setPosition(usesButton.getX(), usesButton.getY());
         minusButton.setSize(usesButton.getWidth(), usesButton.getHeight()/2 - 1);
-        minusButton.aFloat = 0;
+        minusButton.setOpacity(0);
 
         plusButton.setPosition(usesButton.getX(), usesButton.getY()+ minusButton.getHeight()+1);
         plusButton.setSize(usesButton.getWidth(), usesButton.getHeight()/2 - 1);
-        plusButton.aFloat = 0;
+        plusButton.setOpacity(0);
 
         editButton.getButton().setChecked(true);
         editButton.setName("editbutton");
@@ -114,14 +114,14 @@ public class SpellItem extends Item {
             public boolean handle (Event event) {
                 //if the mouse is hovered over the usesButton...
                 if (usesButton.getButton().isOver() || minusButton.getButton().isOver() || plusButton.getButton().isOver()) {
-                    minusButton.aFloat = .5f;
-                    plusButton.aFloat = .5f;
-                    usesButton.aFloat = 1;
+                    minusButton.setOpacity(.5f);
+                    plusButton.setOpacity(.5f);
+                    usesButton.setOpacity(1);
                 }
                 else {
-                    minusButton.aFloat = 0;
-                    plusButton.aFloat = 0;
-                    usesButton.aFloat = 1;
+                    minusButton.setOpacity(0);
+                    plusButton.setOpacity(0);
+                    usesButton.setOpacity(1);
                 }
                 if (!(event instanceof ChangeEvent)) return false;
                 changed((ChangeEvent)event, event.getTarget());
@@ -140,14 +140,14 @@ public class SpellItem extends Item {
             public boolean handle (Event event) {
                 //if the mouse is hovered over the Minus Button...
                 if (usesButton.getButton().isOver() || minusButton.getButton().isOver() || plusButton.getButton().isOver()) {
-                    minusButton.aFloat = .75f;
-                    plusButton.aFloat = .5f;
-                    usesButton.aFloat = 1;
+                    minusButton.setOpacity(.75f);
+                    plusButton.setOpacity(.5f);
+                    usesButton.setOpacity(1);
                 }
                 else {
-                    minusButton.aFloat = 0;
-                    plusButton.aFloat = 0;
-                    usesButton.aFloat = 1;
+                    minusButton.setOpacity(0);
+                    plusButton.setOpacity(0);
+                    usesButton.setOpacity(1);
                 }
                 if (!(event instanceof ChangeEvent)) return false;
                 changed((ChangeEvent)event, event.getTarget());
@@ -165,14 +165,14 @@ public class SpellItem extends Item {
             public boolean handle (Event event) {
                 //if the mouse is hovered over the Plus Button...
                 if (usesButton.getButton().isOver() || minusButton.getButton().isOver() || plusButton.getButton().isOver()) {
-                    minusButton.aFloat = .5f;
-                    plusButton.aFloat = .75f;
-                    usesButton.aFloat = 1;
+                    minusButton.setOpacity(.5f);
+                    plusButton.setOpacity(.75f);
+                    usesButton.setOpacity(1);
                 }
                 else {
-                    minusButton.aFloat = 0;
-                    plusButton.aFloat = 0;
-                    usesButton.aFloat = 1;
+                    minusButton.setOpacity(0);
+                    plusButton.setOpacity(0);
+                    usesButton.setOpacity(1);
                 }
                 if (!(event instanceof ChangeEvent)) return false;
                 changed((ChangeEvent)event, event.getTarget());
