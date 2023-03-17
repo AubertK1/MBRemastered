@@ -66,6 +66,7 @@ public class MBTextField extends MBComponent{
                 @Override
                 public void keyTyped(TextField textField, char c) {
                     if(stat != null) screen.getStats().setStat(stat, getText());
+                    System.out.println(Stats.statToString(stat));
                     switch (c) {
                         case '\r':
                         case '\n':
@@ -79,6 +80,7 @@ public class MBTextField extends MBComponent{
                 @Override
                 public void keyTyped(TextField textField, char c) {
                     screen.getStats().setStat(stat, getText());
+                    System.out.println(Stats.statToString(stat));
                 }
             });
         }

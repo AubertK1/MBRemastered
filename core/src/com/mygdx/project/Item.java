@@ -139,15 +139,15 @@ public class Item extends Minipanel{
         editMode = false;
     }
 
-    public String shortenString(String str, float length){
+    static public String shortenString(String str, float length){
         GlyphLayout layout = new GlyphLayout();
         String shortenedString;
 
-        layout.setText(skin.getFont("default-font"), "...");
+        layout.setText(Main.skin.getFont("default-font"), "...");
         float elipse = layout.width;
 
         for (int i = 0; i < str.length(); i++) {
-            layout.setText(skin.getFont("default-font"), str.substring(0,i));
+            layout.setText(Main.skin.getFont("default-font"), str.substring(0,i));
             if((layout.width+elipse) >= length || str.charAt(i) == '\n' || str.charAt(i) == '\r'){
                 if(i == 0) return "...";
                 else if(str.charAt(i) == '\n' || str.charAt(i) == '\r'){

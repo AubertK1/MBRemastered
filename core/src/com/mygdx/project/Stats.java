@@ -9,13 +9,17 @@ public class Stats {
     public enum Stat {
         STR, DEX, CON, INT, WIS, CHA,
         ACRO, ANIM, ARCA, ATHL, DECE, HIST, INSI, INTI, INVE, MEDI, NATU, PERC, PERF, PERS, RELI, SLEI, STEA, SURV,
-        STRst, DEXst, CONst, INTst, WISst, CHAst
+        STRst, DEXst, CONst, INTst, WISst, CHAst,
+        HP, THP, AC, BAC, SPD, INI,
+        LVL, PRF, CLS, RCE
     }
     public static final String[] basestats = new String[]{"Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"};
     public static final String[] skills = new String[]{"Acrobatics", "Animal Handling", "Arcana", "Athletics", "Deception", "History",
             "Insight", "Intimidation", "Investigation", "Medicine", "Nature", "Perception", "Performance", "Persuasion",
             "Religion", "Sleight of Hand", "Stealth", "Survival"};
     public static final String[] saves = new String[]{"Str Throw", "Dex Throw", "Con Throw", "Int Throw", "Wis Throw", "Cha Throw"};
+    public static final String[] combatstats = new String[]{"HP", "Temp HP", "AC", "Bonus AC", "Speed", "Initiative"};
+    public static final String[] charstats = new String[]{"Level", "Proficiency", "Class", "Race"};
     //endregion
 
     HashMap<Stat, Integer> stats = new HashMap<>();
@@ -53,10 +57,42 @@ public class Stats {
             i += basestats.length;
         } else if (Arrays.equals(saves, list)) {
             i += basestats.length + skills.length;
+        } else if (Arrays.equals(combatstats, list)) {
+            i += basestats.length + skills.length + saves.length;
+        } else if (Arrays.equals(charstats, list)) {
+            i += basestats.length + skills.length + saves.length + combatstats.length;
         }
+
         Stat[] stats1 = Stat.values();
         return stats1[i];
     }
+    static public String statToString(Stat stat){
+        Stat[] stats1 = Stat.values();
+        int index = 0;
+        for (int i = 0; i < stats1.length; i++) {
+            if(stat == stats1[i]){
+                index = i;
+                break;
+            }
+        }
+
+        String[][] arrayOfStatArrays = new String[][]{basestats, skills, saves, combatstats, charstats};
+        int totalJ = 0;
+        for (int i = 0; i < arrayOfStatArrays.length; i++) {
+            for (int j = 0; j < arrayOfStatArrays[i].length; j++) {
+                if(j == 0) {
+                    totalJ += arrayOfStatArrays[i].length;
+                    if (index > totalJ) break;
+                    else totalJ -= arrayOfStatArrays[i].length;
+                }
+
+                if(index == totalJ) return arrayOfStatArrays[i][j];
+                totalJ++;
+            }
+        }
+        return "Not Found";
+    }
+
     static public int findNumber(String text){
         try{
             return Integer.parseInt(text);

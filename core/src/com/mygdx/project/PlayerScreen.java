@@ -92,28 +92,28 @@ public class PlayerScreen extends Screen{
         initL.setPosition(initPanel.getX() + (initPanel.getWidth()/2) - (initL.getWidth()/2), initPanel.getTopY() - initL.getHeight());
 
         //creating the textfields to put in the stats' minipanels
-        MBTextField hpTF = new MBTextField("", this);
+        MBTextField hpTF = new MBTextField("", this, Stats.Stat.HP);
         //size and positions set by eyeballing until it looked nice
         hpTF.setSize(80, 33);
         hpTF.setPosition(hpPanel.getX() + 5, hpPanel.getY() + 5);
         hpTF.getTextField().setAlignment(Align.center);
-        MBTextField tempHPTF = new MBTextField("", this);
+        MBTextField tempHPTF = new MBTextField("", this, Stats.Stat.THP);
         tempHPTF.setSize(80, hpTF.getHeight());
         tempHPTF.setPosition(tempHPPanel.getX() + 5, tempHPPanel.getY() + 5);
         tempHPTF.getTextField().setAlignment(Align.center);
-        MBTextField acTF = new MBTextField("", this);
+        MBTextField acTF = new MBTextField("", this, Stats.Stat.AC);
         acTF.setSize(80, hpTF.getHeight());
         acTF.setPosition(acPanel.getX() + 5, acPanel.getY() + 5);
         acTF.getTextField().setAlignment(Align.center);
-        MBTextField bonusACTF = new MBTextField("", this);
+        MBTextField bonusACTF = new MBTextField("", this, Stats.Stat.BAC);
         bonusACTF.setSize(80, hpTF.getHeight());
         bonusACTF.setPosition(bonusACPanel.getX() + 5, bonusACPanel.getY() + 5);
         bonusACTF.getTextField().setAlignment(Align.center);
-        MBTextField speedTF = new MBTextField("", this);
+        MBTextField speedTF = new MBTextField("", this, Stats.Stat.SPD);
         speedTF.setSize(80, hpTF.getHeight());
         speedTF.setPosition(speedPanel.getX() + 5, speedPanel.getY() + 5);
         speedTF.getTextField().setAlignment(Align.center);
-        MBTextField initTF = new MBTextField("", this);
+        MBTextField initTF = new MBTextField("", this, Stats.Stat.INI);
         initTF.setSize(80, hpTF.getHeight());
         initTF.setPosition(initPanel.getX() + 5, initPanel.getY() + 5);
         initTF.getTextField().setAlignment(Align.center);
@@ -583,11 +583,14 @@ public class PlayerScreen extends Screen{
 
         setName(playerName);
 
+        //region name
+
         final MBLabel playerNameLabel = new MBLabel(name, this);
         playerNameLabel.setPosition(topPanel.getX() + 10, topPanel.getY() + (topPanel.getHeight()/2) - (playerNameLabel.getHeight()/2));
+        playerNameLabel.setSize(66, playerNameLabel.getHeight());
 
         final MBButton playerNameButton = new MBButton(name, this);
-        playerNameButton.setSize(playerNameLabel.getWidth() + 40, playerNameLabel.getHeight() + 10);
+        playerNameButton.setSize(playerNameLabel.getWidth() + 100, playerNameLabel.getHeight() + 10);
         playerNameButton.setPosition(playerNameLabel.getX() - 5, playerNameLabel.getY() - 5);
         ((TextButton)playerNameButton.getButton()).getLabel().setAlignment(Align.left);
         playerNameButton.setOpacity(0);
@@ -604,8 +607,8 @@ public class PlayerScreen extends Screen{
                 String newName = playerNameTF.getText();
 
                 setName(newName);
-                ((TextButton)playerNameButton.getButton()).setText(newName);
-                playerNameLabel.setText(newName);
+                ((TextButton)playerNameButton.getButton()).setText(SpellItem.shortenString(newName, playerNameButton.getWidth()));
+                playerNameLabel.setText(SpellItem.shortenString(newName, playerNameButton.getWidth()));
 
                 Main.getMainScreen().syncScreens();
 
@@ -636,6 +639,77 @@ public class PlayerScreen extends Screen{
                 return false;
             }
         });
+        //endregion
+
+        //region character stats
+        String[] lblTxts = new String[]{"LVL", "PRF", "CLS", "RCE"};
+        MBLabel[] lbls = new MBLabel[lblTxts.length];
+
+        for (int i = 0; i < lblTxts.length; i++) {
+            final MBLabel lbl = new MBLabel(lblTxts[i], this);
+            lbls[i] = lbl;
+            lbl.setPosition(i == 0 ? playerNameTF.getRightX() + 75 : lbls[i-1].getRightX() + 30, topPanel.getTopY() - 5 - (lbl.getHeight()));
+            lbl.setAlignment(Align.center);
+            lbl.getLabel().setFontScale(.9f);
+
+            final MBLabel mod = new MBLabel("0", this);
+            mod.setPosition(lbl.getX(), topPanel.getY() + 2);
+            mod.setSize(lbl.getWidth(), lbl.getHeight());
+            mod.setAlignment(Align.center);
+            mod.getLabel().setFontScale(1.25f);
+
+            final MBButton btn = new MBButton(this);
+            btn.setSize(lbl.getWidth() + 6, lbl.getTopY() - mod.getY());
+            btn.setPosition(lbl.getX() - 3, mod.getY());
+            btn.setOpacity(0);
+
+            final MBTextField tf = new MBTextField("0", this, Stats.statIndexToStat(Stats.charstats, i), true, true);
+            tf.setSize(mod.getWidth(), mod.getHeight());
+            tf.setPosition(mod.getX(), mod.getY());
+            tf.setAlignment(Align.center);
+            tf.setVisible(false);
+
+            final boolean[] changingPrfncy = new boolean[]{false};
+            tf.setClosingAction(new Action() {
+                @Override
+                public boolean act(float v) {
+                    int newMod = Stats.findNumber(tf.getText());
+
+                    mod.setText(String.valueOf(newMod));
+
+                    tf.setVisible(false);
+                    changingPrfncy[0] = false;
+                    return false;
+                }
+            });
+
+            btn.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent changeEvent, Actor actor) {
+                    if(!changingPrfncy[0]) {
+                        tf.setVisible(true);
+                        changingPrfncy[0] = true;
+                    }
+                }
+                @Override
+                public boolean handle (Event event) {
+                    //if the mouse is hovered over the button...
+                    if(btn.getButton().isOver()){
+                        btn.setOpacity(.35f);
+                    }
+                    else btn.setOpacity(0);
+                    if (!(event instanceof ChangeEvent)) return false;
+                    changed((ChangeEvent)event, event.getTarget());
+                    return false;
+                }
+            });
+
+            topPanel.add(lbl);
+            topPanel.add(mod);
+            topPanel.add(btn);
+            topPanel.add(tf);
+        }
+        //endregion
 
         topPanel.add(playerNameLabel);
         topPanel.add(playerNameButton);
