@@ -1,5 +1,7 @@
 package com.mygdx.project;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -315,6 +317,23 @@ public class Panel implements Renderable{
                 minipanel.render();
             }
         }
+
+/*
+        if(this.screen != Main.mainScreen){
+            if(Gdx.input.isKeyJustPressed(Input.Keys.S))
+                screen.getStats().save();
+            else if(Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+                screen.getStats().load();
+                for (Renderable tf: screen.getRenderables()) {
+                    if(tf instanceof MBTextField) {
+                        if(((MBTextField) tf).getStat() != null){
+                            ((MBTextField) tf).setText(String.valueOf(screen.getStats().getStat(((MBTextField) tf).getStat())));
+                        }
+                    }
+                }
+            }
+        }
+*/
     }
 
     public void dispose(){

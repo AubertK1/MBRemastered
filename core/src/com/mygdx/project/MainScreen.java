@@ -162,6 +162,32 @@ public class MainScreen extends Screen{
         });
         diceButton.setupSelectImageImageButton();
 
+        MBButton saveButton = new MBButton("SAVE", this);
+        saveButton.setPosition(diceButton.getRightX() + 5, diceButton.getY());
+        saveButton.setSize(selectButton.getWidth() + 10, selectButton.getHeight());
+        saveButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                selectedScreen.getStats().save();
+            }
+        });
+
+        MBButton loadButton = new MBButton("LOAD", this);
+        loadButton.setPosition(saveButton.getRightX() + 5, saveButton.getY());
+        loadButton.setSize(selectButton.getWidth() + 10, selectButton.getHeight());
+        loadButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                selectedScreen.getStats().load();
+                for (Renderable tf: selectedScreen.getRenderables()) {
+                    if(tf instanceof MBTextField) {
+                        if(((MBTextField) tf).getStat() != null){
+                            ((MBTextField) tf).setText(String.valueOf(selectedScreen.getStats().getStat(((MBTextField) tf).getStat())));
+                        }
+                    }
+                }}
+        });
+
         MBColorPicker colorPicker = new MBColorPicker(this);
         colorPicker.setSize(0, toolbarPanel.getHeight() - 10);
         colorPicker.setPosition(toolbarPanel.getRightX() - (colorPicker.getWidth() + 5), toolbarPanel.getY()+5);
@@ -174,6 +200,8 @@ public class MainScreen extends Screen{
         toolbarPanel.add(softnessBox, 1);
         toolbarPanel.add(colorBox, 1);
         toolbarPanel.add(diceButton);
+        toolbarPanel.add(saveButton);
+        toolbarPanel.add(loadButton);
         toolbarPanel.add(colorPicker);
         //endregion
     }

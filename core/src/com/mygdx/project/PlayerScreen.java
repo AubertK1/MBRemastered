@@ -1,6 +1,7 @@
 package com.mygdx.project;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.*;
@@ -380,7 +381,7 @@ public class PlayerScreen extends Screen{
                     int modNum = (int) Math.floor(modNumF);
                     num.setText(String.valueOf(rawNum));
                     mod.setText(modNum > 0 ? "+" + modNum : String.valueOf(modNum));
-                    tf.setStatValue(modNum);
+                    tf.setStatValue(rawNum);
                     return false;
                 }
             });

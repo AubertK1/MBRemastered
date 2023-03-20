@@ -68,7 +68,6 @@ public class SkillItem extends Item{
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 if(!editMode) {
-                    modTF.setText(String.valueOf(mod));
                     modTF.setVisible(true);
                     modLabel.setVisible(false);
                     editMode = true;

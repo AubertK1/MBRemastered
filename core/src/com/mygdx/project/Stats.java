@@ -1,10 +1,11 @@
 package com.mygdx.project;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class Stats {
+public class Stats implements Serializable {
     //region key
     public enum Stat {
         STR, DEX, CON, INT, WIS, CHA,
@@ -98,6 +99,36 @@ public class Stats {
             return Integer.parseInt(text);
         } catch (NumberFormatException e){
             return 0;
+        }
+    }
+
+    public void save(){
+        try {
+            FileOutputStream fileOut =
+                    new FileOutputStream("assets\\SaveFile\\saves1.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(stats);
+            out.close();
+            fileOut.close();
+            System.out.println("Serialized data is saved in assets\\SaveFile\\saves1.ser");
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+
+    public void load(){
+        try {
+            FileInputStream fileIn = new FileInputStream("assets\\SaveFile\\saves1.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            stats = (HashMap<Stat, Integer>) in.readObject();
+            in.close();
+            fileIn.close();
+            System.out.println("Loaded data from assets\\SaveFile\\saves1.ser");
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Class not found");
+            c.printStackTrace();
         }
     }
 }
