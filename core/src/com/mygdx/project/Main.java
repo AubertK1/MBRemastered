@@ -32,9 +32,6 @@ public class Main extends ApplicationAdapter {
 	static Skin skin;
 
 	public static MBContextMenu contextMenu;
-	public static Panel grayPanel;
-
-	static String player;
 
 	//region used for the Upload Image button
 	//these are initialized from the start so that when they're used time isn't wasted while loading them
@@ -125,7 +122,6 @@ public class Main extends ApplicationAdapter {
 
 		//renders the current screen inside the mainScreen render function
 		mainScreen.render();
-//		selectedScreen.render();
 
 		if(contextMenu.isActive()) contextMenu.render();
 		else{
@@ -135,7 +131,6 @@ public class Main extends ApplicationAdapter {
 
 		batch.end();
 
-//		stage.draw();
 		stage.act();
 	}
 

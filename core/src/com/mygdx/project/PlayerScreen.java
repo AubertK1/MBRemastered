@@ -14,11 +14,11 @@ public class PlayerScreen extends Screen{
     //weapons or spell items for the itempanel
     private int itemTab = 1;
     private int statTab = 1;
-    private final Stats playerStats;
+    private final Values playerStats;
 
     public PlayerScreen(final String playerName) {
         super();
-        playerStats = new Stats();
+        playerStats = new Values();
         //setting up panels
         topPanel = new Panel("assets\\Panels\\TopbarPanel.png",
                 new Rectangle(110, 950, 780, 50), this);
@@ -45,7 +45,7 @@ public class PlayerScreen extends Screen{
 
         //creating a textarea
         MBTextArea reminderTextArea;
-        reminderTextArea = new MBTextArea("", this);
+        reminderTextArea = new MBTextArea("", this, Values.Stat.REM);
         reminderTextArea.setSize(375,330);
         reminderTextArea.setPosition(120,160);
 
@@ -93,28 +93,28 @@ public class PlayerScreen extends Screen{
         initL.setPosition(initPanel.getX() + (initPanel.getWidth()/2) - (initL.getWidth()/2), initPanel.getTopY() - initL.getHeight());
 
         //creating the textfields to put in the stats' minipanels
-        MBTextField hpTF = new MBTextField("", this, Stats.Stat.HP);
+        MBTextField hpTF = new MBTextField("", this, Values.Stat.HP);
         //size and positions set by eyeballing until it looked nice
         hpTF.setSize(80, 33);
         hpTF.setPosition(hpPanel.getX() + 5, hpPanel.getY() + 5);
         hpTF.getTextField().setAlignment(Align.center);
-        MBTextField tempHPTF = new MBTextField("", this, Stats.Stat.THP);
+        MBTextField tempHPTF = new MBTextField("", this, Values.Stat.THP);
         tempHPTF.setSize(80, hpTF.getHeight());
         tempHPTF.setPosition(tempHPPanel.getX() + 5, tempHPPanel.getY() + 5);
         tempHPTF.getTextField().setAlignment(Align.center);
-        MBTextField acTF = new MBTextField("", this, Stats.Stat.AC);
+        MBTextField acTF = new MBTextField("", this, Values.Stat.AC);
         acTF.setSize(80, hpTF.getHeight());
         acTF.setPosition(acPanel.getX() + 5, acPanel.getY() + 5);
         acTF.getTextField().setAlignment(Align.center);
-        MBTextField bonusACTF = new MBTextField("", this, Stats.Stat.BAC);
+        MBTextField bonusACTF = new MBTextField("", this, Values.Stat.BAC);
         bonusACTF.setSize(80, hpTF.getHeight());
         bonusACTF.setPosition(bonusACPanel.getX() + 5, bonusACPanel.getY() + 5);
         bonusACTF.getTextField().setAlignment(Align.center);
-        MBTextField speedTF = new MBTextField("", this, Stats.Stat.SPD);
+        MBTextField speedTF = new MBTextField("", this, Values.Stat.SPD);
         speedTF.setSize(80, hpTF.getHeight());
         speedTF.setPosition(speedPanel.getX() + 5, speedPanel.getY() + 5);
         speedTF.getTextField().setAlignment(Align.center);
-        MBTextField initTF = new MBTextField("", this, Stats.Stat.INI);
+        MBTextField initTF = new MBTextField("", this, Values.Stat.INI);
         initTF.setSize(80, hpTF.getHeight());
         initTF.setPosition(initPanel.getX() + 5, initPanel.getY() + 5);
         initTF.getTextField().setAlignment(Align.center);
@@ -325,7 +325,7 @@ public class PlayerScreen extends Screen{
             MBLabel lbl = new MBLabel(lblTexts[i], this);
             lbl.setPosition(panel.getX() + (panel.getWidth()/2) - (lbl.getWidth()/2), 903);
 
-            final MBTextField tf = new MBTextField("10", this, Stats.statIndexToStat(Stats.basestats, i), true, true);
+            final MBTextField tf = new MBTextField("10", this, Values.statIndexToStat(Values.basestats, i), true, true);
             tf.setSize(42, 35);
             tf.setPosition(panel.getX() + 4, panel.getY() + 3);
             tf.getTextField().setAlignment(Align.center);
@@ -376,7 +376,7 @@ public class PlayerScreen extends Screen{
                     num.setVisible(true);
                     btn.getButton().setTouchable(Touchable.enabled);
 
-                    int rawNum = Stats.findNumber(tf.getText());
+                    int rawNum = Values.findNumber(tf.getText());
                     float modNumF = (rawNum - 10) / 2f;
                     int modNum = (int) Math.floor(modNumF);
                     num.setText(String.valueOf(rawNum));
@@ -457,15 +457,15 @@ public class PlayerScreen extends Screen{
         skillsPanel.setColumns(2);
         skillsPanel.setRows(9);
 
-        String[] skills = Stats.skills;
+        String[] skills = Values.skills;
 
         for (int i = 0; i < skills.length; i++) {
             if(i == 0){ //initializing the fist skill
                 float skillHeight = (skillsPanel.getHeight() - 40) / 9f;
                 skillsPanel.add(new SkillItem(new Rectangle(skillsPanel.getX(), skillsPanel.getY() + skillsPanel.getHeight() - skillHeight, (skillsPanel.getWidth() - 2.5f) / 2f, skillHeight),
-                        this, skills[0], Stats.statIndexToStat(Stats.skills, i)));
+                        this, skills[0], Values.statIndexToStat(Values.skills, i)));
             }
-            else skillsPanel.add(new SkillItem(this, skills[i], Stats.statIndexToStat(Stats.skills, i)));
+            else skillsPanel.add(new SkillItem(this, skills[i], Values.statIndexToStat(Values.skills, i)));
         }
 
         savesPanel.setRows(6);
@@ -476,9 +476,9 @@ public class PlayerScreen extends Screen{
             if(i == 0){ //initializing the fist skill
                 float saveHeight = (savesPanel.getHeight() - 25) / 6f;
                 savesPanel.add(new SkillItem(new Rectangle(savesPanel.getX(), savesPanel.getY() + savesPanel.getHeight() - saveHeight, savesPanel.getWidth(), saveHeight),
-                        this, saves[0], Stats.statIndexToStat(Stats.saves, i)));
+                        this, saves[0], Values.statIndexToStat(Values.saves, i)));
             }
-            else savesPanel.add(new SkillItem(this, saves[i], Stats.statIndexToStat(Stats.saves, i)));
+            else savesPanel.add(new SkillItem(this, saves[i], Values.statIndexToStat(Values.saves, i)));
         }
 
         if(statTab == 1){
@@ -664,7 +664,7 @@ public class PlayerScreen extends Screen{
             btn.setPosition(lbl.getX() - 3, mod.getY());
             btn.setOpacity(0);
 
-            final MBTextField tf = new MBTextField("0", this, Stats.statIndexToStat(Stats.charstats, i), true, true);
+            final MBTextField tf = new MBTextField("0", this, Values.statIndexToStat(Values.charstats, i), true, true);
             tf.setSize(mod.getWidth(), mod.getHeight());
             tf.setPosition(mod.getX(), mod.getY());
             tf.setAlignment(Align.center);
@@ -674,7 +674,7 @@ public class PlayerScreen extends Screen{
             tf.setClosingAction(new Action() {
                 @Override
                 public boolean act(float v) {
-                    int newMod = Stats.findNumber(tf.getText());
+                    int newMod = Values.findNumber(tf.getText());
 
                     mod.setText(String.valueOf(newMod));
 
@@ -729,7 +729,7 @@ public class PlayerScreen extends Screen{
         //endregion
     }
 
-    public Stats getStats(){
+    public Values getStats(){
         return playerStats;
     }
 }

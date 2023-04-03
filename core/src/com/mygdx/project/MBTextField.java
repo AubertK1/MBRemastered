@@ -1,6 +1,5 @@
 package com.mygdx.project;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -13,17 +12,17 @@ public class MBTextField extends MBComponent{
     private InputListener hideFromKeys;
     private Action closingAction;
     private final Action actionReset;
-    private Stats.Stat stat;
+    private Values.Stat stat;
     public MBTextField(String text, Screen screen) {
         this(text, screen, null, false, false);
     }
-    public MBTextField(String text, Screen screen, Stats.Stat stat) {
+    public MBTextField(String text, Screen screen, Values.Stat stat) {
         this(text, screen, stat, false, false);
     }
     public MBTextField(String text, Screen screen, boolean hideableFromClick, boolean hideableFromKeys) {
         this(text, screen, null, hideableFromClick, hideableFromKeys);
     }
-    public MBTextField(String text, final Screen screen, final Stats.Stat stat, boolean hideableFromClick, boolean hideableFromKeys) {
+    public MBTextField(String text, final Screen screen, final Values.Stat stat, boolean hideableFromClick, boolean hideableFromKeys) {
         super(screen);
         textField = new TextField(text, skin);
         this.stat = stat;
@@ -66,7 +65,7 @@ public class MBTextField extends MBComponent{
                 @Override
                 public void keyTyped(TextField textField, char c) {
                     if(stat != null) screen.getStats().setStat(stat, getText());
-                    System.out.println(Stats.statToString(stat));
+                    System.out.println(Values.statToString(stat));
                     switch (c) {
                         case '\r':
                         case '\n':
@@ -80,7 +79,7 @@ public class MBTextField extends MBComponent{
                 @Override
                 public void keyTyped(TextField textField, char c) {
                     screen.getStats().setStat(stat, getText());
-                    System.out.println(Stats.statToString(stat));
+                    System.out.println(Values.statToString(stat));
                 }
             });
         }
@@ -137,7 +136,7 @@ public class MBTextField extends MBComponent{
         textField.setText(text);
     }
 
-    public Stats.Stat getStat(){
+    public Values.Stat getAssignedStat(){
         return stat;
     }
     public void setStatValue(int value){

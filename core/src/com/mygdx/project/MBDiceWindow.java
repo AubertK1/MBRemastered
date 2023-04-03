@@ -251,11 +251,11 @@ public class MBDiceWindow extends MBWindow{
                     rolls.add(roll);
                 }
                 if(selectedBox != null) {
-                    Stats.Stat stat1 = Stats.statIndexToStat(selectedList, selectedBox.dropdown.getSelectedIndex());
-                    int mod1 = selectedScreen.getStats().getStat(stat1);
+                    Values.Stat stat1 = Values.statIndexToStat(selectedList, selectedBox.dropdown.getSelectedIndex());
+                    int mod1 = (int) selectedScreen.getStats().getValue(stat1);
                     mods.add(mod1);
                 }
-                mods.add(Stats.findNumber(bonusModTF.getText()));
+                mods.add(Values.findNumber(bonusModTF.getText()));
 
                 String[] stringMods = new String[mods.size()];
                 for (int i = 0; i < stringMods.length; i++) {
@@ -378,7 +378,7 @@ public class MBDiceWindow extends MBWindow{
     }
 
     private int findNumber(String text){
-        return Stats.findNumber(text);
+        return Values.findNumber(text);
     }
 
     @Override

@@ -245,7 +245,7 @@ public class Screen implements Renderable{
         return layers;
     }
 
-    public Stats getStats(){
+    public Values getStats(){
         return null;
     }
     @Override

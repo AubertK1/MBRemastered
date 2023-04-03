@@ -12,14 +12,14 @@ import com.badlogic.gdx.utils.Align;
 public class SkillItem extends Item{
     private String skill = "";
     private int mod = 0;
-    private final Stats.Stat stat;
+    private final Values.Stat stat;
 
-    public SkillItem(Screen screen, String skill, Stats.Stat stat) {
+    public SkillItem(Screen screen, String skill, Values.Stat stat) {
         super("assets\\Panels\\MiniItemPanel.png", screen);
         this.skill = skill;
         this.stat = stat;
     }
-    public SkillItem(Rectangle position, Screen screen, String skill, Stats.Stat stat) {
+    public SkillItem(Rectangle position, Screen screen, String skill, Values.Stat stat) {
         super("assets\\Panels\\MiniItemPanel.png", position, screen);
         this.skill = skill;
         this.stat = stat;
