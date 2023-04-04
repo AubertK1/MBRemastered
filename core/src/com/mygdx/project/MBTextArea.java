@@ -1,14 +1,8 @@
 package com.mygdx.project;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 
 /**
  * the text area component
@@ -17,12 +11,12 @@ public class MBTextArea extends MBComponent{
     //making the text area
     private final TextArea textArea;
 
-    private Values.Stat stat;
+    private Stats.Stat stat;
 
     public MBTextArea(String text, Screen screen) {
         this(text, screen, null);
     }
-    public MBTextArea(String text, final Screen screen, final Values.Stat stat) {
+    public MBTextArea(String text, final Screen screen, final Stats.Stat stat) {
         super(screen);
         //setting the text area
         textArea = new TextArea(text, skin);
@@ -33,7 +27,7 @@ public class MBTextArea extends MBComponent{
                 @Override
                 public void keyTyped(TextField textField, char c) {
                     screen.getStats().setStat(stat, getText());
-                    System.out.println(Values.statToString(stat));
+                    System.out.println(Stats.statToString(stat));
                 }
             });
         }
@@ -55,7 +49,7 @@ public class MBTextArea extends MBComponent{
         textArea.setTextFieldListener(listener);
     }
 
-    public Values.Stat getAssignedStat(){
+    public Stats.Stat getAssignedStat(){
         return stat;
     }
     public void setStatValue(int value){

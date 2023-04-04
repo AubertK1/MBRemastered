@@ -4,16 +4,30 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
-public class Stats implements Serializable {
-    //region key
+public class Stats {
     public enum Stat {
         STR, DEX, CON, INT, WIS, CHA,
         ACRO, ANIM, ARCA, ATHL, DECE, HIST, INSI, INTI, INVE, MEDI, NATU, PERC, PERF, PERS, RELI, SLEI, STEA, SURV,
         STRst, DEXst, CONst, INTst, WISst, CHAst,
         HP, THP, AC, BAC, SPD, INI,
-        LVL, PRF, CLS, RCE
+        LVL, PRF, CLS, RCE,
+
+        NAME, REM
     }
+    public static final String[] stats = {
+            "STR", "DEX", "CON", "INT", "WIS", "CHA", //6
+            "ACRO", "ANIM", "ARCA", "ATHL", "DECE", "HIST", "INSI", "INTI", "INVE", //15
+            "MEDI", "NATU", "PERC", "PERF", "PERS", "RELI", "SLEI", "STEA", "SURV", //24
+            "STRst", "DEXst", "CONst", "INTst", "WISst", "CHAst", //30
+            "HP", "THP", "AC", "BAC", "SPD", "INI", //36
+            "LVL", "PRF", "CLS", "RCE", //40
+
+            "NAME", "REM" //42
+    };
+    public static final List<String> allstats = Arrays.asList(stats);
+    //region lists
     public static final String[] basestats = new String[]{"Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"};
     public static final String[] skills = new String[]{"Acrobatics", "Animal Handling", "Arcana", "Athletics", "Deception", "History",
             "Insight", "Intimidation", "Investigation", "Medicine", "Nature", "Perception", "Performance", "Persuasion",
@@ -21,35 +35,40 @@ public class Stats implements Serializable {
     public static final String[] saves = new String[]{"Str Throw", "Dex Throw", "Con Throw", "Int Throw", "Wis Throw", "Cha Throw"};
     public static final String[] combatstats = new String[]{"HP", "Temp HP", "AC", "Bonus AC", "Speed", "Initiative"};
     public static final String[] charstats = new String[]{"Level", "Proficiency", "Class", "Race"};
+    public static final String[] textMisc = new String[]{"Reminders"};
     //endregion
 
-    HashMap<Stat, Integer> stats = new HashMap<>();
-
-    //region attacks
-    ArrayList<Integer> DMGDices = new ArrayList<>();
-    ArrayList<Integer> ATKMods = new ArrayList<>();
-    //endregion
+    private static int FILEIDs = 0;
+    private final int FILEID = FILEIDs;
+    HashMap<Stat, Value> statValues = new HashMap<>();
 
     public Stats() {
+        FILEIDs++;
+
+        boolean intsDone = false;
         for (Stat stat: Stat.values()) {
-            stats.put(stat, 0);
+            if(!intsDone){
+                statValues.put(stat, new Value(Value.StoreType.INT).setValue(0));
+                if(stat == Stat.RCE) intsDone = true;
+            }
+            else statValues.put(stat, new Value(Value.StoreType.STRING).setValue(""));
         }
     }
 
-    public void setStat(Stat stat, int value){
-        stats.put(stat, value);
+    //region setting values
+    public void setStat(Stat stat, Value v){
+        statValues.put(stat, v);
+    }
+    public void setStat(Stat stat, String v){
+        statValues.put(stat, statValues.get(stat).setValue(v));
+    }
+    public void setStat(Stat stat, int v){
+        statValues.put(stat, statValues.get(stat).setValue(v));
     }
 
-    public void setStat(Stat stat, String value){
-        setStat(stat, findNumber(value));
+    public Object getValue(Stat stat){
+        return statValues.containsKey(stat) ? statValues.get(stat).getValue() : 0;
     }
-
-    public int getStat(Stat stat){
-        return stats.containsKey(stat) ? stats.get(stat) : 0;
-    }
-
-    //region attacks
-
     //endregion
 
     static public Stat statIndexToStat(String[] list, int index){
@@ -77,7 +96,7 @@ public class Stats implements Serializable {
             }
         }
 
-        String[][] arrayOfStatArrays = new String[][]{basestats, skills, saves, combatstats, charstats};
+        String[][] arrayOfStatArrays = new String[][]{basestats, skills, saves, combatstats, charstats, textMisc};
         int totalJ = 0;
         for (int i = 0; i < arrayOfStatArrays.length; i++) {
             for (int j = 0; j < arrayOfStatArrays[i].length; j++) {
@@ -105,12 +124,12 @@ public class Stats implements Serializable {
     public void save(){
         try {
             FileOutputStream fileOut =
-                    new FileOutputStream("assets\\SaveFile\\saves1.ser");
+                    new FileOutputStream("assets\\\\SaveFiles\\\\saves" + FILEID + ".ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(stats);
+            out.writeObject(statValues);
             out.close();
             fileOut.close();
-            System.out.println("Serialized data is saved in assets\\SaveFile\\saves1.ser");
+            System.out.println("Serialized data is saved in assets\\\\SaveFiles\\\\saves" + FILEID + ".ser");
         } catch (IOException i) {
             i.printStackTrace();
         }
@@ -118,12 +137,12 @@ public class Stats implements Serializable {
 
     public void load(){
         try {
-            FileInputStream fileIn = new FileInputStream("assets\\SaveFile\\saves1.ser");
+            FileInputStream fileIn = new FileInputStream("assets\\SaveFiles\\saves" + FILEID + ".ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            stats = (HashMap<Stat, Integer>) in.readObject();
+            statValues = (HashMap<Stat, Value>) in.readObject();
             in.close();
             fileIn.close();
-            System.out.println("Loaded data from assets\\SaveFile\\saves1.ser");
+            System.out.println("Loaded data from assets\\SaveFiles\\saves" + FILEID + ".ser");
         } catch (IOException i) {
             i.printStackTrace();
         } catch (ClassNotFoundException c) {

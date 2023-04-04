@@ -12,17 +12,17 @@ public class MBTextField extends MBComponent{
     private InputListener hideFromKeys;
     private Action closingAction;
     private final Action actionReset;
-    private Values.Stat stat;
+    private Stats.Stat stat;
     public MBTextField(String text, Screen screen) {
         this(text, screen, null, false, false);
     }
-    public MBTextField(String text, Screen screen, Values.Stat stat) {
+    public MBTextField(String text, Screen screen, Stats.Stat stat) {
         this(text, screen, stat, false, false);
     }
     public MBTextField(String text, Screen screen, boolean hideableFromClick, boolean hideableFromKeys) {
         this(text, screen, null, hideableFromClick, hideableFromKeys);
     }
-    public MBTextField(String text, final Screen screen, final Values.Stat stat, boolean hideableFromClick, boolean hideableFromKeys) {
+    public MBTextField(String text, final Screen screen, final Stats.Stat stat, boolean hideableFromClick, boolean hideableFromKeys) {
         super(screen);
         textField = new TextField(text, skin);
         this.stat = stat;
@@ -65,7 +65,7 @@ public class MBTextField extends MBComponent{
                 @Override
                 public void keyTyped(TextField textField, char c) {
                     if(stat != null) screen.getStats().setStat(stat, getText());
-                    System.out.println(Values.statToString(stat));
+                    System.out.println(Stats.statToString(stat));
                     switch (c) {
                         case '\r':
                         case '\n':
@@ -79,7 +79,7 @@ public class MBTextField extends MBComponent{
                 @Override
                 public void keyTyped(TextField textField, char c) {
                     screen.getStats().setStat(stat, getText());
-                    System.out.println(Values.statToString(stat));
+                    System.out.println(Stats.statToString(stat));
                 }
             });
         }
@@ -136,7 +136,7 @@ public class MBTextField extends MBComponent{
         textField.setText(text);
     }
 
-    public Values.Stat getAssignedStat(){
+    public Stats.Stat getAssignedStat(){
         return stat;
     }
     public void setStatValue(int value){

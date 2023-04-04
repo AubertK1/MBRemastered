@@ -3,9 +3,10 @@ package com.mygdx.project;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A Value is either a String or int depending on the StoreType. That's all it is. Just the ghetto version of python's val
+ * A Value is either a String or int depending on the StoreType. That's all it is. Just the ghetto version of python's var
  */
-public class Value {
+public class Value implements java.io.Serializable{
+    private static final long serialVersionUID = -2248361846026583602L;
     StoreType s;
     String valStr = "";
     int valInt = 0;
@@ -18,7 +19,7 @@ public class Value {
      * Sets the correct variable's value based on whether the storetype is an int or string
      */
     public Value setValue(String v) {
-        if(s == StoreType.INT) valInt = Values.findNumber(v);
+        if(s == StoreType.INT) valInt = Stats.findNumber(v);
         else if(s == StoreType.STRING) valStr = v;
 
         return this;

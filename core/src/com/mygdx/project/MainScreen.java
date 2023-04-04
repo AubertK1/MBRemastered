@@ -185,6 +185,11 @@ public class MainScreen extends Screen{
                             ((MBTextField) tf).setText(String.valueOf(selectedScreen.getStats().getValue(((MBTextField) tf).getAssignedStat())));
                         }
                     }
+                    else if(tf instanceof MBTextArea) {
+                        if(((MBTextArea) tf).getAssignedStat() != null){
+                            ((MBTextArea) tf).setText(String.valueOf(selectedScreen.getStats().getValue(((MBTextArea) tf).getAssignedStat())));
+                        }
+                    }
                 }}
         });
 

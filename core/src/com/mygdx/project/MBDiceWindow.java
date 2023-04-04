@@ -251,18 +251,18 @@ public class MBDiceWindow extends MBWindow{
                     rolls.add(roll);
                 }
                 if(selectedBox != null) {
-                    Values.Stat stat1 = Values.statIndexToStat(selectedList, selectedBox.dropdown.getSelectedIndex());
+                    Stats.Stat stat1 = Stats.statIndexToStat(selectedList, selectedBox.dropdown.getSelectedIndex());
                     int mod1 = (int) selectedScreen.getStats().getValue(stat1);
                     mods.add(mod1);
                 }
-                mods.add(Values.findNumber(bonusModTF.getText()));
+                mods.add(Stats.findNumber(bonusModTF.getText()));
 
                 String[] stringMods = new String[mods.size()];
                 for (int i = 0; i < stringMods.length; i++) {
                     totalRoll += mods.get(i);
                     stringMods[i] = mods.get(i) > 0 ? "+" + mods.get(i) : String.valueOf(mods.get(i));
                 }
-//                mods.add(Stats.findNumber());
+//                mods.add(Values.findNumber());
                 rollLabel.setText("Result: " + (natRoll > 0 ? totalRoll  + "\n" + rolls + "\n" + Arrays.toString(stringMods) : -1));
                 return true;
             }
@@ -378,7 +378,7 @@ public class MBDiceWindow extends MBWindow{
     }
 
     private int findNumber(String text){
-        return Values.findNumber(text);
+        return Stats.findNumber(text);
     }
 
     @Override
