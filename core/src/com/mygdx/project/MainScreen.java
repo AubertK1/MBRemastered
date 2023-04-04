@@ -181,12 +181,12 @@ public class MainScreen extends Screen{
                 selectedScreen.getStats().load();
                 for (Renderable tf: selectedScreen.getRenderables()) {
                     if(tf instanceof MBTextField) {
-                        if(((MBTextField) tf).getAssignedStat() != null){
+                        if(((MBTextField) tf).getAssignedStat() != -1){
                             ((MBTextField) tf).setText(String.valueOf(selectedScreen.getStats().getValue(((MBTextField) tf).getAssignedStat())));
                         }
                     }
                     else if(tf instanceof MBTextArea) {
-                        if(((MBTextArea) tf).getAssignedStat() != null){
+                        if(((MBTextArea) tf).getAssignedStat() != -1){
                             ((MBTextArea) tf).setText(String.valueOf(selectedScreen.getStats().getValue(((MBTextArea) tf).getAssignedStat())));
                         }
                     }

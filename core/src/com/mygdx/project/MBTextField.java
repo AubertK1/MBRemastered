@@ -12,17 +12,17 @@ public class MBTextField extends MBComponent{
     private InputListener hideFromKeys;
     private Action closingAction;
     private final Action actionReset;
-    private Stats.Stat stat;
+    private int stat;
     public MBTextField(String text, Screen screen) {
-        this(text, screen, null, false, false);
+        this(text, screen, -1, false, false);
     }
-    public MBTextField(String text, Screen screen, Stats.Stat stat) {
+    public MBTextField(String text, Screen screen, int stat) {
         this(text, screen, stat, false, false);
     }
     public MBTextField(String text, Screen screen, boolean hideableFromClick, boolean hideableFromKeys) {
-        this(text, screen, null, hideableFromClick, hideableFromKeys);
+        this(text, screen, -1, hideableFromClick, hideableFromKeys);
     }
-    public MBTextField(String text, final Screen screen, final Stats.Stat stat, boolean hideableFromClick, boolean hideableFromKeys) {
+    public MBTextField(String text, final Screen screen, final int stat, boolean hideableFromClick, boolean hideableFromKeys) {
         super(screen);
         textField = new TextField(text, skin);
         this.stat = stat;
@@ -64,7 +64,7 @@ public class MBTextField extends MBComponent{
             setKeyListener(new TextField.TextFieldListener() {
                 @Override
                 public void keyTyped(TextField textField, char c) {
-                    if(stat != null) screen.getStats().setStat(stat, getText());
+                    if(stat != -1) screen.getStats().setStat(stat, getText());
                     System.out.println(Stats.statToString(stat));
                     switch (c) {
                         case '\r':
@@ -74,7 +74,7 @@ public class MBTextField extends MBComponent{
                 }
             });
         }
-        else if(stat != null){
+        else if(stat != -1){
             setKeyListener(new TextField.TextFieldListener() {
                 @Override
                 public void keyTyped(TextField textField, char c) {
@@ -136,7 +136,7 @@ public class MBTextField extends MBComponent{
         textField.setText(text);
     }
 
-    public Stats.Stat getAssignedStat(){
+    public int getAssignedStat(){
         return stat;
     }
     public void setStatValue(int value){

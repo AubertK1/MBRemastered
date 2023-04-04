@@ -595,7 +595,7 @@ public class PlayerScreen extends Screen{
         ((TextButton)playerNameButton.getButton()).getLabel().setAlignment(Align.left);
         playerNameButton.setOpacity(0);
 
-        final MBTextField playerNameTF = new MBTextField(name, this, true, true);
+        final MBTextField playerNameTF = new MBTextField(name, this, Stats.Stat.NAME,true, true);
         playerNameTF.setSize(playerNameButton.getWidth(), playerNameButton.getHeight());
         playerNameTF.setPosition(playerNameButton.getX(), playerNameButton.getY());
         playerNameTF.setVisible(false);

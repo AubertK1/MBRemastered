@@ -326,7 +326,9 @@ public class SpellItem extends Item {
         //region textfields
         //creating textfields and setting their texts to their corresponding label's text
         for (int i = 0; i < labelTexts.size(); i++) {
-            textFields.add(new MBTextField(labelTexts.get(i), screen, false, true));
+            int stat = screen.getStats().newStat(new Value(Value.StoreType.STRING).setValue(labelTexts.get(i)));
+
+            textFields.add(new MBTextField(labelTexts.get(i), screen, stat, false, true));
             if(labels.get(i).getName() != null && labels.get(i).getName().equals("tf")){ //banishing the spell desc label's real textfield
                 textFields.get(i).setVisible(false);
                 textFields.get(i).setPosition(-1, -1);
@@ -346,19 +348,26 @@ public class SpellItem extends Item {
 
         //region tipbox components
         spellDesc = new Tipbox(new Rectangle(115, descLabel.getY()+ (descLabel.getHeight()/2)-300, 770, 300), screen);
-        MBTextArea spellDescTF = new MBTextArea("", screen);
+        int stat = screen.getStats().newStat(new Value(Value.StoreType.STRING).setValue("Spell Description..."));
+        MBTextArea spellDescTF = new MBTextArea("", screen, stat);
         spellDescTF.setPosition(spellDesc.getX()+10, spellDesc.getY()+10+35);
         spellDescTF.setSize(750, 225);
 
+        int stat1 = screen.getStats().newStat(new Value(Value.StoreType.INT).setValue(0)),
+                stat2 = screen.getStats().newStat(new Value(Value.StoreType.STRING).setValue("Action")),
+                stat3 = screen.getStats().newStat(new Value(Value.StoreType.STRING).setValue("Instant")),
+                stat4 = screen.getStats().newStat(new Value(Value.StoreType.STRING).setValue("5 ft")),
+                stat5 = screen.getStats().newStat(new Value(Value.StoreType.STRING).setValue("Fire"));
         MBLabel spellLevel = new MBLabel("Level: ", screen),
                 castTime = new MBLabel("Casting Time: ", screen),
                 duration = new MBLabel("Duration: ", screen),
-                range = new MBLabel("Range: ", screen), damageType = new MBLabel("Damage Type: ", screen);
-        MBTextField spellLevelTF = new MBTextField("0", screen),
-                castTimeTF = new MBTextField("Action", screen),
-                durationTF = new MBTextField("Instant", screen),
-                rangeTF = new MBTextField("5 ft", screen),
-                damageTypeTF = new MBTextField("Fire", screen);
+                range = new MBLabel("Range: ", screen),
+                damageType = new MBLabel("Damage Type: ", screen);
+        MBTextField spellLevelTF = new MBTextField("0", screen, stat1),
+                castTimeTF = new MBTextField("Action", screen, stat2),
+                durationTF = new MBTextField("Instant", screen, stat3),
+                rangeTF = new MBTextField("5 ft", screen, stat4),
+                damageTypeTF = new MBTextField("Fire", screen, stat5);
 
         spellLevel.setPosition(spellDesc.getX()+10, spellDesc.getY()+10);
 

@@ -3,7 +3,6 @@ package com.mygdx.project;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class WeaponItem extends Item {
@@ -81,7 +80,8 @@ public class WeaponItem extends Item {
         //region textfields
         //creating textfields and setting their texts to their corresponding label's text
         for (int i = 0; i < labelTexts.size(); i++) {
-            textFields.add(new MBTextField(labelTexts.get(i), screen, false, true));
+            int stat = screen.getStats().newStat(new Value(Value.StoreType.STRING).setValue(labelTexts.get(i)));
+            textFields.add(new MBTextField(labelTexts.get(i), screen, stat, false, true));
             add(textFields.get(i));
             //detecting when enter is pressed on each MBTextField so that enter can exit out of edit mode
             textFields.get(i).setClosingAction(new Action() {

@@ -251,7 +251,7 @@ public class MBDiceWindow extends MBWindow{
                     rolls.add(roll);
                 }
                 if(selectedBox != null) {
-                    Stats.Stat stat1 = Stats.statIndexToStat(selectedList, selectedBox.dropdown.getSelectedIndex());
+                    int stat1 = Stats.statIndexToStat(selectedList, selectedBox.dropdown.getSelectedIndex());
                     int mod1 = (int) selectedScreen.getStats().getValue(stat1);
                     mods.add(mod1);
                 }

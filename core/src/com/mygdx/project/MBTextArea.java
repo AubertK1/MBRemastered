@@ -11,18 +11,18 @@ public class MBTextArea extends MBComponent{
     //making the text area
     private final TextArea textArea;
 
-    private Stats.Stat stat;
+    private int stat;
 
     public MBTextArea(String text, Screen screen) {
-        this(text, screen, null);
+        this(text, screen, -1);
     }
-    public MBTextArea(String text, final Screen screen, final Stats.Stat stat) {
+    public MBTextArea(String text, final Screen screen, final int stat) {
         super(screen);
         //setting the text area
         textArea = new TextArea(text, skin);
         this.stat = stat;
 
-        if(stat != null){
+        if(stat != -1){
             setKeyListener(new TextField.TextFieldListener() {
                 @Override
                 public void keyTyped(TextField textField, char c) {
@@ -49,7 +49,7 @@ public class MBTextArea extends MBComponent{
         textArea.setTextFieldListener(listener);
     }
 
-    public Stats.Stat getAssignedStat(){
+    public int getAssignedStat(){
         return stat;
     }
     public void setStatValue(int value){
