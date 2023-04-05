@@ -11,7 +11,7 @@ public class MBTextArea extends MBComponent{
     //making the text area
     private final TextArea textArea;
 
-    private int stat;
+    private final Integer stat;
 
     public MBTextArea(String text, Screen screen) {
         this(text, screen, -1);

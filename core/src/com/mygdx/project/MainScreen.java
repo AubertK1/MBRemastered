@@ -168,7 +168,7 @@ public class MainScreen extends Screen{
         saveButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                selectedScreen.getStats().save();
+                saveScreen(selectedScreen);
             }
         });
 
@@ -178,19 +178,8 @@ public class MainScreen extends Screen{
         loadButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                selectedScreen.getStats().load();
-                for (Renderable tf: selectedScreen.getRenderables()) {
-                    if(tf instanceof MBTextField) {
-                        if(((MBTextField) tf).getAssignedStat() != -1){
-                            ((MBTextField) tf).setText(String.valueOf(selectedScreen.getStats().getValue(((MBTextField) tf).getAssignedStat())));
-                        }
-                    }
-                    else if(tf instanceof MBTextArea) {
-                        if(((MBTextArea) tf).getAssignedStat() != -1){
-                            ((MBTextArea) tf).setText(String.valueOf(selectedScreen.getStats().getValue(((MBTextArea) tf).getAssignedStat())));
-                        }
-                    }
-                }}
+                loadScreen(selectedScreen);
+            }
         });
 
         MBColorPicker colorPicker = new MBColorPicker(this);
@@ -352,8 +341,24 @@ public class MainScreen extends Screen{
         return selectedScreen;
     }
 
-    public static void changeScreen(){
-
+    public void saveScreen(Screen screen){
+        screen.getStats().save();
+    }
+    public void loadScreen(Screen screen){
+        screen.getStats().load();
+        for (Renderable tf: screen.getRenderables()) {
+            if(tf instanceof MBTextField) {
+                if(((MBTextField) tf).getAssignedStat() != -1){
+                    ((MBTextField) tf).setText(String.valueOf(screen.getStats().getValue(((MBTextField) tf).getAssignedStat())));
+                    ((MBTextField) tf).updateSystem();
+                }
+            }
+            else if(tf instanceof MBTextArea) {
+                if(((MBTextArea) tf).getAssignedStat() != -1){
+                    ((MBTextArea) tf).setText(String.valueOf(screen.getStats().getValue(((MBTextArea) tf).getAssignedStat())));
+                }
+            }
+        }
     }
 
     @Override

@@ -479,7 +479,7 @@ public class SpellItem extends Item {
             }
         }
 
-        //removing the textfields
+        //making the textfields invisible
         for (int i = 0; i < textFields.size(); i++) {
             if(labels.get(i).getName() != null && labels.get(i).getName().equals("tf")) {
                 if (minipanels.get(0) instanceof Tipbox) {

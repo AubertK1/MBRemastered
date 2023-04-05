@@ -15,7 +15,7 @@
     dialogDim: { name: white, color: { r: 0, g: 0, b: 0, a: 0.45 } },
   },
   ButtonStyle: {
-    default: { down: default-round-down, up: default-round, disabled: default-round },
+    default: { down: default-round-down, up: default-round, disabled: default-round, over: default-round-large },
     toggle: { parent: default, checked: default-round-down }
   },
   ImageButtonStyle: {

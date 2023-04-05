@@ -213,11 +213,10 @@ public class WeaponItem extends Item {
 
         //loops through this item's textfields list and updates their positions, re-adds them to the list, and sets their hard visibility to true
         for (int i = 0; i < textFields.size(); i++) {
-            textFields.get(i).getTextField().setText(labelTexts.get(i));
+//            textFields.get(i).getTextField().setText(labelTexts.get(i));
             labels.get(i).getLabel().setText("");
             textFields.get(i).setPosition(labels.get(i).getX(), getY() + 5);
             textFields.get(i).setSize(labels.get(i).getWidth(), 30);
-//            add(textFields.get(i));
             textFields.get(i).setVisible(true);
         }
 

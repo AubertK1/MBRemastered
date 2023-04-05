@@ -367,6 +367,20 @@ public class PlayerScreen extends Screen{
                     return false;
                 }
             });
+            final MBSystem sys = new MBSystem(tf, btn, lbl);
+            sys.setUpdateAction(new Action() {
+                @Override
+                public boolean act(float v) {
+                    int rawNum = Stats.findNumber(tf.getText());
+                    float modNumF = (rawNum - 10) / 2f;
+                    int modNum = (int) Math.floor(modNumF);
+                    num.setText(String.valueOf(rawNum));
+                    mod.setText(modNum > 0 ? "+" + modNum : String.valueOf(modNum));
+                    tf.setStatValue(rawNum);
+
+                    return true;
+                }
+            });
             tf.setClosingAction(new Action() {
                 @Override
                 public boolean act(float v) {
@@ -375,12 +389,7 @@ public class PlayerScreen extends Screen{
                     num.setVisible(true);
                     btn.getButton().setTouchable(Touchable.enabled);
 
-                    int rawNum = Stats.findNumber(tf.getText());
-                    float modNumF = (rawNum - 10) / 2f;
-                    int modNum = (int) Math.floor(modNumF);
-                    num.setText(String.valueOf(rawNum));
-                    mod.setText(modNum > 0 ? "+" + modNum : String.valueOf(modNum));
-                    tf.setStatValue(rawNum);
+                    sys.update();
                     return false;
                 }
             });
@@ -600,8 +609,8 @@ public class PlayerScreen extends Screen{
         playerNameTF.setPosition(playerNameButton.getX(), playerNameButton.getY());
         playerNameTF.setVisible(false);
 
-        final boolean[] changingName = new boolean[]{false};
-        playerNameTF.setClosingAction(new Action() {
+        final MBSystem closeSystem = new MBSystem(playerNameTF, playerNameButton, playerNameLabel);
+        closeSystem.setUpdateAction(new Action() {
             @Override
             public boolean act(float v) {
                 String newName = playerNameTF.getText();
@@ -609,6 +618,15 @@ public class PlayerScreen extends Screen{
                 setName(newName);
                 ((TextButton)playerNameButton.getButton()).setText(SpellItem.shortenString(newName, playerNameButton.getWidth()));
                 playerNameLabel.setText(SpellItem.shortenString(newName, playerNameButton.getWidth()));
+
+                return true;
+            }
+        });
+        final boolean[] changingName = new boolean[]{false};
+        playerNameTF.setClosingAction(new Action() {
+            @Override
+            public boolean act(float v) {
+                closeSystem.update();
 
                 Main.getMainScreen().syncScreens();
 
@@ -670,12 +688,21 @@ public class PlayerScreen extends Screen{
             tf.setVisible(false);
 
             final boolean[] changingPrfncy = new boolean[]{false};
-            tf.setClosingAction(new Action() {
+            final MBSystem sys = new MBSystem(tf, mod);
+            sys.setUpdateAction(new Action() {
                 @Override
                 public boolean act(float v) {
                     int newMod = Stats.findNumber(tf.getText());
 
                     mod.setText(String.valueOf(newMod));
+
+                    return true;
+                }
+            });
+            tf.setClosingAction(new Action() {
+                @Override
+                public boolean act(float v) {
+                    sys.update();
 
                     tf.setVisible(false);
                     changingPrfncy[0] = false;

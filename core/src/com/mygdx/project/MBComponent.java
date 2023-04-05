@@ -20,11 +20,12 @@ public class MBComponent implements Renderable{
     Screen screen;
     MBComponent parentActor;
     Skin skin = Main.skin;
+    Stage stage = Main.stage;
+    MBSystem system = null;
     private float aFloat = 1;
     boolean hasWindow = false;
     //setting the component's ID in the list
     int compID;
-    Stage stage = Main.stage;
     //whether this component is supposed to be visible if it were allowed to be (ie the Item textfields when not in edit mode are allowed to be visible but not supposed to be visible)
     boolean supposedToBeVisible = true;
     private int layer = -1;
@@ -109,6 +110,16 @@ public class MBComponent implements Renderable{
 
     public Screen getScreen() {
         return screen;
+    }
+    public void setSystem(MBSystem system){
+        this.system = system;
+    }
+    public MBSystem getSystem(){
+        return system;
+    }
+    public void updateSystem(){
+        if(system == null) return;
+        system.update();
     }
     /**
      * sets the position of this component

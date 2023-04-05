@@ -49,12 +49,20 @@ public class SkillItem extends Item{
         String skillName2 = shortenString(skill, modLabel.getX() - getX());
         nameLabel.setText(skillName2);
 
-        modTF.setClosingAction(new Action() {
+        final MBSystem closeSystem = new MBSystem(modTF, modLabel);
+        closeSystem.setUpdateAction(new Action() {
             @Override
             public boolean act(float v) {
                 mod = Integer.parseInt(modTF.getText());
-
                 modLabel.setText(String.valueOf(mod));
+
+                return true;
+            }
+        });
+        modTF.setClosingAction(new Action() {
+            @Override
+            public boolean act(float v) {
+                closeSystem.update();
 
                 modTF.setVisible(false);
                 modLabel.setVisible(true);

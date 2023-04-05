@@ -2,6 +2,7 @@ package com.mygdx.project;
 
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import java.util.ArrayList;
@@ -126,14 +127,26 @@ public class Item extends Minipanel{
             }
         }
 
-        //removing the textfields
+        //making the textfields invisible
         for (int i = 0; i < textFields.size(); i++) {
-            labelTexts.set(i, textFields.get(i).getTextField().getText()); //updating the label list's text
+            if(textFields.get(i).getSystem() == null) {
+                MBSystem sys = new MBSystem(textFields.get(i), labels.get(i));
+                final int finalI = i;
+                final int finalI1 = i;
+                sys.setUpdateAction(new Action() {
+                    @Override
+                    public boolean act(float v) {
+                        labelTexts.set(finalI1, textFields.get(finalI).getTextField().getText()); //updating the label list's text
 
-            labels.get(i).getLabel().setText(shortenString(labelTexts.get(i), labels.get(i).getWidth())); //updating the label's text
+                        labels.get(finalI).getLabel().setText(shortenString(labelTexts.get(finalI), labels.get(finalI).getWidth())); //updating the label's text
 
-            textFields.get(i).setVisible(false); //fixme I don't think this is necessary
-//            remove(textFields.get(i));
+                        return true;
+                    }
+                });
+            }
+            textFields.get(i).updateSystem();
+
+            textFields.get(i).setVisible(false);
         }
 
         editMode = false;
