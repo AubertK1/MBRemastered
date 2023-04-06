@@ -26,6 +26,7 @@ public class MBTextField extends MBComponent{
         super(screen);
         textField = new TextField(text, skin);
         this.stat = stat;
+        if(this.stat != -1) screen.getStats().setStat(this.stat, text); //initializes the stat value automatically
 
         setHideableFromClick(hideableFromClick);
         setHideableFromKeys(hideableFromKeys);

@@ -118,6 +118,9 @@ public class Stats {
             in.close();
             fileIn.close();
             System.out.println("Loaded data from assets\\SaveFiles\\saves" + FILEID + ".ser");
+        } catch (FileNotFoundException f){
+            save();
+
         } catch (IOException i) {
             i.printStackTrace();
         } catch (ClassNotFoundException c) {

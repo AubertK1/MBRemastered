@@ -483,15 +483,39 @@ public class SpellItem extends Item {
         for (int i = 0; i < textFields.size(); i++) {
             if(labels.get(i).getName() != null && labels.get(i).getName().equals("tf")) {
                 if (minipanels.get(0) instanceof Tipbox) {
-                    labelTexts.set(i, ((Tipbox)minipanels.get(0)).getTextArea().getText()); //updating the label list's text
+                    if(textFields.get(i).getSystem() == null) {
+                        MBSystem sys = new MBSystem(textFields.get(i), labels.get(i));
+                        final int finalI = i;
+                        sys.setUpdateAction(new Action() {
+                            @Override
+                            public boolean act(float v) {
+                                labelTexts.set(finalI, ((Tipbox)minipanels.get(0)).getTextArea().getText()); //updating the label list's text
 
-                    labels.get(i).getLabel().setText(shortenString(labelTexts.get(i), labels.get(i).getWidth())); //updating the label's text
+                                labels.get(finalI).getLabel().setText(shortenString(labelTexts.get(finalI), labels.get(finalI).getWidth())); //updating the label's text
+
+                                return true;
+                            }
+                        });
+                    }
+                    textFields.get(i).updateSystem();
                 }
             }
             else {
-                labelTexts.set(i, textFields.get(i).getTextField().getText()); //updating the label list's text
+                if(textFields.get(i).getSystem() == null) {
+                    MBSystem sys = new MBSystem(textFields.get(i), labels.get(i));
+                    final int finalI = i;
+                    sys.setUpdateAction(new Action() {
+                        @Override
+                        public boolean act(float v) {
+                            labelTexts.set(finalI, textFields.get(finalI).getTextField().getText()); //updating the label list's text
 
-                labels.get(i).getLabel().setText(shortenString(labelTexts.get(i), labels.get(i).getWidth())); //updating the label's text
+                            labels.get(finalI).getLabel().setText(shortenString(labelTexts.get(finalI), labels.get(finalI).getWidth())); //updating the label's text
+
+                            return true;
+                        }
+                    });
+                }
+                textFields.get(i).updateSystem();
 
                 textFields.get(i).setVisible(false);
             }

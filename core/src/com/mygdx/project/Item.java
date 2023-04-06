@@ -132,11 +132,10 @@ public class Item extends Minipanel{
             if(textFields.get(i).getSystem() == null) {
                 MBSystem sys = new MBSystem(textFields.get(i), labels.get(i));
                 final int finalI = i;
-                final int finalI1 = i;
                 sys.setUpdateAction(new Action() {
                     @Override
                     public boolean act(float v) {
-                        labelTexts.set(finalI1, textFields.get(finalI).getTextField().getText()); //updating the label list's text
+                        labelTexts.set(finalI, textFields.get(finalI).getTextField().getText()); //updating the label list's text
 
                         labels.get(finalI).getLabel().setText(shortenString(labelTexts.get(finalI), labels.get(finalI).getWidth())); //updating the label's text
 

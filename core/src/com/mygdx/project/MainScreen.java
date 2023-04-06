@@ -316,7 +316,7 @@ public class MainScreen extends Screen{
 
         //making sure all the screens' are synced
         if(screens.size() > 0) {
-            screens.get(0).screenDropdown.dropdown.setSelected(screen.getName());
+//            screens.get(0).screenDropdown.dropdown.setSelected(screen.getName());
             syncScreens();
         }
 
@@ -335,6 +335,19 @@ public class MainScreen extends Screen{
             //sets the current screen to each dropdown's selected screen
             screen0.screenDropdown.dropdown.setSelected(selectedScreen.getName());
         }
+        //region syncScreens() Again
+        //runs the function again, so the dropdowns don't get out of sync
+        for (Screen screen0: screens) {
+            //updates the amount of items in each dropdown
+            screen0.screenDropdown.setItems(screens.get(0).screenDropdown.getItems());
+            //makes sure the items in every dropdown has the correct name
+            for (int i = 0; i < screens.size(); i++) {
+                screen0.screenDropdown.getItems().set(i, screens.get(i).getName());
+            }
+            //sets the current screen to each dropdown's selected screen
+            screen0.screenDropdown.dropdown.setSelected(selectedScreen.getName());
+        }
+        //endregion
     }
 
     public Screen getSelectedScreen(){
@@ -350,7 +363,11 @@ public class MainScreen extends Screen{
             if(tf instanceof MBTextField) {
                 if(((MBTextField) tf).getAssignedStat() != -1){
                     ((MBTextField) tf).setText(String.valueOf(screen.getStats().getValue(((MBTextField) tf).getAssignedStat())));
+                    String f = ((MBTextField) tf).getText();
+                    if(f.startsWith("p") || f.startsWith("P"))
+                        f.length();
                     ((MBTextField) tf).updateSystem();
+                    syncScreens();
                 }
             }
             else if(tf instanceof MBTextArea) {
