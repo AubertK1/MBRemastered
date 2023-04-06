@@ -43,7 +43,6 @@ public class Main extends ApplicationAdapter {
 	//endregion
 
 	static MainScreen mainScreen;
-	static Screen selectedScreen;
 
 	@Override
 	public void create () {
@@ -52,10 +51,10 @@ public class Main extends ApplicationAdapter {
 		stage = new Stage();
 		skin = new Skin (Gdx.files.internal("assets\\skins\\uiskin.json"));
 
-		PlayerScreen pScreen = new PlayerScreen("PLAYER 1");
-		selectedScreen = pScreen;
 		mainScreen = new MainScreen();
-		mainScreen.screens.add(pScreen);
+
+		PlayerScreen pScreen = new PlayerScreen("PLAYER 1");
+		mainScreen.addScreen(pScreen);
 
 		contextMenu = new MBContextMenu();
 

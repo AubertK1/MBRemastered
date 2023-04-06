@@ -25,7 +25,6 @@ public class MainScreen extends Screen{
     public MainScreen() {
         super();
 
-        setSelectedScreen(Main.selectedScreen);
         grayPanel = new Panel("assets\\gradient2.png", new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), this);
         grayPanel.aFloat = .75f;
 
@@ -36,7 +35,8 @@ public class MainScreen extends Screen{
 
         mainPanels.add(sidePanel);
         mainPanels.add(toolbarPanel);
-
+    }
+    public void initialize(){
         //region Tool Bar
         final MBButton focusButton = new MBButton("FOCUS", this);
         focusButton.setPosition(toolbarPanel.getX() + 10, toolbarPanel.getY() + 10);
@@ -275,13 +275,19 @@ public class MainScreen extends Screen{
     }
 
     public void addScreen(){
-        Screen newS = new PlayerScreen("New Player " + (screens.size()));
+        addScreen(new PlayerScreen("New Player " + (screens.size())));
+    }
+    public void addScreen(Screen screen){
+        if(screens.size() == 0){
+            selectedScreen = screen;
+            initialize();
+        }
 
-        screens.add(newS);
+        screens.add(screen);
 
-        screens.get(0).screenDropdown.insertItemA(newS.getName());
+        screens.get(0).screenDropdown.insertItemA(screen.getName());
 
-        setSelectedScreen(newS);
+        setSelectedScreen(screen);
     }
 
     public Screen getScreenByName(String name){

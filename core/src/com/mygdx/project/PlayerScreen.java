@@ -13,11 +13,11 @@ public class PlayerScreen extends Screen{
     //weapons or spell items for the itempanel
     private int itemTab = 1;
     private int statTab = 1;
-    private final Stats playerStats;
+    private final Stats playerStats = new Stats();
 
     public PlayerScreen(final String playerName) {
         super();
-        playerStats = new Stats();
+
         //setting up panels
         topPanel = new Panel("assets\\Panels\\TopbarPanel.png",
                 new Rectangle(110, 950, 780, 50), this);
