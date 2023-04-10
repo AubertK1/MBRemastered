@@ -120,7 +120,7 @@ public class Stats {
             System.out.println("Loaded data from assets\\SaveFiles\\saves" + FILEID + ".ser");
         } catch (FileNotFoundException f){
             save();
-
+            load();
         } catch (IOException i) {
             i.printStackTrace();
         } catch (ClassNotFoundException c) {

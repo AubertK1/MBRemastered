@@ -364,15 +364,16 @@ public class MainScreen extends Screen{
         screen.getStats().save();
     }
     public void loadScreen(Screen screen){
+        //recovering the stats
         screen.getStats().load();
         for (Renderable tf: screen.getRenderables()) {
             if(tf instanceof MBTextField) {
                 if(((MBTextField) tf).getAssignedStat() != -1){
+                    //setting the text of the tfs
                     ((MBTextField) tf).setText(String.valueOf(screen.getStats().getValue(((MBTextField) tf).getAssignedStat())));
-                    String f = ((MBTextField) tf).getText();
-                    if(f.startsWith("p") || f.startsWith("P"))
-                        f.length();
+                    //updating any buttons or labels associated with the tf
                     ((MBTextField) tf).updateSystem();
+                    //making sure all the screens are still synced
                     syncScreens();
                 }
             }

@@ -753,6 +753,9 @@ public class PlayerScreen extends Screen{
         masterBoard.setSize(masterboardPanel.getWidth()-2, masterboardPanel.getHeight()-2);
         masterboardPanel.add(masterBoard);
         //endregion
+
+        //load on startup
+        Main.mainScreen.loadScreen(this);
     }
 
     public Stats getStats(){
