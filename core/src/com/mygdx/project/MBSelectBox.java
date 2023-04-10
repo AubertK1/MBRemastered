@@ -49,6 +49,24 @@ public class MBSelectBox extends MBComponent{
         items.insert(items.size - 1, item);
         dropdown.setItems(items);
     }
+    public void removeItem(int index){
+        Array<String> items = dropdown.getItems();
+        items.removeIndex(index);
+        dropdown.setItems(items);
+    }
+    public void removeItem(Object o){
+        Array<String> items = dropdown.getItems();
+        int index = -1;
+        for (int i = 0; i < items.size; i++) {
+            if(items.get(i) == o){
+                index = i;
+                break;
+            }
+        }
+        if(index == -1) return;
+        items.removeIndex(index);
+        dropdown.setItems(items);
+    }
     public boolean isActive(){
         return dropdown.isActive;
     }

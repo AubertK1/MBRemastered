@@ -52,9 +52,7 @@ public class Main extends ApplicationAdapter {
 		skin = new Skin (Gdx.files.internal("assets\\skins\\uiskin.json"));
 
 		mainScreen = new MainScreen();
-
-		PlayerScreen pScreen = new PlayerScreen("PLAYER 1");
-		mainScreen.addScreen(pScreen);
+		mainScreen.addScreen(new PlayerScreen("PLAYER"));
 
 		contextMenu = new MBContextMenu();
 

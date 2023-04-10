@@ -8,8 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class MainScreen extends Screen{
 
@@ -17,10 +20,13 @@ public class MainScreen extends Screen{
     Panel sidePanel, toolbarPanel;
 
     ArrayList<Screen> screens = new ArrayList<>();
+    static private int NEXTSCREENID = 0;
 
     Screen selectedScreen = null;
     HashMap<Integer, ArrayList<Renderable>> screenLayers = new HashMap<>();
     ArrayList<Panel> screenPanels = new ArrayList<>();
+
+    private boolean initialized = false;
 
     public MainScreen() {
         super();
@@ -37,6 +43,8 @@ public class MainScreen extends Screen{
         mainPanels.add(toolbarPanel);
     }
     public void initialize(){
+        initialized = true;
+
         //region Tool Bar
         final MBButton focusButton = new MBButton("FOCUS", this);
         focusButton.setPosition(toolbarPanel.getX() + 10, toolbarPanel.getY() + 10);
@@ -198,6 +206,8 @@ public class MainScreen extends Screen{
         toolbarPanel.add(loadButton);
         toolbarPanel.add(colorPicker);
         //endregion
+
+        onStart();
     }
 
     public void focus(){
@@ -274,20 +284,58 @@ public class MainScreen extends Screen{
         }
     }
 
+    public void onStart(){
+        try {
+            File folder = new File("assets\\SaveFiles");
+            File[] files = folder.listFiles();
+
+            for (int i = 0; i < files.length; i++) {
+                File file = files[i];
+                Stats s = new Stats();
+                s.setToFile(file);
+
+                PlayerScreen screen = new PlayerScreen(String.valueOf(s.getValue(Stats.Stat.NAME)));
+                screen.setStats(s);
+                addScreen(screen);
+            }
+        } catch (NullPointerException n){
+            System.out.println("Folder Not Found!");
+        }
+    }
+
     public void addScreen(){
-        addScreen(new PlayerScreen("New Player " + (screens.size())));
+        addScreen(new PlayerScreen("PLAYER " + NEXTSCREENID));
     }
     public void addScreen(Screen screen){
-        if(screens.size() == 0){
+        if(!initialized){
             selectedScreen = screen;
             initialize();
+/*
+
+            screens.add(screen);
+
+            setSelectedScreen(screen);
+*/
         }
+        else {
+            screens.add(screen);
 
-        screens.add(screen);
+            screens.get(0).screenDropdown.insertItemA(screen.getName());
 
-        screens.get(0).screenDropdown.insertItemA(screen.getName());
+            setSelectedScreen(screen);
+        }
+        NEXTSCREENID++;
+    }
+    public void deleteScreen(Screen screen){
+        if(screens.size() == 1) return;
 
-        setSelectedScreen(screen);
+        int index = screens.indexOf(screen);
+        screens.remove(index);
+        screens.get(0).screenDropdown.removeItem(index);
+
+        setSelectedScreen(index != 0 ? screens.get(index - 1) : screens.get(index));
+
+        screen.dispose();
     }
 
     public Screen getScreenByName(String name){
@@ -407,9 +455,12 @@ public class MainScreen extends Screen{
 
     @Override
     public void dispose() {
+        batch.dispose();
         for (Screen screen: screens) {
             screen.dispose();
         }
+        stage.dispose();
+
         super.dispose();
     }
 }

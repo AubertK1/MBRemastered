@@ -1,5 +1,7 @@
 package com.mygdx.project;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,6 +19,8 @@ public class Stats {
     //endregion
     private static int FILEIDs = 0;
     private final int FILEID = FILEIDs;
+
+    String file = "";
 
     HashMap<Integer, Value> statValues = new HashMap<>();
 
@@ -99,12 +103,12 @@ public class Stats {
     public void save(){
         try {
             FileOutputStream fileOut =
-                    new FileOutputStream("assets\\\\SaveFiles\\\\saves" + FILEID + ".ser");
+                    new FileOutputStream(file = "assets\\SaveFiles\\player" + FILEID + ".ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(statValues);
             out.close();
             fileOut.close();
-            System.out.println("Serialized data is saved in assets\\\\SaveFiles\\\\saves" + FILEID + ".ser");
+            System.out.println("Serialized data is saved in " + file);
         } catch (IOException i) {
             i.printStackTrace();
         }
@@ -112,12 +116,12 @@ public class Stats {
 
     public void load(){
         try {
-            FileInputStream fileIn = new FileInputStream("assets\\SaveFiles\\saves" + FILEID + ".ser");
+            FileInputStream fileIn = new FileInputStream(file);
             ObjectInputStream in = new ObjectInputStream(fileIn);
             statValues = (HashMap<Integer, Value>) in.readObject();
             in.close();
             fileIn.close();
-            System.out.println("Loaded data from assets\\SaveFiles\\saves" + FILEID + ".ser");
+            System.out.println("Loaded data from " + file);
         } catch (FileNotFoundException f){
             save();
             load();
@@ -127,6 +131,18 @@ public class Stats {
             System.out.println("Class not found");
             c.printStackTrace();
         }
+    }
+
+    public void setToFile(@NotNull File file){
+        this.file = file.getPath();
+        load();
+    }
+
+    public void dispose(){
+        File f = new File(file);
+        if(f.delete()) {
+            System.out.println("Deleted " + file);
+        } else System.out.println("Failed to delete " + file);
     }
 
     public static class Stat{

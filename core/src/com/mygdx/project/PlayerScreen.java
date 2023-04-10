@@ -13,7 +13,6 @@ public class PlayerScreen extends Screen{
     //weapons or spell items for the itempanel
     private int itemTab = 1;
     private int statTab = 1;
-    private final Stats playerStats = new Stats();
 
     public PlayerScreen(final String playerName) {
         super();
@@ -659,6 +658,16 @@ public class PlayerScreen extends Screen{
         });
         //endregion
 
+        MBButton delButt = new MBButton(this, "delete-button");
+        delButt.setPosition(playerNameButton.getRightX(), playerNameButton.getY());
+        delButt.setSize(playerNameButton.getHeight(), playerNameButton.getHeight());
+        delButt.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                Main.mainScreen.deleteScreen(PlayerScreen.this);
+            }
+        });
+
         //region character stats
         String[] lblTxts = new String[]{"LVL", "PRF", "CLS", "RCE"};
         MBLabel[] lbls = new MBLabel[lblTxts.length];
@@ -741,6 +750,7 @@ public class PlayerScreen extends Screen{
         topPanel.add(playerNameLabel);
         topPanel.add(playerNameButton);
         topPanel.add(playerNameTF);
+        topPanel.add(delButt);
         topPanel.add(screenDropdown, 1);
 
         playerNameLabel.setFocused(true);
@@ -756,9 +766,5 @@ public class PlayerScreen extends Screen{
 
         //load on startup
         Main.mainScreen.loadScreen(this);
-    }
-
-    public Stats getStats(){
-        return playerStats;
     }
 }

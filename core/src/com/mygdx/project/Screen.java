@@ -23,6 +23,8 @@ public class Screen implements Renderable{
     //the skin for the components
     Skin skin;
 
+    protected Stats stats = new Stats();
+
     public Panel grayPanel;
     //creating main panels
     Panel topPanel, genStatsPanel, reminderPanel, masterboardPanel;
@@ -245,7 +247,10 @@ public class Screen implements Renderable{
     }
 
     public Stats getStats(){
-        return null;
+        return stats;
+    }
+    public void setStats(Stats stats){
+        this.stats = stats;
     }
     @Override
     public boolean isFocused() {
@@ -256,10 +261,9 @@ public class Screen implements Renderable{
     }
 
     public void dispose() {
-        batch.dispose();
         for (Panel panel: mainPanels) {
             panel.dispose();
         }
-        stage.dispose();
+        getStats().dispose();
     }
 }
