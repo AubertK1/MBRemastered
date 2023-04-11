@@ -99,6 +99,7 @@ public class MBButton extends MBComponent{
     }
     public void setupSelectImageTextButton(){
         setOpacity(.5f);
+        setName("image button");
 
         button.addListener(new ChangeListener() {
             @Override
@@ -123,6 +124,7 @@ public class MBButton extends MBComponent{
     }
     public void setupSelectImageImageButton(){
         setOpacity(.75f);
+        setName("image button");
 
         //adds a listener to the button
         button.addListener(new ChangeListener() {

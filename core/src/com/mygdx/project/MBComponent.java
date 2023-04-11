@@ -29,7 +29,7 @@ public class MBComponent implements Renderable{
     //whether this component is supposed to be visible if it were allowed to be (ie the Item textfields when not in edit mode are allowed to be visible but not supposed to be visible)
     boolean supposedToBeVisible = true;
     private int layer = -1;
-    private @Null String name;
+    private @Null String name = "";
     protected boolean focused = false;
     public MBComponent(Screen screen) {
         setScreen(screen);
@@ -98,6 +98,9 @@ public class MBComponent implements Renderable{
     public Object getMBParent() {
         if(parentPanel != null) return parentPanel;
         else return parentActor;
+    }
+    public Panel getParentPanel(){
+        return parentPanel;
     }
     public void setScreen(Screen screen) {
         this.screen = screen;

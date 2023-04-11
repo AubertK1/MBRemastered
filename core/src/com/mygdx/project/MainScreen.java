@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -297,7 +298,13 @@ public class MainScreen extends Screen{
                 PlayerScreen screen = new PlayerScreen(String.valueOf(s.getValue(Stats.Stat.NAME)));
                 screen.setStats(s);
                 addScreen(screen);
+                loadScreen(screen);
             }
+            if(files.length == 0) {
+                addScreen(selectedScreen);
+                loadScreen(selectedScreen);
+            }
+
         } catch (NullPointerException n){
             System.out.println("Folder Not Found!");
         }
@@ -310,12 +317,6 @@ public class MainScreen extends Screen{
         if(!initialized){
             selectedScreen = screen;
             initialize();
-/*
-
-            screens.add(screen);
-
-            setSelectedScreen(screen);
-*/
         }
         else {
             screens.add(screen);
@@ -408,10 +409,10 @@ public class MainScreen extends Screen{
         return selectedScreen;
     }
 
-    public void saveScreen(Screen screen){
+    public void saveScreen(@NotNull Screen screen){
         screen.getStats().save();
     }
-    public void loadScreen(Screen screen){
+    public void loadScreen(@NotNull Screen screen){
         //recovering the stats
         screen.getStats().load();
         for (Renderable tf: screen.getRenderables()) {
@@ -428,6 +429,13 @@ public class MainScreen extends Screen{
             else if(tf instanceof MBTextArea) {
                 if(((MBTextArea) tf).getAssignedStat() != -1){
                     ((MBTextArea) tf).setText(String.valueOf(screen.getStats().getValue(((MBTextArea) tf).getAssignedStat())));
+                }
+            }
+            else if(tf instanceof MBButton && ((MBButton) tf).getName().equals("image button")){
+                String path = String.valueOf(screen.getStats().getValue(Stats.Stat.IMGFILEPATH));
+                if(!path.equals("")) {
+                    Main.fileChooserPath = path;
+                    fileChooseHandle(((MBButton) tf).getParentPanel(), (MBButton) tf);
                 }
             }
         }

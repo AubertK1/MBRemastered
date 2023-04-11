@@ -96,23 +96,25 @@ public class Screen implements Renderable{
                     File file = Main.chooser.getSelectedFile();
                     //saves the file location as a string
                     Main.fileChooserPath = file.toString();
+
+                    stats.setStat(Stats.Stat.IMGFILEPATH, Main.fileChooserPath);
                 }
                 //re-enabling input
                 Gdx.input.setInputProcessor(processor);
             }
         }).start();
     }
-    public void fileChooseHandle(final Panel genStatsPanel, final MBButton imageButton){
+    public void fileChooseHandle(final Panel parentPanel, final MBButton imageButton){
         //to make sure this is only ran whenever the user selects a file
         if(Main.fileChooserPath != null) {
             Texture tex2 = new Texture(Main.fileChooserPath);
             //deletes the imageButton from the stage so that when it's added back it doesn't cause any complications in terms of the CompID
-            genStatsPanel.delete(imageButton);
+            parentPanel.delete(imageButton);
             //turns the imageButton into an ImageButton
             imageButton.toImageButton(tex2);
             imageButton.setupSelectImageImageButton();
             //adds the imageButton to the stage, so it's listener works
-            genStatsPanel.add(imageButton);
+            parentPanel.add(imageButton);
 
             final MBButton reselectButton;
             reselectButton = new MBButton(this);
@@ -152,10 +154,11 @@ public class Screen implements Renderable{
                 @Override
                 public void changed(ChangeEvent changeEvent, Actor actor) {
                     System.out.println("wassup");
-                    genStatsPanel.delete(imageButton);
+                    parentPanel.delete(imageButton);
+                    stats.setStat(Stats.Stat.IMGFILEPATH, "");
                     imageButton.toTextButton("ADD IMAGE");
                     imageButton.setupSelectImageTextButton();
-                    genStatsPanel.add(imageButton);
+                    parentPanel.add(imageButton);
                 }
                 @Override
                 public boolean handle (Event event) {

@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Stats {
     //region lists
@@ -103,7 +104,7 @@ public class Stats {
     public void save(){
         try {
             FileOutputStream fileOut =
-                    new FileOutputStream(file = "assets\\SaveFiles\\player" + FILEID + ".ser");
+                    new FileOutputStream(file.equals("") ? file = "assets\\SaveFiles\\player" + FILEID + ".ser" : file);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(statValues);
             out.close();
@@ -123,6 +124,7 @@ public class Stats {
             fileIn.close();
             System.out.println("Loaded data from " + file);
         } catch (FileNotFoundException f){
+            f.printStackTrace();
             save();
             load();
         } catch (IOException i) {
@@ -189,6 +191,7 @@ public class Stats {
         public static final int RCE = 39;
         public static final int NAME = 40;
         public static final int REM = 41;
+        public static final int IMGFILEPATH = 41;
         //endregion
     }
 }
