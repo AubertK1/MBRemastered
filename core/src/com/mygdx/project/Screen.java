@@ -51,10 +51,6 @@ public class Screen implements Renderable{
         batch = Main.batch;
         stage = Main.stage;
         skin = Main.skin;
-
-        if(!(this instanceof MainScreen)){
-            Main.mainScreen.loadScreen(this);
-        }
     }
 
     public void setName(String name){
