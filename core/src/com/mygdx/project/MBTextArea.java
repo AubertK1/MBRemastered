@@ -49,7 +49,7 @@ public class MBTextArea extends MBComponent{
         textArea.setTextFieldListener(listener);
     }
 
-    public int getAssignedStat(){
+    public Integer getAssignedStat(){
         return stat;
     }
     public void setStatValue(int value){

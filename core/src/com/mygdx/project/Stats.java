@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class Stats {
     //region lists
@@ -16,7 +15,7 @@ public class Stats {
     public static final String[] saves = new String[]{"Str Throw", "Dex Throw", "Con Throw", "Int Throw", "Wis Throw", "Cha Throw"};
     public static final String[] combatstats = new String[]{"HP", "Temp HP", "AC", "Bonus AC", "Speed", "Initiative"};
     public static final String[] charstats = new String[]{"Level", "Proficiency", "Class", "Race"};
-    public static final String[] textMisc = new String[]{"Reminders"};
+    public static final String[] textMisc = new String[]{"Name", "Reminders"};
     //endregion
     private static int FILEIDs = 0;
     private final int FILEID = FILEIDs;
@@ -25,11 +24,12 @@ public class Stats {
 
     HashMap<Integer, Value> statValues = new HashMap<>();
 
-    private int TOTALSTATS = 42;
+    private final int NAMEDSTATS = 43;
+    private int TOTALSTATS = 43;
     public Stats() {
         FILEIDs++;
 
-        for (int i = 0; i < TOTALSTATS; i++) {
+        for (int i = 0; i < NAMEDSTATS; i++) {
             if(i <= Stat.RCE){
                 statValues.put(i, new Value(Value.StoreType.INT).setValue(0));
             }
@@ -52,10 +52,13 @@ public class Stats {
         return statValues.containsKey(stat) ? statValues.get(stat).getValue() : 0;
     }
 
-    public int newStat(Value v){
-        int index = TOTALSTATS;
-        statValues.put(index, v);
+    public Integer newStat(Value v){
+        int index = NAMEDSTATS;
+        while (statValues.containsKey(index)){
+            index++;
+        }
         TOTALSTATS++;
+        statValues.put(index, v);
 
         return index;
     }
@@ -191,7 +194,7 @@ public class Stats {
         public static final int RCE = 39;
         public static final int NAME = 40;
         public static final int REM = 41;
-        public static final int IMGFILEPATH = 41;
+        public static final int IMGFILEPATH = 42;
         //endregion
     }
 }

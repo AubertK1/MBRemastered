@@ -305,6 +305,7 @@ public class MainScreen extends Screen{
                 loadScreen(selectedScreen);
             }
 
+            setSelectedScreen(screens.get(0));
         } catch (NullPointerException n){
             System.out.println("Folder Not Found!");
         }
@@ -371,7 +372,6 @@ public class MainScreen extends Screen{
 
         //making sure all the screens' are synced
         if(screens.size() > 0) {
-//            screens.get(0).screenDropdown.dropdown.setSelected(screen.getName());
             syncScreens();
         }
 
@@ -415,27 +415,31 @@ public class MainScreen extends Screen{
     public void loadScreen(@NotNull Screen screen){
         //recovering the stats
         screen.getStats().load();
-        for (Renderable tf: screen.getRenderables()) {
-            if(tf instanceof MBTextField) {
-                if(((MBTextField) tf).getAssignedStat() != -1){
+        for (int i = 0; i < screen.getComps().size(); i++) {
+            if(screen.getComps().get(i) instanceof MBTextField) {
+                MBTextField textField = (MBTextField) screen.getComps().get(i);
+                if(textField.getAssignedStat() != null){
                     //setting the text of the tfs
-                    ((MBTextField) tf).setText(String.valueOf(screen.getStats().getValue(((MBTextField) tf).getAssignedStat())));
+                    textField.setText(String.valueOf(screen.getStats().getValue(textField.getAssignedStat())));
                     //updating any buttons or labels associated with the tf
-                    ((MBTextField) tf).updateSystem();
+                    textField.updateSystem();
                     //making sure all the screens are still synced
                     syncScreens();
                 }
             }
-            else if(tf instanceof MBTextArea) {
-                if(((MBTextArea) tf).getAssignedStat() != -1){
-                    ((MBTextArea) tf).setText(String.valueOf(screen.getStats().getValue(((MBTextArea) tf).getAssignedStat())));
+            else if(screen.getComps().get(i) instanceof MBTextArea) {
+                MBTextArea textArea = (MBTextArea) screen.getComps().get(i);
+                if(textArea.getAssignedStat() != null){
+                    textArea.setText(String.valueOf(screen.getStats().getValue(textArea.getAssignedStat())));
                 }
             }
-            else if(tf instanceof MBButton && ((MBButton) tf).getName().equals("image button")){
+            else if(screen.getComps().get(i) instanceof MBButton && screen.getComps().get(i).getName().equals("image button")){
+                MBButton imgbutton = (MBButton) screen.getComps().get(i);
                 String path = String.valueOf(screen.getStats().getValue(Stats.Stat.IMGFILEPATH));
                 if(!path.equals("")) {
                     Main.fileChooserPath = path;
-                    fileChooseHandle(((MBButton) tf).getParentPanel(), (MBButton) tf);
+                    fileChooseHandle(imgbutton.getParentPanel(), imgbutton); //this moves the button further down the list...
+                    if(screen.getComps().indexOf(imgbutton) != i) i--; //...so we have to go back one so we can load the MBComp that was slide into this index
                 }
             }
         }

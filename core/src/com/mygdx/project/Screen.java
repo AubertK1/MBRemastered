@@ -228,6 +228,9 @@ public class Screen implements Renderable{
     public ArrayList<Renderable> getRenderables() {
         return allRenderables;
     }
+    public ArrayList<MBComponent> getComps() {
+        return allComps;
+    }
 
     public void addLayer(int layer){
         //adds in any new layers between the highest existing layer and this layer

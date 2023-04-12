@@ -17,6 +17,7 @@ public class Item extends Minipanel{
     //labels for the item (if weapon)
     ArrayList<MBLabel> labels = new ArrayList<>();
 
+    Integer[] statsIndexes;
     //if the panel is in edit mode
     protected boolean editMode = false;
     protected boolean customLayout = true;

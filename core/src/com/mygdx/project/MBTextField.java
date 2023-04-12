@@ -12,7 +12,7 @@ public class MBTextField extends MBComponent{
     private InputListener hideFromKeys;
     private Action closingAction;
     private final Action actionReset;
-    private int stat;
+    private final Integer stat;
     public MBTextField(String text, Screen screen) {
         this(text, screen, -1, false, false);
     }
@@ -137,7 +137,7 @@ public class MBTextField extends MBComponent{
         textField.setText(text);
     }
 
-    public int getAssignedStat(){
+    public Integer getAssignedStat(){
         return stat;
     }
     public void setStatValue(int value){
