@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -107,11 +108,18 @@ public class Screen implements Renderable{
     public void fileChooseHandle(final Panel parentPanel, final MBButton imageButton){
         //to make sure this is only ran whenever the user selects a file
         if(Main.fileChooserPath != null) {
-            Texture tex2 = new Texture(Main.fileChooserPath);
+            Texture tex;
+            try {
+                tex = new Texture(Main.fileChooserPath);
+            } catch (GdxRuntimeException g){
+                System.out.println("Image File Not Found");
+                Main.fileChooserPath = null;
+                return;
+            }
             //deletes the imageButton from the stage so that when it's added back it doesn't cause any complications in terms of the CompID
             parentPanel.delete(imageButton);
             //turns the imageButton into an ImageButton
-            imageButton.toImageButton(tex2);
+            imageButton.toImageButton(tex);
             imageButton.setupSelectImageImageButton();
             //adds the imageButton to the stage, so it's listener works
             parentPanel.add(imageButton);
