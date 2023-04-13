@@ -248,25 +248,22 @@ public class MBComponent implements Renderable{
     public void render(){
         batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
 
-        getScreen().allComps = reaarrangeList();
-        getScreen().resetCompIDs();
-
         getActor().draw(batch, aFloat);
         for (MBComponent innerComp: components) {
-            innerComp.render();
+            if(innerComp.supposedToBeVisible) {
+                innerComp.render();
+            }
         }
     }
-    public ArrayList<MBComponent> reaarrangeList(){
+    public static ArrayList<MBComponent> reaarrangeList(Screen screen){
         ArrayList<MBComponent> newList = new ArrayList<>();
         Array<Actor> actors = Main.stage.getActors();
-        Actor actor;
         MBComponent comp;
 
         for (int i = 0; i < actors.size; i++) { //loop through the stage's actors
-            actor = actors.get(i);
-            for (int j = 0; j < getScreen().getComps().size(); j++) { //find its corresponding component in allComps
-                comp = getScreen().getComps().get(j);
-                if(actor == comp.getActor()) newList.add(comp);
+            for (int j = 0; j < screen.getComps().size(); j++) { //find its corresponding component in allComps
+                comp = screen.getComps().get(j);
+                if(actors.get(i) == comp.getActor()) newList.add(comp);
             }
         }
         return newList;
