@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
+import com.mygdx.project.PMSerialization.NetPixmap;
 
 import java.util.ArrayList;
 
@@ -30,7 +31,7 @@ public class Board extends Widget {
     private Pixmap cursor;
 
     //this draws the doodles
-    public Pixmap pixmapBoard;
+    public NetPixmap pixmapBoard;
 
     private Outline selectedOutline;
     ArrayList<Outline> outlines = new ArrayList<>();
@@ -76,7 +77,7 @@ public class Board extends Widget {
     protected void initialize () {
         backgroundColor = new Color(0xd2b48cff);
         //setting up the pixmap board
-        pixmapBoard = new Pixmap(1018, 850, Pixmap.Format.RGBA8888);
+        pixmapBoard = new NetPixmap(1018, 850, NetPixmap.Format.RGBA8888);
         pixmapBoard.setFilter(Pixmap.Filter.NearestNeighbour);
         pixmapBoard.setColor(new Color(0f,0f,0f,0f));
         pixmapBoard.fill();
@@ -192,7 +193,7 @@ public class Board extends Widget {
                     //(I think this works because it stops storing the same information over and over again in its memory)
                     //called here so that it's only called when drawing but isn't called too often
                     if(!pixmapBoard.isDisposed()) pixmapBoard.dispose();
-                    pixmapBoard = new Pixmap(1018, 850, Pixmap.Format.RGBA8888);
+                    pixmapBoard = new NetPixmap(1018, 850, NetPixmap.Format.RGBA8888);
                     if(selectedOutline != null) selectedOutline.update();
                 }
             }
@@ -290,7 +291,7 @@ public class Board extends Widget {
         return null;
     }
 
-    public static Pixmap shiftPixmap(Pixmap src, int offsetX, int offsetY){
+    public static Pixmap shiftPixmap(NetPixmap src, int offsetX, int offsetY){
         final int width = src.getWidth();
         final int height = src.getHeight();
         Pixmap movedPX = new Pixmap(width, height, src.getFormat());
@@ -462,7 +463,7 @@ public class Board extends Widget {
     public Brush getCurrentBrush(){
         return currentBrush;
     }
-    public Pixmap getPixmapBoard(){
+    public NetPixmap getPixmapBoard(){
         return pixmapBoard;
     }
     public Color getCurrentColor(){

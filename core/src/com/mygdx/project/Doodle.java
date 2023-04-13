@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
+import com.mygdx.project.PMSerialization.NetPixmap;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -35,12 +36,12 @@ public class Doodle extends Outline {
         super(board);
 
         //creates a new doodle
-        doodleMap = new DoodleMap(1018, 850, Pixmap.Format.RGBA8888, this);
+        doodleMap = new DoodleMap(1018, 850, NetPixmap.Format.RGBA8888, this);
         doodleMap.setFilter(Pixmap.Filter.NearestNeighbour);
         doodleMap.setColor(new Color(0f,0f,0f,0f));
         doodleMap.fill();
         //sets the doodle's texture
-        doodleMap.texture = new Texture(getDoodle());
+        doodleMap.texture = new Texture(getDoodle().toPixmap());
         doodleMap.texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         doodleMap.texture.bind();
 
@@ -249,7 +250,7 @@ public class Doodle extends Outline {
         lasty = y2;
 
         doodleMap.texture.dispose();
-        doodleMap.texture = new Texture(getDoodle());
+        doodleMap.texture = new Texture(getDoodle().toPixmap());
 
         if(parentBoard.isInEraseMode()) {
             parentBoard.getPixmapBoard().setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
@@ -318,7 +319,7 @@ public class Doodle extends Outline {
     public void fix() {
         //getting ready to redraw the board
         if(!parentBoard.pixmapBoard.isDisposed()) parentBoard.pixmapBoard.dispose();
-        parentBoard.pixmapBoard = new Pixmap(1018, 850, Pixmap.Format.RGBA8888);
+        parentBoard.pixmapBoard = new NetPixmap(1018, 850, NetPixmap.Format.RGBA8888);
 
         //temporary pixmap with the points moved over
         Pixmap px = Board.shiftPixmap(doodleMap, (int) doodleTexOffset.x, (int) doodleTexOffset.y);
@@ -336,7 +337,7 @@ public class Doodle extends Outline {
         parentBoard.pixmapBoard.drawPixmap(doodleMap, 0, 0, 1018, 850, 0, 0, 1018, 850);
         //resetting the texture to the new shifted doodle so that it's realigned with the board
         doodleMap.texture.dispose();
-        doodleMap.texture = new Texture(getDoodle());
+        doodleMap.texture = new Texture(getDoodle().toPixmap());
         doodleTexOffset.set(0, 0);
         //update the selected outline's bounds
         update();

@@ -127,7 +127,6 @@ public class Stats {
             fileIn.close();
             System.out.println("Loaded data from " + file);
         } catch (FileNotFoundException f){
-            f.printStackTrace();
             save();
             load();
         } catch (IOException i) {

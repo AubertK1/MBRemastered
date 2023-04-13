@@ -2,11 +2,14 @@ package com.mygdx.project;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.mygdx.project.PMSerialization.NetPixmap;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class DoodleMap extends Pixmap {
+public class DoodleMap extends NetPixmap implements Serializable {
+    private static final long serialVersionUID = -523784578160298462L;
     ArrayList<Point> drawnPoints = new ArrayList<>();
     ArrayList<Point> tempPoints = new ArrayList<>();
     Texture texture;
@@ -17,7 +20,7 @@ public class DoodleMap extends Pixmap {
         super(width, height, format);
         this.doodle = doodle;
         if(doodle != null) doodle.setDoodle(this);
-        texture = new Texture(this);
+        texture = new Texture(this.toPixmap());
     }
 
     public void storePoints(boolean drawMode, int x, int y, int x2, int y2){

@@ -25,6 +25,9 @@ public class ItemPanel extends Minipanel{
      * adds the minipanel to its panel
      */
     public void add(Item item){
+        getScreen().allComps = MBComponent.reaarrangeList(this.screen);
+        getScreen().resetCompIDs();
+
         //sets the minipanel's parent to this panel
         item.parentPanel = this;
         item.setParentIP(this);
@@ -68,6 +71,9 @@ public class ItemPanel extends Minipanel{
      * shuffles all the items one spot up
      */
     public void shuffleItemsUp(){
+        getScreen().allComps = MBComponent.reaarrangeList(this.screen);
+        getScreen().resetCompIDs();
+
         if(getLowestItem().getSpot() == MINSPOT) return; //do not continue if the last item is at the top spot
         //reduces the next available spot value by one so that new items get added under the lowest item always
         nextAvaSpot--;
@@ -98,6 +104,9 @@ public class ItemPanel extends Minipanel{
      * @param startSpot the highest spot you don't want to raise
      */
     public void shuffleItemsUp(int startSpot){
+        getScreen().allComps = MBComponent.reaarrangeList(this.screen);
+        getScreen().resetCompIDs();
+
         //reduces the next available spot value by one so that new items get added under the lowest item always
         nextAvaSpot--;
         //loops through all the items
@@ -128,6 +137,9 @@ public class ItemPanel extends Minipanel{
      * shuffles all the items down
      */
     public void shuffleItemsDown(){
+        getScreen().allComps = MBComponent.reaarrangeList(this.screen);
+        getScreen().resetCompIDs();
+
         if(getHighestItem().getSpot() == MINSPOT) return; //do not continue if the first item is at the top spot
 
         //increases the next available spot value by one so that new items get added under the lowest item always
