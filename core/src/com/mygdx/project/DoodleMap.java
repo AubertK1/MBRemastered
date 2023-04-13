@@ -111,4 +111,8 @@ public class DoodleMap extends Pixmap {
     public ArrayList<Point> getPoints(){
         return drawnPoints;
     }
+
+    public void save(){
+
+    }
 }

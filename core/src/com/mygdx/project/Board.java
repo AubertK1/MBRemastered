@@ -469,6 +469,15 @@ public class Board extends Widget {
         return currentColor;
     }
 
+    public void save(){
+        for (Outline outline: outlines) {
+            if(outline instanceof Doodle){
+                Doodle d = (Doodle) outline;
+                PixSerializer ps = new PixSerializer(d.getDoodle().getPixels());
+            }
+        }
+    }
+
     static public class BoardStyle{
         public @Null
         Drawable background;
