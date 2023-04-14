@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DoodleMap extends Pixmap {
     ArrayList<Point> drawnPoints = new ArrayList<>();
@@ -108,11 +109,11 @@ public class DoodleMap extends Pixmap {
     public Doodle getOutline(){
         return doodle;
     }
+    public void setPoints(Point... points){
+        drawnPoints.clear();
+        this.drawnPoints.addAll(Arrays.asList(points));
+    }
     public ArrayList<Point> getPoints(){
         return drawnPoints;
-    }
-
-    public void save(){
-
     }
 }

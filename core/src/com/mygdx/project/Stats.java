@@ -20,7 +20,7 @@ public class Stats {
     private static int FILEIDs = 0;
     private final int FILEID = FILEIDs;
 
-    String file = "";
+    private String file = "";
 
     HashMap<Integer, Value> statValues = new HashMap<>();
 

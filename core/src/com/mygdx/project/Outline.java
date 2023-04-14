@@ -14,6 +14,7 @@ import java.util.Collections;
 public class Outline extends Widget implements Renderable{
     protected Board parentBoard;
     protected Screen screen;
+    protected PixSerializer ps = new PixSerializer();
     protected boolean selected = false;
     //the batch for the render function
     SpriteBatch batch = Main.batch;
@@ -185,6 +186,24 @@ public class Outline extends Widget implements Renderable{
         lasty = -1;
     }
 
+    public void save(){
+        ps.setStat(PixSerializer.Stat.XPOS, (int) getX());
+        ps.setStat(PixSerializer.Stat.YPOS, (int) getY());
+        ps.setStat(PixSerializer.Stat.WIDTH, (int) getWidth());
+        ps.setStat(PixSerializer.Stat.HEIGHT, (int) getHeight());
+        ps.setStat(PixSerializer.Stat.XOFFSET, (int) offsetX);
+        ps.setStat(PixSerializer.Stat.YOFFSET, (int) offsetY);
+    }
+
+    public void load(){
+        ps.load();
+
+        setPosition(Float.parseFloat(ps.getValue(PixSerializer.Stat.XPOS).toString()), Float.parseFloat(ps.getValue(PixSerializer.Stat.YPOS).toString()));
+        setSize(Float.parseFloat(ps.getValue(PixSerializer.Stat.WIDTH).toString()), Float.parseFloat(ps.getValue(PixSerializer.Stat.HEIGHT).toString()));
+        setOffsetX(Float.parseFloat(ps.getValue(PixSerializer.Stat.XOFFSET).toString()));
+        setOffsetY(Float.parseFloat(ps.getValue(PixSerializer.Stat.YOFFSET).toString()));
+    }
+
     public void setFocused(boolean focused){
         this.focused = focused;
         if(Main.getMainScreen() != null && Main.getMainScreen().isFocused()) Main.getMainScreen().focus();
@@ -267,6 +286,10 @@ public class Outline extends Widget implements Renderable{
     }
     public Rectangle getBounds(){
         return bounds;
+    }
+
+    public PixSerializer getPS() {
+        return ps;
     }
 
     public void dispose(){

@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class Board extends Widget {
@@ -263,6 +264,22 @@ public class Board extends Widget {
         if (Gdx.input.isKeyPressed(Input.Keys.FORWARD_DEL) && selectedOutline != null) selectedOutline.delete();
     }
 
+    public void wipe(){
+        for (Outline outline: outlines) {
+            outline.delete();
+        }
+        outlines.clear();
+
+        selectedOutline = null;
+
+        if(!pixmapBoard.isDisposed()) pixmapBoard.dispose();
+        pixmapBoard = new Pixmap(1018, 850, Pixmap.Format.RGBA8888);
+        pixmapBoard.setFilter(Pixmap.Filter.NearestNeighbour);
+        pixmapBoard.setColor(new Color(0f,0f,0f,0f));
+        pixmapBoard.fill();
+
+    }
+
     public Outline findOutline(int x, int y){
         float x2 = x + offsetX;
         float y2 = y + offsetY;
@@ -473,8 +490,28 @@ public class Board extends Widget {
         for (Outline outline: outlines) {
             if(outline instanceof Doodle){
                 Doodle d = (Doodle) outline;
-                PixSerializer ps = new PixSerializer(d.getDoodle().getPixels());
+                d.save();
             }
+        }
+    }
+    public void load(){
+        wipe();
+        try {
+            File folder = new File("assets\\ovalues");
+            File[] files = folder.listFiles();
+
+            for (int i = 0; i < files.length; i++) {
+                Outline d = new Doodle(this, Main.skin);
+                d.setScreen(screen);
+                d.getPS().setToFile(files[i]);
+                d.load();
+                selectedOutline = d;
+
+                outlines.add(d);
+            }
+
+        } catch (NullPointerException n){
+            System.out.println("Folder Not Found!");
         }
     }
 

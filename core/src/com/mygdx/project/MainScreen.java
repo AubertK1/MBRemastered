@@ -411,10 +411,12 @@ public class MainScreen extends Screen{
 
     public void saveScreen(@NotNull Screen screen){
         screen.getStats().save();
+        screen.getBoard().getBoard().save();
     }
     public void loadScreen(@NotNull Screen screen){
         //recovering the stats
         screen.getStats().load();
+        screen.getBoard().getBoard().load();
         for (int i = 0; i < screen.getComps().size(); i++) {
             if(screen.getComps().get(i) instanceof MBTextField) {
                 MBTextField textField = (MBTextField) screen.getComps().get(i);

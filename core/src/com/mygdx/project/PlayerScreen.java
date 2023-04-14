@@ -764,4 +764,7 @@ public class PlayerScreen extends Screen{
         masterboardPanel.add(masterBoard);
         //endregion
     }
+    public MBBoard getBoard(){
+        return masterBoard;
+    }
 }

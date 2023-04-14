@@ -39,6 +39,7 @@ public class Doodle extends Outline {
         doodleMap.setFilter(Pixmap.Filter.NearestNeighbour);
         doodleMap.setColor(new Color(0f,0f,0f,0f));
         doodleMap.fill();
+        ps.setData(doodleMap.getPixels());
         //sets the doodle's texture
         doodleMap.texture = new Texture(getDoodle());
         doodleMap.texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
@@ -340,6 +341,22 @@ public class Doodle extends Outline {
         doodleTexOffset.set(0, 0);
         //update the selected outline's bounds
         update();
+    }
+
+    public void save(){
+        ps.setData(doodleMap.getPixels());
+        Point[] points = doodleMap.getPoints().toArray(new Point[0]);
+        ps.setStat(PixSerializer.Stat.DMPOINTS, new Value(Value.StoreType.PLIST).setValue(points));
+
+        ps.save();
+    }
+
+    public void load(){
+        super.load();
+
+        doodleMap.setPixels(ps.getData());
+        doodleMap.setPoints((Point[]) ps.getValue(PixSerializer.Stat.DMPOINTS));
+        doodleMap.texture = new Texture(doodleMap);
     }
 
     public void delete(){
