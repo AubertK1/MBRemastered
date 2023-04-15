@@ -354,7 +354,9 @@ public class Doodle extends Outline {
     public void load(){
         super.load();
 
-        doodleMap.setPixels(ps.getData());
+
+        Pixmap px = new Pixmap(ps.getData());
+        doodleMap.setPixels(px.getPixels());
         doodleMap.setPoints((Point[]) ps.getValue(PixSerializer.Stat.DMPOINTS));
         doodleMap.texture = new Texture(doodleMap);
     }

@@ -5,6 +5,9 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class PixSerializer implements java.io.Serializable {
@@ -68,28 +71,26 @@ public class PixSerializer implements java.io.Serializable {
     public void save() {
         try{
             FileOutputStream fileOut =
-                    new FileOutputStream(file.equals("") ? file = "assets\\ovalues\\board" + FILEID + ".ser" : file);
+                    new FileOutputStream(file.equals("") ? file = "assets\\ovalues\\outline" + FILEID + ".ser" : file);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             // write default properties
             out.writeObject(statValues);
 
+            out.close();
+            fileOut.close();
             if(this.data != null) {
                 // write buffer capacity and data
                 FileOutputStream pixFileOut =
                         new FileOutputStream(pixFile.equals("") ? pixFile = "assets\\pixvalues\\pixmap" + FILEID + ".ser" : pixFile);
-                ObjectOutputStream pixOut = new ObjectOutputStream(fileOut);
+                FileChannel fileChannel = pixFileOut.getChannel();
 
-                pixOut.writeInt(data.capacity());
-//                pixOut.write(data.array());
+                fileChannel.write(this.data);
 
-                pixOut.close();
+                fileChannel.close();
                 pixFileOut.close();
 
                 System.out.println("Pixmap data is saved in " + pixFile);
             }
-
-            out.close();
-            fileOut.close();
 
             System.out.println("Outline data is saved in " + file);
         } catch (IOException i) {
@@ -104,23 +105,47 @@ public class PixSerializer implements java.io.Serializable {
             //read default properties
             statValues = (HashMap<Integer, Value>) in.readObject();
 
+            in.close();
+            fileIn.close();
             if(this.data != null) {
                 //read buffer data and wrap with ByteBuffer
-                FileInputStream pixFileIn = new FileInputStream(pixFile);
-                ObjectInputStream pixIn = new ObjectInputStream(pixFileIn);
+//                FileInputStream pixFileIn = new FileInputStream(pixFile);
+//                ObjectInputStream pixIn = new ObjectInputStream(pixFileIn);
 
+/*
                 int bufferSize = pixIn.readInt();
                 byte[] buffer = new byte[bufferSize];
                 pixIn.read(buffer, 0, bufferSize);
-                this.data = ByteBuffer.wrap(buffer, 0, bufferSize);
+                this.data = ByteBuffer.wrap(buffer, 0, bufferSize).duplicate();
+                this.data = ByteBuffer.allocateDirect(1024*10);
+*/
 
-                pixIn.close();
-                pixFileIn.close();
+                Path path = Paths.get(pixFile);
+
+                FileChannel fileChannel =  FileChannel.open(path);
+                ByteBuffer buffer = ByteBuffer.allocateDirect(1024*10);
+                int noOfBytesRead = fileChannel.read(buffer);
+
+                while (noOfBytesRead != -1) {
+//                    System.out.println("Number of bytes read: " + noOfBytesRead);
+                    buffer.flip();
+//                    System.out.print("Buffer contents: ");
+
+                    while (buffer.hasRemaining()) {
+                        buffer.get();
+                    }
+
+//                    System.out.println(" ");
+                    buffer.clear();
+                    noOfBytesRead = fileChannel.read(buffer);
+                }
+                this.data = buffer;
+                fileChannel.close();
+
+//                pixIn.close();
+//                pixFileIn.close();
                 System.out.println("Loaded data from " + pixFile);
             }
-
-            in.close();
-            fileIn.close();
             System.out.println("Loaded data from " + file);
         } catch (FileNotFoundException f){
             f.printStackTrace();
@@ -134,8 +159,9 @@ public class PixSerializer implements java.io.Serializable {
         }
     }
 
-    public void setToFile(@NotNull File file){
+    public void setToFile(@NotNull File file, @NotNull File pixFile){
         this.file = file.getPath();
+        this.pixFile = pixFile.getPath();
         load();
     }
 

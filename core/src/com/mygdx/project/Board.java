@@ -265,8 +265,8 @@ public class Board extends Widget {
     }
 
     public void wipe(){
-        for (Outline outline: outlines) {
-            outline.delete();
+        for (int i = 0; i < outlines.size(); i++) {
+            outlines.get(i).delete();
         }
         outlines.clear();
 
@@ -499,15 +499,17 @@ public class Board extends Widget {
         try {
             File folder = new File("assets\\ovalues");
             File[] files = folder.listFiles();
+            File pixFolder = new File("assets\\pixvalues");
+            File[] pixFiles = pixFolder.listFiles();
 
             for (int i = 0; i < files.length; i++) {
                 Outline d = new Doodle(this, Main.skin);
                 d.setScreen(screen);
-                d.getPS().setToFile(files[i]);
-                d.load();
+                d.getPS().setToFile(files[i], pixFiles[i]);
                 selectedOutline = d;
 
                 outlines.add(d);
+                d.load();
             }
 
         } catch (NullPointerException n){
