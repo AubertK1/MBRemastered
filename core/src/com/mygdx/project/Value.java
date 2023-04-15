@@ -2,6 +2,9 @@ package com.mygdx.project;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
+import java.util.ArrayList;
+
 /**
  * A Value is either a String or int depending on the StoreType. That's all it is. Just the ghetto version of python's var
  */
@@ -10,6 +13,8 @@ public class Value implements java.io.Serializable{
     StoreType s;
     String valStr = "";
     int valInt = 0;
+    long valLong = 0;
+    Point[] valPoints = new Point[0];
 
     public Value(StoreType s){
         this.s = s;
@@ -21,6 +26,8 @@ public class Value implements java.io.Serializable{
     public Value setValue(String v) {
         if(s == StoreType.INT) valInt = Stats.findNumber(v);
         else if(s == StoreType.STRING) valStr = v;
+        else if(s == StoreType.PLIST) System.out.println("Cannot Save String as List");
+        else if(s == StoreType.LONG) valLong = Stats.findNumber(v);
 
         return this;
     }
@@ -31,6 +38,23 @@ public class Value implements java.io.Serializable{
     public Value setValue(int v) {
         if(s == StoreType.INT) valInt = v;
         else if(s == StoreType.STRING) valStr = String.valueOf(v);
+        else if(s == StoreType.PLIST) System.out.println("Cannot Save String as List");
+        else if(s == StoreType.LONG) valLong = v;
+
+        return this;
+    }
+    public Value setValue(long v) {
+        if(s == StoreType.INT) valInt = (int) v;
+        else if(s == StoreType.STRING) valStr = String.valueOf(v);
+        else if(s == StoreType.PLIST) System.out.println("Cannot Save String as List");
+        else if(s == StoreType.LONG) valLong = v;
+
+        return this;
+    }
+    public Value setValue(Point... v) {
+        if(s == StoreType.INT) System.out.println("Cannot Save List as Int");
+        else if(s == StoreType.STRING) System.out.println("Cannot Save List as Strinh");
+        else if(s == StoreType.PLIST) valPoints = v;
 
         return this;
     }
@@ -38,6 +62,7 @@ public class Value implements java.io.Serializable{
     public Object getValue(){
         if(s == StoreType.INT) return valInt;
         else if(s == StoreType.STRING) return valStr;
+        else if(s == StoreType.PLIST) return valPoints;
         else return 0;
     }
 
@@ -52,6 +77,6 @@ public class Value implements java.io.Serializable{
     }
 
     public enum StoreType{
-        INT, STRING
+        INT, STRING, PLIST, LONG
     }
 }

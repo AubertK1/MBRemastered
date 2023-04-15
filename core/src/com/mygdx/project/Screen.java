@@ -255,6 +255,9 @@ public class Screen implements Renderable{
     public int getLayer() {
         return 0;
     }
+    public MBBoard getBoard(){
+        return null;
+    }
 
     public HashMap<Integer, ArrayList<Renderable>> getLayers() {
         return layers;
