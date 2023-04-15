@@ -348,7 +348,6 @@ public class Doodle extends Outline {
         ps.setData(doodleMap.getPixels());
         Point[] points = doodleMap.getPoints().toArray(new Point[0]);
         ps.setStat(PixSerializer.Stat.DMPOINTS, new Value(Value.StoreType.PLIST).setValue(points));
-//        ps.setStat(PixSerializer.Stat.BASEPTR, doodleMap.);
 
 
         super.save();
