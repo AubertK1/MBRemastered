@@ -74,12 +74,11 @@ public class PixSerializer implements java.io.Serializable {
 
     public void save() {
         try{
-            if(!this.folder.equals("")) folder = this.folder;
-            if(!this.pixFolder.equals("")) pixFolder = this.pixFolder;
-            Path path = Paths.get("assets\\ovalues\\" + this.folder);
+            Main.getMainScreen().getSelectedScreen().getBoard().getBoard().syncFolders();
+            Path path = Paths.get("assets\\SaveFiles\\ovalues\\" + this.folder);
             Files.createDirectories(path);
             FileOutputStream fileOut =
-                    new FileOutputStream(file.equals("") ? file = "assets\\ovalues\\" + this.folder + "\\outline" + FILEID + ".ser" : file);
+                    new FileOutputStream(file.equals("") ? file = "assets\\SaveFiles\\ovalues\\" + this.folder + "\\outline" + FILEID + ".ser" : file);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             // write default properties
             out.writeObject(statValues);
@@ -87,11 +86,13 @@ public class PixSerializer implements java.io.Serializable {
             out.close();
             fileOut.close();
             if(this.data != null) {
+
+
                 // write buffer capacity and data
-                Path path2 = Paths.get(pixFile = "assets\\pixvalues\\" + this.pixFolder);
+                Path path2 = Paths.get("assets\\SaveFiles\\pixvalues\\" + this.pixFolder);
                 Files.createDirectories(path2);
                 FileOutputStream pixFileOut =
-                        new FileOutputStream(pixFile.equals("") ? pixFile = "assets\\pixvalues\\" + this.pixFolder + "\\pixmap" + FILEID + ".ser" : pixFile);
+                        new FileOutputStream(pixFile.equals("") ? pixFile = "assets\\SaveFiles\\pixvalues\\" + this.pixFolder + "\\pixmap" + FILEID + ".ser" : pixFile);
                 FileChannel fileChannel = pixFileOut.getChannel();
 
                 fileChannel.write(this.data);
@@ -153,8 +154,8 @@ public class PixSerializer implements java.io.Serializable {
         }
     }
     public void setFolders(@NotNull String file, @NotNull String pixFile) {
-        this.file = file;
-        this.pixFile = pixFile;
+        this.folder = file;
+        this.pixFolder = pixFile;
     }
     public String getFolder(){
         return folder;

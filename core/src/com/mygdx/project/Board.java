@@ -500,6 +500,7 @@ public class Board extends Widget {
         for (Outline outline: outlines) {
             if(outline instanceof Doodle){
                 Doodle d = (Doodle) outline;
+                syncFolders();
                 d.save();
             }
         }
@@ -507,7 +508,7 @@ public class Board extends Widget {
     public void load(){
         wipe();
         try {
-            File folder = Files.createDirectories(Paths.get("assets\\ovalues\\" + this.folder)).toFile();
+            File folder = Files.createDirectories(Paths.get("assets\\SaveFiles\\ovalues\\" + this.folder)).toFile();
             File[] files = folder.listFiles();
 /*
             boolean f = false;
@@ -517,7 +518,7 @@ public class Board extends Widget {
             if(f == false) new File(folder + this.folder).mkdir();
 */
 
-            File pixFolder = Files.createDirectories(Paths.get("assets\\pixvalues\\" + this.pixFolder)).toFile();
+            File pixFolder = Files.createDirectories(Paths.get("assets\\SaveFiles\\pixvalues\\" + this.pixFolder)).toFile();
             File[] pixFiles = pixFolder.listFiles();
 /*
             boolean p = false;
@@ -551,8 +552,8 @@ public class Board extends Widget {
             pixFolder = outlines.get(0).getPS().getPixFolder();
             return;
         }
-        new File("assets\\ovalues\\temp").renameTo(new File("assets\\ovalues\\" + folder));
-        new File("assets\\pixvalues\\temp").renameTo(new File("assets\\pixvalues\\" + folder));
+        new File("assets\\SaveFiles\\ovalues\\temp").renameTo(new File("assets\\SaveFiles\\ovalues\\" + folder));
+        new File("assets\\SaveFiles\\pixvalues\\temp").renameTo(new File("assets\\SaveFiles\\pixvalues\\" + pixFolder));
         outlines.get(0).getPS().setFolders(folder, pixFolder);
     }
 

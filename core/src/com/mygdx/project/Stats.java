@@ -107,7 +107,7 @@ public class Stats {
     public void save(){
         try {
             FileOutputStream fileOut =
-                    new FileOutputStream(file.equals("") ? file = "assets\\SaveFiles\\player" + FILEID + ".ser" : file);
+                    new FileOutputStream(file.equals("") ? file = "assets\\SaveFiles\\stats\\player" + FILEID + ".ser" : file);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(statValues);
             out.close();

@@ -287,7 +287,7 @@ public class MainScreen extends Screen{
 
     public void onStart(){
         try {
-            File folder = new File("assets\\SaveFiles");
+            File folder = new File("assets\\SaveFiles\\stats");
             File[] files = folder.listFiles();
 
             for (int i = 0; i < files.length; i++) {
