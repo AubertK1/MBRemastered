@@ -193,6 +193,8 @@ public class Outline extends Widget implements Renderable{
         ps.setStat(PixSerializer.Stat.HEIGHT, (int) getHeight());
         ps.setStat(PixSerializer.Stat.XOFFSET, (int) offsetX);
         ps.setStat(PixSerializer.Stat.YOFFSET, (int) offsetY);
+
+        ps.save();
     }
 
     public void load(){

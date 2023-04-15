@@ -19,8 +19,8 @@ public class PixSerializer implements java.io.Serializable {
     private String pixFile = "";
 
     HashMap<Integer, Value> statValues = new HashMap<>();
-    private final int NAMEDSTATS = 43;
-    private int TOTALSTATS = 43;
+    private final int NAMEDSTATS = 9;
+    private int TOTALSTATS = 9;
 
     // mark as transient so this is not serialized by default
     transient ByteBuffer data;
@@ -30,7 +30,8 @@ public class PixSerializer implements java.io.Serializable {
 
         for (int i = 0; i < NAMEDSTATS; i++) {
             if(i == Stat.DMPOINTS) statValues.put(i, new Value(Value.StoreType.PLIST).setValue(new Point[0]));
-            statValues.put(i, new Value(Value.StoreType.INT).setValue(0));
+            else if(i == Stat.BASEPTR) statValues.put(i, new Value(Value.StoreType.LONG).setValue(0));
+            else statValues.put(i, new Value(Value.StoreType.INT).setValue(0));
         }
     }
 
@@ -109,41 +110,25 @@ public class PixSerializer implements java.io.Serializable {
             fileIn.close();
             if(this.data != null) {
                 //read buffer data and wrap with ByteBuffer
-//                FileInputStream pixFileIn = new FileInputStream(pixFile);
-//                ObjectInputStream pixIn = new ObjectInputStream(pixFileIn);
-
-/*
-                int bufferSize = pixIn.readInt();
-                byte[] buffer = new byte[bufferSize];
-                pixIn.read(buffer, 0, bufferSize);
-                this.data = ByteBuffer.wrap(buffer, 0, bufferSize).duplicate();
-                this.data = ByteBuffer.allocateDirect(1024*10);
-*/
-
                 Path path = Paths.get(pixFile);
 
                 FileChannel fileChannel =  FileChannel.open(path);
-                ByteBuffer buffer = ByteBuffer.allocateDirect(1024*10);
+                ByteBuffer buffer = ByteBuffer.allocateDirect(3461200);
                 int noOfBytesRead = fileChannel.read(buffer);
 
                 while (noOfBytesRead != -1) {
-//                    System.out.println("Number of bytes read: " + noOfBytesRead);
                     buffer.flip();
-//                    System.out.print("Buffer contents: ");
 
                     while (buffer.hasRemaining()) {
                         buffer.get();
                     }
 
-//                    System.out.println(" ");
                     buffer.clear();
                     noOfBytesRead = fileChannel.read(buffer);
                 }
                 this.data = buffer;
                 fileChannel.close();
 
-//                pixIn.close();
-//                pixFileIn.close();
                 System.out.println("Loaded data from " + pixFile);
             }
             System.out.println("Loaded data from " + file);
@@ -174,41 +159,7 @@ public class PixSerializer implements java.io.Serializable {
         public static final int XOFFSET = 4;
         public static final int YOFFSET = 5;
         public static final int DMPOINTS = 6;
-        public static final int ARCA = 8;
-        public static final int ATHL = 9;
-        public static final int DECE = 10;
-        public static final int HIST = 11;
-        public static final int INSI = 12;
-        public static final int INTI = 13;
-        public static final int INVE = 14;
-        public static final int MEDI = 15;
-        public static final int NATU = 16;
-        public static final int PERC = 17;
-        public static final int PERF = 18;
-        public static final int PERS = 19;
-        public static final int RELI = 20;
-        public static final int SLEI = 21;
-        public static final int STEA = 22;
-        public static final int SURV = 23;
-        public static final int STRst = 24;
-        public static final int DEXst = 25;
-        public static final int CONst = 26;
-        public static final int INTst = 27;
-        public static final int WISst = 28;
-        public static final int CHAst = 29;
-        public static final int HP = 30;
-        public static final int THP = 31;
-        public static final int AC = 32;
-        public static final int BAC = 33;
-        public static final int SPD = 34;
-        public static final int INI = 35;
-        public static final int LVL = 36;
-        public static final int PRF = 37;
-        public static final int CLS = 38;
-        public static final int RCE = 39;
-        public static final int NAME = 40;
-        public static final int REM = 41;
-        public static final int IMGFILEPATH = 42;
+        public static final int BASEPTR = 8;
         //endregion
     }
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -347,18 +348,26 @@ public class Doodle extends Outline {
         ps.setData(doodleMap.getPixels());
         Point[] points = doodleMap.getPoints().toArray(new Point[0]);
         ps.setStat(PixSerializer.Stat.DMPOINTS, new Value(Value.StoreType.PLIST).setValue(points));
+//        ps.setStat(PixSerializer.Stat.BASEPTR, doodleMap.);
 
-        ps.save();
+
+        super.save();
     }
 
     public void load(){
         super.load();
 
+        long[] nD = new long[]{2163752696576L, 1018, 850, 4};
+        Gdx2DPixmap gpm = new Gdx2DPixmap(ps.getData(), nD);
 
-        Pixmap px = new Pixmap(ps.getData());
+        Pixmap px = new Pixmap(gpm);
         doodleMap.setPixels(px.getPixels());
         doodleMap.setPoints((Point[]) ps.getValue(PixSerializer.Stat.DMPOINTS));
         doodleMap.texture = new Texture(doodleMap);
+        doodleMap.texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        doodleMap.texture.bind();
+
+        update();
     }
 
     public void delete(){

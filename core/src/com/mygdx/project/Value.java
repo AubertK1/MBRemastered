@@ -13,6 +13,7 @@ public class Value implements java.io.Serializable{
     StoreType s;
     String valStr = "";
     int valInt = 0;
+    long valLong = 0;
     Point[] valPoints = new Point[0];
 
     public Value(StoreType s){
@@ -25,7 +26,8 @@ public class Value implements java.io.Serializable{
     public Value setValue(String v) {
         if(s == StoreType.INT) valInt = Stats.findNumber(v);
         else if(s == StoreType.STRING) valStr = v;
-        else if(s == StoreType.PLIST) System.out.println("Cannot Save String as List");;
+        else if(s == StoreType.PLIST) System.out.println("Cannot Save String as List");
+        else if(s == StoreType.LONG) valLong = Stats.findNumber(v);
 
         return this;
     }
@@ -36,7 +38,16 @@ public class Value implements java.io.Serializable{
     public Value setValue(int v) {
         if(s == StoreType.INT) valInt = v;
         else if(s == StoreType.STRING) valStr = String.valueOf(v);
-        else if(s == StoreType.PLIST) System.out.println("Cannot Save String as List");;
+        else if(s == StoreType.PLIST) System.out.println("Cannot Save String as List");
+        else if(s == StoreType.LONG) valLong = v;
+
+        return this;
+    }
+    public Value setValue(long v) {
+        if(s == StoreType.INT) valInt = (int) v;
+        else if(s == StoreType.STRING) valStr = String.valueOf(v);
+        else if(s == StoreType.PLIST) System.out.println("Cannot Save String as List");
+        else if(s == StoreType.LONG) valLong = v;
 
         return this;
     }
@@ -66,6 +77,6 @@ public class Value implements java.io.Serializable{
     }
 
     public enum StoreType{
-        INT, STRING, PLIST
+        INT, STRING, PLIST, LONG
     }
 }
