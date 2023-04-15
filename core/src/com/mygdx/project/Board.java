@@ -19,9 +19,18 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Board extends Widget {
+    private static int FILEIDs = 0;
+    private final int FILEID = FILEIDs;
+    public String folder = "board" + FILEID;
+    public String pixFolder = "pboard" + FILEID;
+
     BoardStyle style;
     Screen screen;
     private InputListener inputListener;
@@ -61,6 +70,7 @@ public class Board extends Widget {
     }
 
     public Board(BoardStyle style) {
+        FILEIDs++;
         initialize();
         setStyle(style);
         setSize(getPrefWidth(), getPrefHeight());
@@ -497,10 +507,25 @@ public class Board extends Widget {
     public void load(){
         wipe();
         try {
-            File folder = new File("assets\\ovalues");
+            File folder = Files.createDirectories(Paths.get("assets\\ovalues\\" + this.folder)).toFile();
             File[] files = folder.listFiles();
-            File pixFolder = new File("assets\\pixvalues");
+/*
+            boolean f = false;
+            for (int i = 0; i < files.length; i++) {
+                if(files[i].getName().equals(folder)) f = true;
+            }
+            if(f == false) new File(folder + this.folder).mkdir();
+*/
+
+            File pixFolder = Files.createDirectories(Paths.get("assets\\pixvalues\\" + this.pixFolder)).toFile();
             File[] pixFiles = pixFolder.listFiles();
+/*
+            boolean p = false;
+            for (int i = 0; i < files.length; i++) {
+                if(files[i].getName().equals(folder)) p = true;
+            }
+            if(p == false) new File(pixFolder + this.pixFolder).mkdir();
+*/
 
             for (int i = 0; i < files.length; i++) {
                 Outline d = new Doodle(this, Main.skin);
@@ -509,12 +534,26 @@ public class Board extends Widget {
                 selectedOutline = d;
 
                 outlines.add(d);
+                syncFolders();
+
                 d.load();
             }
 
         } catch (NullPointerException n){
             System.out.println("Folder Not Found!");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+    public void syncFolders(){
+        if(!outlines.get(0).getPS().getFolder().equals("temp")){
+            folder = outlines.get(0).getPS().getFolder();
+            pixFolder = outlines.get(0).getPS().getPixFolder();
+            return;
+        }
+        new File("assets\\ovalues\\temp").renameTo(new File("assets\\ovalues\\" + folder));
+        new File("assets\\pixvalues\\temp").renameTo(new File("assets\\pixvalues\\" + folder));
+        outlines.get(0).getPS().setFolders(folder, pixFolder);
     }
 
     static public class BoardStyle{

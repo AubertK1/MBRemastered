@@ -6,6 +6,7 @@ import java.awt.*;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -17,6 +18,8 @@ public class PixSerializer implements java.io.Serializable {
     private final int FILEID = FILEIDs;
     private String file = "";
     private String pixFile = "";
+    private String folder = "temp";
+    private String pixFolder = "temp";
 
     HashMap<Integer, Value> statValues = new HashMap<>();
     private final int NAMEDSTATS = 9;
@@ -71,8 +74,12 @@ public class PixSerializer implements java.io.Serializable {
 
     public void save() {
         try{
+            if(!this.folder.equals("")) folder = this.folder;
+            if(!this.pixFolder.equals("")) pixFolder = this.pixFolder;
+            Path path = Paths.get("assets\\ovalues\\" + this.folder);
+            Files.createDirectories(path);
             FileOutputStream fileOut =
-                    new FileOutputStream(file.equals("") ? file = "assets\\ovalues\\outline" + FILEID + ".ser" : file);
+                    new FileOutputStream(file.equals("") ? file = "assets\\ovalues\\" + this.folder + "\\outline" + FILEID + ".ser" : file);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             // write default properties
             out.writeObject(statValues);
@@ -81,8 +88,10 @@ public class PixSerializer implements java.io.Serializable {
             fileOut.close();
             if(this.data != null) {
                 // write buffer capacity and data
+                Path path2 = Paths.get(pixFile = "assets\\pixvalues\\" + this.pixFolder);
+                Files.createDirectories(path2);
                 FileOutputStream pixFileOut =
-                        new FileOutputStream(pixFile.equals("") ? pixFile = "assets\\pixvalues\\pixmap" + FILEID + ".ser" : pixFile);
+                        new FileOutputStream(pixFile.equals("") ? pixFile = "assets\\pixvalues\\" + this.pixFolder + "\\pixmap" + FILEID + ".ser" : pixFile);
                 FileChannel fileChannel = pixFileOut.getChannel();
 
                 fileChannel.write(this.data);
@@ -143,12 +152,22 @@ public class PixSerializer implements java.io.Serializable {
             c.printStackTrace();
         }
     }
-
+    public void setFolders(@NotNull String file, @NotNull String pixFile) {
+        this.file = file;
+        this.pixFile = pixFile;
+    }
+    public String getFolder(){
+        return folder;
+    }
+    public String getPixFolder(){
+        return pixFolder;
+    }
     public void setToFile(@NotNull File file, @NotNull File pixFile){
         this.file = file.getPath();
         this.pixFile = pixFile.getPath();
         load();
     }
+
 
     public static class Stat{
         //region stats key
