@@ -75,6 +75,7 @@ public class PixSerializer implements java.io.Serializable {
     public void save() {
         try{
             Main.getMainScreen().getSelectedScreen().getBoard().getBoard().syncFolders();
+
             Path path = Paths.get("assets\\SaveFiles\\ovalues\\" + this.folder);
             Files.createDirectories(path);
             FileOutputStream fileOut =

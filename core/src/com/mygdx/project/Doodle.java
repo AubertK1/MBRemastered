@@ -327,6 +327,8 @@ public class Doodle extends Outline {
         //clearing the selected outline's doodle
         doodleMap.setColor(Color.CLEAR);
         doodleMap.fill();
+        //making sure both the pixmaps' bytes are at the same position for the data transfer
+        doodleMap.getPixels().rewind();
         //setting the doodle's pixels to the shifted pixmap's pixels
         doodleMap.setPixels(px.getPixels());
         //no more need for this pixmap
