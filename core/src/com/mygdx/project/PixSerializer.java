@@ -74,7 +74,7 @@ public class PixSerializer implements java.io.Serializable {
 
     public void save() {
         try{
-            Main.getMainScreen().getSelectedScreen().getBoard().getBoard().syncFolders();
+            Main.getMainScreen().getSelectedScreen().getBoard().getBoard().syncFolders(this);
 
             Path path = Paths.get("assets\\SaveFiles\\ovalues\\" + this.folder);
             Files.createDirectories(path);
@@ -164,10 +164,15 @@ public class PixSerializer implements java.io.Serializable {
     public String getPixFolder(){
         return pixFolder;
     }
+    public String getFile(){
+        return file;
+    }
+    public String getPixFile(){
+        return pixFile;
+    }
     public void setToFile(@NotNull File file, @NotNull File pixFile){
         this.file = file.getPath();
         this.pixFile = pixFile.getPath();
-        load();
     }
 
 

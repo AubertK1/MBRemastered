@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
 
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -125,6 +126,14 @@ public class Outline extends Widget implements Renderable{
     public void delete(){
         setLayer(-1);
         screen.removeRenderable(this);
+
+/*
+        //deleting their save files
+        File oSaveFile = new File(ps.getFile());
+        oSaveFile.delete();
+        File pixSaveFile = new File(ps.getPixFile());
+        pixSaveFile.delete();
+*/
     }
 
     public int onBorder(int x, int y){

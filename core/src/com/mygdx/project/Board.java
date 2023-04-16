@@ -499,9 +499,8 @@ public class Board extends Widget {
     public void save(){
         for (Outline outline: outlines) {
             if(outline instanceof Doodle){
-                Doodle d = (Doodle) outline;
-                syncFolders();
-                d.save();
+                syncFolders(outline.getPS());
+                outline.save();
             }
         }
     }
@@ -510,23 +509,9 @@ public class Board extends Widget {
         try {
             File folder = Files.createDirectories(Paths.get("assets\\SaveFiles\\ovalues\\" + this.folder)).toFile();
             File[] files = folder.listFiles();
-/*
-            boolean f = false;
-            for (int i = 0; i < files.length; i++) {
-                if(files[i].getName().equals(folder)) f = true;
-            }
-            if(f == false) new File(folder + this.folder).mkdir();
-*/
 
             File pixFolder = Files.createDirectories(Paths.get("assets\\SaveFiles\\pixvalues\\" + this.pixFolder)).toFile();
             File[] pixFiles = pixFolder.listFiles();
-/*
-            boolean p = false;
-            for (int i = 0; i < files.length; i++) {
-                if(files[i].getName().equals(folder)) p = true;
-            }
-            if(p == false) new File(pixFolder + this.pixFolder).mkdir();
-*/
 
             for (int i = 0; i < files.length; i++) {
                 Outline d = new Doodle(this, Main.skin);
@@ -535,7 +520,7 @@ public class Board extends Widget {
                 selectedOutline = d;
 
                 outlines.add(d);
-                syncFolders();
+                syncFolders(d.getPS());
 
                 d.load();
             }
@@ -546,15 +531,15 @@ public class Board extends Widget {
             e.printStackTrace();
         }
     }
-    public void syncFolders(){
-        if(!outlines.get(0).getPS().getFolder().equals("temp")){
-            folder = outlines.get(0).getPS().getFolder();
-            pixFolder = outlines.get(0).getPS().getPixFolder();
+    public void syncFolders(PixSerializer ps){
+        if(!ps.getFolder().equals("temp")){
+            folder = ps.getFolder();
+            pixFolder = ps.getPixFolder();
             return;
         }
         new File("assets\\SaveFiles\\ovalues\\temp").renameTo(new File("assets\\SaveFiles\\ovalues\\" + folder));
         new File("assets\\SaveFiles\\pixvalues\\temp").renameTo(new File("assets\\SaveFiles\\pixvalues\\" + pixFolder));
-        outlines.get(0).getPS().setFolders(folder, pixFolder);
+        ps.setFolders(folder, pixFolder);
     }
 
     static public class BoardStyle{
