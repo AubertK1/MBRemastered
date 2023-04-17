@@ -101,10 +101,10 @@ public class PixSerializer implements java.io.Serializable {
                 fileChannel.close();
                 pixFileOut.close();
 
-                System.out.println("Pixmap data is saved in " + pixFile);
+//                System.out.println("Pixmap data is saved in " + pixFile);
             }
 
-            System.out.println("Outline data is saved in " + file);
+//            System.out.println("Outline data is saved in " + file);
         } catch (IOException i) {
             i.printStackTrace();
         }
@@ -140,9 +140,9 @@ public class PixSerializer implements java.io.Serializable {
                 this.data = buffer;
                 fileChannel.close();
 
-                System.out.println("Loaded data from " + pixFile);
+//                System.out.println("Loaded data from " + pixFile);
             }
-            System.out.println("Loaded data from " + file);
+//            System.out.println("Loaded data from " + file);
         } catch (FileNotFoundException f){
             f.printStackTrace();
             save();

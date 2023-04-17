@@ -112,7 +112,7 @@ public class Stats {
             out.writeObject(statValues);
             out.close();
             fileOut.close();
-            System.out.println("Serialized data is saved in " + file);
+//            System.out.println("Serialized data is saved in " + file);
         } catch (IOException i) {
             i.printStackTrace();
         }
@@ -125,7 +125,7 @@ public class Stats {
             statValues = (HashMap<Integer, Value>) in.readObject();
             in.close();
             fileIn.close();
-            System.out.println("Loaded data from " + file);
+//            System.out.println("Loaded data from " + file);
         } catch (FileNotFoundException f){
             f.printStackTrace();
             save();
