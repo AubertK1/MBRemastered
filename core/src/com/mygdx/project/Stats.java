@@ -25,7 +25,6 @@ public class Stats {
     HashMap<Integer, Value> statValues = new HashMap<>();
 
     private final int NAMEDSTATS = 43;
-    private int TOTALSTATS = 43;
     public Stats() {
         FILEIDs++;
 
@@ -49,7 +48,7 @@ public class Stats {
     }
 
     public Object getValue(int stat){
-        return statValues.containsKey(stat) ? statValues.get(stat).getValue() : 0;
+        return statValues.containsKey(stat) ? statValues.get(stat).getValue() : -1;
     }
 
     public Integer newStat(Value v){
@@ -57,10 +56,22 @@ public class Stats {
         while (statValues.containsKey(index)){
             index++;
         }
-        TOTALSTATS++;
         statValues.put(index, v);
 
         return index;
+    }
+    public Integer newItemStatBlock(int itemType, int length){
+        //the first possible starting index of a stat block
+        int start = 100; //weapon items start at 100
+        if(itemType == 1) start = 1000; //spell items start at 1000
+        while (statValues.containsKey(start)){ //if the block is occupied, loop through until there's an open block
+            start += 10;
+        }
+        for (int i = 0; i < length; i++) {
+            statValues.put(start + i, new Value(Value.StoreType.STRING));
+        }
+
+        return start;
     }
     //endregion
 

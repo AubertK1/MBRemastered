@@ -11,7 +11,7 @@ public class ItemPanel extends Minipanel{
 
     private final Rectangle spot0Model;
     private final int MINSPOT = 0;
-    private int maxSpot = 5;
+    private int maxSpot = 100;
     private int columns = 1;
     private int rows = maxSpot;
 
@@ -151,6 +151,26 @@ public class ItemPanel extends Minipanel{
             else if(item.getSpot() >= MINSPOT && item.getSpot() <= maxSpot){
                 item.setSoftVisible(true);
             }
+        }
+    }
+
+    public void load(int itemType){
+        Stats stats = screen.getStats();
+
+        int numOfItems = 0;
+        boolean loop = true;
+        while(loop){
+            if(!stats.getValue(100 + (numOfItems * 10)).toString().equals("-1")) numOfItems++;
+            else loop = false;
+        }
+
+        for (int i = allItems.size() - 1; i >= 0; i--) {
+            delete(allItems.get(i));
+        }
+
+        for (int i = 0; i < numOfItems; i++) {
+            if(itemType == 0) add(new WeaponItem(screen));
+            else if(itemType == 1) add(new SpellItem(screen));
         }
     }
 

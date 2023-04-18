@@ -79,11 +79,10 @@ public class WeaponItem extends Item {
 
         //region textfields
         //creating textfields and setting their texts to their corresponding label's text
-        statsIndexes = new Integer[labelTexts.size()];
+        statBlock = screen.getStats().newItemStatBlock(0, labelTexts.size());
         for (int i = 0; i < labelTexts.size(); i++) {
-            int stat = screen.getStats().newStat(new Value(Value.StoreType.STRING).setValue(labelTexts.get(i)));
-            textFields.add(new MBTextField(labelTexts.get(i), screen, stat, false, true));
-            statsIndexes[i] = stat;
+            textFields.add(new MBTextField(labelTexts.get(i), screen, statBlock + i, false, true));
+
             add(textFields.get(i));
             //detecting when enter is pressed on each MBTextField so that enter can exit out of edit mode
             textFields.get(i).setClosingAction(new Action() {

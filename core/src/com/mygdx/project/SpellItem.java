@@ -325,10 +325,9 @@ public class SpellItem extends Item {
 
         //region textfields
         //creating textfields and setting their texts to their corresponding label's text
+        statBlock = screen.getStats().newItemStatBlock(1, 9);
         for (int i = 0; i < labelTexts.size(); i++) {
-            int stat = screen.getStats().newStat(new Value(Value.StoreType.STRING).setValue(labelTexts.get(i)));
-
-            textFields.add(new MBTextField(labelTexts.get(i), screen, stat, false, true));
+            textFields.add(new MBTextField(labelTexts.get(i), screen, statBlock + i, false, true));
             if(labels.get(i).getName() != null && labels.get(i).getName().equals("tf")){ //banishing the spell desc label's real textfield
                 textFields.get(i).setVisible(false);
                 textFields.get(i).setPosition(-1, -1);
@@ -348,26 +347,28 @@ public class SpellItem extends Item {
 
         //region tipbox components
         spellDesc = new Tipbox(new Rectangle(115, descLabel.getY()+ (descLabel.getHeight()/2)-300, 770, 300), screen);
-        int stat = screen.getStats().newStat(new Value(Value.StoreType.STRING).setValue("Spell Description..."));
-        MBTextArea spellDescTF = new MBTextArea("", screen, stat);
+
+        screen.getStats().setStat(statBlock + 1, new Value(Value.StoreType.STRING).setValue("Spell Description..."));
+        MBTextArea spellDescTF = new MBTextArea("", screen, statBlock + 1);
+
         spellDescTF.setPosition(spellDesc.getX()+10, spellDesc.getY()+10+35);
         spellDescTF.setSize(750, 225);
 
-        int stat1 = screen.getStats().newStat(new Value(Value.StoreType.INT).setValue(0)),
-                stat2 = screen.getStats().newStat(new Value(Value.StoreType.STRING).setValue("Action")),
-                stat3 = screen.getStats().newStat(new Value(Value.StoreType.STRING).setValue("Instant")),
-                stat4 = screen.getStats().newStat(new Value(Value.StoreType.STRING).setValue("5 ft")),
-                stat5 = screen.getStats().newStat(new Value(Value.StoreType.STRING).setValue("Fire"));
+        screen.getStats().setStat(statBlock + 3, new Value(Value.StoreType.INT).setValue(0));
+                screen.getStats().setStat(statBlock + 4, new Value(Value.StoreType.STRING).setValue("Action"));
+                screen.getStats().setStat(statBlock + 5, new Value(Value.StoreType.STRING).setValue("Instant"));
+                screen.getStats().setStat(statBlock + 6, new Value(Value.StoreType.STRING).setValue("5 ft"));
+                screen.getStats().setStat(statBlock + 7, new Value(Value.StoreType.STRING).setValue("Fire"));
         MBLabel spellLevel = new MBLabel("Level: ", screen),
                 castTime = new MBLabel("Casting Time: ", screen),
                 duration = new MBLabel("Duration: ", screen),
                 range = new MBLabel("Range: ", screen),
                 damageType = new MBLabel("Damage Type: ", screen);
-        MBTextField spellLevelTF = new MBTextField("0", screen, stat1),
-                castTimeTF = new MBTextField("Action", screen, stat2),
-                durationTF = new MBTextField("Instant", screen, stat3),
-                rangeTF = new MBTextField("5 ft", screen, stat4),
-                damageTypeTF = new MBTextField("Fire", screen, stat5);
+        MBTextField spellLevelTF = new MBTextField("0", screen, statBlock + 4),
+                castTimeTF = new MBTextField("Action", screen, statBlock + 5),
+                durationTF = new MBTextField("Instant", screen, statBlock + 6),
+                rangeTF = new MBTextField("5 ft", screen, statBlock + 7),
+                damageTypeTF = new MBTextField("Fire", screen, statBlock + 8);
 
         spellLevel.setPosition(spellDesc.getX()+10, spellDesc.getY()+10);
 
@@ -528,11 +529,17 @@ public class SpellItem extends Item {
                 srMax = Integer.parseInt(labelTexts.get(usesIndexInNames));
                 //if the long rest max is smaller than the short rest mex set the long rest max uses to the textfield value too
                 if(lrMax < srMax) lrMax = Integer.parseInt(labelTexts.get(usesIndexInNames));
+
+                screen.getStats().setStat(statBlock + 8, new Value(Value.StoreType.INT).setValue(srMax));
+                screen.getStats().setStat(statBlock + 9, new Value(Value.StoreType.INT).setValue(lrMax));
             }
             //if the selected rest button is a long rest...
             if(restButtons.get(i).getButton().isChecked() && i == 1){
                 //set the long rest max uses to the textfield value
                 lrMax = Integer.parseInt(labelTexts.get(usesIndexInNames));
+
+                screen.getStats().setStat(statBlock + 8, new Value(Value.StoreType.INT).setValue(srMax));
+                screen.getStats().setStat(statBlock + 9, new Value(Value.StoreType.INT).setValue(lrMax));
             }
             restButtons.get(i).setVisible(false);
         }

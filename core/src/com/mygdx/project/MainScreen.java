@@ -421,6 +421,8 @@ public class MainScreen extends Screen{
             if(screen.getComps().get(i) instanceof MBTextField) {
                 MBTextField textField = (MBTextField) screen.getComps().get(i);
                 if(textField.getAssignedStat() != null){
+                    if(textField.getAssignedStat() == 100) ((Item) textField.getParentPanel()).parentIP.load(0);
+                    else if(textField.getAssignedStat() == 1000) ((Item) textField.getParentPanel()).parentIP.load(1);
                     //setting the text of the tfs
                     textField.setText(String.valueOf(screen.getStats().getValue(textField.getAssignedStat())));
                     //updating any buttons or labels associated with the tf
