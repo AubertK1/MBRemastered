@@ -55,6 +55,9 @@ public class Screen implements Renderable{
         stage = Main.stage;
         skin = Main.skin;
     }
+    public void load(){
+
+    }
 
     public void setName(String name){
         this.name = name;

@@ -764,6 +764,39 @@ public class PlayerScreen extends Screen{
         masterboardPanel.add(masterBoard);
         //endregion
     }
+    public void load(){
+        stats.load();
+        masterBoard.getBoard().load();
+
+        for (int i = 0; i < allComps.size(); i++) {
+            if(allComps.get(i) instanceof MBTextField) {
+                MBTextField textField = (MBTextField) allComps.get(i);
+                if(textField.getAssignedStat() != null){
+                    if(textField.getAssignedStat() == 100) ((Item) textField.getParentPanel()).parentIP.load(0);
+                    else if(textField.getAssignedStat() == 1000) ((Item) textField.getParentPanel()).parentIP.load(1);
+                    //setting the text of the tfs
+                    textField.setText(String.valueOf(stats.getValue(textField.getAssignedStat())));
+                    //updating any buttons or labels associated with the tf
+                    textField.updateSystem();
+                }
+            }
+            else if(allComps.get(i) instanceof MBTextArea) {
+                MBTextArea textArea = (MBTextArea) allComps.get(i);
+                if(textArea.getAssignedStat() != null){
+                    textArea.setText(String.valueOf(stats.getValue(textArea.getAssignedStat())));
+                }
+            }
+            else if(allComps.get(i) instanceof MBButton && allComps.get(i).getName().equals("image button")){
+                MBButton imgbutton = (MBButton) allComps.get(i);
+                String path = String.valueOf(stats.getValue(Stats.Stat.IMGFILEPATH));
+                if(!path.equals("")) {
+                    Main.fileChooserPath = path;
+                    fileChooseHandle(imgbutton.getParentPanel(), imgbutton); //this moves the button further down the list...
+                    if(allComps.indexOf(imgbutton) != i) i--; //...so we have to go back one so we can load the MBComp that was slide into this index
+                }
+            }
+        }
+    }
     public MBBoard getBoard(){
         return masterBoard;
     }

@@ -415,38 +415,9 @@ public class MainScreen extends Screen{
     }
     public void loadScreen(@NotNull Screen screen){
         //recovering the stats
-        screen.getStats().load();
-        screen.getBoard().getBoard().load();
-        for (int i = 0; i < screen.getComps().size(); i++) {
-            if(screen.getComps().get(i) instanceof MBTextField) {
-                MBTextField textField = (MBTextField) screen.getComps().get(i);
-                if(textField.getAssignedStat() != null){
-                    if(textField.getAssignedStat() == 100) ((Item) textField.getParentPanel()).parentIP.load(0);
-                    else if(textField.getAssignedStat() == 1000) ((Item) textField.getParentPanel()).parentIP.load(1);
-                    //setting the text of the tfs
-                    textField.setText(String.valueOf(screen.getStats().getValue(textField.getAssignedStat())));
-                    //updating any buttons or labels associated with the tf
-                    textField.updateSystem();
-                    //making sure all the screens are still synced
-                    syncScreens();
-                }
-            }
-            else if(screen.getComps().get(i) instanceof MBTextArea) {
-                MBTextArea textArea = (MBTextArea) screen.getComps().get(i);
-                if(textArea.getAssignedStat() != null){
-                    textArea.setText(String.valueOf(screen.getStats().getValue(textArea.getAssignedStat())));
-                }
-            }
-            else if(screen.getComps().get(i) instanceof MBButton && screen.getComps().get(i).getName().equals("image button")){
-                MBButton imgbutton = (MBButton) screen.getComps().get(i);
-                String path = String.valueOf(screen.getStats().getValue(Stats.Stat.IMGFILEPATH));
-                if(!path.equals("")) {
-                    Main.fileChooserPath = path;
-                    fileChooseHandle(imgbutton.getParentPanel(), imgbutton); //this moves the button further down the list...
-                    if(screen.getComps().indexOf(imgbutton) != i) i--; //...so we have to go back one so we can load the MBComp that was slide into this index
-                }
-            }
-        }
+        screen.load();
+        //making sure all the screens are still synced
+        syncScreens();
     }
 
     @Override
