@@ -18,6 +18,7 @@ public class Item extends Minipanel{
     ArrayList<MBLabel> labels = new ArrayList<>();
 
     Integer statBlock;
+    Integer[] statValues;
     //if the panel is in edit mode
     protected boolean editMode = false;
     protected boolean customLayout = true;
@@ -174,6 +175,14 @@ public class Item extends Minipanel{
             }
         }
         return str;
+    }
+
+    public void assignStats(Integer statBlock, int length){
+        this.statBlock = statBlock;
+        statValues = new Integer[length];
+        for (int i = 0; i < length; i++) {
+            statValues[i] = statBlock + i;
+        }
     }
 
     public void setSpot(int spot){

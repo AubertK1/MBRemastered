@@ -155,13 +155,17 @@ public class ItemPanel extends Minipanel{
     }
 
     public void load(int itemType){
+        if(itemType != 0 && itemType != 1) return;
+
         Stats stats = screen.getStats();
 
         int numOfItems = 0;
-        boolean loop = true;
-        while(loop){
-            if(!stats.getValue(100 + (numOfItems * 10)).toString().equals("-1")) numOfItems++;
-            else loop = false;
+        int start = 100;
+        if(itemType == 1) start = 1000;
+
+        while(true){
+            if(stats.getValue(start + (numOfItems * 10)).toString().equals("-1")) break;
+            else numOfItems++;
         }
 
         for (int i = allItems.size() - 1; i >= 0; i--) {
@@ -169,8 +173,13 @@ public class ItemPanel extends Minipanel{
         }
 
         for (int i = 0; i < numOfItems; i++) {
-            if(itemType == 0) add(new WeaponItem(screen));
-            else if(itemType == 1) add(new SpellItem(screen));
+            Item newItem = null;
+            if(itemType == 0) newItem = new WeaponItem(screen);
+            else if(itemType == 1) newItem = new SpellItem(screen);
+
+            newItem.assignStats(start + (i * 10), itemType == 0 ? 4 : 9);
+
+            add(newItem);
         }
     }
 

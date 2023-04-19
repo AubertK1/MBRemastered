@@ -325,7 +325,7 @@ public class SpellItem extends Item {
 
         //region textfields
         //creating textfields and setting their texts to their corresponding label's text
-        statBlock = screen.getStats().newItemStatBlock(1, 9);
+        if(statBlock == null) statBlock = screen.getStats().newItemStatBlock(1, 9);
         for (int i = 0; i < labelTexts.size(); i++) {
             textFields.add(new MBTextField(labelTexts.get(i), screen, statBlock + i, false, true));
             if(labels.get(i).getName() != null && labels.get(i).getName().equals("tf")){ //banishing the spell desc label's real textfield

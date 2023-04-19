@@ -768,12 +768,23 @@ public class PlayerScreen extends Screen{
         stats.load();
         masterBoard.getBoard().load();
 
+        boolean[] loadedIPs = new boolean[]{false, false};
         for (int i = 0; i < allComps.size(); i++) {
+            if(i == 192)
+                System.out.print("");
             if(allComps.get(i) instanceof MBTextField) {
                 MBTextField textField = (MBTextField) allComps.get(i);
                 if(textField.getAssignedStat() != null){
-                    if(textField.getAssignedStat() == 100) ((Item) textField.getParentPanel()).parentIP.load(0);
-                    else if(textField.getAssignedStat() == 1000) ((Item) textField.getParentPanel()).parentIP.load(1);
+                    if(!loadedIPs[0] && textField.getAssignedStat() == 100){
+                        ((Item) textField.getParentPanel()).parentIP.load(0);
+                        loadedIPs[0] = true;
+                        i--;
+                    }
+                    else if(!loadedIPs[1] && textField.getAssignedStat() == 1000){
+                        ((Item) textField.getParentPanel()).parentIP.load(1);
+                        loadedIPs[1] = true;
+                        i--;
+                    }
                     //setting the text of the tfs
                     textField.setText(String.valueOf(stats.getValue(textField.getAssignedStat())));
                     //updating any buttons or labels associated with the tf
