@@ -29,7 +29,7 @@ public class SpellItem extends Item {
     }
     public void initialize(){
         //region labels
-        MBLabel nameLabel, descLabel, usesLabel;
+        MBLabel nameLabel, descLabel, srLabel, lrLabel;
 
         //setting the labels' texts and positions and sizes
         nameLabel = new MBLabel("Spell  "+ (ID+1), screen);
@@ -43,19 +43,26 @@ public class SpellItem extends Item {
         descLabel.setName("tf"); //setting the name so I can identify it later
         labelTexts.add(descLabel.getLabel().getText().toString());
 
-        usesLabel = new MBLabel(String.valueOf(uses), screen);
-        usesLabel.setPosition(descLabel.getX()+ descLabel.getWidth()+2, nameLabel.getY());
-        usesLabel.setSize(22, nameLabel.getHeight());
-        labelTexts.add(usesLabel.getLabel().getText().toString());
+        srLabel = new MBLabel(String.valueOf(uses), screen);
+        srLabel.setPosition(descLabel.getX()+ descLabel.getWidth()+2, nameLabel.getY());
+        srLabel.setSize(22, nameLabel.getHeight());
+        labelTexts.add(srLabel.getLabel().getText().toString());
         usesIndexInNames = labelTexts.size()-1;
+
+        lrLabel = new MBLabel(String.valueOf(uses), screen);
+        lrLabel.setPosition(descLabel.getX()+ descLabel.getWidth()+2, nameLabel.getY());
+        lrLabel.setSize(22, nameLabel.getHeight());
+        labelTexts.add(lrLabel.getLabel().getText().toString());
 
         labels.add(nameLabel);
         labels.add(descLabel);
-        labels.add(usesLabel);
+        labels.add(srLabel);
+        labels.add(lrLabel);
 
         add(nameLabel);
         add(descLabel);
-        add(usesLabel);
+        add(srLabel);
+        add(lrLabel);
         //endregion
 
         //region buttons
@@ -69,8 +76,8 @@ public class SpellItem extends Item {
                 upButton = new MBButton(screen, "up-button");
 
         usesButton.setName("usesbutton"); //setting the name so I can identify it later
-        usesButton.setPosition(usesLabel.getX(), usesLabel.getY());
-        usesButton.setSize(usesLabel.getWidth(), 30);
+        usesButton.setPosition(srLabel.getX(), srLabel.getY());
+        usesButton.setSize(srLabel.getWidth(), 30);
         ((TextButton)usesButton.getButton()).getLabel().setAlignment(Align.left);
         this.usesButton = usesButton; //fixme is this necessary
 
@@ -85,7 +92,7 @@ public class SpellItem extends Item {
         editButton.getButton().setChecked(true);
         editButton.setName("editbutton");
         editButton.getButton().setName("editbutton"); //setting the name so I can identify it later
-        editButton.setPosition((usesLabel.getX()+usesLabel.getWidth()+8), nameLabel.getY()-1);
+        editButton.setPosition((srLabel.getX()+srLabel.getWidth()+8), nameLabel.getY()-1);
         editButton.setSize(20, 15);
 
         delButton.setPosition(editButton.getX(), editButton.getY()+editButton.getHeight()+2);
@@ -204,6 +211,8 @@ public class SpellItem extends Item {
                     lrButton.getButton().setChecked(true);
                 }
                 else if(srButton.getButton().isChecked()){
+                    textFields.get(usesIndexInNames).setVisible(true);
+                    textFields.get(usesIndexInNames + 1).setVisible(false);
                     lrButton.getButton().setChecked(false);
                 }
             }
@@ -217,6 +226,8 @@ public class SpellItem extends Item {
                     srButton.getButton().setChecked(true);
                 }
                 else if(lrButton.getButton().isChecked()){
+                    textFields.get(usesIndexInNames).setVisible(false);
+                    textFields.get(usesIndexInNames + 1).setVisible(true);
                     srButton.getButton().setChecked(false);
                 }
             }
@@ -324,16 +335,27 @@ public class SpellItem extends Item {
         //endregion
 
         //region textfields
+        String[] stats = new String[]{
+                //Name, Spell Desc, Spell Level, Cast Time, Duration, Range, Damage Type, Short Rest, Long Rest
+                labelTexts.get(0), labelTexts.get(1), "0", "Action", "Instant", "5 ft", "Fire", "0", "0"
+        };
         //creating textfields and setting their texts to their corresponding label's text
-        if(statBlock == null) statBlock = screen.getStats().newItemStatBlock(1, 9);
+        if(statBlock == null) statBlock = screen.getStats().newItemStatBlock(1, stats.length);
+        else {
+            for (int i = 0; i < stats.length; i++) {
+                String text = screen.getStats().getValue(statBlock + i).toString();
+                if(!text.equals("")) stats[i] = text;
+            }
+        }
         for (int i = 0; i < labelTexts.size(); i++) {
-            textFields.add(new MBTextField(labelTexts.get(i), screen, statBlock + i, false, true));
+            int j = i;
+            if(i >= usesIndexInNames) j = i + 5;
+            textFields.add(new MBTextField(stats[j], screen, statBlock + j, false, true));
             if(labels.get(i).getName() != null && labels.get(i).getName().equals("tf")){ //banishing the spell desc label's real textfield
                 textFields.get(i).setVisible(false);
                 textFields.get(i).setPosition(-1, -1);
                 textFields.get(i).setSize(0,0);
             }
-            add(textFields.get(i));
             //detecting when enter is pressed on each MBTextField so that enter can exit out of edit mode
             textFields.get(i).setClosingAction(new Action() {
                 @Override
@@ -343,32 +365,35 @@ public class SpellItem extends Item {
                 }
             });
         }
+        for (int i = textFields.size() - 1; i >= 0; i--) {
+            add(textFields.get(i));
+        }
         //endregion
 
         //region tipbox components
         spellDesc = new Tipbox(new Rectangle(115, descLabel.getY()+ (descLabel.getHeight()/2)-300, 770, 300), screen);
 
-        screen.getStats().setStat(statBlock + 1, new Value(Value.StoreType.STRING).setValue("Spell Description..."));
+        screen.getStats().setStat(statBlock + 1, new Value(Value.StoreType.STRING).setValue(stats[1]));
         MBTextArea spellDescTF = new MBTextArea("", screen, statBlock + 1);
 
         spellDescTF.setPosition(spellDesc.getX()+10, spellDesc.getY()+10+35);
         spellDescTF.setSize(750, 225);
 
-        screen.getStats().setStat(statBlock + 3, new Value(Value.StoreType.INT).setValue(0));
-                screen.getStats().setStat(statBlock + 4, new Value(Value.StoreType.STRING).setValue("Action"));
-                screen.getStats().setStat(statBlock + 5, new Value(Value.StoreType.STRING).setValue("Instant"));
-                screen.getStats().setStat(statBlock + 6, new Value(Value.StoreType.STRING).setValue("5 ft"));
-                screen.getStats().setStat(statBlock + 7, new Value(Value.StoreType.STRING).setValue("Fire"));
+        screen.getStats().setStat(statBlock + 2, new Value(Value.StoreType.INT).setValue(stats[2]));
+                screen.getStats().setStat(statBlock + 3, new Value(Value.StoreType.STRING).setValue(stats[3]));
+                screen.getStats().setStat(statBlock + 4, new Value(Value.StoreType.STRING).setValue(stats[4]));
+                screen.getStats().setStat(statBlock + 5, new Value(Value.StoreType.STRING).setValue(stats[5]));
+                screen.getStats().setStat(statBlock + 6, new Value(Value.StoreType.STRING).setValue(stats[6]));
         MBLabel spellLevel = new MBLabel("Level: ", screen),
                 castTime = new MBLabel("Casting Time: ", screen),
                 duration = new MBLabel("Duration: ", screen),
                 range = new MBLabel("Range: ", screen),
                 damageType = new MBLabel("Damage Type: ", screen);
-        MBTextField spellLevelTF = new MBTextField("0", screen, statBlock + 4),
-                castTimeTF = new MBTextField("Action", screen, statBlock + 5),
-                durationTF = new MBTextField("Instant", screen, statBlock + 6),
-                rangeTF = new MBTextField("5 ft", screen, statBlock + 7),
-                damageTypeTF = new MBTextField("Fire", screen, statBlock + 8);
+        MBTextField spellLevelTF = new MBTextField(stats[2], screen, statBlock + 2),
+                castTimeTF = new MBTextField(stats[3], screen, statBlock + 3),
+                durationTF = new MBTextField(stats[4], screen, statBlock + 4),
+                rangeTF = new MBTextField(stats[5], screen, statBlock + 5),
+                damageTypeTF = new MBTextField(stats[6], screen, statBlock + 6);
 
         spellLevel.setPosition(spellDesc.getX()+10, spellDesc.getY()+10);
 
@@ -522,8 +547,12 @@ public class SpellItem extends Item {
             }
         }
 
+        srMax = Integer.parseInt(labelTexts.get(usesIndexInNames));
+        lrMax = Integer.parseInt(labelTexts.get(usesIndexInNames + 1));
+
         for (int i = 0; i < restButtons.size(); i++) {
             //if the selected rest button is a short rest...
+/*
             if(restButtons.get(i).getButton().isChecked() && i == 0){
                 //set the short rest max uses to the textfield value
                 srMax = Integer.parseInt(labelTexts.get(usesIndexInNames));
@@ -541,6 +570,7 @@ public class SpellItem extends Item {
                 screen.getStats().setStat(statBlock + 8, new Value(Value.StoreType.INT).setValue(srMax));
                 screen.getStats().setStat(statBlock + 9, new Value(Value.StoreType.INT).setValue(lrMax));
             }
+*/
             restButtons.get(i).setVisible(false);
         }
 
