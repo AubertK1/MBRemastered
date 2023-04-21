@@ -339,7 +339,6 @@ public class SpellItem extends Item {
                 //Name, Spell Desc, Spell Level, Cast Time, Duration, Range, Damage Type, Short Rest, Long Rest
                 labelTexts.get(0), labelTexts.get(1), "0", "Action", "Instant", "5 ft", "Fire", "0", "0"
         };
-        //creating textfields and setting their texts to their corresponding label's text
         if(statBlock == null) statBlock = screen.getStats().newItemStatBlock(1, stats.length);
         else {
             for (int i = 0; i < stats.length; i++) {
@@ -347,6 +346,7 @@ public class SpellItem extends Item {
                 if(!text.equals("")) stats[i] = text;
             }
         }
+        //creating textfields and setting their texts to their corresponding label's text
         for (int i = 0; i < labelTexts.size(); i++) {
             int j = i;
             if(i >= usesIndexInNames) j = i + 5;

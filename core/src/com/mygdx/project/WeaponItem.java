@@ -78,7 +78,6 @@ public class WeaponItem extends Item {
         //endregion
 
         //region textfields
-        //creating textfields and setting their texts to their corresponding label's text
         if(statBlock == null){
             statBlock = screen.getStats().newItemStatBlock(0, labelTexts.size());
         }
@@ -88,6 +87,7 @@ public class WeaponItem extends Item {
                 if(!text.equals("")) labelTexts.set(i, text);
             }
         }
+        //creating textfields and setting their texts to their corresponding label's text
         for (int i = 0; i < labelTexts.size(); i++) {
             textFields.add(new MBTextField(labelTexts.get(i), screen, statBlock + i, false, true));
 

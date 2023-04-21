@@ -770,8 +770,6 @@ public class PlayerScreen extends Screen{
 
         boolean[] loadedIPs = new boolean[]{false, false};
         for (int i = 0; i < allComps.size(); i++) {
-            if(i == 192)
-                System.out.print("");
             if(allComps.get(i) instanceof MBTextField) {
                 MBTextField textField = (MBTextField) allComps.get(i);
                 if(textField.getAssignedStat() != null){
@@ -810,5 +808,8 @@ public class PlayerScreen extends Screen{
     }
     public MBBoard getBoard(){
         return masterBoard;
+    }
+    public int getItemTab(){
+        return itemTab;
     }
 }

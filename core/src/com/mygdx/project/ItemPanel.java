@@ -181,6 +181,8 @@ public class ItemPanel extends Minipanel{
 
             add(newItem);
         }
+
+        if(((PlayerScreen) screen).getItemTab() != itemType + 1) this.setSoftVisible(false); //makes this invisible if its not the selected tab
     }
 
     public void setColumns(int columns) {
