@@ -250,8 +250,14 @@ public class MainScreen extends Screen{
         for (int layer = layers.size() - 1; layer >= nonfocusedLayers; layer--) {
             //so that it's not updating the layers.layer's size/indexes while looping through it
             ArrayList<Renderable> currentLayer = new ArrayList<>(layers.get(layer));
+            int i = 0;
             for (Renderable renderable : currentLayer) {
-                renderable.setLayer(renderable.getLayer() - focusedLayers);
+                try {
+                    renderable.setLayer(renderable.getLayer() - focusedLayers);
+                } catch(NullPointerException n){
+                    System.out.println("Error at layer: " + layer + "; line: " + i);
+                }
+                i++;
             }
             if(layers.get(layer).size() == 0) layers.remove(layer); //deletes the layer when its empty
         }
