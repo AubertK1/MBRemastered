@@ -175,7 +175,8 @@ public class MBComponent implements Renderable{
 
         if(layer == -1); //don't add this to a list, so it doesn't get rendered
         else if(getScreen().layers.containsKey(layer)){ //if the layer already exists
-            getScreen().layers.get(layer).add(this); //add the panel to its new later
+            if(!getScreen().layers.get(layer).contains(this))
+                getScreen().layers.get(layer).add(this); //add the panel to its new later
         }
         else{
             getScreen().addLayer(layer);

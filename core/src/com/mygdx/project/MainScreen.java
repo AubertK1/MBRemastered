@@ -24,6 +24,7 @@ public class MainScreen extends Screen{
     static private int NEXTSCREENID = 0;
 
     Screen selectedScreen = null;
+    HashMap<Integer, ArrayList<Renderable>> mainLayers = new HashMap<>();
     HashMap<Integer, ArrayList<Renderable>> screenLayers = new HashMap<>();
     ArrayList<Panel> screenPanels = new ArrayList<>();
 
@@ -241,6 +242,7 @@ public class MainScreen extends Screen{
         }
 
         grayPanel.setLayer(nonfocusedLayers);
+        this.addRenderable(grayPanel);
 
         inFocusMode = true;
     }
@@ -250,14 +252,8 @@ public class MainScreen extends Screen{
         for (int layer = layers.size() - 1; layer >= nonfocusedLayers; layer--) {
             //so that it's not updating the layers.layer's size/indexes while looping through it
             ArrayList<Renderable> currentLayer = new ArrayList<>(layers.get(layer));
-            int i = 0;
             for (Renderable renderable : currentLayer) {
-                try {
-                    renderable.setLayer(renderable.getLayer() - focusedLayers);
-                } catch(NullPointerException n){
-                    System.out.println("Error at layer: " + layer + "; line: " + i);
-                }
-                i++;
+                renderable.setLayer(renderable.getLayer() - focusedLayers);
             }
             if(layers.get(layer).size() == 0) layers.remove(layer); //deletes the layer when its empty
         }
@@ -267,26 +263,40 @@ public class MainScreen extends Screen{
         }
 
         focusedLayers = 0;
+        this.removeRenderable(grayPanel);
 
         inFocusMode = false;
     }
 
     public void update(){
         screenLayers.clear();
-        screenLayers.putAll(selectedScreen.getLayers());
+        screenLayers.putAll(selectedScreen.getLayers()); //making sure screenLayers is up to date
 
-        for (int layer = 0; layer < screenLayers.size(); layer++) {
+        mainLayers.clear();
+        for (int r = 0; r < getRenderables().size(); r++) { //making sure mainLayers is up to date
+            addToMainLayer(getRenderables().get(r));
+        }
+
+        for (int layer = 0; layer < screenLayers.size(); layer++) { //looping through the layers
             if(layers.containsKey(layer)){ //if the layer exists
-                //empties out the selected screen's renderables from the layer's list
-                layers.get(layer).removeAll(selectedScreen.getRenderables());
+                //empties out the layer
+                layers.get(layer).clear();
+                //re-adds in this screen's renderables in their updated order
+                if(mainLayers.containsKey(layer))
+                    layers.get(layer).addAll(mainLayers.get(layer));
                 //re-adds the renderables in their updated order
-                layers.get(layer).addAll(screenLayers.get(layer));
+                if(screenLayers.containsKey(layer))
+                    layers.get(layer).addAll(screenLayers.get(layer));
             }
             else{
                 //makes a new layer for the renderables
                 addLayer(layer);
+                //adds in this screen's renderables in their updated order
+                if(mainLayers.containsKey(layer))
+                    layers.get(layer).addAll(mainLayers.get(layer));
                 //adds the renderables in their updated order
-                layers.get(layer).addAll(screenLayers.get(layer));
+                if(screenLayers.containsKey(layer))
+                    layers.get(layer).addAll(screenLayers.get(layer));
             }
         }
     }
@@ -413,6 +423,33 @@ public class MainScreen extends Screen{
 
     public Screen getSelectedScreen(){
         return selectedScreen;
+    }
+    public void addToMainLayer(Renderable r){
+        int layer = r.getLayer();
+/*
+        if(layer != -1) {
+            for (int renderable = 0; renderable < mainLayers.get(layer).size(); renderable++) { //find the panel in the old layer
+                if (this == mainLayers.get(layer).get(renderable)) {
+                    mainLayers.get(layer).remove(this); //remove the panel from the old layer
+                    break;
+                }
+            }
+        }
+*/
+
+        if(layer == -1); //don't add this to a list, so it doesn't get rendered
+        else if(mainLayers.containsKey(layer)){ //if the layer already exists
+            if(!mainLayers.get(layer).contains(r))
+                mainLayers.get(layer).add(r); //add the panel to its new later
+        }
+        else{
+            //adds in any new layers between the highest existing layer and this layer
+            for (int newLayer = 0; newLayer <= layer; newLayer++) {
+                if(!mainLayers.containsKey(newLayer)) mainLayers.put(newLayer, new ArrayList<Renderable>()); //creates a new layer
+            }
+
+            mainLayers.get(layer).add(r); //add the panel to the new later
+        }
     }
 
     public void saveScreen(@NotNull Screen screen){
