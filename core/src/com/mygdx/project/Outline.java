@@ -11,6 +11,7 @@ import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 
 public class Outline extends Widget implements Renderable{
     protected Board parentBoard;
@@ -104,21 +105,65 @@ public class Outline extends Widget implements Renderable{
 
     }
     public void moveForward(){
+        //moving it forward inside its layer (for focused)
+        LinkedList<Renderable> currLayer = screen.layers.get(layer);
+        int o = currLayer.indexOf(this);
+        if(o + 1 < currLayer.size()){
+            int nextO = currLayer.size() - 1;
+
+            for (int j = o + 1; j < currLayer.size(); j++) {
+                if(currLayer.get(j) instanceof Outline) nextO = j;
+            }
+
+            Collections.swap(currLayer, o, nextO);
+        }
+
+        //moving it forward in outlines (for unfocused)
         ArrayList<Outline> outlines = parentBoard.getOutlines();
         int i = outlines.indexOf(this);
-        if(i+1 < outlines.size()) Collections.swap(outlines, i, ++i);
+        if(i + 1 < currLayer.size()){
+            Collections.swap(outlines, i, ++i);
+        }
     }
     public void moveBackward(){
+        //moving it back inside its layer (for focused)
+        LinkedList<Renderable> currLayer = screen.layers.get(layer);
+        int o = currLayer.indexOf(this);
+        if(o - 1 >= 0){
+            int lastO = 0;
+
+            for (int j = o - 1; j >= 0; j--) {
+                if(currLayer.get(j) instanceof Outline) lastO = j;
+            }
+
+            Collections.swap(currLayer, o, lastO);
+        }
+
+        //moving it forward in outlines (for unfocused)
         ArrayList<Outline> outlines = parentBoard.getOutlines();
         int i = outlines.indexOf(this);
-        if(i-1 >= 0) Collections.swap(outlines, i, --i);
+        if(i - 1 > 0){
+            Collections.swap(outlines, i, --i);
+        }
     }
     public void moveToBack(){
+        //moving it back inside its layer (for focused)
+        LinkedList<Renderable> currLayer = screen.layers.get(layer);
+        currLayer.remove(this);
+        currLayer.add(0, this);
+
+        //moving it back in outlines (for unfocused)
         ArrayList<Outline> outlines = parentBoard.getOutlines();
         outlines.remove(this);
         outlines.add(0, this);
     }
     public void moveToFront(){
+        //moving it forward inside its layer (for focused)
+        LinkedList<Renderable> currLayer = screen.layers.get(layer);
+        currLayer.remove(this);
+        currLayer.add(this);
+
+        //moving it forward in outlines (for unfocused)
         ArrayList<Outline> outlines = parentBoard.getOutlines();
         outlines.remove(this);
         outlines.add(this);
