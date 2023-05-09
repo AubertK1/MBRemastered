@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Objects;
 
 public class MainScreen extends Screen{
@@ -24,8 +25,8 @@ public class MainScreen extends Screen{
     static private int NEXTSCREENID = 0;
 
     Screen selectedScreen = null;
-    HashMap<Integer, ArrayList<Renderable>> mainLayers = new HashMap<>();
-    HashMap<Integer, ArrayList<Renderable>> screenLayers = new HashMap<>();
+    HashMap<Integer, LinkedList<Renderable>> mainLayers = new HashMap<>();
+    HashMap<Integer, LinkedList<Renderable>> screenLayers = new HashMap<>();
     ArrayList<Panel> screenPanels = new ArrayList<>();
 
     private boolean initialized = false;
@@ -216,7 +217,7 @@ public class MainScreen extends Screen{
         //adding a new layer for every potential layer we may have
         int nonfocusedLayers = layers.size();
         for (int i = 0; i < nonfocusedLayers + 1; i++) {
-            layers.put(nonfocusedLayers + i, new ArrayList<Renderable>());
+            layers.put(nonfocusedLayers + i, new LinkedList<Renderable>());
             focusedLayers = i + 1;
         }
 
@@ -445,7 +446,7 @@ public class MainScreen extends Screen{
         else{
             //adds in any new layers between the highest existing layer and this layer
             for (int newLayer = 0; newLayer <= layer; newLayer++) {
-                if(!mainLayers.containsKey(newLayer)) mainLayers.put(newLayer, new ArrayList<Renderable>()); //creates a new layer
+                if(!mainLayers.containsKey(newLayer)) mainLayers.put(newLayer, new LinkedList<Renderable>()); //creates a new layer
             }
 
             mainLayers.get(layer).add(r); //add the panel to the new later

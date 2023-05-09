@@ -15,6 +15,7 @@ import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class Screen implements Renderable{
     //Used to draw the panels
@@ -36,15 +37,15 @@ public class Screen implements Renderable{
 
     MBBoard masterBoard;
     //list with all the MBComponents
-    ArrayList<MBComponent> allComps = new ArrayList<>();
-    private final ArrayList<Renderable> allRenderables = new ArrayList<>();
+    LinkedList<MBComponent> allComps = new LinkedList<>();
+    private final LinkedList<Renderable> allRenderables = new LinkedList<>();
 
     String name;
     MBSelectBox screenDropdown;
 
     //so these can be drawn last
 
-    HashMap<Integer, ArrayList<Renderable>> layers = new HashMap<>();
+    HashMap<Integer, LinkedList<Renderable>> layers = new HashMap<>();
 
     //controls whether this is rendered or not
     boolean supposedToBeVisible = true;
@@ -236,17 +237,17 @@ public class Screen implements Renderable{
         allRenderables.remove(r);
     }
 
-    public ArrayList<Renderable> getRenderables() {
+    public LinkedList<Renderable> getRenderables() {
         return allRenderables;
     }
-    public ArrayList<MBComponent> getComps() {
+    public LinkedList<MBComponent> getComps() {
         return allComps;
     }
 
     public void addLayer(int layer){
         //adds in any new layers between the highest existing layer and this layer
         for (int newLayer = 0; newLayer <= layer; newLayer++) {
-            if(!layers.containsKey(newLayer)) layers.put(newLayer, new ArrayList<Renderable>()); //creates a new layer
+            if(!layers.containsKey(newLayer)) layers.put(newLayer, new LinkedList<Renderable>()); //creates a new layer
         }
     }
     @Override
@@ -262,7 +263,7 @@ public class Screen implements Renderable{
         return null;
     }
 
-    public HashMap<Integer, ArrayList<Renderable>> getLayers() {
+    public HashMap<Integer, LinkedList<Renderable>> getLayers() {
         return layers;
     }
 

@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Null;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import static com.mygdx.project.Main.batch;
 
@@ -256,8 +257,8 @@ public class MBComponent implements Renderable{
             }
         }
     }
-    public static ArrayList<MBComponent> reaarrangeList(Screen screen){
-        ArrayList<MBComponent> newList = new ArrayList<>();
+    public static LinkedList<MBComponent> reaarrangeList(Screen screen){
+        LinkedList<MBComponent> newList = new LinkedList<>();
         Array<Actor> actors = Main.stage.getActors();
         MBComponent comp;
 
