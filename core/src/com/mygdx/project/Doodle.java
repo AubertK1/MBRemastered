@@ -347,6 +347,8 @@ public class Doodle extends Outline {
     }
 
     public void save(){
+        //setting the bytebuffer back to the beginning, so it reads the entire thing
+        doodleMap.getPixels().rewind();
         ps.setPixData(doodleMap.getPixels());
         Point[] points = doodleMap.getPoints().toArray(new Point[0]);
         ps.setStat(PixSerializer.Stat.DMPOINTS, new Value(Value.StoreType.PLIST).setValue(points));
