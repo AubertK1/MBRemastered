@@ -9,13 +9,15 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PixSerializer implements java.io.Serializable {
     private static final long serialVersionUID = -2831273345165209113L;
 
-    private static int FILEIDs = 0;
-    private final int FILEID = FILEIDs;
+//    private static int FILEIDs = 0;
+    private final int FILEID;
+    private static final ArrayList<Integer> fileIDPool = new ArrayList<>();
     private String file = "";
     private String pixFile = "";
     private String folder = "temp";
@@ -26,10 +28,12 @@ public class PixSerializer implements java.io.Serializable {
     private int TOTALSTATS = 9;
 
     // mark as transient so this is not serialized by default
-    transient ByteBuffer data;
+    transient ByteBuffer pixData;
 
-    public PixSerializer() {
-        FILEIDs++;
+    public PixSerializer(String folder, String pixFolder) {
+//        FILEIDs++;
+        FILEID = generateFileID(folder);
+        setFolders(folder, pixFolder);
 
         for (int i = 0; i < NAMEDSTATS; i++) {
             if(i == Stat.DMPOINTS) statValues.put(i, new Value(Value.StoreType.PLIST).setValue(new Point[0]));
@@ -65,38 +69,41 @@ public class PixSerializer implements java.io.Serializable {
     }
     //endregion
 
-    public void setData(ByteBuffer data) {
-        this.data = data;
+    public void setPixData(ByteBuffer pixData) {
+        this.pixData = pixData;
     }
-    public ByteBuffer getData() {
-        return this.data;
+    public ByteBuffer getPixData() {
+        return this.pixData;
     }
 
     public void save() {
         try{
             Main.getMainScreen().getSelectedScreen().getBoard().getBoard().syncFolders(this);
 
+            //saving outline data (position, size, etc.)
             Path path = Paths.get("assets\\SaveFiles\\ovalues\\" + this.folder);
             Files.createDirectories(path);
             FileOutputStream fileOut =
-                    new FileOutputStream(file.equals("") ? file = "assets\\SaveFiles\\ovalues\\" + this.folder + "\\outline" + FILEID + ".ser" : file);
+                    new FileOutputStream(file.equals("") ? file = "assets\\SaveFiles\\ovalues\\" +
+                            this.folder + "\\outline" + FILEID + ".ser" : file);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             // write default properties
             out.writeObject(statValues);
 
             out.close();
             fileOut.close();
-            if(this.data != null) {
 
-
+            //saving pixmap data if a doodle
+            if(this.pixData != null) {
                 // write buffer capacity and data
                 Path path2 = Paths.get("assets\\SaveFiles\\pixvalues\\" + this.pixFolder);
                 Files.createDirectories(path2);
                 FileOutputStream pixFileOut =
-                        new FileOutputStream(pixFile.equals("") ? pixFile = "assets\\SaveFiles\\pixvalues\\" + this.pixFolder + "\\pixmap" + FILEID + ".ser" : pixFile);
+                        new FileOutputStream(pixFile.equals("") ? pixFile = "assets\\SaveFiles\\pixvalues\\" +
+                                this.pixFolder + "\\pixmap" + FILEID + ".ser" : pixFile);
                 FileChannel fileChannel = pixFileOut.getChannel();
 
-                fileChannel.write(this.data);
+                fileChannel.write(this.pixData);
 
                 fileChannel.close();
                 pixFileOut.close();
@@ -112,6 +119,7 @@ public class PixSerializer implements java.io.Serializable {
 
     public void load() {
         try{
+            //pulling outline data (position, size, etc.)
             FileInputStream fileIn = new FileInputStream(file);
             ObjectInputStream in = new ObjectInputStream(fileIn);
             //read default properties
@@ -119,7 +127,9 @@ public class PixSerializer implements java.io.Serializable {
 
             in.close();
             fileIn.close();
-            if(this.data != null) {
+
+            //pulling pixmap data if a doodle
+            if(this.pixData != null) {
                 //read buffer data and wrap with ByteBuffer
                 Path path = Paths.get(pixFile);
 
@@ -137,7 +147,7 @@ public class PixSerializer implements java.io.Serializable {
                     buffer.clear();
                     noOfBytesRead = fileChannel.read(buffer);
                 }
-                this.data = buffer;
+                this.pixData = buffer;
                 fileChannel.close();
 
 //                System.out.println("Loaded data from " + pixFile);
@@ -175,6 +185,38 @@ public class PixSerializer implements java.io.Serializable {
         this.pixFile = pixFile.getPath();
     }
 
+    public static int generateFileID(String folderName){
+        try {
+            File folder = new File("assets\\SaveFiles\\ovalues\\" + folderName);
+            File[] files = folder.listFiles();
+            ArrayList<Integer> usedIDs = new ArrayList<>();
+
+            if(files.length == 0) return 1;
+            for (File file : files) {
+                usedIDs.add(findFileID(file.getName()));
+            }
+            for (int i = 0; i < 10000; i++) {
+                if(!usedIDs.contains(i + 1)) return i + 1;
+            }
+        } catch (NullPointerException n){
+            n.printStackTrace();
+        }
+        return -1;
+    }
+    public static int findFileID(String fileName){
+        if(fileName.contains(".")){ //getting rid of the .filetype
+            fileName = fileName.substring(0, fileName.indexOf("."));
+        }
+        for (int i = fileName.length() - 1; i >= 0; i--) { //loops through file name from end to start
+            try{
+                Integer.parseInt(fileName.substring(i)); //tries to turn the substring to an int
+            } catch (NumberFormatException n){ //will throw this if the substring hits a letter
+                if(i + 1 == fileName.length()) return -1; //if no number at end, return -1
+                return Integer.parseInt(fileName.substring(i + 1)); //returns the last successful call
+            }
+        }
+        return -1;
+    }
 
     public static class Stat{
         //region stats key

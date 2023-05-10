@@ -22,7 +22,6 @@ public class MainScreen extends Screen{
     Panel sidePanel, toolbarPanel;
 
     ArrayList<Screen> screens = new ArrayList<>();
-    static private int NEXTSCREENID = 0;
 
     Screen selectedScreen = null;
     HashMap<Integer, LinkedList<Renderable>> mainLayers = new HashMap<>();
@@ -329,7 +328,20 @@ public class MainScreen extends Screen{
     }
 
     public void addScreen(){
-        addScreen(new PlayerScreen("PLAYER " + NEXTSCREENID));
+        //region finding the next open default name
+        int nextScreenID = screens.size();
+        boolean freeName = false;
+        while (!freeName) {
+            for (int i = 0; i < screens.size(); i++) {
+                if(screens.get(i).getName().equals("PLAYER " + nextScreenID)) {
+                    nextScreenID++;
+                    break;
+                }
+                else if(i == screens.size() - 1) freeName = true;
+            }
+        }
+        //endregion
+        addScreen(new PlayerScreen("PLAYER " + nextScreenID));
     }
     public void addScreen(Screen screen){
         if(!initialized){
@@ -343,7 +355,6 @@ public class MainScreen extends Screen{
 
             setSelectedScreen(screen);
         }
-        NEXTSCREENID++;
     }
     public void deleteScreen(Screen screen){
         if(screens.size() == 1) return;

@@ -16,7 +16,7 @@ import java.util.LinkedList;
 public class Outline extends Widget implements Renderable{
     protected Board parentBoard;
     protected Screen screen;
-    protected PixSerializer ps = new PixSerializer();
+    protected PixSerializer ps;
     protected boolean selected = false;
     //the batch for the render function
     SpriteBatch batch = Main.batch;
@@ -54,6 +54,10 @@ public class Outline extends Widget implements Renderable{
         setScreen(board.getScreen());
         setLayer(0);
         screen.addRenderable(this);
+
+        //saving
+        ps = new PixSerializer(board.folder, board.pixFolder);
+        board.syncFolders(this.getPS());
     }
 
     public void update() {

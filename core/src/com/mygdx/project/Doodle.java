@@ -40,7 +40,7 @@ public class Doodle extends Outline {
         doodleMap.setFilter(Pixmap.Filter.NearestNeighbour);
         doodleMap.setColor(new Color(0f,0f,0f,0f));
         doodleMap.fill();
-        ps.setData(doodleMap.getPixels());
+        ps.setPixData(doodleMap.getPixels());
         //sets the doodle's texture
         doodleMap.texture = new Texture(getDoodle());
         doodleMap.texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
@@ -347,7 +347,7 @@ public class Doodle extends Outline {
     }
 
     public void save(){
-        ps.setData(doodleMap.getPixels());
+        ps.setPixData(doodleMap.getPixels());
         Point[] points = doodleMap.getPoints().toArray(new Point[0]);
         ps.setStat(PixSerializer.Stat.DMPOINTS, new Value(Value.StoreType.PLIST).setValue(points));
 
@@ -359,7 +359,7 @@ public class Doodle extends Outline {
         super.load();
 
         long[] nD = new long[]{2163752696576L, 1018, 850, 4};
-        Gdx2DPixmap gpm = new Gdx2DPixmap(ps.getData(), nD);
+        Gdx2DPixmap gpm = new Gdx2DPixmap(ps.getPixData(), nD);
 
         Pixmap px = new Pixmap(gpm);
         doodleMap.setPixels(px.getPixels());
