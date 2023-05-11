@@ -42,7 +42,7 @@ public class Main extends ApplicationAdapter {
 	static final JFrame f = new JFrame();
 	//endregion
 
-	static MainScreen mainScreen;
+	private static MainScreen mainScreen;
 
 	@Override
 	public void create () {

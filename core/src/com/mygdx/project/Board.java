@@ -498,10 +498,8 @@ public class Board extends Widget {
 
     public void save(){
         for (Outline outline: outlines) {
-            if(outline instanceof Doodle){
-                syncFolders(outline.getPS());
-                outline.save();
-            }
+            syncFolders(outline.getPS());
+            outline.save();
         }
     }
     public void load(){
@@ -510,19 +508,40 @@ public class Board extends Widget {
             File folder = Files.createDirectories(Paths.get("assets\\SaveFiles\\ovalues\\" + this.folder)).toFile();
             File[] files = folder.listFiles();
 
-            File pixFolder = Files.createDirectories(Paths.get("assets\\SaveFiles\\pixvalues\\" + this.pixFolder)).toFile();
-            File[] pixFiles = pixFolder.listFiles();
+            for (File file : files) {
+                Outline o = null;
 
-            for (int i = 0; i < files.length; i++) {
-                Outline d = new Doodle(this, Main.skin);
-                d.setScreen(screen);
-                d.getPS().setToFile(files[i], pixFiles[i]);
-                selectedOutline = d;
+                char oType = PixSerializer.findFileIdentifier(file.getName());
 
-                outlines.add(d);
-                syncFolders(d.getPS());
+                switch (oType) {
+                    case 'D':
+                        o = new Doodle(this, Main.skin);
 
-                d.load();
+                        int fileID = PixSerializer.findFileID(file.getName());
+                        File pFile = new File("assets\\SaveFiles\\pixvalues\\" + this.pixFolder + "\\pixmap" + fileID + ".ser");
+
+                        o.getPS().setToFile(file, pFile);
+                        break;
+                    case 'S':
+                        o = new StickyNote(this, Main.skin, 0, 0);
+
+                        o.getPS().setToFile(file, null);
+                        break;
+                    case 'T':
+                        o = new TextBox(this, Main.skin, 0, 0);
+
+                        o.getPS().setToFile(file, null);
+                        break;
+                    case 'N': continue;
+                }
+                o.setScreen(screen);
+
+                selectedOutline = o;
+
+                outlines.add(o);
+                syncFolders(o.getPS());
+
+                o.load();
             }
 
         } catch (NullPointerException n){

@@ -664,7 +664,7 @@ public class PlayerScreen extends Screen{
         delButt.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                Main.mainScreen.deleteScreen(PlayerScreen.this);
+                Main.getMainScreen().deleteScreen(PlayerScreen.this);
             }
         });
 

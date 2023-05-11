@@ -47,6 +47,8 @@ public class StickyNote extends Outline {
     public StickyNote(Board board, StickyNoteStyle style, int x, int y) {
         super(board);
 
+        ps.setIdentifier('S');
+
         /**Sets the parameters of the object constant for the font, regardless of size.*/
         params.borderWidth = 0;
         params.borderColor = Color.DARK_GRAY;
@@ -353,6 +355,21 @@ public class StickyNote extends Outline {
 
         lastx = (int) x2;
         lasty = (int) y2;
+    }
+
+    public void save(){
+        ps.setStat(PixSerializer.Stat.TEXT, new Value(Value.StoreType.STRING).setValue(textArea.getText()));
+
+        super.save();
+    }
+
+    public void load(){
+        super.load();
+
+        textArea.setText(String.valueOf(ps.getValue(PixSerializer.Stat.TEXT)));
+        fullText = textArea.getText();
+
+        update();
     }
 
     public void setSelect(boolean select){

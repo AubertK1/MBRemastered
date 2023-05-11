@@ -41,6 +41,7 @@ public class Doodle extends Outline {
         doodleMap.setColor(new Color(0f,0f,0f,0f));
         doodleMap.fill();
         ps.setPixData(doodleMap.getPixels());
+        ps.setIdentifier('D');
         //sets the doodle's texture
         doodleMap.texture = new Texture(getDoodle());
         doodleMap.texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
@@ -352,7 +353,6 @@ public class Doodle extends Outline {
         ps.setPixData(doodleMap.getPixels());
         Point[] points = doodleMap.getPoints().toArray(new Point[0]);
         ps.setStat(PixSerializer.Stat.DMPOINTS, new Value(Value.StoreType.PLIST).setValue(points));
-
 
         super.save();
     }

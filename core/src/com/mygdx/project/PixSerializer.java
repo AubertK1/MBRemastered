@@ -15,9 +15,8 @@ import java.util.HashMap;
 public class PixSerializer implements java.io.Serializable {
     private static final long serialVersionUID = -2831273345165209113L;
 
-//    private static int FILEIDs = 0;
     private final int FILEID;
-    private static final ArrayList<Integer> fileIDPool = new ArrayList<>();
+
     private String file = "";
     private String pixFile = "";
     private String folder = "temp";
@@ -26,6 +25,8 @@ public class PixSerializer implements java.io.Serializable {
     HashMap<Integer, Value> statValues = new HashMap<>();
     private final int NAMEDSTATS = 9;
     private int TOTALSTATS = 9;
+
+    char identifier = 'N'; //identifies which type of outline this saves
 
     // mark as transient so this is not serialized by default
     transient ByteBuffer pixData;
@@ -38,6 +39,7 @@ public class PixSerializer implements java.io.Serializable {
         for (int i = 0; i < NAMEDSTATS; i++) {
             if(i == Stat.DMPOINTS) statValues.put(i, new Value(Value.StoreType.PLIST).setValue(new Point[0]));
             else if(i == Stat.BASEPTR) statValues.put(i, new Value(Value.StoreType.LONG).setValue(0));
+            else if(i == Stat.TEXT) statValues.put(i, new Value(Value.StoreType.STRING).setValue(0));
             else statValues.put(i, new Value(Value.StoreType.INT).setValue(0));
         }
     }
@@ -85,7 +87,7 @@ public class PixSerializer implements java.io.Serializable {
             Files.createDirectories(path);
             FileOutputStream fileOut =
                     new FileOutputStream(file.equals("") ? file = "assets\\SaveFiles\\ovalues\\" +
-                            this.folder + "\\outline" + FILEID + ".ser" : file);
+                            this.folder + "\\outline" + identifier + FILEID + ".ser" : file);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             // write default properties
             out.writeObject(statValues);
@@ -164,6 +166,14 @@ public class PixSerializer implements java.io.Serializable {
             c.printStackTrace();
         }
     }
+
+    public void setIdentifier(char identifier){
+        this.identifier = identifier;
+    }
+    public char getIdentifier(){
+        return identifier;
+    }
+
     public void setFolders(@NotNull String file, @NotNull String pixFile) {
         this.folder = file;
         this.pixFolder = pixFile;
@@ -180,14 +190,18 @@ public class PixSerializer implements java.io.Serializable {
     public String getPixFile(){
         return pixFile;
     }
-    public void setToFile(@NotNull File file, @NotNull File pixFile){
+    public void setToFile(@NotNull File file, File pixFile){
         this.file = file.getPath();
-        this.pixFile = pixFile.getPath();
+        if(pixFile != null)
+            this.pixFile = pixFile.getPath();
     }
 
     public static int generateFileID(String folderName){
         try {
-            File folder = new File("assets\\SaveFiles\\ovalues\\" + folderName);
+            Path path2 = Paths.get("assets\\SaveFiles\\ovalues\\" + folderName);
+            Files.createDirectories(path2);
+
+            File folder = new File(String.valueOf(path2));
             File[] files = folder.listFiles();
             ArrayList<Integer> usedIDs = new ArrayList<>();
 
@@ -198,7 +212,7 @@ public class PixSerializer implements java.io.Serializable {
             for (int i = 0; i < 10000; i++) {
                 if(!usedIDs.contains(i + 1)) return i + 1;
             }
-        } catch (NullPointerException n){
+        } catch (NullPointerException | IOException n){
             n.printStackTrace();
         }
         return -1;
@@ -217,6 +231,13 @@ public class PixSerializer implements java.io.Serializable {
         }
         return -1;
     }
+    public static char findFileIdentifier(String fileName){
+        int identifierIndex = 7; //the last index of the word "outline" plus one
+        char c = fileName.charAt(identifierIndex);
+
+        if(c == 'D' || c == 'S' || c == 'T') return c;
+        else return 'N'; //'N' stands for null
+    }
 
     public static class Stat{
         //region stats key
@@ -227,7 +248,8 @@ public class PixSerializer implements java.io.Serializable {
         public static final int XOFFSET = 4;
         public static final int YOFFSET = 5;
         public static final int DMPOINTS = 6;
-        public static final int BASEPTR = 8;
+        public static final int BASEPTR = 7;
+        public static final int TEXT = 8;
         //endregion
     }
 }
