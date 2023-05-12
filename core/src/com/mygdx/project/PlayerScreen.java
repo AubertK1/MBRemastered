@@ -768,7 +768,7 @@ public class PlayerScreen extends Screen{
         stats.load();
         masterBoard.getBoard().load();
 
-        boolean[] loadedIPs = new boolean[]{false, false};
+        boolean[] loadedIPs = new boolean[]{false, false}; // {isWeaponIPLoaded, isSpellIPLoaded}
         for (int i = 0; i < allComps.size(); i++) {
             if(allComps.get(i) instanceof MBTextField) {
                 MBTextField textField = (MBTextField) allComps.get(i);

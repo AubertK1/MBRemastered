@@ -588,11 +588,13 @@ public class SpellItem extends Item {
     }
     public void shortRest(){
         ((TextButton)usesButton.getButton()).setText(String.valueOf(srMax));
-        uses = srMax;
+        if(uses < srMax)
+            uses = srMax;
     }
     public void longRest(){
         ((TextButton)usesButton.getButton()).setText(String.valueOf(lrMax));
-        uses = lrMax;
+        if(uses < lrMax)
+            uses = lrMax;
     }
 
     public ArrayList<Item> getItems(){

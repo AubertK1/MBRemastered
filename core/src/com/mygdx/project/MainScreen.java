@@ -497,7 +497,6 @@ public class MainScreen extends Screen{
 
     @Override
     public void dispose() {
-        batch.dispose();
         for (Screen screen: screens) {
             screen.dispose();
         }

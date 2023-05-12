@@ -177,7 +177,7 @@ public class ItemPanel extends Minipanel{
             if(itemType == 0) newItem = new WeaponItem(screen);
             else if(itemType == 1) newItem = new SpellItem(screen);
 
-            newItem.assignStats(start + (i * 10), itemType == 0 ? 4 : 9);
+            newItem.assignStats(start + (i * 10));
 
             add(newItem);
         }
