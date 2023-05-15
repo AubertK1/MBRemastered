@@ -438,16 +438,6 @@ public class MainScreen extends Screen{
     }
     public void addToMainLayer(Renderable r){
         int layer = r.getLayer();
-/*
-        if(layer != -1) {
-            for (int renderable = 0; renderable < mainLayers.get(layer).size(); renderable++) { //find the panel in the old layer
-                if (this == mainLayers.get(layer).get(renderable)) {
-                    mainLayers.get(layer).remove(this); //remove the panel from the old layer
-                    break;
-                }
-            }
-        }
-*/
 
         if(layer == -1); //don't add this to a list, so it doesn't get rendered
         else if(mainLayers.containsKey(layer)){ //if the layer already exists

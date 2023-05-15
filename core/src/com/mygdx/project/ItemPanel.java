@@ -154,7 +154,28 @@ public class ItemPanel extends Minipanel{
         }
     }
 
-    public void load(int itemType){
+    public void saveItems(int itemType){
+        if(itemType != 0 && itemType != 1) return;
+
+        Stats stats = screen.getStats();
+
+        int numOfItems = allItems.size();
+        int start = 100;
+        if(itemType == 1) start = 1000;
+
+        for (int i = start; i < 899; i++) {
+            try{
+                stats.removeStat(i);
+            } catch (NullPointerException n){
+                break;
+            }
+        }
+
+        for (int i = start; i < allItems.size() * 10; i += 10) {
+            allItems.get(i / 10).assignStats(i);
+        }
+    }
+    public void loadItems(int itemType){
         if(itemType != 0 && itemType != 1) return;
 
         Stats stats = screen.getStats();

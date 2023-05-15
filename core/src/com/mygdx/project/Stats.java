@@ -51,6 +51,10 @@ public class Stats {
         return statValues.containsKey(stat) ? statValues.get(stat).getValue() : -1;
     }
 
+    public void removeStat(int stat) throws NullPointerException{
+        if(statValues.remove(stat) == null) throw new NullPointerException();
+    }
+
     public Integer newStat(Value v){
         int index = NAMEDSTATS;
         while (statValues.containsKey(index)){
