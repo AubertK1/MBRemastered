@@ -163,16 +163,55 @@ public class ItemPanel extends Minipanel{
         int start = 100;
         if(itemType == 1) start = 1000;
 
-        for (int i = start; i < 899; i++) {
+        for (int i = start; i < start + 899; i++) {
             try{
                 stats.removeStat(i);
             } catch (NullPointerException n){
-                break;
+                if(i % 10 == 0) break;
             }
         }
 
-        for (int i = start; i < allItems.size() * 10; i += 10) {
-            allItems.get(i / 10).assignStats(i);
+        for (int statBlock = start; statBlock < start + (allItems.size() * 10); statBlock += 10) {
+            stats.newItemStatBlock(itemType, itemType == 0 ? 4 : 9);
+            Item item = allItems.get((statBlock - start) / 10);
+
+            item.assignStats(statBlock);
+
+            if(itemType == 0) {
+                for (MBTextField tf : item.textFields) {
+                    if(tf.getAssignedStat() == null) continue;
+
+                    String statString = String.valueOf(tf.getAssignedStat());
+                    int idInsideBlock = Integer.parseInt(statString.substring(statString.length() - 1));
+                    tf.assignStat(statBlock + idInsideBlock);
+                }
+            }
+            else if(itemType == 1){
+                for (MBTextField tf : item.textFields) {
+                    if(tf.getAssignedStat() == null) continue;
+                    String statString = String.valueOf(tf.getAssignedStat());
+                    int idInsideBlock = Integer.parseInt(statString.substring(statString.length() - 1));
+                    tf.assignStat(statBlock + idInsideBlock);
+                }
+                for (MBComponent comp: ((SpellItem) item).getTipbox().components) {
+                    if(comp instanceof MBTextField){
+                        MBTextField tf = (MBTextField) comp;
+
+                        if(tf.getAssignedStat() == null) continue;
+                        String statString = String.valueOf(tf.getAssignedStat());
+                        int idInsideBlock = Integer.parseInt(statString.substring(statString.length() - 1));
+                        tf.assignStat(statBlock + idInsideBlock);
+                    }
+                    else if(comp instanceof MBTextArea) {
+                        MBTextArea ta = (MBTextArea) comp;
+
+                        if(ta.getAssignedStat() == null) continue;
+                        String statString = String.valueOf(ta.getAssignedStat());
+                        int idInsideBlock = Integer.parseInt(statString.substring(statString.length() - 1));
+                        ta.assignStat(statBlock + idInsideBlock);
+                    }
+                }
+            }
         }
     }
     public void loadItems(int itemType){

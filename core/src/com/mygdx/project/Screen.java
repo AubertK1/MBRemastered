@@ -56,6 +56,9 @@ public class Screen implements Renderable{
         stage = Main.stage;
         skin = Main.skin;
     }
+    public void save(){
+
+    }
     public void load(){
 
     }

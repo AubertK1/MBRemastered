@@ -21,6 +21,7 @@ public class SpellItem extends Item {
     public int lrMax = 0;
     ArrayList<MBButton> restButtons = new ArrayList<>();
 
+
     public SpellItem(Screen screen) {
         super(screen);
     }
@@ -28,16 +29,28 @@ public class SpellItem extends Item {
         super(position, screen);
     }
     public void initialize(){
+        String[] stats = new String[]{
+                //Name, Spell Desc, Spell Level, Cast Time, Duration, Range, Damage Type, Short Rest, Long Rest
+                "Spell  "+ (ID+1), "Spell Description...", "0", "Action", "Instant", "5 ft", "Fire", "0", "0"
+        };
+        if(statBlock == null) statBlock = screen.getStats().newItemStatBlock(1, stats.length);
+        else {
+            for (int i = 0; i < stats.length; i++) {
+                String text = screen.getStats().getValue(statBlock + i).toString();
+                if(!text.equals("")) stats[i] = text;
+            }
+        }
+
         //region labels
         MBLabel nameLabel, descLabel, srLabel, lrLabel;
 
         //setting the labels' texts and positions and sizes
-        nameLabel = new MBLabel("Spell  "+ (ID+1), screen);
+        nameLabel = new MBLabel(stats[0], screen);
         nameLabel.setPosition(this.getX()+5, this.getY()+5);
         nameLabel.setSize(119, nameLabel.getHeight());
         labelTexts.add(nameLabel.getLabel().getText().toString());
 
-        descLabel = new MBLabel("Spell Description...", screen);
+        descLabel = new MBLabel(stats[1], screen);
         descLabel.setPosition(nameLabel.getX()+ nameLabel.getWidth()+2, nameLabel.getY());
         descLabel.setSize(257, nameLabel.getHeight());
         descLabel.setName("tf"); //setting the name so I can identify it later
@@ -335,17 +348,6 @@ public class SpellItem extends Item {
         //endregion
 
         //region textfields
-        String[] stats = new String[]{
-                //Name, Spell Desc, Spell Level, Cast Time, Duration, Range, Damage Type, Short Rest, Long Rest
-                labelTexts.get(0), labelTexts.get(1), "0", "Action", "Instant", "5 ft", "Fire", "0", "0"
-        };
-        if(statBlock == null) statBlock = screen.getStats().newItemStatBlock(1, stats.length);
-        else {
-            for (int i = 0; i < stats.length; i++) {
-                String text = screen.getStats().getValue(statBlock + i).toString();
-                if(!text.equals("")) stats[i] = text;
-            }
-        }
         //creating textfields and setting their texts to their corresponding label's text
         for (int i = 0; i < labelTexts.size(); i++) {
             int j = i;
@@ -439,9 +441,9 @@ public class SpellItem extends Item {
         add(spellDesc, 1);
         //endregion
 
+
         //starting the item in edit mode so the user can immediately edit the item text
         edit();
-
     }
 
     public void edit() {
@@ -551,26 +553,6 @@ public class SpellItem extends Item {
         lrMax = Integer.parseInt(labelTexts.get(usesIndexInNames + 1));
 
         for (int i = 0; i < restButtons.size(); i++) {
-            //if the selected rest button is a short rest...
-/*
-            if(restButtons.get(i).getButton().isChecked() && i == 0){
-                //set the short rest max uses to the textfield value
-                srMax = Integer.parseInt(labelTexts.get(usesIndexInNames));
-                //if the long rest max is smaller than the short rest mex set the long rest max uses to the textfield value too
-                if(lrMax < srMax) lrMax = Integer.parseInt(labelTexts.get(usesIndexInNames));
-
-                screen.getStats().setStat(statBlock + 8, new Value(Value.StoreType.INT).setValue(srMax));
-                screen.getStats().setStat(statBlock + 9, new Value(Value.StoreType.INT).setValue(lrMax));
-            }
-            //if the selected rest button is a long rest...
-            if(restButtons.get(i).getButton().isChecked() && i == 1){
-                //set the long rest max uses to the textfield value
-                lrMax = Integer.parseInt(labelTexts.get(usesIndexInNames));
-
-                screen.getStats().setStat(statBlock + 8, new Value(Value.StoreType.INT).setValue(srMax));
-                screen.getStats().setStat(statBlock + 9, new Value(Value.StoreType.INT).setValue(lrMax));
-            }
-*/
             restButtons.get(i).setVisible(false);
         }
 

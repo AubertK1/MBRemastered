@@ -5,7 +5,10 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
+import java.util.ArrayList;
+
 public class WeaponItem extends Item {
+
     public WeaponItem(Screen screen) {
         super(screen);
     }
@@ -230,6 +233,40 @@ public class WeaponItem extends Item {
         }
 
         editMode = true;
+    }
+    /**
+     * sets the labels to the text of the textfields and makes them disappear
+     */
+    public void saveEdit(){
+        for (MBComponent component : components) {
+            //finds editbutton and unchecks it
+            if (component.getName() != null && component.getName().equals("editbutton") && component instanceof MBButton) {
+                ((MBButton) component).getButton().setChecked(false);
+            }
+        }
+
+        //making the textfields invisible
+        for (int i = 0; i < textFields.size(); i++) {
+            if(textFields.get(i).getSystem() == null) {
+                MBSystem sys = new MBSystem(textFields.get(i), labels.get(i));
+                final int finalI = i;
+                sys.setUpdateAction(new Action() {
+                    @Override
+                    public boolean act(float v) {
+                        labelTexts.set(finalI, textFields.get(finalI).getTextField().getText()); //updating the label list's text
+
+                        labels.get(finalI).getLabel().setText(shortenString(labelTexts.get(finalI), labels.get(finalI).getWidth())); //updating the label's text
+
+                        return true;
+                    }
+                });
+            }
+            textFields.get(i).updateSystem();
+
+            textFields.get(i).setVisible(false);
+        }
+
+        editMode = false;
     }
 
     public int getSpot(){

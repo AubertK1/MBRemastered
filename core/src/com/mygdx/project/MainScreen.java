@@ -455,8 +455,7 @@ public class MainScreen extends Screen{
     }
 
     public void saveScreen(@NotNull Screen screen){
-        screen.getStats().save();
-        screen.getBoard().getBoard().save();
+        screen.save();
     }
     public void loadScreen(@NotNull Screen screen){
         //recovering the stats

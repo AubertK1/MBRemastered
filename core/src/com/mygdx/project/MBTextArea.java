@@ -11,7 +11,7 @@ public class MBTextArea extends MBComponent{
     //making the text area
     private final TextArea textArea;
 
-    private final Integer stat;
+    private Integer stat;
 
     public MBTextArea(String text, Screen screen) {
         this(text, screen, -1);
@@ -48,7 +48,10 @@ public class MBTextArea extends MBComponent{
     public void setKeyListener(TextField.TextFieldListener listener){
         textArea.setTextFieldListener(listener);
     }
-
+    public void assignStat(Integer stat){
+        this.stat = stat;
+        if(this.stat != -1) screen.getStats().setStat(this.stat, textArea.getText()); //initializes the stat value automatically
+    }
     public Integer getAssignedStat(){
         return stat;
     }

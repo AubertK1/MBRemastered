@@ -9,10 +9,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
+import java.util.ArrayList;
+
 public class PlayerScreen extends Screen{
     //weapons or spell items for the itempanel
     private int itemTab = 1;
     private int statTab = 1;
+    private ArrayList<ItemPanel> itemPanels = new ArrayList<>();
 
     public PlayerScreen(final String playerName) {
         super();
@@ -156,6 +159,8 @@ public class PlayerScreen extends Screen{
                 new Rectangle(listPanel.getX()+5, listPanel.getY() + 5, listPanel.getWidth() - 10, listPanel.getHeight()-34), this);
         listPanel.add(weaponsPanel);
         listPanel.add(spellsPanel);
+        itemPanels.add(weaponsPanel);
+        itemPanels.add(spellsPanel);
         weaponsPanel.setFocused(true);
         spellsPanel.setFocused(true);
 
@@ -763,6 +768,14 @@ public class PlayerScreen extends Screen{
         masterBoard.setSize(masterboardPanel.getWidth()-2, masterboardPanel.getHeight()-2);
         masterboardPanel.add(masterBoard);
         //endregion
+    }
+    public void save(){
+        for (int i = 0; i < itemPanels.size(); i++) {
+            itemPanels.get(i).saveItems(i);
+        }
+
+        stats.save();
+        masterBoard.getBoard().save();
     }
     public void load(){
         stats.load();
