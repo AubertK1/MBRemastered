@@ -3,6 +3,9 @@ package com.mygdx.project;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -121,8 +124,9 @@ public class Stats {
 
     public void save(){
         try {
+            Path path = Files.createDirectories(Paths.get(file.equals("") ? file = "assets\\SaveFiles\\stats\\player" + FILEID + ".ser" : file));
             FileOutputStream fileOut =
-                    new FileOutputStream(file.equals("") ? file = "assets\\SaveFiles\\stats\\player" + FILEID + ".ser" : file);
+                    new FileOutputStream(path.toString());
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(statValues);
             out.close();
@@ -142,7 +146,7 @@ public class Stats {
             fileIn.close();
 //            System.out.println("Loaded data from " + file);
         } catch (FileNotFoundException f){
-            f.printStackTrace();
+          //  f.printStackTrace();
             save();
             load();
         } catch (IOException i) {
