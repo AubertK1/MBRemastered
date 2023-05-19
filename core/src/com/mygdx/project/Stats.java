@@ -142,7 +142,6 @@ public class Stats {
             fileIn.close();
 //            System.out.println("Loaded data from " + file);
         } catch (FileNotFoundException f){
-            f.printStackTrace();
             save();
             load();
         } catch (IOException i) {
@@ -158,11 +157,14 @@ public class Stats {
         load();
     }
 
-    public void dispose(){
+    public void delete(){
         File f = new File(file);
         if(f.delete()) {
             System.out.println("Deleted " + file);
         } else System.out.println("Failed to delete " + file);
+    }
+    public void dispose(){
+
     }
 
     public static class Stat{

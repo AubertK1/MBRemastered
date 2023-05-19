@@ -365,7 +365,7 @@ public class MainScreen extends Screen{
 
         setSelectedScreen(index != 0 ? screens.get(index - 1) : screens.get(index));
 
-        screen.dispose();
+        screen.delete();
     }
 
     public Screen getScreenByName(String name){
@@ -489,7 +489,6 @@ public class MainScreen extends Screen{
         for (Screen screen: screens) {
             screen.dispose();
         }
-        stage.dispose();
 
         super.dispose();
     }

@@ -19,6 +19,9 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -50,6 +53,16 @@ public class Main extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		stage = new Stage();
 		skin = new Skin (Gdx.files.internal("assets\\skins\\uiskin.json"));
+
+/*
+		try {
+			Files.createDirectories(Paths.get("assets\\SaveFiles\\stats"));
+			Files.createDirectories(Paths.get("assets\\SaveFiles\\ovalues"));
+			Files.createDirectories(Paths.get("assets\\SaveFiles\\pixvalues"));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+*/
 
 		mainScreen = new MainScreen();
 		mainScreen.addScreen(new PlayerScreen("PLAYER 1"));

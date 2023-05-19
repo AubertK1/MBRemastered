@@ -284,10 +284,18 @@ public class Screen implements Renderable{
         return inFocusMode;
     }
 
+    public void delete() {
+        for (Panel panel: mainPanels) {
+            panel.dispose();
+        }
+
+        getStats().delete();
+    }
     public void dispose() {
         for (Panel panel: mainPanels) {
             panel.dispose();
         }
+
         getStats().dispose();
     }
 }
