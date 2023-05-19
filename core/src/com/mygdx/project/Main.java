@@ -54,7 +54,6 @@ public class Main extends ApplicationAdapter {
 		stage = new Stage();
 		skin = new Skin (Gdx.files.internal("assets\\skins\\uiskin.json"));
 
-/*
 		try {
 			Files.createDirectories(Paths.get("assets\\SaveFiles\\stats"));
 			Files.createDirectories(Paths.get("assets\\SaveFiles\\ovalues"));
@@ -62,7 +61,6 @@ public class Main extends ApplicationAdapter {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-*/
 
 		mainScreen = new MainScreen();
 		mainScreen.addScreen(new PlayerScreen("PLAYER 1"));
