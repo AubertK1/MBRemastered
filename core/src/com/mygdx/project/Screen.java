@@ -27,7 +27,6 @@ public class Screen implements Renderable{
 
     protected Stats stats = new Stats();
 
-    public Panel grayPanel;
     //creating main panels
     Panel topPanel, genStatsPanel, reminderPanel, masterboardPanel;
 

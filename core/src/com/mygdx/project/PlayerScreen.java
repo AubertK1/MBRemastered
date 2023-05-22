@@ -34,9 +34,6 @@ public class PlayerScreen extends Screen{
         mainPanels.add(reminderPanel);
         mainPanels.add(masterboardPanel);
 
-        grayPanel = new Panel("assets\\gradient2.png", new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), this);
-        grayPanel.setOpacity(.75f);
-
 
         //region Reminders
         //creating a label

@@ -80,16 +80,16 @@ public class MBComponent implements Renderable{
         getScreen().resetCompIDs();
     }
 
-    public void remove(){
+    public void removeFromStage(){
         for (MBComponent childComp: components) {
-            childComp.remove();
+            childComp.removeFromStage();
         }
         getActor().remove();
     }
-    public void reAdd(){
+    public void addToStage(){
         getScreen().stage.addActor(getActor());
         for (MBComponent childComp: components) {
-            childComp.reAdd();
+            childComp.addToStage();
         }
     }
 

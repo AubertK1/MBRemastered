@@ -33,7 +33,7 @@ public class Main extends ApplicationAdapter {
 	static Stage stage;
 	//the skin for the components
 	static Skin skin;
-
+	private static MainScreen mainScreen;
 	public static MBContextMenu contextMenu;
 
 	//region used for the Upload Image button
@@ -45,15 +45,13 @@ public class Main extends ApplicationAdapter {
 	static final JFrame f = new JFrame();
 	//endregion
 
-	private static MainScreen mainScreen;
-
 	@Override
 	public void create () {
-		//setting up batch, stage, and skin
 		batch = new SpriteBatch();
 		stage = new Stage();
 		skin = new Skin (Gdx.files.internal("assets\\skins\\uiskin.json"));
 
+		//sets up the file structures
 		try {
 			Files.createDirectories(Paths.get("assets\\SaveFiles\\stats"));
 			Files.createDirectories(Paths.get("assets\\SaveFiles\\ovalues"));
@@ -63,6 +61,7 @@ public class Main extends ApplicationAdapter {
 		}
 
 		mainScreen = new MainScreen();
+		//initializes the first screen if there is none
 		mainScreen.addScreen(new PlayerScreen("PLAYER 1"));
 
 		contextMenu = new MBContextMenu();
@@ -123,22 +122,25 @@ public class Main extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-		//clearing the board before drawing ??
+		//clears the board before drawing
 		ScreenUtils.clear(new Color(0x747474ff));
-		//drawing the panels
+		//begins the batch to draw everything
 		batch.begin();
 
-		//renders the current screen inside the mainScreen render function
+		//renders mainScreen which handles all the other rendering for the screens
 		mainScreen.render();
 
+		//renders contextMenu on click
 		if(contextMenu.isActive()) contextMenu.render();
 		else{
-			contextMenu.setPosition(-100, -100); //when it's not being rendered move it offscreen, so it isn't blocking anything's listener
+			//banish it offscreen when it's not active, so it isn't blocking anything's listener
+			contextMenu.setPosition(-100, -100);
 			contextMenu.setSize(contextMenu.getWidth(), 1);
 		}
 
 		batch.end();
 
+		//allows for buttons to change on hover
 		stage.act();
 	}
 

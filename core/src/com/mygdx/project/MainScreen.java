@@ -10,31 +10,25 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Objects;
 
 public class MainScreen extends Screen{
-
-    //creating main panels
-    Panel sidePanel, toolbarPanel;
-
-    ArrayList<Screen> screens = new ArrayList<>();
-
-    Screen selectedScreen = null;
-    HashMap<Integer, LinkedList<Renderable>> mainLayers = new HashMap<>();
-    HashMap<Integer, LinkedList<Renderable>> screenLayers = new HashMap<>();
-    ArrayList<Panel> screenPanels = new ArrayList<>();
-
-    private boolean initialized = false;
+    //the main panels
+    private final Panel sidePanel, toolbarPanel, grayPanel;
+    //this screen's renderables' layers renderable
+    private HashMap<Integer, LinkedList<Renderable>> mainLayers = new HashMap<>();
+    //all screens
+    private ArrayList<Screen> screens = new ArrayList<>();
+    //the selected screen's layers
+    private HashMap<Integer, LinkedList<Renderable>> screenLayers = new HashMap<>();
+    //the selected screen's main panels
+    private ArrayList<Panel> screenPanels = new ArrayList<>();
+    private Screen selectedScreen = null;
 
     public MainScreen() {
         super();
-
-        grayPanel = new Panel("assets\\gradient2.png", new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), this);
-        grayPanel.aFloat = .75f;
 
         sidePanel = new Panel("assets\\Panels\\SidecardPanel.png",
                 new Rectangle(2, 150, 98, 850), this);
@@ -43,39 +37,40 @@ public class MainScreen extends Screen{
 
         mainPanels.add(sidePanel);
         mainPanels.add(toolbarPanel);
-    }
-    public void initialize(){
-        initialized = true;
 
+        //sets up the grayPanel for later
+        grayPanel = new Panel("assets\\gradient2.png",
+                new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), this);
+        grayPanel.aFloat = .75f;
+
+        initialize();
+    }
+
+    /**
+     * initializes the panels and components
+     */
+    public void initialize(){
         //region Tool Bar
+        //focus button
         final MBButton focusButton = new MBButton("FOCUS", this);
         focusButton.setPosition(toolbarPanel.getX() + 10, toolbarPanel.getY() + 10);
         focusButton.setSize(toolbarPanel.getHeight()-20, toolbarPanel.getHeight()-20);
         focusButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-
-                if(!inFocusMode){
-                    System.out.println("FOCUS");
-                    focus();
-                }
-                else{
-                    System.out.println("UNFOCUS");
-                    unfocus();
-                }
+                if(!inFocusMode) focus();
+                else unfocus();
             }
         });
 
+        //region art buttons
         MBButton selectButton = new MBButton("Select", this);
         selectButton.setPosition(focusButton.getX() + focusButton.getWidth() + 10, toolbarPanel.getY() + 10);
-//		selectButton.setPosition(toolbarPanel2.getX() + 10, toolbarPanel2.getY() + 10);
         selectButton.setSize(200, toolbarPanel.getHeight()-20);
         selectButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (!selectedScreen.masterBoard.board.isInSelectMode()){
-                    selectedScreen.masterBoard.board.enterSelectMode();
-                }
+                selectedScreen.masterBoard.board.enterSelectMode();
             }
         });
 
@@ -85,9 +80,7 @@ public class MainScreen extends Screen{
         drawButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (!selectedScreen.masterBoard.board.isInDrawMode()){
-                    selectedScreen.masterBoard.board.enterDrawMode();
-                }
+                selectedScreen.masterBoard.board.enterDrawMode();
             }
         });
 
@@ -97,17 +90,17 @@ public class MainScreen extends Screen{
         eraseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (!selectedScreen.masterBoard.board.isInEraseMode()){
-                    selectedScreen.masterBoard.board.enterEraseMode();
-                }
+                selectedScreen.masterBoard.board.enterEraseMode();
             }
         });
+        //endregion
 
+        //region art dropdowns
         final MBSelectBox sizesBox = new MBSelectBox(this);
         sizesBox.setPosition(eraseButton.getX() + eraseButton.getWidth() + 5, selectButton.getY());
         sizesBox.setSize(100, eraseButton.getHeight()/3 - 1);
         sizesBox.setItems("1", "3", "5", "11", "23", "45");
-        sizesBox.dropdown.setSelected(String.valueOf(selectedScreen.masterBoard.board.getCurrentBrush().brush.length));
+        sizesBox.dropdown.setSelected(String.valueOf(11)); //sets the brush size to 11 by default
         sizesBox.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
                 int newSize = Integer.parseInt(sizesBox.dropdown.getSelected());
@@ -160,20 +153,11 @@ public class MainScreen extends Screen{
                 }
             }
         });
+        //endregion
 
-        MBButton diceButton = new MBButton("DICE", this);
-        diceButton.setPosition(sizesBox.getRightX() + 5, selectButton.getY());
-        diceButton.setSize(selectButton.getWidth() + 10, selectButton.getHeight());
-        diceButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Spawn DICE");
-            }
-        });
-        diceButton.setupSelectImageImageButton();
-
+        //region save buttons
         MBButton saveButton = new MBButton("SAVE", this);
-        saveButton.setPosition(diceButton.getRightX() + 5, diceButton.getY());
+        saveButton.setPosition(sizesBox.getRightX() + 5, selectButton.getY());
         saveButton.setSize(selectButton.getWidth() + 10, selectButton.getHeight());
         saveButton.addListener(new ChangeListener() {
             @Override
@@ -191,7 +175,9 @@ public class MainScreen extends Screen{
                 loadScreen(selectedScreen);
             }
         });
+        //endregion
 
+        //color picker
         MBColorPicker colorPicker = new MBColorPicker(this);
         colorPicker.setSize(0, toolbarPanel.getHeight() - 10);
         colorPicker.setPosition(toolbarPanel.getRightX() - (colorPicker.getWidth() + 5), toolbarPanel.getY()+5);
@@ -203,27 +189,63 @@ public class MainScreen extends Screen{
         toolbarPanel.add(sizesBox, 1);
         toolbarPanel.add(softnessBox, 1);
         toolbarPanel.add(colorBox, 1);
-        toolbarPanel.add(diceButton);
         toolbarPanel.add(saveButton);
         toolbarPanel.add(loadButton);
         toolbarPanel.add(colorPicker);
         //endregion
 
+        //loading in all the saved data
         onStart();
     }
 
+    /**
+     * loads in all saved data
+     */
+    public void onStart(){
+        try {
+            //grabs the stats folder's files
+            File[] files = new File("assets\\SaveFiles\\stats").listFiles();
+
+            if(files.length == 0) { //if the folder is empty just make a new screen
+                addScreen(selectedScreen);
+                loadScreen(selectedScreen);
+            }
+            else {
+                //loops through each file
+                for (File file : files) {
+                    Stats s = new Stats();
+                    //assigns this stat to this file
+                    s.setToFile(file);
+                    //loads the file's information into the stat
+                    s.load();
+
+                    //makes a new screen for the file
+                    PlayerScreen screen = new PlayerScreen(String.valueOf(s.getValue(Stats.Stat.NAME)));
+                    screen.setStats(s);
+                    //adds the screen to this screen and loads it
+                    addScreen(screen);
+                    loadScreen(screen);
+                }
+            }
+
+            setSelectedScreen(screens.get(0));
+        } catch (NullPointerException n){
+            System.out.println("Folder Not Found!");
+        }
+    }
+
     public void focus(){
-        //adding a new layer for every potential layer we may have
         int nonfocusedLayers = layers.size();
+        //doubles the number of layers + grayPanel layer
         for (int i = 0; i < nonfocusedLayers + 1; i++) {
             layers.put(nonfocusedLayers + i, new LinkedList<Renderable>());
             focusedLayers = i + 1;
         }
 
-        //setting every focused (and that hasn't been brought forward yet) renderables' layer to its corresponding focusedLayer
-        for (int layer = 0; layer < nonfocusedLayers; layer++) {
-            //so that it's not updating the layers.layer's size/indexes while looping through it
-            ArrayList<Renderable> currentLayer = new ArrayList<>(layers.get(layer));
+        //sets every focused (and that hasn't been brought forward yet) renderables' layer to its corresponding focusedLayer
+        for (int layerI = 0; layerI < nonfocusedLayers; layerI++) {
+            //so that the layers.layer list's size/indexes isn't getting updated while looping through it
+            ArrayList<Renderable> currentLayer = new ArrayList<>(layers.get(layerI));
             for (Renderable renderable : currentLayer) {
                 if (renderable.isFocused()) {
                     renderable.setLayer(renderable.getLayer() + focusedLayers);
@@ -231,9 +253,9 @@ public class MainScreen extends Screen{
             }
         }
         //removing nonfocused renderables from the focused layers
-        for (int layer = layers.size() - 1; layer >= nonfocusedLayers; layer--) {
-            //so that it's not updating the layers.layer's size/indexes while looping through it
-            ArrayList<Renderable> currentLayer = new ArrayList<>(layers.get(layer));
+        for (int layerI = layers.size() - 1; layerI >= nonfocusedLayers; layerI--) {
+            //so that the layers.layer list's size/indexes isn't getting updated while looping through it
+            ArrayList<Renderable> currentLayer = new ArrayList<>(layers.get(layerI));
             for (Renderable renderable : currentLayer) {
                 if (!renderable.isFocused()) {
                     renderable.setLayer(renderable.getLayer() - focusedLayers);
@@ -242,89 +264,92 @@ public class MainScreen extends Screen{
         }
 
         grayPanel.setLayer(nonfocusedLayers);
+        //forces the grayPanel to get rendered
         this.addRenderable(grayPanel);
 
         inFocusMode = true;
     }
     public void unfocus(){
-        //setting every focused renderables' layer back to its original layer
+        //sets every focused renderables' layer back to its original layer
         int nonfocusedLayers = layers.size()-focusedLayers;
-        for (int layer = layers.size() - 1; layer >= nonfocusedLayers; layer--) {
-            //so that it's not updating the layers.layer's size/indexes while looping through it
-            ArrayList<Renderable> currentLayer = new ArrayList<>(layers.get(layer));
+        for (int layerI = layers.size() - 1; layerI >= nonfocusedLayers; layerI--) {
+            //so that the layers.layer list's size/indexes isn't getting updated while looping through it
+            ArrayList<Renderable> currentLayer = new ArrayList<>(layers.get(layerI));
             for (Renderable renderable : currentLayer) {
                 renderable.setLayer(renderable.getLayer() - focusedLayers);
             }
-            if(layers.get(layer).size() == 0) layers.remove(layer); //deletes the layer when its empty
+            if(layers.get(layerI).size() == 0) layers.remove(layerI); //deletes the layer when its empty
         }
 
-        for (int screenLayer = screenLayers.size() - 1; screenLayer > 0; screenLayer--) {
-            if(screenLayers.get(screenLayer).size() == 0) screenLayers.remove(screenLayer);
+        //making sure every layer is deleted
+        for (int screenLayerI = screenLayers.size() - 1; screenLayerI > 0; screenLayerI--) {
+            if(screenLayers.get(screenLayerI).size() == 0) screenLayers.remove(screenLayerI);
         }
 
         focusedLayers = 0;
+        //stops the grayPanel from being rendered
         this.removeRenderable(grayPanel);
 
         inFocusMode = false;
     }
 
     public void update(){
+        //makes sure screenLayers is up-to-date
         screenLayers.clear();
-        screenLayers.putAll(selectedScreen.getLayers()); //making sure screenLayers is up to date
+        screenLayers.putAll(selectedScreen.getLayers());
 
+        //makes sure mainLayers is up-to-date
         mainLayers.clear();
-        for (int r = 0; r < getRenderables().size(); r++) { //making sure mainLayers is up to date
+        for (int r = 0; r < getRenderables().size(); r++) {
             addToMainLayer(getRenderables().get(r));
         }
 
-        for (int layer = 0; layer < screenLayers.size(); layer++) { //looping through the layers
+        //loops through the layers
+        for (int layer = 0; layer < screenLayers.size(); layer++) {
             if(layers.containsKey(layer)){ //if the layer exists
                 //empties out the layer
                 layers.get(layer).clear();
-                //re-adds in this screen's renderables in their updated order
-                if(mainLayers.containsKey(layer))
-                    layers.get(layer).addAll(mainLayers.get(layer));
-                //re-adds the renderables in their updated order
-                if(screenLayers.containsKey(layer))
-                    layers.get(layer).addAll(screenLayers.get(layer));
             }
             else{
                 //makes a new layer for the renderables
                 addLayer(layer);
-                //adds in this screen's renderables in their updated order
-                if(mainLayers.containsKey(layer))
-                    layers.get(layer).addAll(mainLayers.get(layer));
-                //adds the renderables in their updated order
-                if(screenLayers.containsKey(layer))
-                    layers.get(layer).addAll(screenLayers.get(layer));
             }
+            //adds/re-adds this screen's renderables in their updated order
+            if(mainLayers.containsKey(layer))
+                layers.get(layer).addAll(mainLayers.get(layer));
+            //adds/re-adds the selected screen's renderables in their updated order
+            if(screenLayers.containsKey(layer))
+                layers.get(layer).addAll(screenLayers.get(layer));
         }
     }
 
-    public void onStart(){
-        try {
-            File folder = new File("assets\\SaveFiles\\stats");
-            File[] files = folder.listFiles();
-
-            for (int i = 0; i < files.length; i++) {
-                File file = files[i];
-                Stats s = new Stats();
-                s.setToFile(file);
-
-                PlayerScreen screen = new PlayerScreen(String.valueOf(s.getValue(Stats.Stat.NAME)));
-                screen.setStats(s);
-                addScreen(screen);
-                loadScreen(screen);
-            }
-            if(files.length == 0) {
-                addScreen(selectedScreen);
-                loadScreen(selectedScreen);
-            }
-
-            setSelectedScreen(screens.get(0));
-        } catch (NullPointerException n){
-            System.out.println("Folder Not Found!");
+    public void setSelectedScreen(Screen screen){
+        //removes the old screen's components from the stage
+        for (Panel panel: screenPanels) {
+            panel.removeCompsFromStage();
         }
+        for (int layerI = 0; layerI < screenLayers.size(); layerI++) {
+            if (layers.containsKey(layerI)) { //if the layer exists...
+                //empties out the old screen's renderables from the layer's list
+                layers.get(layerI).removeAll(selectedScreen.getRenderables());
+            }
+        }
+
+        selectedScreen = screen;
+
+        screenPanels.clear();
+        screenPanels.addAll(screen.getMainPanels());
+
+        //adds the new screen's components to the stage
+        for (Panel panel: screenPanels) {
+            panel.addCompsToStage();
+        }
+
+        //syncs the screens again
+        syncScreens();
+
+        update();
+        if(inFocusMode) focus();
     }
 
     public void addScreen(){
@@ -341,28 +366,26 @@ public class MainScreen extends Screen{
             }
         }
         //endregion
+
         addScreen(new PlayerScreen("PLAYER " + nextScreenID));
     }
     public void addScreen(Screen screen){
-        if(!initialized){
-            selectedScreen = screen;
-            initialize();
-        }
-        else {
-            screens.add(screen);
+        screens.add(screen);
 
-            screens.get(0).screenDropdown.insertItemA(screen.getName());
+        //adds this screen the player dropdown
+        screens.get(0).screenDropdown.insertItemA(screen.getName());
 
-            setSelectedScreen(screen);
-        }
+        setSelectedScreen(screen);
     }
     public void deleteScreen(Screen screen){
-        if(screens.size() == 1) return;
+        if(screens.size() == 1) return; //there cannot be less than one screen
 
+        //removes the screen from lists and the player dropdown
         int index = screens.indexOf(screen);
         screens.remove(index);
         screens.get(0).screenDropdown.removeItem(index);
 
+        //sets the selected screen to the screen above the deleted screen
         setSelectedScreen(index != 0 ? screens.get(index - 1) : screens.get(index));
 
         screen.delete();
@@ -376,73 +399,43 @@ public class MainScreen extends Screen{
         return null;
     }
 
-    public void setSelectedScreen(Screen screen){
-        //removes the old screen's actors from the stage
-        for (Panel panel: screenPanels) {
-            panel.removeComps();
-        }
-        for (int layer = 0; layer < screenLayers.size(); layer++) {
-            if (layers.containsKey(layer)) { //if the layer exists
-                //empties out the old screen's renderables from the layer's list
-                layers.get(layer).removeAll(selectedScreen.getRenderables());
-            }
-        }
-
-        selectedScreen = screen;
-
-        screenPanels.clear();
-        screenPanels.addAll(screen.getMainPanels());
-
-        //adds the new screen's actors to the stage
-        for (Panel panel: screenPanels) {
-            panel.reAddComps();
-        }
-
-        //making sure all the screens' are synced
-        if(screens.size() > 0) {
-            syncScreens();
-        }
-
-        update();
-        if(inFocusMode) focus();
-    }
-
+    /**
+     * syncs all the screens' dropdowns so all the values are the same
+     */
     public void syncScreens(){
-        for (Screen screen0: screens) {
+        for (Screen screen: screens) {
             //updates the amount of items in each dropdown
-            screen0.screenDropdown.setItems(screens.get(0).screenDropdown.getItems());
+            screen.screenDropdown.setItems(screens.get(0).screenDropdown.getItems());
             //makes sure the items in every dropdown has the correct name
             for (int i = 0; i < screens.size(); i++) {
-                screen0.screenDropdown.getItems().set(i, screens.get(i).getName());
+                screen.screenDropdown.getItems().set(i, screens.get(i).getName());
             }
             //sets the current screen to each dropdown's selected screen
-            screen0.screenDropdown.dropdown.setSelected(selectedScreen.getName());
+            screen.screenDropdown.dropdown.setSelected(selectedScreen.getName());
         }
-        //region syncScreens() Again
+        //for some reason this doesn't work when called once, so it
         //runs the function again, so the dropdowns don't get out of sync
-        for (Screen screen0: screens) {
+        //region syncScreens() again
+        for (Screen screen: screens) {
             //updates the amount of items in each dropdown
-            screen0.screenDropdown.setItems(screens.get(0).screenDropdown.getItems());
+            screen.screenDropdown.setItems(screens.get(0).screenDropdown.getItems());
             //makes sure the items in every dropdown has the correct name
             for (int i = 0; i < screens.size(); i++) {
-                screen0.screenDropdown.getItems().set(i, screens.get(i).getName());
+                screen.screenDropdown.getItems().set(i, screens.get(i).getName());
             }
             //sets the current screen to each dropdown's selected screen
-            screen0.screenDropdown.dropdown.setSelected(selectedScreen.getName());
+            screen.screenDropdown.dropdown.setSelected(selectedScreen.getName());
         }
         //endregion
     }
 
-    public Screen getSelectedScreen(){
-        return selectedScreen;
-    }
-    public void addToMainLayer(Renderable r){
+    private void addToMainLayer(Renderable r){
         int layer = r.getLayer();
 
-        if(layer == -1); //don't add this to a list, so it doesn't get rendered
-        else if(mainLayers.containsKey(layer)){ //if the layer already exists
+        if(layer == -1); //doesn't add this to a list, so it doesn't get rendered
+        else if(mainLayers.containsKey(layer)){ //if the layer already exists...
             if(!mainLayers.get(layer).contains(r))
-                mainLayers.get(layer).add(r); //add the panel to its new later
+                mainLayers.get(layer).add(r); //adds the panel to its new later
         }
         else{
             //adds in any new layers between the highest existing layer and this layer
@@ -450,7 +443,7 @@ public class MainScreen extends Screen{
                 if(!mainLayers.containsKey(newLayer)) mainLayers.put(newLayer, new LinkedList<Renderable>()); //creates a new layer
             }
 
-            mainLayers.get(layer).add(r); //add the panel to the new later
+            mainLayers.get(layer).add(r); //adds the panel to the new later
         }
     }
 
@@ -458,16 +451,20 @@ public class MainScreen extends Screen{
         screen.save();
     }
     public void loadScreen(@NotNull Screen screen){
-        //recovering the stats
+        //recovers the stats
         screen.load();
-        //making sure all the screens are still synced
+        //makes sure all the screens are still synced
         syncScreens();
+    }
+
+    public Screen getSelectedScreen(){
+        return selectedScreen;
     }
 
     @Override
     public void render() {
         update();
-        //rendering everything in layer 0 here, so they're rendered in order
+        //renders everything in layer 0 here, so they're rendered in order
         for (Panel panel : mainPanels) {
             panel.render();
         }
@@ -475,6 +472,7 @@ public class MainScreen extends Screen{
             screenPanel.render();
         }
 
+        //renders all the renderables with a non-zero layer
         for (int layer = 1; layer < layers.size(); layer++) {
             for (int renderable = 0; renderable < layers.get(layer).size(); renderable++) {
                 if(layers.get(layer).get(renderable).isSupposedToBeVisible()) {
