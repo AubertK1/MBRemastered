@@ -1,7 +1,5 @@
 package com.mygdx.project;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -139,21 +137,21 @@ public class Panel implements Renderable{
         panel.setLayer(-1);
     }
 
-    public void removeComps(){
+    public void removeCompsFromStage(){
         for (MBComponent comp: components) {
-            comp.remove();
+            comp.removeFromStage();
         }
         for (Panel minipanel: minipanels) {
-            minipanel.removeComps();
+            minipanel.removeCompsFromStage();
         }
         getScreen().resetCompIDs();
     }
-    public void reAddComps(){
+    public void addCompsToStage(){
         for (MBComponent comp: components) {
-            comp.reAdd();
+            comp.addToStage();
         }
         for (Panel minipanel: minipanels) {
-            minipanel.reAddComps();
+            minipanel.addCompsToStage();
         }
         getScreen().resetCompIDs();
     }

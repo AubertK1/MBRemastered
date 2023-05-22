@@ -1,3 +1,4 @@
+/*
 package com.mygdx.project;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -393,3 +394,4 @@ public class MBDiceWindow extends MBWindow{
         super.render();
     }
 }
+*/

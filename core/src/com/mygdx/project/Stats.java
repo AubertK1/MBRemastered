@@ -154,7 +154,6 @@ public class Stats {
 
     public void setToFile(@NotNull File file){
         this.file = file.getPath();
-        load();
     }
 
     public void delete(){
