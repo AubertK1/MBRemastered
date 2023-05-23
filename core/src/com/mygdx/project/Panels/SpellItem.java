@@ -1,13 +1,16 @@
-package com.mygdx.project;
+package com.mygdx.project.Panels;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.mygdx.project.Components.*;
+import com.mygdx.project.Main;
+import com.mygdx.project.Screen;
+import com.mygdx.project.Value;
 
 import java.util.ArrayList;
 
@@ -487,7 +490,7 @@ public class SpellItem extends Item {
             restButton.setVisible(true);
         }
 
-        spellDesc.setSoftVisible(true);
+        spellDesc.setVisible(true);
 
         editMode = true;
     }
@@ -556,7 +559,7 @@ public class SpellItem extends Item {
             restButtons.get(i).setVisible(false);
         }
 
-        spellDesc.setSoftVisible(false);
+        spellDesc.setVisible(false);
 
         editMode = false;
     }

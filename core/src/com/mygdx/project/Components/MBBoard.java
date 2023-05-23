@@ -1,13 +1,11 @@
-package com.mygdx.project;
+package com.mygdx.project.Components;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Null;
+import com.mygdx.project.Board;
+import com.mygdx.project.Screen;
 
 public class MBBoard extends MBComponent{
-    Board board;
+    private Board board;
 
     public MBBoard(Screen screen){
         super(screen);

@@ -1,10 +1,8 @@
-package com.mygdx.project;
+package com.mygdx.project.Components;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.mygdx.project.Screen;
 
 import java.util.Random;
 

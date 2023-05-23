@@ -1,7 +1,9 @@
-package com.mygdx.project;
+package com.mygdx.project.Panels;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.mygdx.project.Components.MBComponent;
+import com.mygdx.project.Components.MBTextArea;
+import com.mygdx.project.Screen;
 
 public class Tipbox extends Minipanel{
     public Tipbox(Rectangle position, Screen screen) {

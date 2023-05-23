@@ -1,4 +1,4 @@
-package com.mygdx.project;
+package com.mygdx.project.Components;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Action;

@@ -1,10 +1,12 @@
-package com.mygdx.project;
+package com.mygdx.project.Components;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.mygdx.project.Screen;
+import com.mygdx.project.Stats;
 
 public class MBTextField extends MBComponent{
     private final TextField textField;

@@ -1,6 +1,12 @@
-package com.mygdx.project;
+package com.mygdx.project.Panels;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.mygdx.project.Components.MBComponent;
+import com.mygdx.project.Components.MBTextArea;
+import com.mygdx.project.Components.MBTextField;
+import com.mygdx.project.PlayerScreen;
+import com.mygdx.project.Screen;
+import com.mygdx.project.Stats;
 
 import java.util.ArrayList;
 
@@ -49,7 +55,7 @@ public class ItemPanel extends Minipanel{
         item.initialize();
         item.reformat();
 
-        if(item.getSpot() > maxSpot) item.setSoftVisible(false);
+        if(item.getSpot() > maxSpot) item.setVisible(false);
     }
 
     public void delete(Item item){
@@ -85,10 +91,10 @@ public class ItemPanel extends Minipanel{
 
             //only show the items in spots 0-5
             if(item.getSpot() < MINSPOT || item.getSpot() > maxSpot){
-                item.setSoftVisible(false);
+                item.setVisible(false);
             }
             else if(item.getSpot() >= MINSPOT && item.getSpot() <= maxSpot){
-                item.setSoftVisible(true);
+                item.setVisible(true);
             }
         }
     }
@@ -115,10 +121,10 @@ public class ItemPanel extends Minipanel{
 
                 //only show the items in spots 0-5
                 if(item.getSpot() < MINSPOT || item.getSpot() > maxSpot){
-                    item.setSoftVisible(false);
+                    item.setVisible(false);
                 }
                 else if(item.getSpot() >= MINSPOT && item.getSpot() <= maxSpot){
-                    item.setSoftVisible(true);
+                    item.setVisible(true);
                 }
             }
         }
@@ -146,10 +152,10 @@ public class ItemPanel extends Minipanel{
 
             //only show the items in spots 0-5
             if(item.getSpot() < MINSPOT || item.getSpot() > maxSpot){
-                item.setSoftVisible(false);
+                item.setVisible(false);
             }
             else if(item.getSpot() >= MINSPOT && item.getSpot() <= maxSpot){
-                item.setSoftVisible(true);
+                item.setVisible(true);
             }
         }
     }
@@ -242,7 +248,7 @@ public class ItemPanel extends Minipanel{
             add(newItem);
         }
 
-        if(((PlayerScreen) screen).getItemTab() != itemType + 1) this.setSoftVisible(false); //makes this invisible if its not the selected tab
+        if(((PlayerScreen) screen).getItemTab() != itemType + 1) this.setVisible(false); //makes this invisible if its not the selected tab
     }
 
     public void setColumns(int columns) {

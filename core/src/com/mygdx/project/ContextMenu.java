@@ -302,4 +302,7 @@ public class ContextMenu<T> extends ScrollPane {
     public ListWrapper<T> getList () {
         return list;
     }
+    public boolean getDoShow(){
+        return doShow;
+    }
 }

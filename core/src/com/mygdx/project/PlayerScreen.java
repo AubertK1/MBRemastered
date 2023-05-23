@@ -1,6 +1,5 @@
 package com.mygdx.project;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.*;
@@ -8,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.mygdx.project.Components.*;
+import com.mygdx.project.Panels.*;
 
 import java.util.ArrayList;
 
@@ -170,12 +171,12 @@ public class PlayerScreen extends Screen{
         spellsPanel.add(spellItem1);
 
         if(itemTab == 1){
-            weaponsPanel.setSoftVisible(true);
-            spellsPanel.setSoftVisible(false);
+            weaponsPanel.setVisible(true);
+            spellsPanel.setVisible(false);
         }
         if(itemTab == 2){
-            weaponsPanel.setSoftVisible(false);
-            spellsPanel.setSoftVisible(true);
+            weaponsPanel.setVisible(false);
+            spellsPanel.setVisible(true);
         }
         //endregion
 
@@ -209,8 +210,8 @@ public class PlayerScreen extends Screen{
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 if(itemTab == 2){
                     itemTab = 1;
-                    weaponsPanel.setSoftVisible(true);
-                    spellsPanel.setSoftVisible(false);
+                    weaponsPanel.setVisible(true);
+                    spellsPanel.setVisible(false);
                     weaponsButton.getButton().setTouchable(Touchable.disabled);
                     spellsButton.getButton().setTouchable(Touchable.enabled);
                 }
@@ -226,8 +227,8 @@ public class PlayerScreen extends Screen{
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 if(itemTab == 1){
                     itemTab = 2;
-                    spellsPanel.setSoftVisible(true);
-                    weaponsPanel.setSoftVisible(false);
+                    spellsPanel.setVisible(true);
+                    weaponsPanel.setVisible(false);
                     weaponsButton.getButton().setTouchable(Touchable.enabled);
                     spellsButton.getButton().setTouchable(Touchable.disabled);
                 }
@@ -491,12 +492,12 @@ public class PlayerScreen extends Screen{
         }
 
         if(statTab == 1){
-            skillsPanel.setSoftVisible(true);
-            savesPanel.setSoftVisible(false);
+            skillsPanel.setVisible(true);
+            savesPanel.setVisible(false);
         }
         if(statTab == 2){
-            skillsPanel.setSoftVisible(false);
-            savesPanel.setSoftVisible(true);
+            skillsPanel.setVisible(false);
+            savesPanel.setVisible(true);
         }
         //endregion
 
@@ -530,8 +531,8 @@ public class PlayerScreen extends Screen{
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 if(statTab == 2){
                     statTab = 1;
-                    skillsPanel.setSoftVisible(true);
-                    savesPanel.setSoftVisible(false);
+                    skillsPanel.setVisible(true);
+                    savesPanel.setVisible(false);
                     skillsButton.getButton().setTouchable(Touchable.disabled);
                     savesButton.getButton().setTouchable(Touchable.enabled);
                 }
@@ -547,8 +548,8 @@ public class PlayerScreen extends Screen{
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 if(statTab == 1){
                     statTab = 2;
-                    savesPanel.setSoftVisible(true);
-                    skillsPanel.setSoftVisible(false);
+                    savesPanel.setVisible(true);
+                    skillsPanel.setVisible(false);
                     skillsButton.getButton().setTouchable(Touchable.enabled);
                     savesButton.getButton().setTouchable(Touchable.disabled);
                 }

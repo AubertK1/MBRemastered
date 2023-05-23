@@ -1,11 +1,10 @@
-package com.mygdx.project;
+package com.mygdx.project.Components;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.utils.Array;
-
-import java.util.Vector;
+import com.mygdx.project.Screen;
+import com.mygdx.project.SelectBoxWrapper;
 
 public class MBSelectBox extends MBComponent{
     final SelectBoxWrapper<String> dropdown;

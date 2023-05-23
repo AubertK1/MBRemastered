@@ -7,6 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.project.Components.MBButton;
+import com.mygdx.project.Components.MBColorPicker;
+import com.mygdx.project.Components.MBSelectBox;
+import com.mygdx.project.Panels.Panel;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -41,11 +45,12 @@ public class MainScreen extends Screen{
         //sets up the grayPanel for later
         grayPanel = new Panel("assets\\gradient2.png",
                 new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), this);
-        grayPanel.aFloat = .75f;
+        grayPanel.setOpacity(.75f);
 
         initialize();
     }
-
+    
+    //region essential
     /**
      * initializes the panels and components
      */
@@ -70,7 +75,7 @@ public class MainScreen extends Screen{
         selectButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                selectedScreen.masterBoard.board.enterSelectMode();
+                selectedScreen.masterBoard.getBoard().enterSelectMode();
             }
         });
 
@@ -80,7 +85,7 @@ public class MainScreen extends Screen{
         drawButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                selectedScreen.masterBoard.board.enterDrawMode();
+                selectedScreen.masterBoard.getBoard().enterDrawMode();
             }
         });
 
@@ -90,7 +95,7 @@ public class MainScreen extends Screen{
         eraseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                selectedScreen.masterBoard.board.enterEraseMode();
+                selectedScreen.masterBoard.getBoard().enterEraseMode();
             }
         });
         //endregion
@@ -104,7 +109,7 @@ public class MainScreen extends Screen{
         sizesBox.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
                 int newSize = Integer.parseInt(sizesBox.dropdown.getSelected());
-                selectedScreen.masterBoard.board.setBrush(newSize, selectedScreen.masterBoard.board.isBrushSoft());
+                selectedScreen.masterBoard.getBoard().setBrush(newSize, selectedScreen.masterBoard.getBoard().isBrushSoft());
             }
         });
 
@@ -114,7 +119,7 @@ public class MainScreen extends Screen{
         softnessBox.setItems("soft", "hard");
         softnessBox.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
-                selectedScreen.masterBoard.board.setBrushSoft(softnessBox.dropdown.getSelected().equals("soft"));
+                selectedScreen.masterBoard.getBoard().setBrushSoft(softnessBox.dropdown.getSelected().equals("soft"));
             }
         });
 
@@ -127,28 +132,28 @@ public class MainScreen extends Screen{
                 String color = colorBox.dropdown.getSelected();
                 switch (color){
                     case "BLACK":
-                        selectedScreen.masterBoard.board.setCurrentColor(Color.BLACK);
-                        selectedScreen.masterBoard.board.setDrawingColor(Color.BLACK);
+                        selectedScreen.masterBoard.getBoard().setCurrentColor(Color.BLACK);
+                        selectedScreen.masterBoard.getBoard().setDrawingColor(Color.BLACK);
                         break;
                     case "WHITE":
-                        selectedScreen.masterBoard.board.setCurrentColor(Color.WHITE);
-                        selectedScreen.masterBoard.board.setDrawingColor(Color.WHITE);
+                        selectedScreen.masterBoard.getBoard().setCurrentColor(Color.WHITE);
+                        selectedScreen.masterBoard.getBoard().setDrawingColor(Color.WHITE);
                         break;
                     case "RED":
-                        selectedScreen.masterBoard.board.setCurrentColor(Color.RED);
-                        selectedScreen.masterBoard.board.setDrawingColor(Color.RED);
+                        selectedScreen.masterBoard.getBoard().setCurrentColor(Color.RED);
+                        selectedScreen.masterBoard.getBoard().setDrawingColor(Color.RED);
                         break;
                     case "YELLOW":
-                        selectedScreen.masterBoard.board.setCurrentColor(Color.YELLOW);
-                        selectedScreen.masterBoard.board.setDrawingColor(Color.YELLOW);
+                        selectedScreen.masterBoard.getBoard().setCurrentColor(Color.YELLOW);
+                        selectedScreen.masterBoard.getBoard().setDrawingColor(Color.YELLOW);
                         break;
                     case "GREEN":
-                        selectedScreen.masterBoard.board.setCurrentColor(Color.GREEN);
-                        selectedScreen.masterBoard.board.setDrawingColor(Color.GREEN);
+                        selectedScreen.masterBoard.getBoard().setCurrentColor(Color.GREEN);
+                        selectedScreen.masterBoard.getBoard().setDrawingColor(Color.GREEN);
                         break;
                     case "BLUE":
-                        selectedScreen.masterBoard.board.setCurrentColor(Color.BLUE);
-                        selectedScreen.masterBoard.board.setDrawingColor(Color.BLUE);
+                        selectedScreen.masterBoard.getBoard().setCurrentColor(Color.BLUE);
+                        selectedScreen.masterBoard.getBoard().setDrawingColor(Color.BLUE);
                         break;
                 }
             }
@@ -206,6 +211,7 @@ public class MainScreen extends Screen{
             //grabs the stats folder's files
             File[] files = new File("assets\\SaveFiles\\stats").listFiles();
 
+            if(files == null) throw new NullPointerException();
             if(files.length == 0) { //if the folder is empty just make a new screen
                 addScreen(selectedScreen);
                 loadScreen(selectedScreen);
@@ -233,6 +239,37 @@ public class MainScreen extends Screen{
             System.out.println("Folder Not Found!");
         }
     }
+
+    public void update(){
+        //makes sure screenLayers is up-to-date
+        screenLayers.clear();
+        screenLayers.putAll(selectedScreen.getLayers());
+
+        //makes sure mainLayers is up-to-date
+        mainLayers.clear();
+        for (int r = 0; r < getRenderables().size(); r++) {
+            addToMainLayer(getRenderables().get(r));
+        }
+
+        //loops through the layers
+        for (int layer = 0; layer < screenLayers.size(); layer++) {
+            if(layers.containsKey(layer)){ //if the layer exists
+                //empties out the layer
+                layers.get(layer).clear();
+            }
+            else{
+                //makes a new layer for the renderables
+                addLayer(layer);
+            }
+            //adds/re-adds this screen's renderables in their updated order
+            if(mainLayers.containsKey(layer))
+                layers.get(layer).addAll(mainLayers.get(layer));
+            //adds/re-adds the selected screen's renderables in their updated order
+            if(screenLayers.containsKey(layer))
+                layers.get(layer).addAll(screenLayers.get(layer));
+        }
+    }
+    //endregion
 
     public void focus(){
         int nonfocusedLayers = layers.size();
@@ -293,36 +330,8 @@ public class MainScreen extends Screen{
         inFocusMode = false;
     }
 
-    public void update(){
-        //makes sure screenLayers is up-to-date
-        screenLayers.clear();
-        screenLayers.putAll(selectedScreen.getLayers());
 
-        //makes sure mainLayers is up-to-date
-        mainLayers.clear();
-        for (int r = 0; r < getRenderables().size(); r++) {
-            addToMainLayer(getRenderables().get(r));
-        }
-
-        //loops through the layers
-        for (int layer = 0; layer < screenLayers.size(); layer++) {
-            if(layers.containsKey(layer)){ //if the layer exists
-                //empties out the layer
-                layers.get(layer).clear();
-            }
-            else{
-                //makes a new layer for the renderables
-                addLayer(layer);
-            }
-            //adds/re-adds this screen's renderables in their updated order
-            if(mainLayers.containsKey(layer))
-                layers.get(layer).addAll(mainLayers.get(layer));
-            //adds/re-adds the selected screen's renderables in their updated order
-            if(screenLayers.containsKey(layer))
-                layers.get(layer).addAll(screenLayers.get(layer));
-        }
-    }
-
+    //region screens
     public void setSelectedScreen(Screen screen){
         //removes the old screen's components from the stage
         for (Panel panel: screenPanels) {
@@ -390,15 +399,7 @@ public class MainScreen extends Screen{
 
         screen.delete();
     }
-
-    public Screen getScreenByName(String name){
-        for (Screen screen: screens) {
-            if(screen.getName().equals(name)) return screen;
-        }
-
-        return null;
-    }
-
+    
     /**
      * syncs all the screens' dropdowns so all the values are the same
      */
@@ -428,7 +429,8 @@ public class MainScreen extends Screen{
         }
         //endregion
     }
-
+    //endregion
+    
     private void addToMainLayer(Renderable r){
         int layer = r.getLayer();
 
@@ -456,11 +458,21 @@ public class MainScreen extends Screen{
         //makes sure all the screens are still synced
         syncScreens();
     }
-
+    
+    //region getters
     public Screen getSelectedScreen(){
         return selectedScreen;
     }
 
+    public Screen getScreenByName(String name){
+        for (Screen screen: screens) {
+            if(screen.getName().equals(name)) return screen;
+        }
+
+        return null;
+    }
+    //endregion
+    
     @Override
     public void render() {
         update();

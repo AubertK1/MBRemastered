@@ -1,9 +1,12 @@
-package com.mygdx.project;
+package com.mygdx.project.Components;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Null;
+import com.mygdx.project.ContextMenu;
+import com.mygdx.project.Main;
+import com.mygdx.project.Screen;
 
 import static com.mygdx.project.Main.batch;
 
@@ -57,10 +60,10 @@ public class MBContextMenu extends MBComponent{
         contextMenu.showAt(Main.stage, x, y);
     }
     public boolean addListener(ClickListener listener){
-        return contextMenu.list.addTempListener(listener);
+        return contextMenu.getList().addTempListener(listener);
     }
     public boolean isCustomized(){
-        return contextMenu.list.isCustomized();
+        return contextMenu.getList().isCustomized();
     }
     public void setItems(String... newItems){
         contextMenu.setItems(newItems);
@@ -69,7 +72,7 @@ public class MBContextMenu extends MBComponent{
         return contextMenu.getSelected();
     }
     public boolean isActive(){
-        return contextMenu.doShow;
+        return contextMenu.getDoShow();
     }
     public Actor getActor(){
         return contextMenu;

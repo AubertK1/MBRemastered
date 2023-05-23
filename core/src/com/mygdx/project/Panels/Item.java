@@ -1,15 +1,16 @@
-package com.mygdx.project;
+package com.mygdx.project.Panels;
 
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.mygdx.project.Components.MBComponent;
+import com.mygdx.project.Components.MBLabel;
+import com.mygdx.project.Components.MBTextField;
+import com.mygdx.project.Main;
+import com.mygdx.project.Screen;
 
 import java.util.ArrayList;
 
 public class Item extends Minipanel{
-    //skin of the item
-    Skin skin;
     //strings for the labels
     ArrayList<String> labelTexts = new ArrayList<>();
     //textfields for when you edit the item (if weapon)
@@ -34,15 +35,12 @@ public class Item extends Minipanel{
     }
     public Item(String fileLocation, Screen screen) {
         this(fileLocation, new Rectangle(125, 790, 460, 40), screen);
-        skin = Main.skin;
     }
     public Item(Rectangle position, Screen screen) {
         this("assets\\Panels\\ItemPanel4.png", position, screen);
-        skin = Main.skin;
     }
     public Item(String fileLocation, Rectangle position, Screen screen) {
         super(fileLocation, position, screen);
-        skin = Main.skin;
     }
 
     /**
@@ -59,7 +57,6 @@ public class Item extends Minipanel{
         oldY = getY();
         oldX = getX();
         //updates the item's position
-//        setPosition(parentIP.getSpot0Model().getX(),parentIP.getSpot0Model().getY()-((parentIP.getSpot0Model().getHeight()+parentIP.getItemGap()) * spot));
         reposition();
         setSize(parentIP.getSpot0Model().width, parentIP.getSpot0Model().height);
 
@@ -68,7 +65,7 @@ public class Item extends Minipanel{
         //updates the item's components' positions
         for (MBComponent component : components) {
             component.setPosition(component.getX() + xGap, component.getY() + yGap);
-            for (MBComponent MBComp: component.components) {
+            for (MBComponent MBComp: component.getComponents()) {
                 MBComp.setPosition(MBComp.getX() + xGap, MBComp.getY() + yGap);
             }
         }
@@ -76,8 +73,8 @@ public class Item extends Minipanel{
         for (Panel minipanel: minipanels) {
             minipanel.setPosition(minipanel.getX() + xGap, minipanel.getY() + yGap);
             //updates the item's minipanels' components' positions
-            for (MBComponent MPComp: minipanel.components) {
-                MPComp.setPosition(MPComp.getX() + xGap, MPComp.getY() + yGap);
+            for (MBComponent MPsComp: minipanel.components) {
+                MPsComp.setPosition(MPsComp.getX() + xGap, MPsComp.getY() + yGap);
             }
         }
     }
@@ -92,64 +89,13 @@ public class Item extends Minipanel{
      * makes the textfields appear above the labels
      */
     public void edit(){
-        //to have only one item edited at a time
-        if(getItems() != null) {
-            for (Item item : getItems()) {
-                if(item != this) item.saveEdit(); //if this isn't the item being edited...
-            }
-        }
 
-        for (MBComponent component : components) {
-            //finds editbutton and checks it
-            if (component.getName() != null && component.getName().equals("editbutton") && component instanceof MBButton) {
-                ((MBButton) component).getButton().setChecked(true);
-            }
-        }
-
-        //loops through this item's textfields list and updates their positions, re-adds them to the list, and sets their hard visibility to true
-        for (int i = 0; i < textFields.size(); i++) {
-            textFields.get(i).getTextField().setText(labelTexts.get(i));
-            labels.get(i).getLabel().setText("");
-            textFields.get(i).setPosition(labels.get(i).getX(), getY() + 5);
-            textFields.get(i).setSize(labels.get(i).getWidth(), 30);
-            textFields.get(i).setVisible(true);
-        }
-
-        editMode = true;
     }
     /**
      * sets the labels to the text of the textfields and makes them disappear
      */
     public void saveEdit(){
-        for (MBComponent component : components) {
-            //finds editbutton and unchecks it
-            if (component.getName() != null && component.getName().equals("editbutton") && component instanceof MBButton) {
-                ((MBButton) component).getButton().setChecked(false);
-            }
-        }
 
-        //making the textfields invisible
-        for (int i = 0; i < textFields.size(); i++) {
-            if(textFields.get(i).getSystem() == null) {
-                MBSystem sys = new MBSystem(textFields.get(i), labels.get(i));
-                final int finalI = i;
-                sys.setUpdateAction(new Action() {
-                    @Override
-                    public boolean act(float v) {
-                        labelTexts.set(finalI, textFields.get(finalI).getTextField().getText()); //updating the label list's text
-
-                        labels.get(finalI).getLabel().setText(shortenString(labelTexts.get(finalI), labels.get(finalI).getWidth())); //updating the label's text
-
-                        return true;
-                    }
-                });
-            }
-            textFields.get(i).updateSystem();
-
-            textFields.get(i).setVisible(false);
-        }
-
-        editMode = false;
     }
 
     static public String shortenString(String str, float length){
@@ -233,19 +179,19 @@ public class Item extends Minipanel{
     public void render() {
         if(spot < 0 || spot > parentIP.getMaxSpot()) return; //if out of bounds, don't render
 
-        batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, aFloat);
+        batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, getOpacity());
 
         batch.draw(texture, getX(), getY(), getWidth(), getHeight());
 
         for (MBComponent component: components) {
-            if(component.supposedToBeVisible) {
+            if(component.isSupposedToBeVisible()) {
                 component.render();
             }
         }
         //loops through this panel's list of minipanels
         for (Panel minipanel : minipanels) {
-            if(minipanel.supposedToBeVisible){
-                if(!editMode) minipanel.setSoftVisible(false);
+            if(minipanel.isSupposedToBeVisible()){
+                if(!editMode) minipanel.setVisible(false);
                 else minipanel.render();
             }
         }

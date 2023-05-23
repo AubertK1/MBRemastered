@@ -1,10 +1,14 @@
-package com.mygdx.project;
+package com.mygdx.project.Components;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Null;
+import com.mygdx.project.Main;
+import com.mygdx.project.Panels.Panel;
+import com.mygdx.project.Renderable;
+import com.mygdx.project.Screen;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -15,7 +19,7 @@ import static com.mygdx.project.Main.batch;
  * Essentially making my own version of JComponents where I can group the different components
  * together and edit any methods I need
  */
-public class MBComponent implements Renderable{
+public class MBComponent implements Renderable {
     ArrayList<MBComponent> components = new ArrayList<>();
     Panel parentPanel;
     Screen screen;
@@ -26,7 +30,7 @@ public class MBComponent implements Renderable{
     private float aFloat = 1;
     boolean hasWindow = false;
     //setting the component's ID in the list
-    int compID;
+    public int compID;
     //whether this component is supposed to be visible if it were allowed to be (ie the Item textfields when not in edit mode are allowed to be visible but not supposed to be visible)
     boolean supposedToBeVisible = true;
     private int layer = -1;
@@ -53,7 +57,7 @@ public class MBComponent implements Renderable{
         //sets the component's parent to this panel
         component.parentActor = this;
         //adds component to the stage so it can be drawn
-        getScreen().stage.addActor(component.getActor());
+        stage.addActor(component.getActor());
 
         component.setLayer(layer);
     }
@@ -87,7 +91,7 @@ public class MBComponent implements Renderable{
         getActor().remove();
     }
     public void addToStage(){
-        getScreen().stage.addActor(getActor());
+        stage.addActor(getActor());
         for (MBComponent childComp: components) {
             childComp.addToStage();
         }
@@ -111,7 +115,9 @@ public class MBComponent implements Renderable{
             component.setScreen(screen);
         }
     }
-
+    public void setParentPanel(Panel parentPanel){
+        this.parentPanel = parentPanel;
+    }
     public Screen getScreen() {
         return screen;
     }
@@ -167,21 +173,21 @@ public class MBComponent implements Renderable{
         int oldLayer = getLayer();
 
         if(oldLayer != -1) {
-            for (int renderable = 0; renderable < getScreen().layers.get(oldLayer).size(); renderable++) { //find the panel in the old layer
-                if (this == getScreen().layers.get(oldLayer).get(renderable)) {
-                    getScreen().layers.get(oldLayer).remove(this); //remove the panel from the old layer
+            for (int renderable = 0; renderable < getScreen().getLayers().get(oldLayer).size(); renderable++) { //find the panel in the old layer
+                if (this == getScreen().getLayers().get(oldLayer).get(renderable)) {
+                    getScreen().getLayers().get(oldLayer).remove(this); //remove the panel from the old layer
                 }
             }
         }
 
         if(layer == -1); //don't add this to a list, so it doesn't get rendered
-        else if(getScreen().layers.containsKey(layer)){ //if the layer already exists
-            if(!getScreen().layers.get(layer).contains(this))
-                getScreen().layers.get(layer).add(this); //add the panel to its new later
+        else if(getScreen().getLayers().containsKey(layer)){ //if the layer already exists
+            if(!getScreen().getLayers().get(layer).contains(this))
+                getScreen().getLayers().get(layer).add(this); //add the panel to its new later
         }
         else{
             getScreen().addLayer(layer);
-            getScreen().layers.get(layer).add(this); //add the panel to the new later
+            getScreen().getLayers().get(layer).add(this); //add the panel to the new later
         }
 
         this.layer = layer;
@@ -233,6 +239,9 @@ public class MBComponent implements Renderable{
     }
     public float getTopY(){
         return getY() + getHeight();
+    }
+    public ArrayList<MBComponent> getComponents(){
+        return components;
     }
 
 

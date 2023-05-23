@@ -1,8 +1,10 @@
-package com.mygdx.project;
+package com.mygdx.project.Components;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.mygdx.project.Screen;
+import com.mygdx.project.Stats;
 
 /**
  * the text area component
