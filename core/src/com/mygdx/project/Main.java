@@ -2,37 +2,27 @@ package com.mygdx.project;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-import com.badlogic.gdx.math.Rectangle;
+import com.mygdx.project.Components.MBContextMenu;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class Main extends ApplicationAdapter {
 	//Used to draw the panels
-	static SpriteBatch batch;
+	public static SpriteBatch batch;
 	//used to draw the MBComponents
-	static Stage stage;
+	public static Stage stage;
 	//the skin for the components
-	static Skin skin;
+	public static Skin skin;
 	private static MainScreen mainScreen;
 	public static MBContextMenu contextMenu;
 

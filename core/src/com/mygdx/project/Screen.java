@@ -9,6 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.mygdx.project.Components.MBBoard;
+import com.mygdx.project.Components.MBButton;
+import com.mygdx.project.Components.MBComponent;
+import com.mygdx.project.Components.MBSelectBox;
+import com.mygdx.project.Panels.Panel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,9 +33,9 @@ public class Screen implements Renderable{
     protected Stats stats = new Stats();
 
     //creating main panels
-    Panel topPanel, genStatsPanel, reminderPanel, masterboardPanel;
+    com.mygdx.project.Panels.Panel topPanel, genStatsPanel, reminderPanel, masterboardPanel;
 
-    protected ArrayList<Panel> mainPanels = new ArrayList<>();
+    protected ArrayList<com.mygdx.project.Panels.Panel> mainPanels = new ArrayList<>();
     boolean inFocusMode = false;
     int focusedLayers = 0;
 
@@ -111,7 +116,7 @@ public class Screen implements Renderable{
             }
         }).start();
     }
-    public void fileChooseHandle(final Panel parentPanel, final MBButton imageButton){
+    public void fileChooseHandle(final com.mygdx.project.Panels.Panel parentPanel, final MBButton imageButton){
         //to make sure this is only ran whenever the user selects a file
         if(Main.fileChooserPath != null) {
             Texture tex;
@@ -202,7 +207,7 @@ public class Screen implements Renderable{
     @Override
     public void render() {
         //rendering everything in layer 0 here, so they're rendered in order
-        for (Panel panel : mainPanels) {
+        for (com.mygdx.project.Panels.Panel panel : mainPanels) {
             panel.render();
         }
 
@@ -224,7 +229,7 @@ public class Screen implements Renderable{
         }
     }
 
-    public ArrayList<Panel> getMainPanels(){
+    public ArrayList<com.mygdx.project.Panels.Panel> getMainPanels(){
         return mainPanels;
     }
     @Override
@@ -255,9 +260,7 @@ public class Screen implements Renderable{
     @Override
     public void setLayer(int layer) {
 
-    }
-
-    @Override
+    }@Override
     public int getLayer() {
         return 0;
     }
@@ -284,7 +287,7 @@ public class Screen implements Renderable{
     }
 
     public void delete() {
-        for (Panel panel: mainPanels) {
+        for (com.mygdx.project.Panels.Panel panel: mainPanels) {
             panel.dispose();
         }
 

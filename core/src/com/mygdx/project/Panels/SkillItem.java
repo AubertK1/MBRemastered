@@ -1,4 +1,4 @@
-package com.mygdx.project;
+package com.mygdx.project.Panels;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -7,6 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.mygdx.project.Components.MBButton;
+import com.mygdx.project.Components.MBLabel;
+import com.mygdx.project.Components.MBSystem;
+import com.mygdx.project.Components.MBTextField;
+import com.mygdx.project.Screen;
 
 public class SkillItem extends Item{
     private String skill = "";

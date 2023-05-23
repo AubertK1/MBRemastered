@@ -1,8 +1,9 @@
-package com.mygdx.project;
+package com.mygdx.project.Components;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
+import com.mygdx.project.Screen;
 
 public class MBLabel extends MBComponent{
     //making the label
