@@ -585,10 +585,10 @@ public class PlayerScreen extends Screen{
 
         screenDropdown.addListener(new ClickListener() {
             public void clicked (InputEvent event, float x, float y) {
-            if(screenDropdown.dropdown.getSelected().equals("<ADD PLAYER>")){
+            if(screenDropdown.getDropdown().getSelected().equals("<ADD PLAYER>")){
                 Main.getMainScreen().addScreen();
             }
-            else Main.getMainScreen().setSelectedScreen(Main.getMainScreen().getScreenByName(screenDropdown.dropdown.getSelected()));
+            else Main.getMainScreen().setSelectedScreen(Main.getMainScreen().getScreenByName(screenDropdown.getDropdown().getSelected()));
             }
         });
 
@@ -785,12 +785,12 @@ public class PlayerScreen extends Screen{
                 MBTextField textField = (MBTextField) allComps.get(i);
                 if(textField.getAssignedStat() != null){
                     if(!loadedIPs[0] && textField.getAssignedStat() == 100){
-                        ((Item) textField.getParentPanel()).parentIP.loadItems(0);
+                        ((Item) textField.getParentPanel()).getParentIP().loadItems(0);
                         loadedIPs[0] = true;
                         i--;
                     }
                     else if(!loadedIPs[1] && textField.getAssignedStat() == 1000){
-                        ((Item) textField.getParentPanel()).parentIP.loadItems(1);
+                        ((Item) textField.getParentPanel()).getParentIP().loadItems(1);
                         loadedIPs[1] = true;
                         i--;
                     }
@@ -817,7 +817,7 @@ public class PlayerScreen extends Screen{
             }
         }
     }
-    public MBBoard getBoard(){
+    public MBBoard getMBBoard(){
         return masterBoard;
     }
     public int getItemTab(){

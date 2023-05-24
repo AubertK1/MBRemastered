@@ -1,4 +1,4 @@
-package com.mygdx.project;
+package com.mygdx.project.Actors;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -13,6 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
+import com.mygdx.project.Main;
+import com.mygdx.project.PixSerializer;
+import com.mygdx.project.Value;
 
 import java.awt.*;
 import java.util.ArrayList;

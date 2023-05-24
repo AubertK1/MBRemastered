@@ -50,9 +50,8 @@ public class Main extends ApplicationAdapter {
 			throw new RuntimeException(e);
 		}
 
+		//initializes the main screen which creates the first screen if there is none
 		mainScreen = new MainScreen();
-		//initializes the first screen if there is none
-		mainScreen.addScreen(new PlayerScreen("PLAYER 1"));
 
 		contextMenu = new MBContextMenu();
 

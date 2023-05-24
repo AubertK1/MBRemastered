@@ -1,7 +1,7 @@
 package com.mygdx.project.Components;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.mygdx.project.ColorPicker;
+import com.mygdx.project.Actors.ColorPicker;
 import com.mygdx.project.Screen;
 
 public class MBColorPicker extends MBComponent{

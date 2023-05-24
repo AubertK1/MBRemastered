@@ -1,9 +1,7 @@
-package com.mygdx.project;
+package com.mygdx.project.Actors;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -11,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.project.Main;
 
 public class ColorPicker extends Widget {
     private Texture texture;
@@ -31,8 +29,8 @@ public class ColorPicker extends Widget {
                 if(newColor != null) {
                     System.out.println(newColor);
                     //fixme
-                    Main.getMainScreen().getSelectedScreen().masterBoard.getBoard().setDrawingColor(newColor);
-                    Main.getMainScreen().getSelectedScreen().masterBoard.getBoard().setCurrentColor(newColor);
+                    Main.getMainScreen().getSelectedScreen().getMBBoard().getBoard().setDrawingColor(newColor);
+                    Main.getMainScreen().getSelectedScreen().getMBBoard().getBoard().setCurrentColor(newColor);
                 }
                 return true;
             }

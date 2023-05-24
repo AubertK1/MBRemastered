@@ -465,8 +465,8 @@ public class SpellItem extends Item {
             //finds usesbutton and makes it not rendered so that it's listeners are removed
             if (component.getName() != null && component.getName().equals("usesbutton")) {
                 component.setVisible(false);
-                for (int j = 0; j < component.components.size(); j++) {
-                    component.components.get(j).setVisible(false);
+                for (int j = 0; j < component.getComponents().size(); j++) {
+                    component.getComponents().get(j).setVisible(false);
                 }
             }
         }
@@ -504,8 +504,8 @@ public class SpellItem extends Item {
             //finds usesbutton and makes it rendered again so that it's listeners are back
             if (component.getName() != null && component.getName().equals("usesbutton")) {
                 component.setVisible(true);
-                for (int j = 0; j < component.components.size(); j++) {
-                    component.components.get(j).setVisible(true);
+                for (int j = 0; j < component.getComponents().size(); j++) {
+                    component.getComponents().get(j).setVisible(true);
                 }
             }
         }
