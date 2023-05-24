@@ -14,7 +14,7 @@ import com.mygdx.project.Components.MBTextField;
 import com.mygdx.project.Screen;
 
 public class SkillItem extends Item{
-    private String skill = "";
+    private String skill;
     private int mod = 0;
     private final int stat;
 

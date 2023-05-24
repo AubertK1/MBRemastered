@@ -247,8 +247,11 @@ public class Screen implements Renderable{
     public LinkedList<Renderable> getRenderables() {
         return allRenderables;
     }
-    public LinkedList<MBComponent> getComps() {
+    public LinkedList<MBComponent> getAllComps() {
         return allComps;
+    }
+    public void setAllComps(LinkedList<MBComponent> newAllComps){
+        allComps = newAllComps;
     }
 
     public void addLayer(int layer){
@@ -264,7 +267,7 @@ public class Screen implements Renderable{
     public int getLayer() {
         return 0;
     }
-    public MBBoard getBoard(){
+    public MBBoard getMBBoard(){
         return null;
     }
 

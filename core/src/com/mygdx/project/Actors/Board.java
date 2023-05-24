@@ -1,4 +1,4 @@
-package com.mygdx.project;
+package com.mygdx.project.Actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -17,11 +17,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
+import com.mygdx.project.Brush;
+import com.mygdx.project.Main;
+import com.mygdx.project.PixSerializer;
+import com.mygdx.project.Screen;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
@@ -40,12 +43,10 @@ public class Board extends Widget {
     private Pixmap cursor;
 
     //this draws the doodles
-    public Pixmap pixmapBoard;
+    protected Pixmap pixmapBoard;
 
     private Outline selectedOutline;
-    ArrayList<Outline> outlines = new ArrayList<>();
-
-    ArrayList<Outline> focusedOutlines = new ArrayList<>();
+    private ArrayList<Outline> outlines = new ArrayList<>();
 
     private Color backgroundColor;
     private Color drawingColor;
@@ -78,10 +79,10 @@ public class Board extends Widget {
         setDrawingColor(Color.BLACK);
         setCurrentColor(drawingColor);
 
-        //setting brush/cursor
+        //sets brush/cursor
         currentBrush = Brush.generateBrush(11, brushSoft);
-        brushCenterX = (float)(currentBrush.size+1);
-        brushCenterY = (float)(currentBrush.size+1);
+        brushCenterX = (float)(currentBrush.getSize() + 1);
+        brushCenterY = (float)(currentBrush.getSize() + 1);
         cursor = currentBrush.getPixmap();
     }
     protected void initialize () {
@@ -229,6 +230,7 @@ public class Board extends Widget {
                 if(clickListener.isOver() && !selectMode && !drawCursor) {
                     cursor = currentBrush.getPixmap();
                     Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursor, 0, 0));
+//                    Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursor, currentBrush.getSize(), currentBrush.getSize()));
                     cursor.dispose();
                     drawCursor = true;
                 }
@@ -236,7 +238,7 @@ public class Board extends Widget {
             }
 
             public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
-                if(!clickListener.isOver()) {
+                if(!clickListener.isOver() && drawCursor) {
                     Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                     drawCursor = false;
                 }
@@ -413,8 +415,8 @@ public class Board extends Widget {
     }
     public void setBrush(int width, boolean soft){
         currentBrush = Brush.generateBrush(width, soft);
-        brushCenterX = (float)(currentBrush.brush.length/2)+0;
-        brushCenterY = (float)(currentBrush.brush[0].length/2)+0;
+        brushCenterX = (float)(currentBrush.getBrush().length/2)+0;
+        brushCenterY = (float)(currentBrush.getBrush()[0].length/2)+0;
         cursor = currentBrush.getPixmap();
     }
 

@@ -80,7 +80,7 @@ public class PixSerializer implements java.io.Serializable {
 
     public void save() {
         try{
-            Main.getMainScreen().getSelectedScreen().getBoard().getBoard().syncFolders(this);
+            Main.getMainScreen().getSelectedScreen().getMBBoard().getBoard().syncFolders(this);
 
             //saving outline data (position, size, etc.)
             Path path = Paths.get("assets\\SaveFiles\\ovalues\\" + this.folder);

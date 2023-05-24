@@ -61,7 +61,7 @@ public class ItemPanel extends Minipanel{
     public void delete(Item item){
         int itemSpot = item.getSpot();
 
-        getScreen().allComps = MBComponent.reaarrangeList(this.screen);
+        getScreen().setAllComps(MBComponent.reaarrangeList(this.screen));
         getScreen().resetCompIDs();
 
         delete((Panel) item);

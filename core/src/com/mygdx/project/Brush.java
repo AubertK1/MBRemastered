@@ -7,26 +7,27 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 
 
 /**
- * Class that stores a Matrix that represents a brush
- * @author Román Jiménez
+ * Class that stores a Matrix that represents a brush. <s>
+ * Supposed to have a one and done usage due to how easily they can be generated. <p>
+ * Inspired by: Román Jiménez
  */
 public class Brush {
-    int size;
-    int width;
-    float[][] brush;
+    private final int size;
+    private final int width;
+    private final float[][] brush;
 
     /**
      * Constructor
      * @param size size of the brush (matrix size)
      * @param brush must have n*2 + 1 size, actual brush data
      */
-    public Brush(int size, float[][] brush) {
+    private Brush(int size, float[][] brush) {
         this.size = size;
         width = size*2+1;
         this.brush = brush;
     }
 
-    //fixme
+    //fixme develop further for more appealing brushes
     public static Brush generateBrush(int width, boolean soft){
         int size = width/2;
         int absRow;
@@ -51,19 +52,14 @@ public class Brush {
                     if(i > size) absRow = (width-1) - i;
                     if(j > size) absCol = (width-1) - j;
 
-                    rounded = Math.round(((float)(absRow+absCol)/(size*2.0)) * 100.00)/100.00 * 1.5f;
-                    if (rounded >= 1.0) brushLayout[i][j] = 1.0f;
+                    rounded = Math.round(((absRow + absCol) / (size * 2f)) * 100f) / 100f * 1.5f;
+                    if (rounded >= 1) brushLayout[i][j] = 1;
                     else brushLayout[i][j] = (float) rounded;
-                    //fixme for testing purposes
-                    if(i == brushLayout.length-1 && j == brushLayout.length-1){
-                        System.out.print("");
-                    }
                 }
             }
         }
 
-        Brush brush = new Brush(size, brushLayout);
-        return brush;
+        return new Brush(size, brushLayout);
     }
 
     /**
@@ -90,7 +86,7 @@ public class Brush {
      * @return a {@link Pixmap}
      */
     public Pixmap getPixmap() {
-        if (size*2+1 > 32) return getBigPixmap();
+        if (width > 32) return getBigPixmap();
 
         Pixmap pix = new Pixmap(brush.length, brush.length, Format.RGBA8888);
         for (int i = 0; i < brush.length; i++) {

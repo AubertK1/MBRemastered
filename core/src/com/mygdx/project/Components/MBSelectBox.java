@@ -4,7 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.project.Screen;
-import com.mygdx.project.SelectBoxWrapper;
+import com.mygdx.project.Actors.SelectBoxWrapper;
 
 public class MBSelectBox extends MBComponent{
     final SelectBoxWrapper<String> dropdown;
@@ -27,7 +27,7 @@ public class MBSelectBox extends MBComponent{
         super.setLayer(layer);
     }
     public void addListener(EventListener listener){
-        dropdown.scrollPane.list.addListener(listener);
+        dropdown.getScrollPane().getList().addListener(listener);
     }
     public void setItems(String... items){
         dropdown.setItems(items);
@@ -67,15 +67,17 @@ public class MBSelectBox extends MBComponent{
         dropdown.setItems(items);
     }
     public boolean isActive(){
-        return dropdown.isActive;
+        return dropdown.isActive();
     }
     public Actor getActor(){
         return dropdown;
     }
-
+    public SelectBoxWrapper<String> getDropdown(){
+        return dropdown;
+    }
     public void setInWindow(boolean inWindow){
         dropdown.inWindow = inWindow;
-        dropdown.windowGap.set(dropdown.getX(), dropdown.getY() - dropdown.scrollPane.getHeight());
+        dropdown.windowGap.set(dropdown.getX(), dropdown.getY() - dropdown.getScrollPane().getHeight());
     }
 
     @Override

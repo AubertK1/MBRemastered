@@ -59,7 +59,7 @@ public class Panel implements Renderable {
      */
     public void add(MBComponent component, int layer){
         //adds this component to the list of all components
-        screen.getComps().add(component);
+        screen.getAllComps().add(component);
         screen.getRenderables().add(component);
         //adds the component to this panel
         components.add(component);
@@ -107,7 +107,7 @@ public class Panel implements Renderable {
         //removes component from the stage
         component.getActor().remove();
         //removes component from the all components list
-        screen.getComps().remove(component);
+        screen.getAllComps().remove(component);
         screen.getRenderables().remove(component);
         //removes component from the item's components list
         components.remove(component);

@@ -54,7 +54,7 @@ public class MainScreen extends Screen{
     /**
      * initializes the panels and components
      */
-    public void initialize(){
+    private void initialize(){
         //region Tool Bar
         //focus button
         final MBButton focusButton = new MBButton("FOCUS", this);
@@ -105,10 +105,10 @@ public class MainScreen extends Screen{
         sizesBox.setPosition(eraseButton.getX() + eraseButton.getWidth() + 5, selectButton.getY());
         sizesBox.setSize(100, eraseButton.getHeight()/3 - 1);
         sizesBox.setItems("1", "3", "5", "11", "23", "45");
-        sizesBox.dropdown.setSelected(String.valueOf(11)); //sets the brush size to 11 by default
+        sizesBox.getDropdown().setSelected(String.valueOf(11)); //sets the brush size to 11 by default
         sizesBox.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
-                int newSize = Integer.parseInt(sizesBox.dropdown.getSelected());
+                int newSize = Integer.parseInt(sizesBox.getDropdown().getSelected());
                 selectedScreen.masterBoard.getBoard().setBrush(newSize, selectedScreen.masterBoard.getBoard().isBrushSoft());
             }
         });
@@ -119,7 +119,7 @@ public class MainScreen extends Screen{
         softnessBox.setItems("soft", "hard");
         softnessBox.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
-                selectedScreen.masterBoard.getBoard().setBrushSoft(softnessBox.dropdown.getSelected().equals("soft"));
+                selectedScreen.masterBoard.getBoard().setBrushSoft(softnessBox.getDropdown().getSelected().equals("soft"));
             }
         });
 
@@ -129,7 +129,7 @@ public class MainScreen extends Screen{
         colorBox.setItems("BLACK", "WHITE", "RED", "YELLOW", "GREEN", "BLUE");
         colorBox.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
-                String color = colorBox.dropdown.getSelected();
+                String color = colorBox.getDropdown().getSelected();
                 switch (color){
                     case "BLACK":
                         selectedScreen.masterBoard.getBoard().setCurrentColor(Color.BLACK);
@@ -206,14 +206,14 @@ public class MainScreen extends Screen{
     /**
      * loads in all saved data
      */
-    public void onStart(){
+    private void onStart(){
         try {
             //grabs the stats folder's files
             File[] files = new File("assets\\SaveFiles\\stats").listFiles();
 
             if(files == null) throw new NullPointerException();
             if(files.length == 0) { //if the folder is empty just make a new screen
-                addScreen(selectedScreen);
+                addScreen(new PlayerScreen("PLAYER 1"));
                 loadScreen(selectedScreen);
             }
             else {
@@ -271,6 +271,7 @@ public class MainScreen extends Screen{
     }
     //endregion
 
+    //region focus functions
     public void focus(){
         int nonfocusedLayers = layers.size();
         //doubles the number of layers + grayPanel layer
@@ -329,7 +330,7 @@ public class MainScreen extends Screen{
 
         inFocusMode = false;
     }
-
+    //endregion
 
     //region screens
     public void setSelectedScreen(Screen screen){
@@ -412,7 +413,7 @@ public class MainScreen extends Screen{
                 screen.screenDropdown.getItems().set(i, screens.get(i).getName());
             }
             //sets the current screen to each dropdown's selected screen
-            screen.screenDropdown.dropdown.setSelected(selectedScreen.getName());
+            screen.screenDropdown.getDropdown().setSelected(selectedScreen.getName());
         }
         //for some reason this doesn't work when called once, so it
         //runs the function again, so the dropdowns don't get out of sync
@@ -425,7 +426,7 @@ public class MainScreen extends Screen{
                 screen.screenDropdown.getItems().set(i, screens.get(i).getName());
             }
             //sets the current screen to each dropdown's selected screen
-            screen.screenDropdown.dropdown.setSelected(selectedScreen.getName());
+            screen.screenDropdown.getDropdown().setSelected(selectedScreen.getName());
         }
         //endregion
     }
@@ -449,6 +450,7 @@ public class MainScreen extends Screen{
         }
     }
 
+    //region saving
     public void saveScreen(@NotNull Screen screen){
         screen.save();
     }
@@ -458,7 +460,8 @@ public class MainScreen extends Screen{
         //makes sure all the screens are still synced
         syncScreens();
     }
-    
+    //endregion
+
     //region getters
     public Screen getSelectedScreen(){
         return selectedScreen;

@@ -50,7 +50,7 @@ public class MBComponent implements Renderable {
     public void add(MBComponent component, int layer){
 //        if(component.getActor() != null) return;
         //adds this component to the list of all components if it's not already in it
-        getScreen().getComps().add(component);
+        getScreen().getAllComps().add(component);
         screen.addRenderable(component);
         //adds the component given to this panel
         components.add(component);
@@ -73,7 +73,7 @@ public class MBComponent implements Renderable {
         //removes actor from the stage
         component.getActor().remove();
         //removes component from the all components list
-        getScreen().getComps().remove(component);
+        getScreen().getAllComps().remove(component);
         //removes component from the item's components list
         components.remove(component);
 
@@ -109,7 +109,7 @@ public class MBComponent implements Renderable {
     }
     public void setScreen(Screen screen) {
         this.screen = screen;
-        compID = screen.getComps().size();
+        compID = screen.getAllComps().size();
 
         for (MBComponent component: components) {
             component.setScreen(screen);
@@ -272,8 +272,8 @@ public class MBComponent implements Renderable {
         MBComponent comp;
 
         for (int i = 0; i < actors.size; i++) { //loop through the stage's actors
-            for (int j = 0; j < screen.getComps().size(); j++) { //find its corresponding component in allComps
-                comp = screen.getComps().get(j);
+            for (int j = 0; j < screen.getAllComps().size(); j++) { //find its corresponding component in allComps
+                comp = screen.getAllComps().get(j);
                 if(actors.get(i) == comp.getActor()) newList.add(comp);
             }
         }

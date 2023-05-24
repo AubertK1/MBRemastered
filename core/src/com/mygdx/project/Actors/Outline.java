@@ -1,4 +1,4 @@
-package com.mygdx.project;
+package com.mygdx.project.Actors;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -6,14 +6,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
+import com.mygdx.project.Main;
+import com.mygdx.project.PixSerializer;
+import com.mygdx.project.Renderable;
+import com.mygdx.project.Screen;
 
 import java.awt.*;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 
-public class Outline extends Widget implements Renderable{
+public class Outline extends Widget implements Renderable {
     protected Board parentBoard;
     protected Screen screen;
     protected PixSerializer ps;
@@ -110,7 +113,7 @@ public class Outline extends Widget implements Renderable{
     }
     public void moveForward(){
         //moving it forward inside its layer (for focused)
-        LinkedList<Renderable> currLayer = screen.layers.get(layer);
+        LinkedList<Renderable> currLayer = screen.getLayers().get(layer);
         int o = currLayer.indexOf(this);
         if(o + 1 < currLayer.size()){
             int nextO = currLayer.size() - 1;
@@ -131,7 +134,7 @@ public class Outline extends Widget implements Renderable{
     }
     public void moveBackward(){
         //moving it back inside its layer (for focused)
-        LinkedList<Renderable> currLayer = screen.layers.get(layer);
+        LinkedList<Renderable> currLayer = screen.getLayers().get(layer);
         int o = currLayer.indexOf(this);
         if(o - 1 >= 0){
             int lastO = 0;
@@ -152,7 +155,7 @@ public class Outline extends Widget implements Renderable{
     }
     public void moveToBack(){
         //moving it back inside its layer (for focused)
-        LinkedList<Renderable> currLayer = screen.layers.get(layer);
+        LinkedList<Renderable> currLayer = screen.getLayers().get(layer);
         currLayer.remove(this);
         currLayer.add(0, this);
 
@@ -163,7 +166,7 @@ public class Outline extends Widget implements Renderable{
     }
     public void moveToFront(){
         //moving it forward inside its layer (for focused)
-        LinkedList<Renderable> currLayer = screen.layers.get(layer);
+        LinkedList<Renderable> currLayer = screen.getLayers().get(layer);
         currLayer.remove(this);
         currLayer.add(this);
 
@@ -283,20 +286,20 @@ public class Outline extends Widget implements Renderable{
         int oldLayer = getLayer();
 
         if(oldLayer != -1) {
-            for (int renderable = 0; renderable < getScreen().layers.get(oldLayer).size(); renderable++) { //find the panel in the old layer
-                if (this == screen.layers.get(oldLayer).get(renderable)) {
-                    screen.layers.get(oldLayer).remove(this); //remove the panel from the old layer
+            for (int renderable = 0; renderable < getScreen().getLayers().get(oldLayer).size(); renderable++) { //find the panel in the old layer
+                if (this == screen.getLayers().get(oldLayer).get(renderable)) {
+                    screen.getLayers().get(oldLayer).remove(this); //remove the panel from the old layer
                 }
             }
         }
 
         if(layer == -1); //don't add this to a list, so it doesn't get rendered
-        else if(screen.layers.containsKey(layer)){ //if the layer already exists
-            screen.layers.get(layer).add(this); //add the panel to its new later
+        else if(screen.getLayers().containsKey(layer)){ //if the layer already exists
+            screen.getLayers().get(layer).add(this); //add the panel to its new later
         }
         else{
             getScreen().addLayer(layer);
-            screen.layers.get(layer).add(this); //add the panel to the new later
+            screen.getLayers().get(layer).add(this); //add the panel to the new later
         }
 
         this.layer = layer;

@@ -4,7 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Null;
-import com.mygdx.project.ContextMenu;
+import com.mygdx.project.Actors.ContextMenu;
 import com.mygdx.project.Main;
 import com.mygdx.project.Screen;
 
