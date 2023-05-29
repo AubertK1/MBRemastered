@@ -80,33 +80,36 @@ public class PixSerializer implements java.io.Serializable {
 
     public void save() {
         try{
+            //syncs the folders to make sure the file names match
             Main.getMainScreen().getSelectedScreen().getMBBoard().getBoard().syncFolders(this);
 
-            //saving outline data (position, size, etc.)
+            //creates the directory if needed
             Path path = Paths.get("assets\\SaveFiles\\ovalues\\" + this.folder);
             Files.createDirectories(path);
+            //sets up the output streams and potentially the file
             FileOutputStream fileOut =
                     new FileOutputStream(file.equals("") ? file = "assets\\SaveFiles\\ovalues\\" +
                             this.folder + "\\outline" + identifier + FILEID + ".ser" : file);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            // write default properties
+            //writes outline data (position, size, etc.)
             out.writeObject(statValues);
-
+            //closes the output streams
             out.close();
             fileOut.close();
 
-            //saving pixmap data if a doodle
+            //saves pixmap data if it's the outline is a drawing
             if(this.pixData != null) {
-                // write buffer capacity and data
+                //creates the directory if needed
                 Path path2 = Paths.get("assets\\SaveFiles\\pixvalues\\" + this.pixFolder);
                 Files.createDirectories(path2);
+                //sets up the output stream and file channel
                 FileOutputStream pixFileOut =
                         new FileOutputStream(pixFile.equals("") ? pixFile = "assets\\SaveFiles\\pixvalues\\" +
                                 this.pixFolder + "\\pixmap" + FILEID + ".ser" : pixFile);
                 FileChannel fileChannel = pixFileOut.getChannel();
-
+                //writes the buffer data of the pixmap
                 fileChannel.write(this.pixData);
-
+                //closes the output stream and file channel
                 fileChannel.close();
                 pixFileOut.close();
 

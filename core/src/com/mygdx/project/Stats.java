@@ -28,6 +28,7 @@ public class Stats {
     public Stats() {
         FILEIDs++;
 
+        //initializes the stats and their values
         for (int i = 0; i < NAMEDSTATS; i++) {
             if(i <= Stat.RCE){
                 statValues.put(i, new Value(Value.StoreType.INT).setValue(0));
@@ -121,10 +122,13 @@ public class Stats {
 
     public void save(){
         try {
+            //creates the file output streams
             FileOutputStream fileOut =
                     new FileOutputStream(file.equals("") ? file = "assets\\SaveFiles\\stats\\player" + FILEID + ".ser" : file);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            //writes the hashmap onto the file
             out.writeObject(statValues);
+            //closes the file output streams
             out.close();
             fileOut.close();
 //            System.out.println("Serialized data is saved in " + file);
@@ -135,9 +139,12 @@ public class Stats {
 
     public void load(){
         try {
+            //creates the file input streams
             FileInputStream fileIn = new FileInputStream(file);
             ObjectInputStream in = new ObjectInputStream(fileIn);
+            //reads the file and stores its data into the hashmap
             statValues = (HashMap<Integer, Value>) in.readObject();
+            //closes the file input streams
             in.close();
             fileIn.close();
 //            System.out.println("Loaded data from " + file);
