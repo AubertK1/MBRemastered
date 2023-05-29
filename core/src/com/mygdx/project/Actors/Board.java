@@ -292,42 +292,74 @@ public class Board extends Widget {
 
     }
 
+    /**
+     * @param x the x coordinate to search at
+     * @param y the y coordinate to search at
+     * @return the outline at the coordinate
+     */
     public Outline findOutline(int x, int y){
+        //adjusts the coordinates so they correlate with the board
         float x2 = x + offsetX;
         float y2 = y + offsetY;
-        for (int i = outlines.size() - 1; i > -1; i--) { //so that if two are stacked it gets the most recent one
-            if(outlines.get(i).getBounds().contains(x2, y2)){ //if the point is inside the outline's borders...
+        //loops through the outlines from front to back
+        for (int i = outlines.size() - 1; i > -1; i--) {
+            //if the point is inside the outline's borders...
+            if(outlines.get(i).getBounds().contains(x2, y2)){
                 return outlines.get(i);
             }
         }
         return null;
     }
+    /**
+     * @param x the x coordinate to search at
+     * @param y the y coordinate to search at
+     * @return the outline at the coordinate
+     */
     public Outline findOutlineBehind(int x, int y){
+        //adjusts the coordinates so they correlate with the board
         float x2 = x + offsetX;
         float y2 = y + offsetY;
         boolean triggered = false;
         int frontOutlineIndex = -1;
-        for (int i = outlines.size() - 1; i > -1; i--) { //so that if two are stacked it gets the most recent one
-            if(outlines.get(i).getBounds().contains(x2, y2)){ //if the point is inside the outline's borders...
+        //loops through the outlines from front to back
+        for (int i = outlines.size() - 1; i > -1; i--) {
+            //if the point is inside the outline's borders...
+            if(outlines.get(i).getBounds().contains(x2, y2)){
+                //if this is the second-to-front outline at this point, return the outline
                 if(triggered) return outlines.get(i);
-                //if it meets qualifies the first time activate the trigger so that it returns the next outline to qualify
+                //if this is the newest outline at this point, flip the boolean, so that the outline behind at this point can be returned
                 triggered = true;
                 frontOutlineIndex = i;
             }
-            if(i == 0 && triggered) return outlines.get(frontOutlineIndex); //if there aren't any outlines behind, return the front outline
+            //if there aren't any other outlines at this point, return the front outline
+            if(i == 0 && triggered) return outlines.get(frontOutlineIndex);
         }
         return null;
     }
 
+    /**
+     * @param src the original pixmap
+     * @param offsetX how far to offset the pixmap horizontally
+     * @param offsetY how far to offset the pixmap vertically
+     * @return the new offset pixmap
+     */
     public static Pixmap shiftPixmap(Pixmap src, int offsetX, int offsetY){
-        final int width = src.getWidth();
-        final int height = src.getHeight();
+        int width = src.getWidth();
+        int height = src.getHeight();
+        //the pixmap that the pixels will be cloned onto
         Pixmap movedPX = new Pixmap(width, height, src.getFormat());
-        final int offsetY2 = -offsetY;
+        //flipping the y coordinate so that the origin can be at the bottom left instead of the top left
+        int offsetY2 = -offsetY;
 
+        //looping through each x point's column
         for (int x = 0; x < width; x++) {
+            //looping through each y point in the column
             for (int y = 0; y < height; y++) {
-                if(x - offsetX >= 0 && y - offsetY2 >= 0) movedPX.drawPixel(x, y, src.getPixel(x-offsetX, y-offsetY2));
+                //if the pixel coordinate will be in bounds after being offset...
+                if(x - offsetX >= 0 && y - offsetY2 >= 0)
+                    //draw the pixel onto the new pixmap
+                    movedPX.drawPixel(x, y, src.getPixel(x-offsetX, y-offsetY2));
+                //else draws a blank pixel onto the new pixmap at the point
                 else movedPX.drawPixel(x, y);
             }
         }
