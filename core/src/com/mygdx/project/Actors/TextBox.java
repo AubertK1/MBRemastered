@@ -395,8 +395,8 @@ public class TextBox extends Outline{
         return style;
     }
 
-    protected @Null Drawable getOutlineDrawable() {
-        return style.outline;
+    protected @Null Drawable getBorderDrawable() {
+        return style.border;
     }
 
     private @Null TextFieldStyle getTextFieldStyle(){
@@ -404,14 +404,14 @@ public class TextBox extends Outline{
     }
     static public class TextBoxStyle {
         public @Null
-        Drawable outline;
+        Drawable border;
         TextFieldStyle textfield;
 
         public TextBoxStyle(){
         }
 
         public TextBoxStyle(TextBoxStyle style){
-            outline = style.outline;
+            border = style.border;
             textfield = style.textfield;
         }
     }
