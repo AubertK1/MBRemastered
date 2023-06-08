@@ -19,15 +19,18 @@ import java.util.LinkedList;
 public class Outline extends Widget implements Renderable {
     protected Board parentBoard;
     protected Screen screen;
+    //the serializer so it can be saved
     protected PixSerializer ps;
+    //if this outline is selected or not
     protected boolean selected = false;
     //the batch for the render function
     SpriteBatch batch = Main.batch;
 
+    //the board's offset on the screen
     protected float offsetX, offsetY;
-    protected float boardHeight;
-    protected float boardWidth;
+    protected float boardWidth, boardHeight;
 
+    //if this outline is focused or not
     private boolean focused;
 
     protected int BORDERSIZE = 4;
@@ -38,6 +41,7 @@ public class Outline extends Widget implements Renderable {
     protected int resize = -1;
 
     protected Rectangle bounds = new Rectangle();
+    //for the Doodle subclass
     protected boolean drawable = true;
 
     //controls whether this is rendered or not
@@ -70,13 +74,14 @@ public class Outline extends Widget implements Renderable {
 
     }
 
-    public void drawOutline(Batch batch, float parentAlpha) {
-        if(!drawable) return; //if there's no doodle points, do not continue
-        if(parentBoard.getSelectedOutline() != this || !parentBoard.isInSelectMode()) return; //keep going only if this is the selected outline and the board is in select mode
+    public void drawBorder(Batch batch, float parentAlpha) {
+        if(!drawable) return; //returns if there's no doodle points
+        //keeps going only if this is the selected outline and the board is in select mode
+        if(parentBoard.getSelectedOutline() != this || !parentBoard.isInSelectMode()) return;
 
         validate();
 
-        final Drawable outline = getOutlineDrawable();
+        final Drawable border = getBorderDrawable();
 
         Color color = getColor();
         float x = getX();
@@ -84,16 +89,16 @@ public class Outline extends Widget implements Renderable {
         float width = getWidth();
         float height = getHeight();
 
-        batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-        if (outline != null) {
-            outline.draw(batch, x, y, width, height);
+        batch.setColor(color.r, color.g, color.b, 1);
+        if (border != null) {
+            border.draw(batch, x, y, width, height);
         }
     }
 
     @Override
     public void render() {
         drawContent(batch);
-        drawOutline(batch, 1);
+        drawBorder(batch, 1);
     }
 
     protected Rectangle findBounds() {
@@ -340,7 +345,7 @@ public class Outline extends Widget implements Renderable {
     public float getBoardHeight() {
         return boardHeight;
     }
-    protected @Null Drawable getOutlineDrawable() {
+    protected @Null Drawable getBorderDrawable() {
         return null;
     }
 

@@ -36,7 +36,6 @@ public class Board extends Widget {
 
     BoardStyle style;
     Screen screen;
-    private InputListener inputListener;
     private ClickListener clickListener;
     private float offsetX = 0, offsetY = 0;
 
@@ -55,12 +54,14 @@ public class Board extends Widget {
     private float brushCenterX;
     private float brushCenterY;
     private boolean brushSoft = true;
-
-    private boolean selectMode = true;
-    private boolean drawMode = false;
-    private boolean eraseMode = false;
+    
+    private BrushMode brushMode;
 
     boolean drawCursor;
+    
+    public enum BrushMode{
+        DRAW_MODE, ERASE_MODE, SELECT_MODE
+    }
 
     public Board (Skin skin) {
         this(skin.get(BoardStyle.class));
@@ -78,6 +79,8 @@ public class Board extends Widget {
         setBackgroundColor(backgroundColor);
         setDrawingColor(Color.BLACK);
         setCurrentColor(drawingColor);
+        
+        setBrushMode(BrushMode.SELECT_MODE);
 
         //sets brush/cursor
         currentBrush = Brush.generateBrush(11, brushSoft);
@@ -87,7 +90,7 @@ public class Board extends Widget {
     }
     protected void initialize () {
         backgroundColor = new Color(0xd2b48cff);
-        //setting up the pixmap board
+        //sets up the pixmap board
         pixmapBoard = new Pixmap(1018, 850, Pixmap.Format.RGBA8888);
         pixmapBoard.setFilter(Pixmap.Filter.NearestNeighbour);
         pixmapBoard.setColor(new Color(0f,0f,0f,0f));
@@ -96,21 +99,21 @@ public class Board extends Widget {
         setTouchable(Touchable.enabled);
 
         addListener(clickListener = new ClickListener());
-        addListener(inputListener = new InputListener() {
+        addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 //so that the computer knows which outline to drag / erase from
-                if (selectMode || eraseMode){
+                if (isInSelectMode() || isInEraseMode()){
                     if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) selectOutline(findOutlineBehind((int) x, (int) y)); //if trying to select the outline behind
                     //if an outline is already selected and is trying to be dragged
                     else if(selectedOutline != null && selectedOutline.getBounds().contains(x + offsetX,y + offsetY)) selectOutline(selectedOutline);
-                    else if(!eraseMode) selectOutline(findOutline((int) x, (int) y));
+                    else if(!isInEraseMode()) selectOutline(findOutline((int) x, (int) y));
                     //if in erase mode and no outline is clicked on, it erases the last outline that was selected
 
                     if(selectedOutline != null) selectedOutline.onBorder((int) x, (int) y);
                 }
                 if(button == Input.Buttons.LEFT) {
                         //if the user isn't drawing on an outline, make a new one
-                        if ((selectedOutline == null || selectedOutline instanceof StickyNote) && drawMode) {
+                        if ((selectedOutline == null || selectedOutline instanceof StickyNote) && isInDrawMode()) {
                             Outline newO = new Doodle(Board.this, Main.skin);
                             newO.setScreen(getScreen());
                             selectedOutline = newO;
@@ -120,7 +123,7 @@ public class Board extends Widget {
                             selectedOutline.drawAt((int) x, (int) y);
 
                 }
-                else if (button == Input.Buttons.RIGHT && selectMode){
+                else if (button == Input.Buttons.RIGHT && isInSelectMode()){
                     if (selectedOutline != null) {
                         String focus = "Focus";
                         if(selectedOutline.isFocused()) focus = "Unfocus";
@@ -142,7 +145,7 @@ public class Board extends Widget {
                                         selectedOutline.moveToBack();
                                         break;
                                     case "Edit":
-                                        enterDrawMode();
+                                        setBrushMode(BrushMode.DRAW_MODE);
                                         break;
                                     case "Delete":
                                         selectedOutline.delete();
@@ -164,7 +167,7 @@ public class Board extends Widget {
                                 switch (word) {
                                     case "Create New Doodle":
                                         selectedOutline = null;
-                                        enterDrawMode();
+                                        setBrushMode(BrushMode.DRAW_MODE);
                                         break;
                                     case "Create New Sticky Note":
                                         Outline newS = new StickyNote(Board.this, Main.skin, (int) Main.contextMenu.getX(),
@@ -195,7 +198,7 @@ public class Board extends Widget {
                 if (pointer != 0 || button != 0) return;
                 Outline.wipe();
 
-                if(selectMode){
+                if(isInSelectMode()){
                     if(selectedOutline != null) selectedOutline.fix();
                 }
                 //goal is to update the doodleMap
@@ -211,13 +214,13 @@ public class Board extends Widget {
 
             public void touchDragged (InputEvent event, float x, float y, int pointer) {
                 if(pointer == Input.Buttons.LEFT) {
-                    if (selectMode && selectedOutline!=null){
+                    if (isInSelectMode() && selectedOutline!=null){
                         if(selectedOutline.isResizing()) selectedOutline.resize((int) x, (int) y);
                         else selectedOutline.drag((int) x, (int) y);
                     }
                     else if(selectedOutline != null) selectedOutline.drawAt((int) x, (int) y);
 
-                    if (clickListener.isOver() && !selectMode && !drawCursor) {
+                    if (clickListener.isOver() && !isInSelectMode() && !drawCursor) {
                         cursor = currentBrush.getPixmap();
                         Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursor, 0, 0));
                         cursor.dispose();
@@ -227,7 +230,7 @@ public class Board extends Widget {
             }
 
             public boolean mouseMoved (InputEvent event, float x, float y) {
-                if(clickListener.isOver() && !selectMode && !drawCursor) {
+                if(clickListener.isOver() && !isInSelectMode() && !drawCursor) {
                     cursor = currentBrush.getPixmap();
                     Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursor, 0, 0));
 //                    Gdx.graphics.setCursor(Gdx.graphics.newCursor(cursor, currentBrush.getSize(), currentBrush.getSize()));
@@ -257,7 +260,7 @@ public class Board extends Widget {
         float width = getWidth();
         float height = getHeight();
 
-        batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+        batch.setColor(color.r, color.g, color.b, 1);
         if (background != null) {
             background.draw(batch, x, y, width, height);
         }
@@ -268,15 +271,16 @@ public class Board extends Widget {
         }
         //loops through each outline and draws its outline last so that it's always on top
         for (Outline outline: outlines) {
-            outline.drawOutline(batch, 1);
+            outline.drawBorder(batch, 1);
         }
 
-        //fixme best version of a keylistener I could think of
+        //fixme best version of a keylistener I can think of
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE) && selectedOutline != null) selectedOutline = null;
         if (Gdx.input.isKeyPressed(Input.Keys.FORWARD_DEL) && selectedOutline != null) selectedOutline.delete();
     }
 
     public void wipe(){
+        //deletes every outline then clears the list
         for (int i = 0; i < outlines.size(); i++) {
             outlines.get(i).delete();
         }
@@ -284,12 +288,12 @@ public class Board extends Widget {
 
         selectedOutline = null;
 
+        //disposes the pixmap then re-initializes it
         if(!pixmapBoard.isDisposed()) pixmapBoard.dispose();
         pixmapBoard = new Pixmap(1018, 850, Pixmap.Format.RGBA8888);
         pixmapBoard.setFilter(Pixmap.Filter.NearestNeighbour);
         pixmapBoard.setColor(new Color(0f,0f,0f,0f));
         pixmapBoard.fill();
-
     }
 
     /**
@@ -484,31 +488,20 @@ public class Board extends Widget {
         return screen;
     }
 
-    public void enterDrawMode() {
-        drawMode = true;
-        selectMode = false;
-        eraseMode = false;
-
-        setCurrentColor(drawingColor);
+    public void setBrushMode(BrushMode brushMode){
+        this.brushMode = brushMode;
     }
-    public void enterSelectMode() {
-        drawMode = false;
-        selectMode = true;
-        eraseMode = false;
-    }
-    public void enterEraseMode() {
-        drawMode = false;
-        selectMode = false;
-        eraseMode = true;
+    public BrushMode getBrushMode(){
+        return brushMode;
     }
     public boolean isInSelectMode() {
-        return selectMode;
+        return brushMode == BrushMode.SELECT_MODE;
     }
     public boolean isInDrawMode() {
-        return drawMode;
+        return brushMode == BrushMode.DRAW_MODE;
     }
     public boolean isInEraseMode() {
-        return eraseMode;
+        return brushMode == BrushMode.ERASE_MODE;
     }
 
     public Outline getSelectedOutline() {
@@ -537,16 +530,20 @@ public class Board extends Widget {
         }
     }
     public void load(){
+        //wipes all the outlines off the screen
         wipe();
         try {
+            //grabs all the outline files
             File folder = Files.createDirectories(Paths.get("assets\\SaveFiles\\ovalues\\" + this.folder)).toFile();
             File[] files = folder.listFiles();
 
             for (File file : files) {
                 Outline o = null;
 
+                //gets the file name's identifier character
                 char oType = PixSerializer.findFileIdentifier(file.getName());
 
+                //initializes each outline type and sets the data based on the file
                 switch (oType) {
                     case 'D':
                         o = new Doodle(this, Main.skin);
@@ -575,6 +572,7 @@ public class Board extends Widget {
                 outlines.add(o);
                 syncFolders(o.getPS());
 
+                //loads the outline
                 o.load();
             }
 
@@ -585,6 +583,7 @@ public class Board extends Widget {
         }
     }
     public void syncFolders(PixSerializer ps){
+        //if the PixSerializer's folder names have been initialized, set these folder names to the same thing
         if(!ps.getFolder().equals("temp")){
             folder = ps.getFolder();
             pixFolder = ps.getPixFolder();

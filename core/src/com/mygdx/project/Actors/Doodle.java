@@ -128,14 +128,16 @@ public class Doodle extends Outline {
     }
 
     public void drawContent(Batch batch){
-        drawable = doodleMap.drawnPoints.size() != 0; //if there's no doodle points, do not draw the outline
-        //more detections for if the outline is out of bounds
+        drawable = doodleMap.drawnPoints.size() != 0; //returns if there's no doodle points
+        if(!drawable) return;
+        //detects if this outline is out of bounds
         if(isOutOfBounds()){
-            //checking which bound it broke
+            //checks which bound it broke
             if (brokeLeftBounds()) {
-                //finding how much the outline shifted by
+                //finds how much the outline shifted by
                 float deltaX = (getX() - offsetX);
-                //shifting the doodle texture back into place (where it's supposed to be relative to the outline) based on how much the outline got moved out of place
+                //shifts the doodle texture back into place (where it's supposed to be relative to the outline)
+                //based on how much the outline got moved out of place
                 doodleTexOffset.x -= deltaX;
             }
             else if(brokeRightBounds()){ //repeat for the rest of the cases
@@ -150,7 +152,7 @@ public class Doodle extends Outline {
                 float deltaY = ((getY()+ getHeight()) - (offsetY+parentBoard.getHeight()));
                 doodleTexOffset.y -= deltaY;
             }
-            update(); //fixing the outline
+            update(); //fixes this outline
         }
         //draws the doodle
         batch.draw(doodleMap.texture, offsetX + doodleTexOffset.x, offsetY + doodleTexOffset.y);
@@ -189,18 +191,17 @@ public class Doodle extends Outline {
         float[][] brush = parentBoard.getCurrentBrush().getBrush();
         Color color = parentBoard.getCurrentColor();
 
-        //flipping the y so that the coordinates aren't upside down for the pixmap
+        //flips the y so that the coordinates aren't upside down for the pixmap
         int y2 = (parentBoard.getPixmapBoard().getHeight() - y) + (int) parentBoard.getBrushCenter().y;
         int x2 = x + (int) parentBoard.getBrushCenter().x;
 
         if(parentBoard.isInEraseMode()){
-            parentBoard.getPixmapBoard().setBlending(Pixmap.Blending.None); // before you start drawing pixels.
-            doodleMap.setBlending(Pixmap.Blending.None); // before you start drawing pixels.
+            //removes blending for the eraser
+            parentBoard.getPixmapBoard().setBlending(Pixmap.Blending.None);
+            doodleMap.setBlending(Pixmap.Blending.None);
         }
 
-        // This might look redundant, but should be more efficient because
-        // the condition is not evaluated for each pixel on the brush
-        if (lastx != -1 && lasty != -1) {
+        if (lastx != -1 && lasty != -1) { //if this is the first point...
             for (int i = -brushSize; i < brushSize + 1; i++) {
                 for (int j = -brushSize; j < brushSize + 1; j++) {
                     if(parentBoard.isInDrawMode()) {
@@ -244,12 +245,10 @@ public class Doodle extends Outline {
             parentBoard.getPixmapBoard().setColor(Color.CLEAR);
             parentBoard.getPixmapBoard().fill();
         }
-        try {
-            parentBoard.getPixmapBoard().drawPixmap(doodleMap, 0, 0, 1018, 850, 0, 0, 1018, 850);
-        } catch (Exception e){
-            System.out.println("caught");
-        }
+        parentBoard.getPixmapBoard().drawPixmap(doodleMap, 0, 0, 1018, 850,
+                0, 0, 1018, 850);
 
+        //updates lastx and lasty
         lastx = x2;
         lasty = y2;
 
@@ -257,8 +256,9 @@ public class Doodle extends Outline {
         doodleMap.texture = new Texture(getDoodle());
 
         if(parentBoard.isInEraseMode()) {
-            parentBoard.getPixmapBoard().setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
-            doodleMap.setBlending(Pixmap.Blending.SourceOver); // if you want to go back to blending
+            //brings back blending for the drawing brush
+            parentBoard.getPixmapBoard().setBlending(Pixmap.Blending.SourceOver);
+            doodleMap.setBlending(Pixmap.Blending.SourceOver);
         }
     }
 
@@ -275,39 +275,39 @@ public class Doodle extends Outline {
         float deltaX = x2-lastx;
         float deltaY = y2-lasty;
 
-        //moving outline
-        if((getX() <= offsetX && deltaX < 0)){ //testing left bounds
+        //moves outline
+        if((getX() <= offsetX && deltaX < 0)){ //tests left bounds
             setX(offsetX);
-            deltaX = 0; //if trying to go out of bounds, set so that the points can't move
+            deltaX = 0; //if trying to go out of bounds, sets so that the points can't move
         }
-        else if((getX()+getWidth() >= offsetX+parentBoard.getWidth() && deltaX > 0)){ //testing right bounds
+        else if((getX()+getWidth() >= offsetX+parentBoard.getWidth() && deltaX > 0)){ //tests right bounds
             setX(offsetX+parentBoard.getWidth() - getWidth());
-            deltaX = 0; //if trying to go out of bounds, set so that the points can't move
+            deltaX = 0; //if trying to go out of bounds, sets so that the points can't move
         }
         else{
             setX(getX()+(deltaX));
         }
-        if((getY() <= offsetY && deltaY < 0)){ //testing lower bounds
+        if((getY() <= offsetY && deltaY < 0)){ //tests lower bounds
             setY(offsetY);
-            deltaY = 0; //if trying to go out of bounds, set so that the points can't move
+            deltaY = 0; //if trying to go out of bounds, sets so that the points can't move
         }
-        else if((getY()+getHeight() >= offsetY+parentBoard.getHeight() && deltaY > 0)){ //testing upper bounds
+        else if((getY()+getHeight() >= offsetY+parentBoard.getHeight() && deltaY > 0)){ //tests upper bounds
             setY(offsetY+parentBoard.getHeight() - getHeight());
-            deltaY = 0; //if trying to go out of bounds, set so that the points can't move
+            deltaY = 0; //if trying to go out of bounds, sets so that the points can't move
         }
         else{
             setY(getY()+(deltaY));
         }
 
 
-        //moving doodle points
+        //moves doodle points
         for (Point point: doodleMap.getPoints()) {
             if(point.x == -1 && point.y == -1) continue;
             point.x += deltaX;
             point.y -= deltaY;
         }
 
-        //moving the doodle texture
+        //moves the doodle texture
         doodleTexOffset.x += deltaX;
         doodleTexOffset.y += deltaY;
 
@@ -321,36 +321,36 @@ public class Doodle extends Outline {
      */
     @Override
     public void fix() {
-        //getting ready to redraw the board
+        //gets ready to redraw the board
         if(!parentBoard.pixmapBoard.isDisposed()) parentBoard.pixmapBoard.dispose();
         parentBoard.pixmapBoard = new Pixmap(1018, 850, Pixmap.Format.RGBA8888);
 
         //temporary pixmap with the points moved over
         Pixmap px = Board.shiftPixmap(doodleMap, (int) doodleTexOffset.x, (int) doodleTexOffset.y);
-        //clearing the selected outline's doodle
+        //clears the selected outline's doodle
         doodleMap.setColor(Color.CLEAR);
         doodleMap.fill();
-        //making sure both the pixmaps' bytes are at the same position for the data transfer
+        //makes sure both the pixmaps' bytes are at the same position for the data transfer
         doodleMap.getPixels().rewind();
-        //setting the doodle's pixels to the shifted pixmap's pixels
+        //sets the doodle's pixels to the shifted pixmap's pixels
         doodleMap.setPixels(px.getPixels());
         //no more need for this pixmap
         px.dispose();
 
-        //clearing the board then drawing the updated doodle
+        //clears the board then drawing the updated doodle
         parentBoard.pixmapBoard.setColor(Color.CLEAR);
         parentBoard.pixmapBoard.fill();
         parentBoard.pixmapBoard.drawPixmap(doodleMap, 0, 0, 1018, 850, 0, 0, 1018, 850);
-        //resetting the texture to the new shifted doodle so that it's realigned with the board
+        //resets the texture to the new shifted doodle so that it's realigned with the board
         doodleMap.texture.dispose();
         doodleMap.texture = new Texture(getDoodle());
         doodleTexOffset.set(0, 0);
-        //update the selected outline's bounds
+        //updates the selected outline's bounds
         update();
     }
 
     public void save(){
-        //setting the bytebuffer back to the beginning, so it reads the entire thing
+        //sets the bytebuffer back to the beginning, so it reads the entire thing
         doodleMap.getPixels().rewind();
         ps.setPixData(doodleMap.getPixels());
         Point[] points = doodleMap.getPoints().toArray(new Point[0]);
@@ -388,8 +388,8 @@ public class Doodle extends Outline {
     }
 
     @Override
-    protected @Null Drawable getOutlineDrawable() {
-        return style.outline;
+    protected @Null Drawable getBorderDrawable() {
+        return style.border;
     }
     public void setStyle (DoodleStyle style) {
         if (style == null) throw new IllegalArgumentException("style cannot be null.");
@@ -407,12 +407,12 @@ public class Doodle extends Outline {
     static public class DoodleStyle {
 
         public @Null
-        Drawable outline;
+        Drawable border;
 
         public DoodleStyle(){
         }
         public DoodleStyle(Board.BoardStyle style){
-            outline = style.background;
+            border = style.background;
         }
     }
 }

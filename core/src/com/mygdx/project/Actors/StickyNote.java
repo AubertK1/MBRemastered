@@ -430,8 +430,8 @@ public class StickyNote extends Outline {
         return style;
     }
 
-    protected @Null Drawable getOutlineDrawable() {
-        return style.outline;
+    protected @Null Drawable getBorderDrawable() {
+        return style.border;
     }
     private @Null Drawable getBackgroundDrawable(){
         return style.background;
@@ -447,7 +447,7 @@ public class StickyNote extends Outline {
 
     static public class StickyNoteStyle{
         public @Null
-        Drawable outline;
+        Drawable border;
         Drawable background;
         TextFieldStyle textfield;
 
@@ -455,7 +455,7 @@ public class StickyNote extends Outline {
         }
 
         public StickyNoteStyle(StickyNoteStyle style){
-            outline = style.outline;
+            border = style.border;
             background = style.background;
             textfield = style.textfield;
         }
